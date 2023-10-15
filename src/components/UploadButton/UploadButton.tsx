@@ -8,11 +8,10 @@ type Props = {
    multiple: boolean;
    maxCount: number;
    listStyle: UploadListType;
-   name: string;
    getListFiles: (files: File[]) => void;
 };
 
-const UploadButton = ({ maxCount, multiple, listStyle, name, getListFiles }: Props) => {
+const UploadButton = ({ maxCount, multiple, listStyle, getListFiles }: Props) => {
    const [fileList, setFileList] = useState<UploadFile[]>([]);
    const beforeUpload = (file: RcFile) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -48,7 +47,6 @@ const UploadButton = ({ maxCount, multiple, listStyle, name, getListFiles }: Pro
          multiple={multiple}
          fileList={fileList}
          beforeUpload={beforeUpload}
-         name={name}
       >
          {fileList.length >= maxCount ? null : buttonUpload}
       </Upload>

@@ -1,31 +1,22 @@
 export interface IProduct {
    _id: string;
    productName: string;
-   price: number;
    categoryId:
       | string
       | {
            cateName: string;
            _id: string;
         };
-   brandId:
-      | string
-      | {
-           _id: string;
-           brandName: string;
-           image: string;
-        };
-   subCateId: string | { subCateName: string };
+
    commentId: string;
    desc: string;
-   unit: string;
    discount: number;
-   amount: number;
    images: string[];
    createAt: string;
+   shipments: { idShipment: string; quatity: number; date: string; price: number }[];
 }
 
-export type InputProduct = Omit<IProduct, '_id' | 'createAt'|'commentId'>;
+export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
 
 export interface IProductExpanded extends IProduct {
    categoryId: {
@@ -41,5 +32,3 @@ export interface IProductExpanded extends IProduct {
       subCateName: string;
    };
 }
-
-

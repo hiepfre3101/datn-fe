@@ -3,7 +3,7 @@
  */
 export interface IResponseHasPaginate<T> {
    body: {
-      docs: T[];
+      data: T[];
       totalDocs: number;
       limit: number;
       page: number;

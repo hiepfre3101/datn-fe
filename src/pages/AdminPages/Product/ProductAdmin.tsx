@@ -67,7 +67,7 @@ const ProductAdmin = () => {
                         Lọc
                      </button>
                   </header>
-                  <Table dataSource={products} pagination={{ pageSize: 50 }} scroll={{ y: 240 }} loading={isLoading}>
+                  <Table dataSource={products} pagination={{ pageSize: 50 }} scroll={{ y: 800 }} loading={isLoading}>
                      <Column
                         title='Ảnh sản phẩm'
                         fixed='left'
