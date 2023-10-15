@@ -2,6 +2,8 @@ import { createBrowserRouter } from 'react-router-dom';
 import DefaultLayout from '../layouts/DefaultLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import Dashboard from '../pages/AdminPages/Dashboard';
+import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
+import AddProduct from '../pages/AdminPages/Product/AddProduct';
 
 const router = createBrowserRouter([
    {
@@ -33,15 +35,15 @@ const router = createBrowserRouter([
          {
             path: 'dashboard',
             element: <Dashboard />
+         },
+         {
+            path: 'products',
+            element: <ProductAdmin />
+         },
+         {
+            path: 'add-product',
+            element: <AddProduct />
          }
-         // {
-         //    path: 'products',
-         //    element: <ProductAdmin />
-         // },
-         // {
-         //    path: 'add-product',
-         //    element: <AddProduct />
-         // },
          // {
          //    path: 'accounts',
          //    element: <AccountManager />
