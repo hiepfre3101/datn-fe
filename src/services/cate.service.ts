@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ICategories } from '../interfaces/fakeCategories';
+import { ICategories } from '../interfaces/category';
 
 const category = createApi({
    reducerPath: 'category',
@@ -9,7 +9,7 @@ const category = createApi({
    }),
    tagTypes: ['category'],
    endpoints: (builder) => ({
-      getAllCate: builder.query<{ body: ICategories[] }, void>({
+      getAllCate: builder.query<{ data: ICategories[] }, void>({
          query: () => ({
             url: '/categories',
             method: 'GET',

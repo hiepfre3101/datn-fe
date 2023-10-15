@@ -4,7 +4,7 @@ import { IUser } from '../interfaces/auth';
 type DataType = {
    key: string;
    _id?: string;
-}
+};
 type ProductDataType = DataType & {
    image: string;
    productName: string;
@@ -26,24 +26,21 @@ type UserDataType = DataType & {
    notifications?: string[];
    vouchers?: string[];
    state?: boolean;
-}
+};
 
 export const productData = (data: IResponseHasPaginate<IProductExpanded>): ProductDataType[] => {
-   return data.body.docs.map((product, index) => ({
+   return data.data.map((product, index) => ({
       key: index.toString(),
       _id: product._id,
       productName: product.productName,
-      price: product.price,
-      brand: product.brandId.brandName,
       category: product.categoryId.cateName,
-      subCategory: product.subCateId.subCateName,
       stock: product.amount > 0 ? 'Còn hàng' : 'Hết hàng',
       image: product.images[0]
    }));
 };
 
 export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {
-   return data.body.docs.map((user, index) => ({
+   return data.body.data.map((user, index) => ({
       key: index.toString(),
       _id: user._id,
       userName: user.userName,
@@ -55,6 +52,6 @@ export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {
       state: user.state,
       order: user.orders,
       notifications: user.notifications,
-      vouchers: user.voucher,
+      vouchers: user.voucher
    }));
 };
