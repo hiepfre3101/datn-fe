@@ -3,7 +3,7 @@
    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
    important: true,
    theme: {
-      extend: { colors: { greenPrimary: '#80b235' } },
+      extend: { colors: { greenPrimary: '#80b235', greena0d911: '#a0d911' },  },
       screens: {
          sm: '479px',
          'max-sm': { max: '479px' },

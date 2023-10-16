@@ -4,6 +4,9 @@ import AdminLayout from '../layouts/AdminLayout';
 import Dashboard from '../pages/AdminPages/Dashboard';
 import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
 import AddProduct from '../pages/AdminPages/Product/AddProduct';
+import CategoryAdmin from '../pages/AdminPages/Category/CategoryAdmin';
+import AddCategory from '../pages/AdminPages/Category/AddCategory';
+import UpdateCategory from '../pages/AdminPages/Category/UpdateCategory';
 
 const router = createBrowserRouter([
    {
@@ -43,7 +46,20 @@ const router = createBrowserRouter([
          {
             path: 'add-product',
             element: <AddProduct />
+         },
+         {
+            path: 'categories',
+            element: <CategoryAdmin />
+         },
+         {
+            path: 'add-category',
+            element: <AddCategory />
+         },
+         {
+            path: 'update-category',
+            element: <UpdateCategory />
          }
+      
          // {
          //    path: 'accounts',
          //    element: <AccountManager />
