@@ -6,6 +6,9 @@ import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
 import AddProduct from '../pages/AdminPages/Product/AddProduct';
 import HomePage from '../pages/UserPages/HomePage/HomePage';
 import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
+import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
+import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
+import CartPage from '../pages/UserPages/CartPage/CartPage';
 
 const router = createBrowserRouter([
    {
@@ -20,14 +23,18 @@ const router = createBrowserRouter([
             path: '/products',
             element: <ProductPage />
          },
-         // {
-         //    path: '/login',
-         //    element: <LoginPage />
-         // },
-         // {
-         //    path: '/signup',
-         //    element: <SignupPage />
-         // }
+         {
+            path: '/login',
+            element: <LoginPage />
+         },
+         {
+            path: '/signup',
+            element: <SignUpPage />
+         },
+         {
+            path: '/cart',
+            element: <CartPage/>
+         }
       ]
    },
    {
