@@ -19,7 +19,7 @@ const productApi = createApi({
    reducerPath: 'products',
    tagTypes: ['product'],
    endpoints: (builder) => ({
-      getAllWithoutExpand: builder.query<IResponseHasPaginate<IProduct>, Partial<Omit<IQueryParam, 'expand'>>>({
+      getAllWithoutExpand: builder.query<IResponseHasPaginate<IProduct>, Partial<Omit<IQueryParam, '  '>>>({
          query: (params) => {
             return {
                url: '/products',

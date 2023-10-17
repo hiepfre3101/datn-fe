@@ -16,6 +16,7 @@ const Header = () => {
    }
    window.onscroll = function () {
       scrollFunction();
+      fixedMenu();
    };
 
    const showMiniCart = () => {
@@ -53,9 +54,42 @@ const Header = () => {
          section_search_modal?.classList.toggle('!translate-y-[0%]');
       }, 600);
    };
-
+   var oldScrollY = window.scrollY;
+   const fixedMenu = () => {
+      console.log(window.scrollY);
+      
+      const header =document.querySelector(".header")
+      const wrap_header = document.querySelector(".main-header")
+      
+      if(oldScrollY < window.scrollY ){
+         if(document.documentElement.scrollTop > 99){
+            header?.classList.add('translate-y-[-100%]')
+          }
+         
+     } else {
+      if(document.documentElement.scrollTop < 99){
+         header?.classList.remove('fixed')
+         wrap_header?.classList.remove('xl:pt-[106px]')
+         wrap_header?.classList.remove('max-xl:pt-[76px]')
+         header?.classList.remove('translate-y-[-100%]')
+      }
+   
+       else{
+         header?.classList.add('fixed')
+         console.log("helo");
+         
+         wrap_header?.classList.add('xl:pt-[106px]')
+         wrap_header?.classList.add('max-xl:pt-[76px]')
+         header?.classList.remove('translate-y-[-100%]')
+       }
+    
+     }
+     oldScrollY = window.scrollY;
+    
+    };
    return (
-      <header className='header  fixed top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
+      <div className="main-header">
+   <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
          <section className='mx-auto px-[30px] w-full relative max-w-[1520px] m-auto'>
             <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
                <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
@@ -69,7 +103,7 @@ const Header = () => {
                </div>
                <div
                   onClick={showMenuReponsive}
-                  className='overlay-menu-homepage xl:hidden fixed w-[110%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
+                  className='overlay-menu-homepage xl:hidden fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
                ></div>
                <div className='header-menu xl:w-[60%] max-xl:fixed  max-xl:transition-all max-xl:duration-500 max-xl:translate-x-[-100%]  max-xl:bottom-0 top-0 left-0 w-[320px] max-xl:z-[8] max-xl:bg-white'>
                   <ul className='main-menu flex max-xl:flex  max-xl:flex-col'>
@@ -178,6 +212,8 @@ const Header = () => {
             </div>
          </section>
       </header>
+      </div>
+   
    );
 };
 

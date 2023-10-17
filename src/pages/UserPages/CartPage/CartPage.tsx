@@ -50,8 +50,8 @@ const CartPage = () => {
                                     <div className='product-quantity-action flex lg:justify-center'>
                                        <div className='product-quantity flex  '>
                                           <input
-                                             type='text'
-                                             value={1}
+                                             type='number'
+                                             defaultValue={1}
                                              className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                           />
                                           <div className='flex flex-col'>
@@ -112,8 +112,8 @@ const CartPage = () => {
                                     <div className='product-quantity-action flex lg:justify-center'>
                                        <div className='product-quantity flex  '>
                                           <input
-                                             type='text'
-                                             value={1}
+                                             type='number'
+                                             defaultValue={1}
                                              className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                           />
                                           <div className='flex flex-col'>
@@ -174,8 +174,8 @@ const CartPage = () => {
                                     <div className='product-quantity-action flex lg:justify-center'>
                                        <div className='product-quantity flex  '>
                                           <input
-                                             type='text'
-                                             value={1}
+                                             type='number'
+                                             defaultValue={1}
                                              className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                           />
                                           <div className='flex flex-col'>
@@ -236,8 +236,8 @@ const CartPage = () => {
                                     <div className='product-quantity-action flex lg:justify-center'>
                                        <div className='product-quantity flex  '>
                                           <input
-                                             type='text'
-                                             value={1}
+                                             type='number'
+                                             defaultValue={1}
                                              className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                           />
                                           <div className='flex flex-col'>
@@ -325,7 +325,7 @@ const CartPage = () => {
                               </div>
                               <div className='discount-action mt-[30px] text-center'>
                                  <input
-                                    type='text'
+                                    type='number'
                                     className='outline-none border-[1px] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] w-full'
                                     placeholder='Mã Giảm giá'
                                  />

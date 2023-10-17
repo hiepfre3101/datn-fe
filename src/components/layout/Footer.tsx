@@ -332,7 +332,7 @@ const Footer = () => {
                </div>
                <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <UserOutlined style={{ fontSize: '24px' }} />
-                  <p className='  text-[10px] sm:text-[12px]'>Tài khoản</p>
+                  <a href='/login' className='block  text-[10px] sm:text-[12px]'>Tài khoản</a>
                </div>
             </div>
          </section>
@@ -616,12 +616,12 @@ const Footer = () => {
                      <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>200.000</span>
                   </div>
                   <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
-                     <a
-                        href=''
+                     <button
+                        onClick={showMiniCart}
                         className='block  text-[14px] view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                      >
                         GIỎ HÀNG
-                     </a>
+                     </button>
                      <a
                         href=''
                         className='block text-[14px]  view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center'
