@@ -6,6 +6,7 @@ import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
 import AddProduct from '../pages/AdminPages/Product/AddProduct';
 import HomePage from '../pages/UserPages/HomePage/HomePage';
 import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
+import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
 
 const router = createBrowserRouter([
    {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
          {
             path: 'add-product',
             element: <AddProduct />
+         },
+         {
+            path:'products/:id',
+            element:<UpdateProduct/>
          }
          // {
          //    path: 'accounts',
