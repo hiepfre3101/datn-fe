@@ -65,7 +65,6 @@ const Footer = () => {
    const closeQuickViewModal = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
-
       const modal_product = document.querySelector('.modal-product');
       setTimeout(() => {
          const modal_product_content = document.querySelector('.modal-product-content');
