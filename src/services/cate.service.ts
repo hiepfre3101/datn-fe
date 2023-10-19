@@ -1,15 +1,16 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ICategories } from '../interfaces/category';
+import { IResponse } from '../interfaces/base';
 
 const category = createApi({
    reducerPath: 'category',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/api',
+      baseUrl: 'http://localhost:8080/api',
       credentials: 'include'
    }),
    tagTypes: ['category'],
    endpoints: (builder) => ({
-      getAllCate: builder.query<{ data: ICategories[] }, void>({
+      getAllCate: builder.query<IResponse<ICategories[]>, void>({
          query: () => ({
             url: '/categories',
             method: 'GET',

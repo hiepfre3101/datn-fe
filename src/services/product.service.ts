@@ -1,20 +1,18 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
+import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
 import { IProduct, IProductExpanded, InputProduct } from '../interfaces/product';
-// import { RootState } from '../store';
 import { paramTransformer } from '../utils/transformParams';
 
 const productApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/api',
-      credentials: 'include',
-      prepareHeaders(headers) { //apiRedux
-         // const { getState } = apiRedux;
-         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-         // const { authApi } = getState() as RootState;
-         // need accessToken
+      baseUrl: 'http://localhost:8080/api',
+      prepareHeaders: (headers) => {
+         headers.set('Access-Control-Allow-Origin', '*');
+         headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH,PUT, DELETE');
+         headers.set('Access-Control-Allow-Headers', 'Content-Type');
          return headers;
-      }
+      },
+      credentials: 'include'
    }),
    reducerPath: 'products',
    tagTypes: ['product'],
@@ -25,7 +23,8 @@ const productApi = createApi({
                url: '/products',
                params: params
             };
-         }
+         },
+         providesTags: ['product']
       }),
       getAllExpand: builder.query<
          IResponseHasPaginate<IProductExpanded>,
@@ -38,6 +37,13 @@ const productApi = createApi({
             };
          }
       }),
+      getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
+         query: (idProduct) => {
+            return {
+               url: '/products/' + idProduct
+            };
+         }
+      }),
       addProduct: builder.mutation<IProduct, InputProduct>({
          query: (body) => {
             return {
@@ -45,11 +51,28 @@ const productApi = createApi({
                method: 'post',
                body: body
             };
-         }
+         },
+         invalidatesTags: ['product']
+      }),
+      updateProduct: builder.mutation<IProduct, InputProduct & { idProduct: string }>({
+         query: ({ idProduct, ...body }) => {
+            return {
+               url: '/products/' + idProduct,
+               method: 'PATCH',
+               body: body
+            };
+         },
+         invalidatesTags: ['product']
       })
    })
 });
 
-export const { useGetAllWithoutExpandQuery, useGetAllExpandQuery, useAddProductMutation } = productApi;
+export const {
+   useUpdateProductMutation,
+   useGetAllWithoutExpandQuery,
+   useGetAllExpandQuery,
+   useAddProductMutation,
+   useGetOneProductQuery
+} = productApi;
 
 export default productApi;

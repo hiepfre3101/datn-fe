@@ -78,9 +78,7 @@ const ProductAdmin = () => {
                      />
                      <Column title='Tên' dataIndex='productName' key='productName' width={150} />
                      <Column title='Giá' dataIndex='price' key='price' width={150} />
-                     <Column title='Danh mục lớn' dataIndex='category' key='category' width={150} />
-                     <Column title='Danh mục nhỏ' dataIndex='subCategory' key='subCategory' width={150} />
-                     <Column title='Thương hiệu' dataIndex='brand' key='brand' width={150} />
+                     <Column title='Danh mục ' dataIndex='category' key='category' width={150} />
                      <Column title='Kho hàng' dataIndex='stock' key='stock' width={150} />
                      <Column
                         width={150}
