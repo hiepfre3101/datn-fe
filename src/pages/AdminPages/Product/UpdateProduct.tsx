@@ -6,16 +6,19 @@ import { InputProduct } from '../../../interfaces/product';
 import UploadButton from '../../../components/UploadButton/UploadButton';
 import BlockForm from './BlockForm';
 import TextQuill from '../../../components/TextQuill/TextQuill';
-import { Link, useParams } from 'react-router-dom';
-import { useGetOneProductQuery } from '../../../services/product.service';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useGetOneProductQuery, useUpdateProductMutation } from '../../../services/product.service';
 import { useGetAllCateQuery } from '../../../services/cate.service';
 import { getShipmentData } from '../../../constants/configDescriptionAntd';
 import { IShipmentOfProduct } from '../../../interfaces/shipment';
 import { uploadImages } from '../../../api/upload';
+import Loading from '../../../components/Loading/Loading';
+import { IImage } from '../../../interfaces/image';
 
 const UpdateProduct = () => {
    const [form] = Form.useForm<InputProduct>();
    const { id } = useParams();
+   const navigate = useNavigate();
    const [files, setFiles] = useState<File[]>([]);
    const [defaultImages, setDefaultImages] = useState<UploadFile[]>([]);
    const [defaultDesc, setDefaultDesc] = useState<string>('');
@@ -33,6 +36,7 @@ const UpdateProduct = () => {
          setFiles(files);
       }
    };
+   const [handleUpdateProduct, { error, isLoading }] = useUpdateProductMutation();
    const { data } = useGetOneProductQuery(id!, { skip: !id });
    const { data: categories } = useGetAllCateQuery();
    useEffect(() => {
@@ -48,7 +52,22 @@ const UpdateProduct = () => {
       setDefaultDesc(data?.body.desc as string);
       setCurrentShipment(data?.body.shipments[0]);
       setShipments(data ? data.body.shipments! : []);
-      form.setFieldsValue({ ...data?.body, categoryId: formatedCategories });
+      const newBody = {
+         ...data?.body,
+         _id: undefined,
+         sold: undefined,
+         comments: undefined,
+         createdAt: undefined,
+         updatedAt: undefined,
+         categoryId: formatedCategories,
+         images: data?.body.images.map((image: { url: string; public_id: string }) => ({
+            url: image.url,
+            public_id: image.public_id
+         }))
+      };
+      form.setFieldsValue({
+         ...newBody
+      });
    }, [categories, data, form]);
    const displayShipment = () => {
       if (data?.body.shipments.length === 0 || !currentShipment) {
@@ -68,15 +87,17 @@ const UpdateProduct = () => {
             const {
                data: { body }
             } = await uploadImages(filesToUpload);
-            form.setFieldValue('images', [...defaultImages, body]);
+            const newImages = defaultImages.map((image) => ({ url: image.url, public_id: image.uid }));
+            form.setFieldValue('images', [...body, ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
-         console.log(newFormData);
-         return;
+         await handleUpdateProduct({ idProduct: id!, ...newFormData });
+         navigate('/manage/products');
       } catch (error) {
          console.log(error);
       }
    };
+   if (isLoading) return <Loading sreenSize='lg' />;
    return (
       <>
          <Helmet>
@@ -180,19 +201,13 @@ const UpdateProduct = () => {
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Lô hàng' className='min-w-[500px]'>
-                     <Form.Item
-                        name='shipments'
-                        hasFeedback
-                        rules={[{ required: true, message: 'Hãy chọn lô hàng !' }]}
-                     >
+                     <Form.Item name='shipments' hasFeedback>
                         <Select
                            labelInValue
-                           value={
-                              shipments.map((shipment) => ({
-                                 value: shipment.idShipment,
-                                 label: 'Lô hàng ngày: ' + shipment.date
-                              }))[0]
-                           }
+                           value={{
+                              value: currentShipment?.idShipment as string,
+                              label: 'Lô hàng ngày: ' + currentShipment?.date
+                           }}
                            style={{ width: '100%', marginBottom: '30px' }}
                            onChange={handleChangeShipment}
                            options={shipments.map((shipment) => ({
