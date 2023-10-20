@@ -5,6 +5,11 @@ import { ConfigProvider, Rate, Select, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
 import RelatedProductSlide from './components/RelatedProductSlide';
+
+import ProductDescribe from './components/productDescribe';
+import ProductInformation from './components/ProductInformation';
+import ProductOtherContent from './components/ProductOtherContent';
+import ProductEvaluate from './components/ProductEvaluate'
 const ProductDetail = () => {
    const handleChange = (value: string) => {
       console.log(`selected ${value}`);
@@ -198,141 +203,27 @@ const ProductDetail = () => {
                   </ul>
                   {stateNav == 'des' && (
                      <div className='product-des-content mt-[30px]'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                       <ProductDescribe></ProductDescribe>
                      </div>
                   )}
                   {stateNav == 'pr-info' && (
                      <div className='product-additional-info mt-[30px]'>
-                        <table className='border-collapse  border w-full'>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                        </table>
+
+                        <ProductInformation></ProductInformation>
+                       
                      </div>
                   )}
 
                   {stateNav == 'other-content' && (
                      <div className='product-other-content mt-[30px]'>
-                        ohter Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                   <ProductOtherContent></ProductOtherContent>
                      </div>
                   )}
                   {stateNav == 'review-btn' && (
                      <div className='review mt-[30px]'>
-                        <div className='review-header mb-[25px]'>
-                           <span className='review-title text-[20px] text-[#333333] font-bold'>
-                              Đánh giá của khạch hàng
-                           </span>
-                           <div className='product-rating mt-[25px] mb-[12px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='review-summary mt-[8px] text-[18px]'>Dựa trên 3 đánh giá</p>
-                           </div>
-                        </div>
-                        <div className='list-review'>
-                           <div className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='username mt-[9px] font-bold text-[#333333]'>Đàm Bá Quang</p>
-                              <p className='date mt-[5px] text-[#333333] '>10/05/2023</p>
-                              <p className='review-text mt-[18px]'>
-                                 There are many variations of passages of lorem ipsum available, but the majority have
-                                 suffered alteration in some form, by injected humour, or randomised words which don’t
-                                 look even slightly believable. if you are going to use a passage of lorem ipsum, you
-                                 need to be sure there isn’t anything embarrassing hidden in the middle of text. all the
-                                 lorem ipsum generators on the internet tend to repeat predefined chunks as necessary,
-                                 making this the first true generator on the internet.
-                              </p>
-                           </div>
-                           <div className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='username mt-[9px] font-bold text-[#333333]'>Đàm Bá Quang</p>
-                              <p className='date mt-[5px] text-[#333333] '>10/05/2023</p>
-                              <p className='review-text mt-[18px]'>
-                                 There are many variations of passages of lorem ipsum available, but the majority have
-                                 suffered alteration in some form, by injected humour, or randomised words which don’t
-                                 look even slightly believable. if you are going to use a passage of lorem ipsum, you
-                                 need to be sure there isn’t anything embarrassing hidden in the middle of text. all the
-                                 lorem ipsum generators on the internet tend to repeat predefined chunks as necessary,
-                                 making this the first true generator on the internet.
-                              </p>
-                           </div>
-                           <div className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='username mt-[9px] font-bold text-[#333333]'>Đàm Bá Quang</p>
-                              <p className='date mt-[5px] text-[#333333] '>10/05/2023</p>
-                              <p className='review-text mt-[18px]'>
-                                 There are many variations of passages of lorem ipsum available, but the majority have
-                                 suffered alteration in some form, by injected humour, or randomised words which don’t
-                                 look even slightly believable. if you are going to use a passage of lorem ipsum, you
-                                 need to be sure there isn’t anything embarrassing hidden in the middle of text. all the
-                                 lorem ipsum generators on the internet tend to repeat predefined chunks as necessary,
-                                 making this the first true generator on the internet.
-                              </p>
-                           </div>
-                        </div>
+                        
+                        <ProductEvaluate></ProductEvaluate>
+                       
                      </div>
                   )}
                </div>
