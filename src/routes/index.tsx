@@ -7,20 +7,22 @@ import AddProduct from '../pages/AdminPages/Product/AddProduct';
 import CategoryAdmin from '../pages/AdminPages/Category/CategoryAdmin';
 import AddCategory from '../pages/AdminPages/Category/AddCategory';
 import UpdateCategory from '../pages/AdminPages/Category/UpdateCategory';
+import HomePage from '../pages/UserPages/HomePage/HomePage';
+import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
 
 const router = createBrowserRouter([
    {
       path: '/',
       element: <DefaultLayout />,
       children: [
-         // {
-         //    path: '/',
-         //    element: <HomePage />
-         // },
-         // {
-         //    path: '/products',
-         //    element: <ProductPage />
-         // },
+         {
+            path: '/',
+            element: <HomePage />
+         },
+         {
+            path: '/products',
+            element: <ProductPage />
+         },
          // {
          //    path: '/login',
          //    element: <LoginPage />
@@ -56,7 +58,7 @@ const router = createBrowserRouter([
             element: <AddCategory />
          },
          {
-            path: 'update-category',
+            path: 'update-category/:id',
             element: <UpdateCategory />
          }
       

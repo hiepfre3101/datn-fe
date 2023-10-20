@@ -6,7 +6,7 @@ import { paramTransformer } from '../utils/transformParams';
 
 const productApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/api',
+      baseUrl: 'http://localhost:8080/api',
       credentials: 'include',
       prepareHeaders(headers) { //apiRedux
          // const { getState } = apiRedux;
