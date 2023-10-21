@@ -63,6 +63,15 @@ const productApi = createApi({
             };
          },
          invalidatesTags: ['product']
+      }),
+      removeProduct: builder.mutation<IProduct, string>({
+         query: (id) => {
+            return {
+               url: '/products/' + id,
+               method: 'delete'
+            };
+         },
+         invalidatesTags: ['product']
       })
    })
 });
@@ -72,7 +81,8 @@ export const {
    useGetAllWithoutExpandQuery,
    useGetAllExpandQuery,
    useAddProductMutation,
-   useGetOneProductQuery
+   useGetOneProductQuery,
+   useRemoveProductMutation
 } = productApi;
 
 export default productApi;

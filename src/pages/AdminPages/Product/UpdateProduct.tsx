@@ -13,7 +13,6 @@ import { getShipmentData } from '../../../constants/configDescriptionAntd';
 import { IShipmentOfProduct } from '../../../interfaces/shipment';
 import { uploadImages } from '../../../api/upload';
 import Loading from '../../../components/Loading/Loading';
-import { IImage } from '../../../interfaces/image';
 
 const UpdateProduct = () => {
    const [form] = Form.useForm<InputProduct>();
@@ -36,7 +35,7 @@ const UpdateProduct = () => {
          setFiles(files);
       }
    };
-   const [handleUpdateProduct, { error, isLoading }] = useUpdateProductMutation();
+   const [handleUpdateProduct, { isLoading, error }] = useUpdateProductMutation();
    const { data } = useGetOneProductQuery(id!, { skip: !id });
    const { data: categories } = useGetAllCateQuery();
    useEffect(() => {
@@ -63,11 +62,16 @@ const UpdateProduct = () => {
          images: data?.body.images.map((image: { url: string; public_id: string }) => ({
             url: image.url,
             public_id: image.public_id
+         })),
+         shipments: data?.body.shipments.map((shipment) => ({
+            ...shipment,
+            _id: undefined
          }))
       };
       form.setFieldsValue({
          ...newBody
       });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categories, data, form]);
    const displayShipment = () => {
       if (data?.body.shipments.length === 0 || !currentShipment) {
@@ -78,6 +82,7 @@ const UpdateProduct = () => {
    };
    const handleChangeShipment = (value: { value: string; label: string }) => {
       const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
+      form.setFieldValue('shipments',[selectedShipment,...shipments.filter(shipment=>shipment.idShipment !== value.value)])
       setCurrentShipment(selectedShipment);
    };
    const handleSubmit = async () => {
@@ -91,7 +96,11 @@ const UpdateProduct = () => {
             form.setFieldValue('images', [...body, ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
-         await handleUpdateProduct({ idProduct: id!, ...newFormData });
+         await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } });
+         if (error) {
+            console.log(error);
+            return;
+         }
          navigate('/manage/products');
       } catch (error) {
          console.log(error);
