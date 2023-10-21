@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { productData } from '../../../constants/configTableAntd';
-import { useGetAllExpandQuery } from '../../../services/product.service';
+import { useGetAllExpandQuery, useRemoveProductMutation } from '../../../services/product.service';
 import Column from 'antd/es/table/Column';
 import ActionTable from '../../../components/ActionTable/ActionTable';
 import FilterIcon from '../../../components/Icons/FilterIcon';
@@ -14,11 +14,19 @@ const ProductAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
    const { data, isLoading } = useGetAllExpandQuery({ expand: true });
+   const [handleRemoveProduct] = useRemoveProductMutation();
    const products = data && productData(data);
 
-   const getConfirmResultToDelete = (result: boolean) => {
-      //xét điều kiện gọi hàm xóa sp
-      return result;
+   const getConfirmResultToDelete = async (result: boolean, id: string) => {
+      if (!result) {
+         return;
+      }
+      try {
+         const res = await handleRemoveProduct(id);
+         console.log(res);
+      } catch (error) {
+         console.log(error);
+      }
    };
    const {
       token: { colorBgContainer }
@@ -87,6 +95,7 @@ const ProductAdmin = () => {
                         dataIndex={'_id'}
                         render={(id) => (
                            <ActionTable
+                              idProduct={id}
                               linkToUpdate={`/manage/products/${id}`}
                               getResultConfirm={getConfirmResultToDelete}
                            />
