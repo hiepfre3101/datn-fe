@@ -52,7 +52,7 @@ const AdminLayout = () => {
    } = theme.useToken();
 
    return (
-      <Layout style={{ minHeight: '100vh' }}>
+      <Layout style={{ maxHeight: '100vh' }}>
          <Sider
             width={250}
             collapsible
@@ -60,20 +60,26 @@ const AdminLayout = () => {
             onCollapse={(value) => setCollapsed(value)}
             style={{ background: colorBgContainer }}
             className={
-               'fixed z-[999] transition-all ' +
+               'fixed z-[999] transition-all h-full' +
                (open ? '-translate-x-0' : '-translate-x-full') +
                ' md:-translate-x-0 h-screen'
             }
             trigger={ButtonTrigger}
          >
-            <div className='max-h-[150px] flex justify-center items-center'>
+            <Link to='/' className='max-h-[150px] flex justify-center items-center'>
                <img src={logoUrl} alt='logo' className='object-cover' />
-            </div>
+            </Link>
             <Menu theme='light' defaultSelectedKeys={['1']} mode='inline' items={items} />
             <Button
-               className='absolute right-[-40px] top-[70px] z-[999] md:hidden md:opacity-0 md:invisible'
+               className='absolute right-[-40px] top-[70px] z-[9] md:hidden md:opacity-0 md:invisible  bg-white'
                onClick={() => setOpen((prev) => !prev)}
-               icon={open ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
+               icon={
+                  open ? (
+                     <MenuFoldOutlined className='text-black  text-xl' />
+                  ) : (
+                     <MenuUnfoldOutlined className='text-black  text-xl' />
+                  )
+               }
                style={{ color: 'white' }}
             ></Button>
          </Sider>
@@ -82,9 +88,9 @@ const AdminLayout = () => {
          ) : (
             ''
          )}
-         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px]' : 'md:pl-[80px]')}>
+         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px] 2xl:pl-[0]' : 'md:pl-[80px] 2xl:pl-0')}>
             <HeaderAdmin />
-            <Content className='min-h-screen overflow-auto flex justify-center w-full'>
+            <Content className=' flex justify-center w-full max-h-screen overflow-auto pt-[50px] pb-[50px]'>
                <Outlet />
             </Content>
          </Layout>

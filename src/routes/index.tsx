@@ -10,6 +10,13 @@ import UpdateCategory from '../pages/AdminPages/Category/UpdateCategory';
 import HomePage from '../pages/UserPages/HomePage/HomePage';
 import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
 
+import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
+
+import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
+import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
+import CartPage from '../pages/UserPages/CartPage/CartPage';
+
+
 const router = createBrowserRouter([
    {
       path: '/',
@@ -23,14 +30,18 @@ const router = createBrowserRouter([
             path: '/products',
             element: <ProductPage />
          },
-         // {
-         //    path: '/login',
-         //    element: <LoginPage />
-         // },
-         // {
-         //    path: '/signup',
-         //    element: <SignupPage />
-         // }
+         {
+            path: '/login',
+            element: <LoginPage />
+         },
+         {
+            path: '/signup',
+            element: <SignUpPage />
+         },
+         {
+            path: '/cart',
+            element: <CartPage />
+         }
       ]
    },
    {
@@ -60,8 +71,12 @@ const router = createBrowserRouter([
          {
             path: 'update-category/:id',
             element: <UpdateCategory />
+         },
+         {
+            path: 'products/:id',
+            element: <UpdateProduct />
          }
-      
+
          // {
          //    path: 'accounts',
          //    element: <AccountManager />

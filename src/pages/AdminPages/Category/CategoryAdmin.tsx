@@ -61,15 +61,11 @@ const CategoryAdmin = () => {
 
                         <div className="  grid grid-cols-3 gap-3 " style={{ margin: 30 }}>
 
-                            {/* <Link to={'/manage/update-category'}>
-                                <Card title="Card title" className="w-[100%] bg-greena0d911 " >
-                                    <Image src="https://khothietke.net/wp-content/uploads/2021/04/PNGKhovector.net-02049d7b9f985c6412588.png"></Image>
-                                </Card>
-                            </Link> */}
+                            
                             {
                                 isLoading ? 'loading' :
                                     data?.body.map((cate, index) => {
-                                        
+
                                         return <div className={`w-[100%] bg-greenbbf7d0 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 `} key={index}>
 
                                             <p className="text-lg font-medium text-gray-900 dark:text-white">{cate?.cateName}</p>
@@ -78,9 +74,9 @@ const CategoryAdmin = () => {
                                                     <Image src={cate.image.url}></Image>
                                                 </div>
                                             </Link>
-                                            <div className="flex justify-center">
+                                            <div className="flex justify-end ">
                                                 <Link to={'/manage/update-category/' + cate._id}>
-                                                    <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Chỉnh sửa</button>
+                                                    <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Chỉnh sửa</button>
                                                 </Link>
 
                                                 <Popconfirm
@@ -90,7 +86,7 @@ const CategoryAdmin = () => {
                                                     cancelText="Hủy bỏ"
                                                     title="Bạn có muốn xóa?"
                                                     onConfirm={() => handleDelete(cate._id)}>
-                                                    <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Xóa</button>
+                                                    <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Xóa</button>
                                                 </Popconfirm>
                                             </div>
 
@@ -101,8 +97,7 @@ const CategoryAdmin = () => {
                             }
 
 
-
-
+                            
                         </div>
                     </div>
 

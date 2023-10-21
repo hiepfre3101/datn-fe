@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ICategories } from '../interfaces/category';
+import { ICategories, InputCategories } from '../interfaces/category';
+import { IResponse } from '../interfaces/base';
 
 const category = createApi({
    reducerPath: 'category',
@@ -9,7 +10,7 @@ const category = createApi({
    }),
    tagTypes: ['category'],
    endpoints: (builder) => ({
-      getAllCate: builder.query<{ data: ICategories[] }, void>({
+      getAllCate: builder.query<IResponse<ICategories[]>, void>({
          query: () => ({
             url: '/categories',
             method: 'GET',
@@ -17,7 +18,7 @@ const category = createApi({
          }),
          providesTags: ['category']
       }),
-      getOneCateById: builder.query({
+      getOneCateById: builder.query<IResponse<ICategories>,string>({
          query: (id) => ({
             url: '/categories/' + id,
             method: 'GET',
@@ -40,11 +41,11 @@ const category = createApi({
          }),
          invalidatesTags: ['category'],
       }),
-      updateCategory: builder.mutation({
-         query: ({ id, item }) => ({
+      updateCategory: builder.mutation<IResponse<ICategories>,InputCategories&{id:string}>({
+         query: ({ id, ...body }) => ({
             url: '/categories/' + id,
             method: 'PATCH',
-            body: item,
+            body: body,
          }),
          invalidatesTags: ['category'],
       })

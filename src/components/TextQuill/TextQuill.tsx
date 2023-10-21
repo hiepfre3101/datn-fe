@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 type Props = {
    getValue: (value: string) => void;
+   defaultValue?: string;
 };
 
 const formats = [
@@ -28,7 +29,7 @@ const modules = {
       ['clean']
    ]
 };
-const TextQuill = ({ getValue }: Props) => {
+const TextQuill = ({ getValue, defaultValue }: Props) => {
    const [value, setValue] = useState<string>('');
    const handleGetValue = (value: string) => {
       getValue(value);
@@ -39,7 +40,7 @@ const TextQuill = ({ getValue }: Props) => {
          theme='snow'
          formats={formats}
          modules={modules}
-         value={value}
+         value={defaultValue ? defaultValue : value}
          onChange={(value) => handleGetValue(value)}
       />
    );
