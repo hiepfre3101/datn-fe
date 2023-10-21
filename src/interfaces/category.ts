@@ -1,5 +1,18 @@
+import { IProduct } from "./product";
+
 export interface ICategories {
    _id: string;
    cateName: string;
-   image: string;
+   image: {
+      url: string,
+      public_id: string
+   };
+   products: Partial<IProduct> []
+}
+export interface InputCategories{
+   cateName: string;
+   image: {
+      url: string,
+      public_id: string
+   };
 }
