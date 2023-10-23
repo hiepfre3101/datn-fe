@@ -1,3 +1,5 @@
+import { IShipmentOfProduct } from './shipment';
+
 export interface IProduct {
    _id: string;
    productName: string;
@@ -7,13 +9,12 @@ export interface IProduct {
            cateName: string;
            _id: string;
         };
-
    commentId: string;
    desc: string;
    discount: number;
-   images: string[];
+   images: { url: string; public_id: string }[];
    createAt: string;
-   shipments: { idShipment: string; quatity: number; date: string; price: number }[];
+   shipments: IShipmentOfProduct[];
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
