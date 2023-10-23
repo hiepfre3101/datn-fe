@@ -6,9 +6,10 @@ type Props = {
    changeValue: (value: string) => void;
    linkBack: string;
    initValue: string;
+   disabled?: boolean;
 };
 
-const HeadForm = ({ placeHolder, changeValue, linkBack, initValue }: Props) => {
+const HeadForm = ({ disabled = false, placeHolder, changeValue, linkBack, initValue }: Props) => {
    const [value, setValue] = useState<string>(initValue);
    useEffect(() => {
       setValue(initValue);
@@ -20,6 +21,7 @@ const HeadForm = ({ placeHolder, changeValue, linkBack, initValue }: Props) => {
                setValue(e.target.value);
                changeValue(e.target.value);
             }}
+            disabled = {disabled}
             value={value}
             type='text'
             placeholder={placeHolder}
