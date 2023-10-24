@@ -1,9 +1,8 @@
 
 import { Helmet } from "react-helmet"
-import { Layout, Theme, Image, Popconfirm, Button } from 'antd';
+import { Layout, Image, Popconfirm } from 'antd';
 import { Link } from "react-router-dom";
-import { SearchOutlined, PlusCircleOutlined, CloseOutlined } from '@ant-design/icons';
-import { Card } from 'antd';
+import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 import FilterIcon from '../../../components/Icons/FilterIcon';
 import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service'
 
@@ -11,7 +10,7 @@ import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../serv
 const CategoryAdmin = () => {
     const { data, isLoading } = useGetAllCateQuery()
     const [removeCategory] = useRemoveCategoryByIdMutation()
-    const handleDelete = (id) => {
+    const handleDelete = (id:string) => {
         removeCategory(id)
     }
     return (
@@ -66,7 +65,7 @@ const CategoryAdmin = () => {
                                 isLoading ? 'loading' :
                                     data?.body.map((cate, index) => {
 
-                                        return <div className={`w-[100%] bg-greenbbf7d0 border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 `} key={index}>
+                                        return <div className={`w-[100%]  border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 `} key={index}>
 
                                             <p className="text-lg font-medium text-gray-900 dark:text-white">{cate?.cateName}</p>
                                             <Link to={'/manage/update-category/' + cate._id}>
