@@ -15,7 +15,7 @@ import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
 import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
-
+import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 
 const router = createBrowserRouter([
    {
@@ -75,6 +75,10 @@ const router = createBrowserRouter([
          {
             path: 'products/:id',
             element: <UpdateProduct />
+         },
+         {
+            path: 'shipments',
+            element: <ShipmentPage />
          }
 
          // {

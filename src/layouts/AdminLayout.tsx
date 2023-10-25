@@ -33,7 +33,8 @@ const items: MenuItem[] = [
    getItem(<Link to='/manage/dashboard'>Trang chủ</Link>, '1', <PieChartOutlined />),
    getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
-      getItem(<Link to='/manage/categories'>Danh mục</Link>, '4')
+      getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
+      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5')
    ]),
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
    getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
@@ -88,7 +89,9 @@ const AdminLayout = () => {
          ) : (
             ''
          )}
-         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px] 2xl:pl-[0]' : 'md:pl-[80px] 2xl:pl-0')}>
+         <Layout
+            className={'transition-all ' + (!collapsed ? 'max-sm:pl-[250px] 2xl:pl-[0]' : 'md:pl-[80px] 2xl:pl-0')}
+         >
             <HeaderAdmin />
             <Content className=' flex justify-center w-full max-h-screen overflow-auto pt-[50px] pb-[50px]'>
                <Outlet />
