@@ -10,7 +10,7 @@ export const store = configureStore({
       [categoryReducer.reducerPath]: categoryReducer.reducer,
       [productReducer.reducerPath]: productReducer.reducer,
       [userSlice.reducerPath]: userSlice.reducer,
-      cartReducer: cartReducer.reducer
+      cart: cartReducer.reducer
    },
    middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([

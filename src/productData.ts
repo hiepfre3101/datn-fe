@@ -1,30 +1,30 @@
-const products = [
+export const products = [
    {
-      id: 1,
+      _id: 1,
       name: 'product 1',
       price: 250,
       images: 'https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg',
       quantity: 2
    },
    {
-      id: 2,
+      _id: 2,
       name: 'product 2',
-      price: 460,
+      price: 100,
       images: 'https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg',
-      quantity: 4
+      quantity: 1
    },
    {
-      id: 3,
+      _id: 3,
       name: 'product 3',
-      price: 950,
+      price: 200,
       images: 'https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg',
-      quantity: 10
+      quantity: 3
    },
    {
-      id: 4,
+      _id: 4,
       name: 'product 4',
-      price: 630,
+      price: 300,
       images: 'https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg',
-      quantity: 7
+      quantity: 2
    }
 ];
