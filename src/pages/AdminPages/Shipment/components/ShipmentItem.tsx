@@ -1,6 +1,5 @@
-import React from 'react';
 import { IShipmentFull } from '../../../../interfaces/shipment';
-import { Collapse, CollapsePanelProps, CollapseProps } from 'antd';
+import { Collapse, CollapseProps } from 'antd';
 
 type Props = {
    shipment: IShipmentFull;

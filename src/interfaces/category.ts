@@ -1,6 +1,7 @@
 import { IProduct } from "./product";
 
 export interface ICategories {
+   type: SetStateAction<string>;
    _id: string;
    cateName: string;
    image: {

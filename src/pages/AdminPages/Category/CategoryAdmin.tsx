@@ -1,18 +1,20 @@
 
 import { Helmet } from "react-helmet"
-import { Layout, Image, Popconfirm } from 'antd';
+import { Layout, Card, Popover, Popconfirm, } from 'antd';
 import { Link } from "react-router-dom";
-import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import FilterIcon from '../../../components/Icons/FilterIcon';
-import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service'
+import { SearchOutlined, PlusCircleOutlined, } from '@ant-design/icons';
 
+
+import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service'
 // import { itemsClientMenu } from "./ItemDropdown";
 const CategoryAdmin = () => {
     const { data, isLoading } = useGetAllCateQuery()
     const [removeCategory] = useRemoveCategoryByIdMutation()
-    const handleDelete = (id:string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleDelete = (id: any) => {
         removeCategory(id)
     }
+    // const [openModal, setOpenModal] = useState<boolean>(false)
     return (
         <>
             <Helmet>
@@ -47,33 +49,63 @@ const CategoryAdmin = () => {
                                 />
 
                             </div>
-                            <button
 
-                                className='border-[1px] border-[rgba(0,0,0,0.2)] rounded-xl p-2 text-greenPrimary flex items-center gap-1 hover:-translate-y-1 duration-100'
-                            >
-                                <FilterIcon className='text-greenPrimary' />
-                                Lọc
-                            </button>
                         </header>
 
 
 
-                        <div className="  grid grid-cols-3 gap-3 " style={{ margin: 30 }}>
+                        <div className="flex gap-7 flex-wrap" style={{ margin: 30 }}>
 
-                            
+
                             {
                                 isLoading ? 'loading' :
                                     data?.body.map((cate, index) => {
 
-                                        return <div className={`w-[100%]  border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 `} key={index}>
+                                        return <Card style={{ backgroundImage: `url(${cate.image.url})` }} className={`w-[200px] h-[200px] lg:w-[300px] lg:h-[300px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`} key={index}>
 
-                                            <p className="text-lg font-medium text-gray-900 dark:text-white">{cate?.cateName}</p>
-                                            <Link to={'/manage/update-category/' + cate._id}>
-                                                <div >
-                                                    <Image src={cate.image.url}></Image>
+                                            <div className="flex justify-between ">
+                                                <p style={{WebkitLineClamp: '1', wordBreak: 'break-word', overflowWrap: 'break-word',textOverflow: 'ellipsis', overflow: 'hidden', display: '-webkit-box', WebkitBoxOrient: 'vertical'}} className="text-lg font-medium max-w-[50%] dark:text-white mb-5">{cate?.cateName}</p>
+                                                <div className="relative ">
+
+                                                    <Popover content={() => <div id="dropdown" className=" text-base list-none bg-white divide-y divide-gray-100 rounded-lg  w-44 dark:bg-gray-700">
+                                                        <ul className="py-2" aria-labelledby="dropdownButton">
+
+                                                            <li>
+                                                                <Link to={'/manage/update-category/' + cate._id}>
+                                                                    <button type="button" className="focus:outline-none text-black  focus:ring-4  font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Chỉnh sửa</button>
+                                                                </Link>
+                                                            </li>
+                                                            <li>
+                                                                <Popconfirm
+                                                                    className={``}
+                                                                    description="Bạn chắc chắn muốn xóa danh mục chứ?"
+                                                                    okText="Đồng ý"
+                                                                    cancelText="Hủy bỏ"
+                                                                    title="Bạn có muốn xóa?"
+                                                                    onConfirm={() => handleDelete(cate._id)}>
+                                                                    <button type="button" className="focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Xóa</button>
+                                                                </Popconfirm>
+                                                            </li>
+                                                        </ul>
+                                                    </div>} trigger="click">
+
+                                                        <button id="dropdownButton" data-dropdown-toggle="dropdown" className="inline-block text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-1.5" type="button">
+                                                            {/* <span className="sr-only">Open dropdown</span> */}
+                                                            <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 3">
+                                                                <path d="M2 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Zm6.041 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM14 0a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3Z" />
+                                                            </svg>
+                                                        </button>
+                                                    </Popover>
+
+
                                                 </div>
-                                            </Link>
-                                            <div className="flex justify-end ">
+                                            </div>
+                                            {/* <Link to={'/manage/update-category/' + cate._id}>
+                                                <div >
+                                                    <Image className="min-h-[300px]" src={cate.image.url}></Image>
+                                                </div>
+                                            </Link> */}
+                                            {/* <div className="flex justify-end ">
                                                 <Link to={'/manage/update-category/' + cate._id}>
                                                     <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Chỉnh sửa</button>
                                                 </Link>
@@ -87,16 +119,16 @@ const CategoryAdmin = () => {
                                                     onConfirm={() => handleDelete(cate._id)}>
                                                     <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Xóa</button>
                                                 </Popconfirm>
-                                            </div>
+                                            </div> */}
 
-                                        </div>
+                                        </Card>
 
 
                                     })
                             }
 
 
-                            
+
                         </div>
                     </div>
 
