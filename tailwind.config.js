@@ -2,9 +2,9 @@
 
  * */ export default {
    content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
-   important: true,
+   // important: true,
    theme: {
-      extend: { colors: { greenPrimary: '#80b235', greenbbf7d0: '#bbf7d0', gray300: '#d1d5db' },  },
+      extend: { colors: { greenPrimary: '#80b235', greenbbf7d0: '#bbf7d0', gray300: '#d1d5db' } },
       screens: {
          sm: '479px',
          'max-sm': { max: '479px' },

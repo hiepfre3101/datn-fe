@@ -59,9 +59,9 @@ const AdminLayout = () => {
             collapsible
             collapsed={collapsed}
             onCollapse={(value) => setCollapsed(value)}
-            style={{ background: colorBgContainer }}
+            style={{ background: colorBgContainer, position: 'fixed' }}
             className={
-               'fixed z-[999] transition-all ' +
+               ' z-[999] transition-all ' +
                (open ? '-translate-x-0' : '-translate-x-full') +
                ' md:-translate-x-0 h-screen'
             }
