@@ -15,6 +15,7 @@ import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
 import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
+import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
 
 
 const router = createBrowserRouter([
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
          {
             path: '/cart',
             element: <CartPage />
+         },
+         {
+            path: '/productdetail/:id',
+            element: <ProductDetail />
          }
       ]
    },
