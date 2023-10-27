@@ -72,20 +72,21 @@ const AdminLayout = () => {
             </div>
             <Menu theme='light' defaultSelectedKeys={['1']} mode='inline' items={items} />
             <Button
-               className='bg-blue-500 absolute right-[-30px] top-[70px] z-[999] md:hidden md:opacity-0 md:invisible'
+               className='bg-[rgb(0,0,0,0.5)] absolute right-[-30px] top-[70px] z-[999] md:hidden md:opacity-0 md:invisible'
                onClick={() => setOpen((prev) => !prev)}
                icon={open ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
                style={{ color: 'white' }}
             ></Button>
          </Sider>
          {open ? (
-            <div className='fixed top-0 right-0 z-[99] w-screen h-full bg-[rgba(0,0,0,0.1)] md:hidden md:opacity-0 md:invisible'></div>
+            <div
+               onClick={() => setOpen(false)}
+               className='fixed top-0 right-0 z-[101] w-screen h-full bg-[rgba(0,0,0,0.1)] md:hidden md:opacity-0 md:invisible'
+            ></div>
          ) : (
             ''
          )}
-         <Layout
-            className={'transition-all ' + (!collapsed ? 'max-sm:pl-[250px] 2xl:pl-[0]' : 'md:pl-[80px] 2xl:pl-0')}
-         >
+         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px]' : 'md:pl-[80px] ')}>
             <HeaderAdmin />
             <Content className='min-h-screen overflow-auto flex justify-center w-full'>
                <Outlet />
