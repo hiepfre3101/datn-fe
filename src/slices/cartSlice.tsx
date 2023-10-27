@@ -21,6 +21,16 @@ const cartSlice = createSlice({
    name: 'cart',
    initialState,
    reducers: {
+      setItem: (state, action) => {
+         const items = localStorage.getItem(action.payload?.email || 'cart')
+            ? JSON.parse(localStorage.getItem(action.payload?.email || 'cart')!)
+            : [];
+         state.items = items;
+         state.totalPrice = items.reduce(
+            (accumulator: any, product: any) => accumulator + product.price * product.quantity,
+            0
+         );
+      },
       addItem: (state, action) => {
          const value = action.payload.data;
          let isItemExist = false;
@@ -82,5 +92,5 @@ const cartSlice = createSlice({
       }
    }
 });
-export const { addItem, removeFromCart, updateItem, removeAllProductFromCart } = cartSlice.actions;
+export const { addItem, removeFromCart, updateItem, removeAllProductFromCart, setItem } = cartSlice.actions;
 export default cartSlice;
