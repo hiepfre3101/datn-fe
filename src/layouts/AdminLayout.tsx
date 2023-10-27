@@ -33,7 +33,8 @@ const items: MenuItem[] = [
    getItem(<Link to='/manage/dashboard'>Trang chủ</Link>, '1', <PieChartOutlined />),
    getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
-      getItem(<Link to='/manage/categories'>Danh mục</Link>, '4')
+      getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
+      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5')
    ]),
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
    getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
@@ -43,7 +44,7 @@ const items: MenuItem[] = [
 
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
-   const [open, setOpen] = useState(true);
+   const [open, setOpen] = useState(false);
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
    );
@@ -52,7 +53,7 @@ const AdminLayout = () => {
    } = theme.useToken();
 
    return (
-      <Layout style={{ maxHeight: '100vh' }}>
+      <Layout style={{ minHeight: '100vh' }}>
          <Sider
             width={250}
             collapsible
@@ -60,37 +61,34 @@ const AdminLayout = () => {
             onCollapse={(value) => setCollapsed(value)}
             style={{ background: colorBgContainer }}
             className={
-               'fixed z-[999] transition-all h-full' +
+               'fixed z-[999] transition-all ' +
                (open ? '-translate-x-0' : '-translate-x-full') +
                ' md:-translate-x-0 h-screen'
             }
             trigger={ButtonTrigger}
          >
-            <Link to='/' className='max-h-[150px] flex justify-center items-center'>
+            <div className='max-h-[150px] flex justify-center items-center'>
                <img src={logoUrl} alt='logo' className='object-cover' />
-            </Link>
+            </div>
             <Menu theme='light' defaultSelectedKeys={['1']} mode='inline' items={items} />
             <Button
-               className='absolute right-[-40px] top-[70px] z-[9] md:hidden md:opacity-0 md:invisible  bg-white'
+               className='bg-[rgb(0,0,0,0.5)] absolute right-[-30px] top-[70px] z-[999] md:hidden md:opacity-0 md:invisible'
                onClick={() => setOpen((prev) => !prev)}
-               icon={
-                  open ? (
-                     <MenuFoldOutlined className='text-black  text-xl' />
-                  ) : (
-                     <MenuUnfoldOutlined className='text-black  text-xl' />
-                  )
-               }
+               icon={open ? <MenuFoldOutlined /> : <MenuUnfoldOutlined />}
                style={{ color: 'white' }}
             ></Button>
          </Sider>
          {open ? (
-            <div className='fixed top-0 right-0 z-[99] w-screen h-full bg-[rgba(0,0,0,0.1)] md:hidden md:opacity-0 md:invisible'></div>
+            <div
+               onClick={() => setOpen(false)}
+               className='fixed top-0 right-0 z-[101] w-screen h-full bg-[rgba(0,0,0,0.1)] md:hidden md:opacity-0 md:invisible'
+            ></div>
          ) : (
             ''
          )}
-         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px] 2xl:pl-[0]' : 'md:pl-[80px] 2xl:pl-0')}>
+         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px]' : 'md:pl-[80px] ')}>
             <HeaderAdmin />
-            <Content className=' flex justify-center w-full max-h-screen overflow-auto pt-[50px] pb-[50px]'>
+            <Content className='min-h-screen overflow-auto flex justify-center w-full'>
                <Outlet />
             </Content>
          </Layout>
