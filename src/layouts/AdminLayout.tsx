@@ -83,11 +83,9 @@ const AdminLayout = () => {
          ) : (
             ''
          )}
-         <Layout
-            className={'transition-all ' + (!collapsed ? 'max-sm:pl-[250px] 2xl:pl-[0]' : 'md:pl-[80px] 2xl:pl-0')}
-         >
+         <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px] 2xl:pl-[250px]' : 'md:pl-[80px] 2xl:pl-[80px]')}>
             <HeaderAdmin />
-            <Content className='min-h-screen overflow-auto flex justify-center w-full'>
+            <Content className='flex justify-center w-full max-h-screen overflow-auto pt-[50px] pb-[50px]'>
                <Outlet />
             </Content>
          </Layout>

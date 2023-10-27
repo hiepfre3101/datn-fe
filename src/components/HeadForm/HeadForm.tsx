@@ -3,31 +3,35 @@ import { Form } from 'antd';
 import { Link } from 'react-router-dom';
 type Props = {
    placeHolder: string;
-   changeValue: (value: string) => void;
+   changeValue?: (value: string) => void;
    linkBack: string;
-   initValue: string;
+   initValue?: string;
    disabled?: boolean;
+   hasName?: boolean;
 };
 
-const HeadForm = ({ disabled = false, placeHolder, changeValue, linkBack, initValue }: Props) => {
-   const [value, setValue] = useState<string>(initValue);
+const HeadForm = ({ hasName = true, disabled = false, placeHolder, changeValue, linkBack, initValue }: Props) => {
+   const [value, setValue] = useState<string>(initValue || '');
    useEffect(() => {
+      if (!initValue) return;
       setValue(initValue);
    }, [initValue]);
    return (
-      <div className='flex justify-between items-center w-full'>
-         <input
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-               setValue(e.target.value);
-               changeValue(e.target.value);
-            }}
-            disabled = {disabled}
-            value={value}
-            type='text'
-            placeholder={placeHolder}
-            className='underline-offset-[11px] font-semibold text-[rgba(0,0,0,0.5)] text-[3rem] outline-none border-none bg-transparent decoration-greenPri600 hover:underline hover:decoration-dashed decoration-1 focus:underline focus:decoration-solid max-w-[50%]'
-         />
-         <div className='flex justify-end items-center gap-5'>
+      <div className='flex justify-between items-center w-full relative'>
+         {hasName && (
+            <input
+               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  setValue(e.target.value);
+                  changeValue && changeValue(e.target.value);
+               }}
+               disabled={disabled}
+               value={value}
+               type='text'
+               placeholder={placeHolder}
+               className='underline-offset-[11px] font-semibold text-[rgba(0,0,0,0.5)] text-[3rem] outline-none border-none bg-transparent decoration-greenPri600 hover:underline hover:decoration-dashed decoration-1 focus:underline focus:decoration-solid max-w-[50%]'
+            />
+         )}
+         <div className='flex justify-end items-center gap-5 absolute right-0'>
             <Link to={linkBack}>
                <button
                   type='button'

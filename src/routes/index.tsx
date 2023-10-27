@@ -16,6 +16,7 @@ import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
+import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 
 const router = createBrowserRouter([
    {
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
          {
             path: 'shipments',
             element: <ShipmentPage />
+         },
+         {
+            path: 'add-shipment',
+            element: <AddShipment />
          }
 
          // {

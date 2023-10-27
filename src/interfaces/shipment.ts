@@ -7,7 +7,7 @@ export interface IShipmentOfProduct {
    isDisabled: boolean;
 }
 
-type ProductInShipmentExpand = {
+export type ProductInShipmentExpand = {
    idProduct: IProduct;
    date: string;
    weight: number;
@@ -23,3 +23,17 @@ export interface IShipmentFull {
    isDisabled: boolean;
    totalMoney: number;
 }
+
+export type ProductInput = {
+   idProduct: string;
+   date: string;
+   weight: number;
+   price: number;
+   originPrice: number;
+   origin: string;
+};
+
+export type InputShipment = {
+   products: ProductInput[];
+   totalMoney: number;
+};
