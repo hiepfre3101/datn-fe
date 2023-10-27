@@ -14,7 +14,7 @@ const HeadForm = ({ placeHolder, changeValue, linkBack, initValue }: Props) => {
       setValue(initValue);
    }, [initValue]);
    return (
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center w-full'>
          <input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                setValue(e.target.value);

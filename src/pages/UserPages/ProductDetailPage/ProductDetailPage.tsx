@@ -1,37 +1,92 @@
 import ProductThumbsGallery from './components/ProductThumbsGallery';
 import '../../../css/productdetailpage.css';
+import { useState } from 'react';
+
+import { useParams } from 'react-router-dom';
+import { useGetOneProductQuery, useGetRelatedProductsQuery } from '../../../services/product.service';
+import ProductDescriptionTab from './components/ProductDescriptionTab';
+import { ConfigProvider, Rate } from 'antd';
 import { AiOutlineHeart } from 'react-icons/ai';
-import { ConfigProvider, Rate, Select, Space } from 'antd';
-import { useEffect, useState } from 'react';
+
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
-import RelatedProductSlide from './components/RelatedProductSlide';
+import { useDispatch } from 'react-redux';
+import { addCart } from '../../../slices/cartSlice';
 const ProductDetail = () => {
-   const handleChange = (value: string) => {
-      console.log(`selected ${value}`);
+   const [inputSize, setinputSize] = useState<any>(0.5);
+   const [inputQuantity, setinputQuantity] = useState<number>(1)
+   const { id } = useParams();
+   const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
+
+   const objId = {
+      idCategory: oneProductData?.body.categoryId._id,
+      idProduct: id
    };
-   const [stateNav, setStateNav] = useState<string>('des');
+   const { data: relatedProductsData } = useGetRelatedProductsQuery(objId!, {
+      skip: !objId.idCategory || !objId.idProduct
+   });
+   // const onChangeInputNumber = (value: any) => {};
+   const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if(/^[\d.]+$/.test(e.target.value)){
+        const value = e.target.value;
+         console.log(value);     
+        if (value.endsWith('.') && !/\.\d+$/.test(value)) {
+           setinputSize(value);
+        } 
+        else {   
+           const rounded = Math.floor(Number(e.target.value));
+           const result = Number(e.target.value) - rounded;
+           console.log(rounded);     
+           if (result >= 0.5) {
+              setinputSize(rounded + 0.5);
+           } else {
+              setinputSize(rounded);
+           }
+        }
+      }
+      else{
+         setinputSize("")
+      }
+  
+      
+     }
+     const dispatch = useDispatch()
+   const add_to_cart = ()=>{
+      const product = {
+         product_id: oneProductData?.body._id,
+         product_name: oneProductData?.body.productName,
+         product_image: oneProductData?.body.images[0].url,
+         price:oneProductData?.body.shipments[0].price,
+         quantity:inputQuantity,
+         size:inputSize
+      }
+      dispatch(addCart(product))
+   }
+   const dec = ()=>{
+      setinputQuantity(inputQuantity+1)
+   }
+   const inc = ()=>{
+      if(inputQuantity>1){
+         setinputQuantity(inputQuantity-1)
+      }
 
-   useEffect(() => {
-      console.log(stateNav);
-   }, [stateNav]);
-
+   }
    return (
       <>
          <div className='main'>
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2] '>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
-                     <a href='/'>Trang chủ </a> / Dâu tây đột biến
+                     <a href='/'>Trang chủ </a> / {oneProductData?.body.productName}
                   </span>
                </div>
             </section>
-            <section className='section-product-detail-page lg:py-[100px] md:py-[80px] max-md:py-[60px] border-b-[1px] border-[#e2e2e2]'>
+            <section className='section-product-detail-page lg:relative lg:py-[100px] md:py-[80px] max-md:py-[60px] border-b-[1px] border-[#e2e2e2]'>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
-                  <div className='pro-detail flex max-lg:flex-wrap mt-[-30px]'>
+                  <div className='pro-detail flex max-lg:flex-wrap lg:items-start mt-[-30px]'>
                      <div className='pro-detail-header xl:w-[42%] lg:w-[50%] max-lg:w-full '>
-                        <ProductThumbsGallery></ProductThumbsGallery>
+                        <ProductThumbsGallery body={oneProductData?.body.images}></ProductThumbsGallery>
                      </div>
-                     <div className='pro-detail-content xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
+                     <div className='pro-detail-content lg:sticky lg:top-[10px] xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
                         <div className='rate flex items-center'>
                            <ConfigProvider
                               theme={{
@@ -49,11 +104,13 @@ const ProductDetail = () => {
                         <div className='product-info-wrap'>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
                               <div className='product-name  lg:text-[28px] max-lg:text-[24px] text-[#333333] font-bold'>
-                                 Dâu tây đột biến
+                                 {oneProductData?.body.productName}
                               </div>
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                              <div className='product-price text-[20px] font-bold'>80.000</div>
+                              <div className='product-price text-[20px] font-bold'>
+                                 {oneProductData?.body?.shipments[0]?.price}
+                              </div>
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                               <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Trạng thái:</div>
@@ -63,49 +120,36 @@ const ProductDetail = () => {
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                               <div className='stock-qty-title text-[20px]  text-[#333333] font-bold'>Size:</div>
-                              <ConfigProvider
-                                 theme={{
-                                    components: {
-                                       Select: {
-                                          colorPrimaryHover: '#51A55C',
-                                          optionSelectedBg: '#51A55C',
-                                          optionSelectedColor: '#FFFFFF'
-                                       }
-                                    }
-                                 }}
-                              >
-                                 <Space wrap className='w-full ml-[15px]'>
-                                    <Select
-                                       defaultValue='1kg'
-                                       className='w-[200px]'
-                                       onChange={handleChange}
-                                       options={[
-                                          { value: '1', label: '1kg' },
-                                          { value: '2', label: '2kg' },
-                                          { value: '3', label: '3kg' }
-                                       ]}
-                                    />
-                                 </Space>
-                              </ConfigProvider>
+                              <input
+                              className='outline-none border border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]'
+                                 type='text'
+
+                                 value={inputSize}
+                                 onChange={handleInputSize}
+                              />
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                               <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng:</div>
+
                               <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
                                  <div className='product-quantity-action flex lg:justify-center'>
                                     <div className='product-quantity flex  '>
                                        <input
                                           type='number'
                                           defaultValue={1}
+                                          value={inputQuantity}
                                           className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                        />
                                        <div className='flex flex-col'>
                                           <button
+                                          onClick={dec}
                                              type='button'
                                              className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
                                           >
                                              +
                                           </button>
                                           <button
+                                          onClick={inc}
                                              type='button'
                                              className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
                                           >
@@ -121,6 +165,7 @@ const ProductDetail = () => {
                            <div className='btn-add-card-wrap group/btn-add-cart max-sm:w-full'>
                               <button
                                  type='button'
+                                 onClick={add_to_cart}
                                  className=' btn-add-cart py-[12px] text-[#333333] w-full transition-colors duration-300 z-[3] before:z-[-1] px-[30px] text-center rounded-[5px] group-hover/btn-add-cart:text-white font-bold bg-[#333333] border-[2px] border-[#333333] before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-white before:transition-all before:duration-300 before:group-hover/btn-add-cart:scale-y-[0] before:origin-right   before:right-0 before:left-[0px] before:top-0'
                               >
                                  THÊM VÀO GIỎ HÀNG
@@ -145,197 +190,7 @@ const ProductDetail = () => {
                </div>
             </section>
             <section className='section-description  lg:py-[100px] md:py-[80px] max-md:py-[60px]'>
-               <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
-                  <ul className='pro-nav flex flex-wrap max-sm:flex-col max-sm:justify-center max-sm:items-center'>
-                     <li className='des md:pr-[28px]  '>
-                        <button
-                           onClick={() => {
-                              setStateNav('des');
-                           }}
-                           type='button'
-                           style={ stateNav == 'des' ? { color:'#333333'} : {color:'#6f6f6f'}}
-                           className=' font-bold py-[15px] p transition-all duration-300 hover:text-[#333333]'
-                        >
-                           MIÊU TẢ
-                        </button>
-                     </li>
-                     <li className='pr-info px-[28px] sm:border-l-[1px] '>
-                        <button
-                           onClick={() => {
-                              setStateNav('pr-info');
-                           }}
-                           style={ stateNav == 'pr-info' ? { color:'#333333'} : {color:'#6f6f6f'}}
-                           type='button'
-                           className=' font-bold py-[15px] transition-all duration-300 hover:text-[#333333]'
-                        >
-                           THÔNG TIN SẢN PHẨM
-                        </button>
-                     </li>
-                     <li className='other-content px-[28px] sm:border-l-[1px] '>
-                        <button
-                           type='button'
-                           onClick={() => {
-                              setStateNav('other-content');
-                           }}
-                           style={ stateNav == 'other-content' ? { color:'#333333'} : {color:'#6f6f6f'}}
-                           className=' font-bold py-[15px] transition-all duration-300 hover:text-[#333333]'
-                        >
-                           NỘI DUNG KHÁC
-                        </button>
-                     </li>
-                     <li className='review-btn px-[28px] sm:border-l-[1px] '>
-                        <button
-                           type='button'
-                           onClick={() => {
-                              setStateNav('review-btn');
-                           }}
-                           style={ stateNav == 'review-btn' ? { color:'#333333'} : {color:'#6f6f6f'}}
-                           className=' font-bold py-[15px] transition-all duration-300 hover:text-[#333333]'
-                        >
-                           ĐÁNH GIÁ
-                        </button>
-                     </li>
-                  </ul>
-                  {stateNav == 'des' && (
-                     <div className='product-des-content mt-[30px]'>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                     </div>
-                  )}
-                  {stateNav == 'pr-info' && (
-                     <div className='product-additional-info mt-[30px]'>
-                        <table className='border-collapse  border w-full'>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                        </table>
-                     </div>
-                  )}
-
-                  {stateNav == 'other-content' && (
-                     <div className='product-other-content mt-[30px]'>
-                        ohter Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        ut labore et dolore magna aliqua. ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                     </div>
-                  )}
-                  {stateNav == 'review-btn' && (
-                     <div className='review mt-[30px]'>
-                        <div className='review-header mb-[25px]'>
-                           <span className='review-title text-[20px] text-[#333333] font-bold'>
-                              Đánh giá của khạch hàng
-                           </span>
-                           <div className='product-rating mt-[25px] mb-[12px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='review-summary mt-[8px] text-[18px]'>Dựa trên 3 đánh giá</p>
-                           </div>
-                        </div>
-                        <div className='list-review'>
-                           <div className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='username mt-[9px] font-bold text-[#333333]'>Đàm Bá Quang</p>
-                              <p className='date mt-[5px] text-[#333333] '>10/05/2023</p>
-                              <p className='review-text mt-[18px]'>
-                                 There are many variations of passages of lorem ipsum available, but the majority have
-                                 suffered alteration in some form, by injected humour, or randomised words which don’t
-                                 look even slightly believable. if you are going to use a passage of lorem ipsum, you
-                                 need to be sure there isn’t anything embarrassing hidden in the middle of text. all the
-                                 lorem ipsum generators on the internet tend to repeat predefined chunks as necessary,
-                                 making this the first true generator on the internet.
-                              </p>
-                           </div>
-                           <div className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='username mt-[9px] font-bold text-[#333333]'>Đàm Bá Quang</p>
-                              <p className='date mt-[5px] text-[#333333] '>10/05/2023</p>
-                              <p className='review-text mt-[18px]'>
-                                 There are many variations of passages of lorem ipsum available, but the majority have
-                                 suffered alteration in some form, by injected humour, or randomised words which don’t
-                                 look even slightly believable. if you are going to use a passage of lorem ipsum, you
-                                 need to be sure there isn’t anything embarrassing hidden in the middle of text. all the
-                                 lorem ipsum generators on the internet tend to repeat predefined chunks as necessary,
-                                 making this the first true generator on the internet.
-                              </p>
-                           </div>
-                           <div className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
-                              <div className='rate flex items-center'>
-                                 <ConfigProvider
-                                    theme={{
-                                       token: {
-                                          controlHeightLG: 34
-                                       }
-                                    }}
-                                 >
-                                    <Rate allowHalf disabled defaultValue={4.5} />
-                                 </ConfigProvider>
-                              </div>
-                              <p className='username mt-[9px] font-bold text-[#333333]'>Đàm Bá Quang</p>
-                              <p className='date mt-[5px] text-[#333333] '>10/05/2023</p>
-                              <p className='review-text mt-[18px]'>
-                                 There are many variations of passages of lorem ipsum available, but the majority have
-                                 suffered alteration in some form, by injected humour, or randomised words which don’t
-                                 look even slightly believable. if you are going to use a passage of lorem ipsum, you
-                                 need to be sure there isn’t anything embarrassing hidden in the middle of text. all the
-                                 lorem ipsum generators on the internet tend to repeat predefined chunks as necessary,
-                                 making this the first true generator on the internet.
-                              </p>
-                           </div>
-                        </div>
-                     </div>
-                  )}
-               </div>
+               <ProductDescriptionTab desc={oneProductData?.body.desc}></ProductDescriptionTab>
             </section>
             <section className='section-related-product bg-[#f8f8f8] xl:py-[100px] lg:py-[80px] max-lg:py-[60px] border-b'>
                <div className='related-product-header text-center xl:mb-[70px] lg:mb-[40px] max-lg:mb-[30px]'>
@@ -345,9 +200,8 @@ const ProductDetail = () => {
                </div>
                <div className='related-product-content'>
                   <div className='slide-related-product  mt-[40px]'>
-                  <RelatedProductSlide></RelatedProductSlide>
+                     <SlideBestProduct productImgs={relatedProductsData?.body}></SlideBestProduct>
                   </div>
-                
                </div>
             </section>
          </div>

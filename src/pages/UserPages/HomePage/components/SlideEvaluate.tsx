@@ -31,10 +31,7 @@ export default function SlideEvaluate() {
             >
                <SwiperSlide>
                   <div className='evaluate-wrap group'>
-                     <div
-                     
-                        className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'
-                     >
+                     <div className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'>
                         <span className='customer-img rounded-[50%]  sm:mr-[30px] flex justify-center items-center   relative pb-[20px] '>
                            <img
                               className='min-w-[155px] max-h-[155px] max-w-[155px] min-h-[155px] max-sm:w-[155px] max-sm:h-[155px] rounded-[50%]'
@@ -58,14 +55,11 @@ export default function SlideEvaluate() {
                </SwiperSlide>
                <SwiperSlide>
                   <div className='evaluate-wrap group'>
-                     <div
-                     
-                        className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'
-                     >
+                     <div className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'>
                         <span className='customer-img rounded-[50%]  sm:mr-[30px] flex justify-center items-center   relative pb-[20px] '>
-                        <img
+                           <img
                               className='min-w-[155px] max-w-[155px] max-h-[155px] min-h-[155px] max-sm:w-[155px] max-sm:h-[155px] rounded-[50%]'
-                              src='https://scontent.xx.fbcdn.net/v/t1.15752-9/370225932_326221670056819_7206820702909315237_n.png?_nc_cat=108&ccb=1-7&_nc_sid=510075&_nc_ohc=euOrGi3LLz8AX-koY-9&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSM61_mUGEvr7RtjF78nmtsSoESC3uDSebNPVr8ZEFbzQ&oe=6551F434'
+                              src='https://f10-zpc.zdn.vn/3830913784216089022/02c85a27594a8e14d75b.jpg'
                               alt=''
                            />
                            <span className='evaluate-icon absolute w-[40px] h-[40px] flex items-center justify-center text-white rounded-[50%] bg-[#51A55C] bottom-0'>
@@ -77,7 +71,7 @@ export default function SlideEvaluate() {
                               Năm nay tôi 20 tuổi rồi mà chưa gặp shop nào bán hàng uy tín thế này!
                            </p>
                            <p className='evaluate-title font-bold text-[#51A55C] sm:mt-[30px] max-sm:mt-[10px] text-[16px] max-sm:text-center'>
-                           Vũ Hồng Linh
+                              Vừa đi tù về
                            </p>
                         </div>
                      </div>
@@ -85,10 +79,7 @@ export default function SlideEvaluate() {
                </SwiperSlide>
                <SwiperSlide>
                   <div className='evaluate-wrap group'>
-                     <div
-                     
-                        className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'
-                     >
+                     <div className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'>
                         <span className='customer-img rounded-[50%]  sm:mr-[30px] flex justify-center items-center   relative pb-[20px] '>
                            <img
                               className='min-w-[155px] max-h-[155px] max-w-[155px] min-h-[155px] max-sm:w-[155px] max-sm:h-[155px] rounded-[50%]'
@@ -112,12 +103,9 @@ export default function SlideEvaluate() {
                </SwiperSlide>
                <SwiperSlide>
                   <div className='evaluate-wrap group'>
-                     <div
-                     
-                        className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'
-                     >
+                     <div className='evaluate-item flex items-center max-sm:flex-wrap max-sm:justify-center max-sm:px-[10px]'>
                         <span className='customer-img rounded-[50%]  sm:mr-[30px] flex justify-center items-center   relative pb-[20px] '>
-                        <img
+                           <img
                               className='min-w-[155px] max-w-[155px] max-h-[155px] min-h-[155px] max-sm:w-[155px] max-sm:h-[155px] rounded-[50%]'
                               src='https://scontent.xx.fbcdn.net/v/t1.15752-9/370225932_326221670056819_7206820702909315237_n.png?_nc_cat=108&ccb=1-7&_nc_sid=510075&_nc_ohc=euOrGi3LLz8AX-koY-9&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.xx&oh=03_AdSM61_mUGEvr7RtjF78nmtsSoESC3uDSebNPVr8ZEFbzQ&oe=6551F434'
                               alt=''
@@ -131,7 +119,7 @@ export default function SlideEvaluate() {
                               Năm nay tôi 20 tuổi rồi mà chưa gặp shop nào bán hàng uy tín thế này!
                            </p>
                            <p className='evaluate-title font-bold text-[#51A55C] sm:mt-[30px] max-sm:mt-[10px] text-[16px] max-sm:text-center'>
-                           Vũ Hồng Linh
+                              Vừa đi tù về
                            </p>
                         </div>
                      </div>

@@ -4,11 +4,12 @@ import { Link } from 'react-router-dom';
 import PencilIcon from '../Icons/PencilIcon';
 import EraserIcon from '../Icons/EraserIcon';
 type Props = {
+   idProduct: string;
    linkToUpdate: string;
-   getResultConfirm: (result: boolean) => boolean;
+   getResultConfirm: (result: boolean, idProduct: string) => void;
 };
 
-const ActionTable = ({ linkToUpdate, getResultConfirm }: Props) => {
+const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct }: Props) => {
    const [open, setOpen] = useState(false);
    return (
       <div className='flex justify-start items-center gap-3'>
@@ -25,7 +26,7 @@ const ActionTable = ({ linkToUpdate, getResultConfirm }: Props) => {
                title='Bạn có chắc chắn xóa không ?'
                onCancel={() => setOpen(false)}
                onConfirm={() => {
-                  getResultConfirm(true);
+                  getResultConfirm(true, idProduct);
                   setOpen(false);
                }}
             >

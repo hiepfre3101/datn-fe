@@ -29,13 +29,13 @@ type UserDataType = DataType & {
 };
 
 export const productData = (data: IResponseHasPaginate<IProductExpanded>): ProductDataType[] => {
-   return data.data.map((product, index) => ({
+   return data.body.products.map((product, index) => ({
       key: index.toString(),
       _id: product._id,
       productName: product.productName,
       category: product.categoryId.cateName,
       stock: product.amount > 0 ? 'Còn hàng' : 'Hết hàng',
-      image: product.images[0]
+      image: product.images[0].url
    }));
 };
 

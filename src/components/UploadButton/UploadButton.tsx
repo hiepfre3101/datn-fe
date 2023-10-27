@@ -2,16 +2,17 @@ import { UploadOutlined } from '@ant-design/icons';
 import { message, Button, Upload } from 'antd';
 import { RcFile, UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import { UploadListType } from 'antd/es/upload/interface';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 type Props = {
    multiple: boolean;
    maxCount: number;
    listStyle: UploadListType;
-   getListFiles: (files: File[]) => void;
+   getListFiles: (files: File[], public_id?: string) => void;
+   defaultFiles?: UploadFile[];
 };
 
-const UploadButton = ({ maxCount, multiple, listStyle, getListFiles }: Props) => {
+const UploadButton = ({ maxCount, multiple, listStyle, getListFiles, defaultFiles }: Props) => {
    const [fileList, setFileList] = useState<UploadFile[]>([]);
    const beforeUpload = (file: RcFile) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -29,8 +30,15 @@ const UploadButton = ({ maxCount, multiple, listStyle, getListFiles }: Props) =>
    };
    const handleRemoveFile = (fileRes: UploadFile) => {
       setFileList((prev) => prev.filter((file) => file.uid !== fileRes.uid));
-      getListFiles(fileList.filter((file) => file.uid !== fileRes.uid).map((file) => file.originFileObj) as File[]);
+      getListFiles(
+         fileList.filter((file) => file.uid !== fileRes.uid).map((file) => file.originFileObj) as File[],
+         fileRes.uid
+      );
    };
+   useEffect(() => {
+      if (!defaultFiles) return;
+      setFileList(defaultFiles);
+   }, [defaultFiles]);
    const buttonUpload = (
       <Button
          icon={<UploadOutlined className='!text-[2rem]' />}
@@ -40,7 +48,6 @@ const UploadButton = ({ maxCount, multiple, listStyle, getListFiles }: Props) =>
    return (
       <Upload
          onRemove={(file) => handleRemoveFile(file)}
-         customRequest={() => {}}
          onChange={handleChange}
          listType={listStyle}
          maxCount={maxCount}
