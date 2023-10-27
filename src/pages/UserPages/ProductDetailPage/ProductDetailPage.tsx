@@ -5,11 +5,10 @@ import { ConfigProvider, Rate, Select, Space } from 'antd';
 import { useEffect, useState } from 'react';
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
 import RelatedProductSlide from './components/RelatedProductSlide';
-
-import ProductDescribe from './components/productDescribe';
 import ProductInformation from './components/ProductInformation';
 import ProductOtherContent from './components/ProductOtherContent';
 import ProductEvaluate from './components/ProductEvaluate'
+import ProductDescribe from './components/ProductDescribe';
 const ProductDetail = () => {
    const handleChange = (value: string) => {
       console.log(`selected ${value}`);

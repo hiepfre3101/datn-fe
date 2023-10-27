@@ -10,6 +10,7 @@ import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
+import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
 
 const router = createBrowserRouter([
    {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
             element: <ProductDetail/>
          }
       ]
+   },
+   {
+      path: '*',
+      element: <NotFoundPage/>
    },
    {
       path: '/manage',
