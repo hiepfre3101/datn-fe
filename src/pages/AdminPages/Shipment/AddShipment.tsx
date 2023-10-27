@@ -30,7 +30,9 @@ const AddShipment = () => {
       }
       const emptyData = productData.filter((item) => item.idProduct !== '');
       setProductData([...emptyData, data]);
-      message.success('Lưu sản phẩm thành công');
+      if (data.idProduct !== '') {
+         message.success('Lưu sản phẩm thành công');
+      }
    };
    return (
       <>

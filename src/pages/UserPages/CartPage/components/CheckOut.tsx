@@ -1,10 +1,16 @@
+import { useSelector } from 'react-redux';
+import { ICartSlice } from '../../../../slices/cartSlice';
+
 const CheckOut = () => {
+   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    return (
       <div>
          <div className='cart-total'>
             <div className='temporary items-center flex justify-between pb-[17px] border-b-[1px] border-[#e2e2e2]'>
                <span className='temporary-title font-bold'>Tính tạm</span>
-               <span className='temporary font-bold text-[#333333] '>80.000</span>
+               <span className='temporary font-bold text-[#333333] '>
+                  {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+               </span>
             </div>
             <div className='discount flex justify-between items-center pb-[17px] border-b-[1px] border-[#e2e2e2] mt-[10px]'>
                <span className="before:content-[''] before:block before:w-[10px] relative before:h-[10px] before:border-[#51A55C] before:border-[1px] overflow-hidden  before:bg-white  before:absolute  before:rounded-[50%]  before:translate-y-[-50%]  before:left-[-5px]  before:top-[50%] before:z-[2] after:content-[''] after:block after:w-[10px] after:h-[10px] after:border-[#51A55C] after:border-[1px] after:bg-white  after:absolute  after:rounded-[50%]  after:translate-y-[-50%]  after:right-[-5px]  after:top-[50%] after:z-[2]">
