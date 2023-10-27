@@ -13,26 +13,39 @@ const initialState: ICartSlice = {
    email: '',
    address: '',
    phoneNumber: '',
-   items: localStorage.getItem('cart') ? JSON.parse(localStorage.getItem('cart')!) : [],
+   items: [],
    totalQuantity: 0,
-   totalPrice: localStorage.getItem('cart')
-      ? JSON.parse(localStorage.getItem('cart')!).reduce(
-           (accumulator: any, product: any) => accumulator + product.price * product.quantity,
-           0
-        )
-      : 0
+   totalPrice: 0
 };
 const cartSlice = createSlice({
    name: 'cart',
    initialState,
    reducers: {
       addItem: (state, action) => {
-         state.items = [...action.payload];
-         state.totalPrice = action.payload.reduce(
-            (accumulator: any, product: any) => accumulator + product.price * product.quantity,
-            0
-         );
-         localStorage.setItem('cart', JSON.stringify([...action.payload]));
+         const value = action.payload.data;
+         let isItemExist = false;
+         const items = state.items.map((item: any) => {
+            if (item?._id === value._id) {
+               isItemExist = true;
+               item.quantity += value.quantity;
+            }
+            return item;
+         });
+         if (isItemExist) {
+            state.items = items;
+            state.totalPrice += items.reduce(
+               (accumulator: any, product: any) => accumulator + product.price * product.quantity,
+               0
+            );
+            localStorage.setItem(action.payload?.email || 'cart', JSON.stringify([...items]));
+         } else {
+            state.items = [...state.items, value];
+            state.totalPrice = [...state.items, value].reduce(
+               (accumulator: any, product: any) => accumulator + product.price * product.quantity,
+               0
+            );
+            localStorage.setItem(action.payload?.email || 'cart', JSON.stringify([...state.items, value]));
+         }
       },
       removeFromCart: (state, action) => {
          const nextCartItems = state.items.filter((cartItem: any) => cartItem._id !== action.payload.id);
@@ -41,12 +54,12 @@ const cartSlice = createSlice({
             0
          );
          state.items = nextCartItems;
-         localStorage.setItem('cart', JSON.stringify(state.items));
+         localStorage.setItem(action.payload?.email || 'cart', JSON.stringify(state.items));
       },
-      removeAllProductFromCart: (state) => {
+      removeAllProductFromCart: (state, action) => {
          state.items = [];
          state.totalPrice = 0;
-         localStorage.setItem('cart', JSON.stringify(state.items));
+         localStorage.setItem(action.payload?.email || 'cart', JSON.stringify(state.items));
       },
       updateItem: (state, action) => {
          const nextCartItems = state.items.map((cartItem: any) => {
@@ -60,7 +73,7 @@ const cartSlice = createSlice({
             }
             return cartItem;
          });
-         localStorage.setItem('cart', JSON.stringify(nextCartItems));
+         localStorage.setItem(action.payload?.email || 'cart', JSON.stringify(nextCartItems));
          state.totalPrice = nextCartItems.reduce(
             (accumulator, product) => accumulator + product.price * product.quantity,
             0
