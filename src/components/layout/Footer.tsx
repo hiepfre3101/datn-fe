@@ -460,8 +460,11 @@ const Footer = () => {
                   </div>
                   <div className='mini-cart-content overflow-auto m-h-[100%-269px]'>
                      <ul className='cart-item relative'>
-                        {cart?.items?.map((item: any) => (
-                           <li className='cart-product p-[15px] flex border-[#e2e2e2] border-t-[1px] relative first:border-none '>
+                        {cart?.items?.map((item: any, index: number) => (
+                           <li
+                              key={index}
+                              className='cart-product p-[15px] flex border-[#e2e2e2] border-t-[1px] relative first:border-none '
+                           >
                               <div className='cart-img w-[65px]'>
                                  <a href=''>
                                     <img
@@ -481,12 +484,14 @@ const Footer = () => {
                                  <div className='product-info mt-[9px] flex'>
                                     <span className='product-qt text-[16px]'>{item.quantity} ×</span>
                                     <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
-                                       {item.price}
+                                       {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </span>
                                  </div>
                                  <div className='delete-cart'>
                                     <button
-                                       onClick={() => dispatch(removeFromCart({ id: item._id }))}
+                                       onClick={() =>
+                                          dispatch(removeFromCart({ id: item._id, email: 'ducbede@gmail.com' }))
+                                       }
                                        type='button'
                                        className='absolute right-[15px] bottom-[15px] text-[20px] opacity-[0.6] text-[#dc3545] hover:opacity-100'
                                     >
@@ -502,7 +507,7 @@ const Footer = () => {
                      <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                         <span className='subtotal-title text-[16px] '>Subtotal:</span>
                         <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                           {cart.totalPrice}.000
+                           {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                         </span>
                      </div>
                      <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
