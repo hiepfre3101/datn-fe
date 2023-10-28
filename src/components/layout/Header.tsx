@@ -59,7 +59,46 @@ const Header = () => {
          section_search_modal?.classList.toggle('!translate-y-[0%]');
       }, 600);
    };
+   var oldScrollY = window.scrollY;
+   const fixedMenu = () => {
+    
+      
+      const header =document.querySelector(".header")
+      const wrap_header = document.querySelector(".main-header")
+      
+      if(oldScrollY < window.scrollY ){
+         if(document.documentElement.scrollTop > 99){
+            header?.classList.add('translate-y-[-100%]')
+          }
+         
+     } else {
+      if(document.documentElement.scrollTop < 99){
+         header?.classList.remove('fixed')
+         wrap_header?.classList.remove('xl:pt-[106px]')
+         wrap_header?.classList.remove('max-xl:pt-[76px]')
+         header?.classList.remove('translate-y-[-100%]')
+      }
+   
+       else{
+         header?.classList.add('fixed')   
+         wrap_header?.classList.add('xl:pt-[106px]')
+         wrap_header?.classList.add('max-xl:pt-[76px]')
+         header?.classList.remove('translate-y-[-100%]')
+       }
+    
+     }
+     oldScrollY = window.scrollY;
+    
+    };
+    const dispatch = useDispatch()
+    const [cartName,setCartName] = useState<string>('cart')
+    const cart = useSelector((state: RootState) => state.cartSlice) 
 
+    useEffect(()=>{
+      const user = localStorage.getItem('user')?JSON.parse(localStorage.getItem('user')!):""
+      dispatch(featchCart(user?.email))
+      setCartName(cart.cart_name)   
+    },[cartName])    
    return (
       <div className="main-header">
    <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>

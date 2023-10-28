@@ -1,4 +1,4 @@
-import ProductThumbsGallery from './components/ProductThumbsGallery';
+
 import '../../../css/productdetailpage.css';
 import { useState } from 'react';
 
@@ -11,6 +11,7 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
 import { useDispatch } from 'react-redux';
 import { addCart } from '../../../slices/cartSlice';
+import ProductThumbsGallery from './components/ProductThumbsGallery';
 const ProductDetail = () => {
    const [inputSize, setinputSize] = useState<any>(0.5);
    const [inputQuantity, setinputQuantity] = useState<number>(1)
