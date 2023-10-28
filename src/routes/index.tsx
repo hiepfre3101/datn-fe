@@ -18,6 +18,7 @@ import CartPage from '../pages/UserPages/CartPage/CartPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
+import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
 
 const router = createBrowserRouter([
    {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
          {
             path: '/cart',
             element: <CartPage />
+         },
+         {
+            path: '/products/:id',
+            element: <ProductDetail />
          }
       ]
    },

@@ -5,6 +5,7 @@ export interface IShipmentOfProduct {
    idShipment: string;
    weight: number;
    date: string;
+   origin: string;
    isDisabled: boolean;
    price: number;
 }
