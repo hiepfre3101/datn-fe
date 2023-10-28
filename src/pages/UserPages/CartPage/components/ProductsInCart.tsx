@@ -1,22 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { ICartSlice, addItem } from '../../../../slices/cartSlice';
+import { ICartSlice } from '../../../../slices/cartSlice';
 import { removeFromCart, updateItem, removeAllProductFromCart } from '../../../../slices/cartSlice';
-import { products } from '../../../../productData';
-import { Button } from 'antd';
 const ProductsInCart = () => {
    const dispatch = useDispatch();
-   const addItems = () => {
-      products.map((product: any) => dispatch(addItem(product)));
-   };
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
-   // console.log(cart);
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    return (
       <div>
-         <Button onClick={() => addItems()} className='text-black'>
-            ADD
-         </Button>
          {cart?.items?.length === 0 ? (
             <div className='cart-emty'>
                <p className='cart-title xl:text-[30px]  border-[#e2e2e2] max-xl:text-[18px] text-[red] font-bold items-center text-center pb-[12px]'>

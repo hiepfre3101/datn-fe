@@ -1,4 +1,4 @@
-// import ProductThumbsGallery from './components/ProductThumbsGallery';
+import ProductThumbsGallery from './components/ProductThumbsGallery';
 import '../../../css/productdetailpage.css';
 import { useState } from 'react';
 
@@ -82,7 +82,7 @@ const ProductDetail = () => {
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                   <div className='pro-detail flex max-lg:flex-wrap lg:items-start mt-[-30px]'>
                      <div className='pro-detail-header xl:w-[42%] lg:w-[50%] max-lg:w-full '>
-                        {/* <ProductThumbsGallery body={oneProductData?.body.images}></ProductThumbsGallery> */}
+                        <ProductThumbsGallery body={oneProductData?.body.images}></ProductThumbsGallery>
                      </div>
                      <div className='pro-detail-content lg:sticky lg:top-[10px] xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
                         <div className='rate flex items-center'>

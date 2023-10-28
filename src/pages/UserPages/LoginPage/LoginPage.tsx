@@ -1,5 +1,14 @@
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { setCartName } from '../../../slices/cartSlice';
 
 const LoginPage = () => {
+   const [email, setEmail] = useState('');
+   const dispatch = useDispatch();
+   const login = () => {
+      localStorage.setItem('user', JSON.stringify({ email: email }));
+      dispatch(setCartName(email));
+   };
    return (
       <>
          <div className='main'>
@@ -27,8 +36,12 @@ const LoginPage = () => {
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
                               placeholder='Email address'
+                              value={email}
                               id='mail'
                               type='text'
+                              onChange={(e) => {
+                                 setEmail(e.target.value);
+                              }}
                            />
                         </div>
                         <div className='login-password mt-[25px]'>
@@ -44,7 +57,8 @@ const LoginPage = () => {
                         </div>
                         <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
                            <button
-                              type='submit'
+                              type='button'
+                              onClick={login}
                               className=' text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
                            >
                               Đăng nhập
@@ -74,4 +88,3 @@ const LoginPage = () => {
    );
 };
 export default LoginPage;
-
