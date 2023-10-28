@@ -7,7 +7,7 @@ import { Button } from 'antd';
 const ProductsInCart = () => {
    const dispatch = useDispatch();
    const addItems = () => {
-      products.map((product: any) => dispatch(addItem({ data: product, email: 'ducbede@gmail.com' })));
+      products.map((product: any) => dispatch(addItem(product)));
    };
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    // console.log(cart);
@@ -85,8 +85,7 @@ const ProductsInCart = () => {
                                           dispatch(
                                              updateItem({
                                                 id: item._id,
-                                                quantity: item.quantity + 1,
-                                                email: 'ducbede@gmail.com'
+                                                quantity: item.quantity + 1
                                              })
                                           )
                                        }
@@ -100,8 +99,7 @@ const ProductsInCart = () => {
                                           dispatch(
                                              updateItem({
                                                 id: item._id,
-                                                quantity: item.quantity - 1,
-                                                email: 'ducbede@gmail.com'
+                                                quantity: item.quantity - 1
                                              })
                                           )
                                        }
@@ -117,7 +115,7 @@ const ProductsInCart = () => {
                               <button
                                  className='text-[#dc3545] transition-all duration-300 hover:text-[#ffc107] underline'
                                  type='button'
-                                 onClick={() => dispatch(removeFromCart({ id: item._id, email: 'ducbede@gmail.com' }))}
+                                 onClick={() => dispatch(removeFromCart({ id: item._id }))}
                               >
                                  Remove
                               </button>
@@ -142,7 +140,7 @@ const ProductsInCart = () => {
                      TIẾP TỤC MUA HÀNG
                   </a>
                   <button
-                     onClick={() => dispatch(removeAllProductFromCart({ email: 'ducbede@gmail.com' }))}
+                     onClick={() => dispatch(removeAllProductFromCart())}
                      className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'
                   >
                      XOÁ GIỎ HÀNG

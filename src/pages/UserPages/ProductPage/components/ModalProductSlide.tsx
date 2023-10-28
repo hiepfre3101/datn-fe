@@ -9,16 +9,28 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Navigation,Pagination } from 'swiper/modules';
+import { IImageResponse } from '../../../../interfaces/image';
+import { useState } from 'react';
 
-export default function ModalProductSlide() {
+export default function ModalProductSlide({ body }: IImageResponse) {
+  console.log("slide rerender");
+  const [number,setNumber ] = useState(0)
+  
   return (
     <>
-      <Swiper pagination={{clickable: true,}}navigation={true} modules={[Navigation,Pagination]}   className="mySwiper quickview h-[397px]">
-        <SwiperSlide><img className=' w-[298px] object-fill m-auto' src="https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg" alt="" /></SwiperSlide>
-        <SwiperSlide><img className=' w-[298px] object-fill m-auto' src="https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg" alt="" /></SwiperSlide>
-        <SwiperSlide><img className=' w-[298px] object-fill m-auto' src="https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg" alt="" /></SwiperSlide>
-        <SwiperSlide><img className=' w-[298px] object-fill m-auto' src="https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg" alt="" /></SwiperSlide>
-        <SwiperSlide><img className=' w-[298px] object-fill m-auto' src="https://spacingtech.com/html/tm/freozy/freezy-ltr/image/product/p-2.jpg" alt="" /></SwiperSlide>
+      <Swiper
+      initialSlide={number}
+      pagination={
+        {clickable: true,}}
+        navigation={true} 
+        modules={[Navigation,Pagination]} 
+        loop={true}  
+        className="mySwiper quickview h-[397px]">
+        {body?.map(item=>{
+          return<>
+                  <SwiperSlide><img className=' w-[298px] object-fill m-auto' src={item.url} alt="" /></SwiperSlide>
+          </>
+        })}
       </Swiper>
     </>
   );

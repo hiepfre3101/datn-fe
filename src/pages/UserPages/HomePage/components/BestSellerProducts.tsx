@@ -1,4 +1,4 @@
-import SlideBestProduct from './SlideBestProduct';
+// import SlideBestProduct from './SlideBestProduct';
 
 const BestSellerProducts = () => {
    return (
@@ -12,7 +12,7 @@ const BestSellerProducts = () => {
             </div>
             <div className='best-product-content'>
                <div className='slide-best-pr'>
-                  <SlideBestProduct></SlideBestProduct>
+                  {/* <SlideBestProduct></SlideBestProduct> */}
                </div>
                <div className='link-to-product-page text-center mt-[40px] '>
                   <a
