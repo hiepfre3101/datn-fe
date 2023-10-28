@@ -8,6 +8,7 @@ const productApi = createApi({
    baseQuery: fetchBaseQuery({
       baseUrl: 'http://localhost:8000/api',
       credentials: 'include',
+      
       prepareHeaders(headers) { //apiRedux
          // const { getState } = apiRedux;
          // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -16,6 +17,7 @@ const productApi = createApi({
          return headers;
       }
    }),
+   
    reducerPath: 'products',
    tagTypes: ['product'],
    endpoints: (builder) => ({

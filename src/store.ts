@@ -3,12 +3,13 @@ import authReducer from './services/auth.service';
 import categoryReducer from './services/cate.service';
 import productReducer from './services/product.service';
 import userSlice from './services/user.service';
+
 export const store = configureStore({
    reducer: {
       [authReducer.reducerPath]: authReducer.reducer,
       [categoryReducer.reducerPath]: categoryReducer.reducer,
       [productReducer.reducerPath]: productReducer.reducer,
-      [userSlice.reducerPath]: userSlice.reducer
+      [userSlice.reducerPath]: userSlice.reducer,
    },
    middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([

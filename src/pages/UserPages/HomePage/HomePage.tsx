@@ -6,8 +6,14 @@ import '../../../css/hompage.css';
 import SlideBestProduct from './components/SlideBestProduct';
 import SlideEvaluate from './components/SlideEvaluate';
 import SlideProductHomepage from './components/SlideProductHomePage';
+
+
+
 const HomePage = () => {
+ 
+
    return (
+   
       <>
          <div className='main '>
             <SlideCateHomePage></SlideCateHomePage>

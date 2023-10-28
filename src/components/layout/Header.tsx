@@ -87,6 +87,7 @@ const Header = () => {
      oldScrollY = window.scrollY;
     
     };
+
    return (
       <div className="main-header">
    <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
@@ -198,18 +199,18 @@ const Header = () => {
                      </li>
                      <li
                         onClick={showMiniCart}
+                        
                         className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
                      >
-                        <span>
                            <HiOutlineShoppingBag></HiOutlineShoppingBag>
-                        </span>{' '}
+                   
                         <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                           2
+                       
                         </span>
                      </li>
                   </ul>
                </div>
-            </div>
+               </div>
          </section>
       </header>
       </div>
