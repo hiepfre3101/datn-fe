@@ -133,7 +133,7 @@ const AddProduct = () => {
                         value={categoryId}
                         className='flex flex-col gap-2 items-start'
                      >
-                        {categories?.body.map((cate) => (
+                        {categories?.body.data.map((cate) => (
                            <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
                               {cate.cateName}
                            </Radio>

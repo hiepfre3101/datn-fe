@@ -13,13 +13,14 @@ import { useDispatch } from 'react-redux';
 import { addItem } from '../../../slices/cartSlice';
 
 const ProductDetail = () => {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [inputSize, setinputSize] = useState<any>(0.5);
    const [inputQuantity, setinputQuantity] = useState<number>(1);
    const { id } = useParams();
    const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
 
    const objId = {
-      idCategory: oneProductData?.body.categoryId._id,
+      idCategory: oneProductData?.body.data.categoryId._id,
       idProduct: id
    };
    const { data: relatedProductsData } = useGetRelatedProductsQuery(objId!, {
@@ -35,7 +36,7 @@ const ProductDetail = () => {
          } else {
             const rounded = Math.floor(Number(e.target.value));
             const result = Number(e.target.value) - rounded;
-            console.log(rounded);
+            // console.log(rounded);
             if (result >= 0.5) {
                setinputSize(rounded + 0.5);
             } else {
@@ -49,14 +50,14 @@ const ProductDetail = () => {
    const dispatch = useDispatch();
    const add_to_cart = () => {
       const product = {
-         _id: oneProductData?.body._id,
-         name: oneProductData?.body.productName,
-         images: oneProductData?.body.images[0].url,
-         price: oneProductData?.body.shipments[0].price,
+         _id: oneProductData?.body.data._id,
+         name: oneProductData?.body.data.productName,
+         images: oneProductData?.body.data.images[0].url,
+         price: oneProductData?.body.data.shipments[0].price,
          quantity: inputQuantity,
          size: inputSize
       };
-      console.log(product);
+      // console.log(product);
 
       dispatch(addItem(product));
    };
@@ -74,7 +75,7 @@ const ProductDetail = () => {
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2] '>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
-                     <a href='/'>Trang chủ </a> / {oneProductData?.body.productName}
+                     <a href='/'>Trang chủ </a> / {oneProductData?.body.data.productName}
                   </span>
                </div>
             </section>
@@ -82,7 +83,7 @@ const ProductDetail = () => {
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                   <div className='pro-detail flex max-lg:flex-wrap lg:items-start mt-[-30px]'>
                      <div className='pro-detail-header xl:w-[42%] lg:w-[50%] max-lg:w-full '>
-                        <ProductThumbsGallery body={oneProductData?.body.images}></ProductThumbsGallery>
+                        <ProductThumbsGallery body={oneProductData?.body.data.images}></ProductThumbsGallery>
                      </div>
                      <div className='pro-detail-content lg:sticky lg:top-[10px] xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
                         <div className='rate flex items-center'>
@@ -102,12 +103,12 @@ const ProductDetail = () => {
                         <div className='product-info-wrap'>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
                               <div className='product-name  lg:text-[28px] max-lg:text-[24px] text-[#333333] font-bold'>
-                                 {oneProductData?.body.productName}
+                                 {oneProductData?.body.data.productName}
                               </div>
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
                               <div className='product-price text-[20px] font-bold'>
-                                 {oneProductData?.body?.shipments[0]?.price}
+                                 {oneProductData?.body?.data.shipments[0]?.price}
                               </div>
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
@@ -187,7 +188,7 @@ const ProductDetail = () => {
                </div>
             </section>
             <section className='section-description  lg:py-[100px] md:py-[80px] max-md:py-[60px]'>
-               <ProductDescriptionTab desc={oneProductData?.body.desc}></ProductDescriptionTab>
+               <ProductDescriptionTab desc={oneProductData?.body.data.desc}></ProductDescriptionTab>
             </section>
             <section className='section-related-product bg-[#f8f8f8] xl:py-[100px] lg:py-[80px] max-lg:py-[60px] border-b'>
                <div className='related-product-header text-center xl:mb-[70px] lg:mb-[40px] max-lg:mb-[30px]'>
@@ -196,9 +197,9 @@ const ProductDetail = () => {
                   </p>
                </div>
                <div className='related-product-content'>
-                  <div className='slide-related-product  mt-[40px]'>
-                     <SlideBestProduct productImgs={relatedProductsData?.body}></SlideBestProduct>
-                  </div>
+                  {/* <div className='slide-related-product  mt-[40px]'>
+                     <SlideBestProduct productImgs={relatedProductsData?.body.data}></SlideBestProduct>
+                  </div> */}
                </div>
             </section>
          </div>
