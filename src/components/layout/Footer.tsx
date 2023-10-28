@@ -268,7 +268,7 @@ const Footer = () => {
          <section className=' modal-product fixed  top-0 left-0 w-full  h-full hidden  bg-[rgba(3,17,27,0.3)] z-[-2]    outline-none'>
             <div className='modal-product-content delay-500 overflow-y-auto max-lg:h-[90%] max-lg:flex-wrap max-lg:fixed max-lg:bottom-0 max-lg:w-[100%] lg:opacity-0  max-lg:max-w-full transition-all opacity-100 duration-700 lg:scale-[0.8] max-lg:translate-y-[100%]  relative flex w-[80%] lg:my-[28px] lg:max-h-[615px] gap-[20px] lg:mx-auto lg:px-[20px] lg:py-[25px] p-[10px]  bg-white rounded-[3px] overflow-hidden border-[1px] outline-none border-[rgba(0,0,0,.2)]  max-w-[840px]'>
                <div className='product-slide text-[14px] relative max-w-[calc(50%-10px)] z-[-1]  text-center max-lg:max-w-full max-lg:w-full'>
-                  <ModalProductSlide></ModalProductSlide>
+                  <ModalProductSlide body={[]}></ModalProductSlide>
                   <div className='product-discount absolute text-[14px] text-white bg-red-500 px-[10px] py-[5px] rounded-br-[10px] w-[46px] z-[3] rounded-bl-[10px] left-0 top-0'>
                      <p>-17%</p>
                      <p>OFF</p>
@@ -489,9 +489,7 @@ const Footer = () => {
                                  </div>
                                  <div className='delete-cart'>
                                     <button
-                                       onClick={() =>
-                                          dispatch(removeFromCart({ id: item._id, email: 'ducbede@gmail.com' }))
-                                       }
+                                       onClick={() => dispatch(removeFromCart({ id: item._id }))}
                                        type='button'
                                        className='absolute right-[15px] bottom-[15px] text-[20px] opacity-[0.6] text-[#dc3545] hover:opacity-100'
                                     >
@@ -511,12 +509,12 @@ const Footer = () => {
                         </span>
                      </div>
                      <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
-                        <a
-                           href='/cart'
+                        <Link
+                           to={'/cart'}
                            className='block  text-[14px] view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                         >
                            GIỎ HÀNG
-                        </a>
+                        </Link>
                         <a
                            href='/cart'
                            className='block text-[14px]  view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center'
