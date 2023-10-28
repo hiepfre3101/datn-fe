@@ -18,7 +18,7 @@ const ShipmentPage = () => {
          </Helmet>
          <div className='w-full px-10'>
             <HeadPage title='Lô hàng' linkButton='/manage/add-shipment' titleButton='Tạo lô hàng mới' />
-            <div className='grid md:grid-cols-4 lg:grid-cols-3 gap-4 grid-cols-3'>
+            <div className='grid md:grid-cols-4 lg:grid-cols-3 gap-4 grid-cols-3 mt-[50px]'>
                {data?.body.data.map((shipment) => (
                   <Card
                      title={

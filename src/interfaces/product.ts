@@ -15,6 +15,7 @@ export interface IProduct {
    images: { url: string; public_id: string }[];
    createAt: string;
    shipments: IShipmentOfProduct[];
+   price:number
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
@@ -23,13 +24,5 @@ export interface IProductExpanded extends IProduct {
    categoryId: {
       cateName: string;
       _id: string;
-   };
-   brandId: {
-      _id: string;
-      brandName: string;
-      image: string;
-   };
-   subCateId: {
-      subCateName: string;
    };
 }

@@ -1,3 +1,4 @@
+import { Dayjs } from 'dayjs';
 import { IProduct } from './product';
 
 export interface IShipmentOfProduct {
@@ -5,6 +6,7 @@ export interface IShipmentOfProduct {
    weight: number;
    date: string;
    isDisabled: boolean;
+   price: number;
 }
 
 export type ProductInShipmentExpand = {
@@ -14,6 +16,7 @@ export type ProductInShipmentExpand = {
    price: number;
    originPrice: number;
    origin: string;
+   originWeight: number;
 };
 export interface IShipmentFull {
    _id: string;
@@ -26,11 +29,10 @@ export interface IShipmentFull {
 
 export type ProductInput = {
    idProduct: string;
-   date: string;
-   weight: number;
-   price: number;
-   originPrice: number;
-   origin: string;
+   date: string | Dayjs;
+   weight: number | string;
+   price: number | string;
+   originPrice: number | string;
 };
 
 export type InputShipment = {

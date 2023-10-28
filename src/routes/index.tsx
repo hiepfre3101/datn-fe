@@ -17,6 +17,7 @@ import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
+import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
 
 const router = createBrowserRouter([
    {
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
          {
             path: 'add-shipment',
             element: <AddShipment />
+         },
+         {
+            path: 'shipments/:id',
+            element: <UpdateShipment />
          }
 
          // {

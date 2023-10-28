@@ -9,10 +9,7 @@ type ProductDataType = DataType & {
    image: string;
    productName: string;
    category: string;
-   subCategory: string;
-   brand: string;
    price: number;
-   stock: 'Còn hàng' | 'Hết hàng';
 };
 
 type UserDataType = DataType & {
@@ -29,13 +26,13 @@ type UserDataType = DataType & {
 };
 
 export const productData = (data: IResponseHasPaginate<IProductExpanded>): ProductDataType[] => {
-   return data.body.products.map((product, index) => ({
+   return data.body.data.map((product, index) => ({
       key: index.toString(),
       _id: product._id,
       productName: product.productName,
       category: product.categoryId.cateName,
-      stock: product.amount > 0 ? 'Còn hàng' : 'Hết hàng',
-      image: product.images[0].url
+      image: product.images[0].url,
+      price: product.shipments[0]?.price || 0
    }));
 };
 

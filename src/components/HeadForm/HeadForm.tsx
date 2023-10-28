@@ -3,6 +3,7 @@ import { Form } from 'antd';
 import { Link } from 'react-router-dom';
 type Props = {
    placeHolder: string;
+   onSubmit?: () => void;
    changeValue?: (value: string) => void;
    linkBack: string;
    initValue?: string;
@@ -10,7 +11,15 @@ type Props = {
    hasName?: boolean;
 };
 
-const HeadForm = ({ hasName = true, disabled = false, placeHolder, changeValue, linkBack, initValue }: Props) => {
+const HeadForm = ({
+   hasName = true,
+   disabled = false,
+   placeHolder,
+   changeValue,
+   linkBack,
+   initValue,
+   onSubmit
+}: Props) => {
    const [value, setValue] = useState<string>(initValue || '');
    useEffect(() => {
       if (!initValue) return;
@@ -42,6 +51,7 @@ const HeadForm = ({ hasName = true, disabled = false, placeHolder, changeValue, 
             </Link>
             <Form.Item className='flex flex-col items-center !mb-0'>
                <button
+                  onClick={onSubmit}
                   className='!bg-greenPrimary !text-white py-2 px-5 rounded-xl font-semibold text-[1rem]'
                   type='submit'
                >
