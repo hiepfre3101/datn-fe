@@ -57,7 +57,6 @@ const ProductsInCart = () => {
                                  <span className='origin-name ml-[5px]'>Cuba</span>
                               </div>
                               <span className='price'>
-                                 {' '}
                                  {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
@@ -114,7 +113,7 @@ const ProductsInCart = () => {
                         </div>
                         <div className='cart-item-price sm:text-right max-sm:mt-[10px] w-[20%] max-lg:w-[50%]'>
                            <span className='full-price font-bold'>
-                              {(item.price * item.quantity).toLocaleString('vi-VN', {
+                              {(item.price * item.quanitity).toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}

@@ -12,10 +12,6 @@ const productSlice = createSlice({
       saveProduct: (state, action) => {
          state.products = [action.payload];
       },
-    //   deleteTokenAndUser: (state) => {
-    //      state.accessToken = '';
-    //      state.user = {} as IUser;
-    //   }
    }
 });
 

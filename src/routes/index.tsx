@@ -19,7 +19,6 @@ import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
-
 const router = createBrowserRouter([
    {
       path: '/',
