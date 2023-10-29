@@ -28,10 +28,12 @@ const AddProduct = () => {
    const handleSubmit = async () => {
       try {
          setLoading(true);
+         //1: upload ảnh
          const {
-            data: { data }
+            data: { body }
          } = await uploadImages(files);
-         form.setFieldValue('images', data);
+         //2: lấy đc data :{url:string, public_id:string}[]
+         form.setFieldValue('images', body);
          const newFormData = form.getFieldsValue(true);
          await handleAddProduct(newFormData);
          if (error) {
@@ -131,10 +133,9 @@ const AddProduct = () => {
                         value={categoryId}
                         className='flex flex-col gap-2 items-start'
                      >
-                        {categories?.data.map((cate) => (
+                        {categories?.body.map((cate) => (
                            <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
-                              {/* {cate.cateName} */}
-                              {cate.name}
+                              {cate.cateName}
                            </Radio>
                         ))}
                      </Radio.Group>
@@ -142,7 +143,7 @@ const AddProduct = () => {
                </BlockForm>
             </Space>
             <Divider />
-            <div className='flex justify-end items-center gap-5'>
+            <div className='flex justify-end items-center gap-5 pb-[50px]'>
                <Link to={'/manage/products'}>
                   <button
                      type='button'
