@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
-import { IShipmentFull } from '../interfaces/shipment';
+import { IShipmentFull, InputShipment } from '../interfaces/shipment';
 
 const shipmentApi = createApi({
    baseQuery: fetchBaseQuery({
@@ -23,9 +23,19 @@ const shipmentApi = createApi({
             };
          },
          providesTags: ['shipment']
+      }),
+      addShipment: builder.mutation<IShipmentFull, InputShipment>({
+         query: (body) => {
+            return {
+               url: '/shipments',
+               method: 'post',
+               body: body
+            };
+         },
+         invalidatesTags: ['shipment']
       })
    })
 });
 
-export const { useGetAllShipmentExpandQuery } = shipmentApi;
+export const { useGetAllShipmentExpandQuery, useAddShipmentMutation } = shipmentApi;
 export default shipmentApi;
