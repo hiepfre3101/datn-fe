@@ -40,17 +40,17 @@ const UpdateProduct = () => {
    const { data: categories } = useGetAllCateQuery();
    useEffect(() => {
       const formatedFiles: UploadFile[] = [] as UploadFile[];
-      data?.body.images.forEach((img) => {
+      data?.body.data.images.forEach((img) => {
          const file: UploadFile = { uid: img.public_id, url: img.url, name: 'images', status: 'done' };
          formatedFiles.push(file);
       });
       setDefaultImages(formatedFiles);
-      const formatedCategories = data?.body.categoryId._id;
+      const formatedCategories = data?.body.data.categoryId._id;
       setCategoryId(formatedCategories);
-      setProductName(data?.body.productName as string);
-      setDefaultDesc(data?.body.desc as string);
-      setCurrentShipment(data?.body.shipments[0]);
-      setShipments(data ? data.body.shipments! : []);
+      setProductName(data?.body.data.productName as string);
+      setDefaultDesc(data?.body.data.desc as string);
+      setCurrentShipment(data?.body.data.shipments[0]);
+      setShipments(data ? data.body.data.shipments! : []);
       const newBody = {
          ...data?.body,
          _id: undefined,
@@ -59,11 +59,11 @@ const UpdateProduct = () => {
          createdAt: undefined,
          updatedAt: undefined,
          categoryId: formatedCategories,
-         images: data?.body.images.map((image: { url: string; public_id: string }) => ({
+         images: data?.body.data.images.map((image: { url: string; public_id: string }) => ({
             url: image.url,
             public_id: image.public_id
          })),
-         shipments: data?.body.shipments.map((shipment) => ({
+         shipments: data?.body.data.shipments.map((shipment) => ({
             ...shipment,
             _id: undefined
          }))
@@ -74,7 +74,7 @@ const UpdateProduct = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categories, data, form]);
    const displayShipment = () => {
-      if (data?.body.shipments.length === 0 || !currentShipment) {
+      if (data?.body.data.shipments.length === 0 || !currentShipment) {
          return <h2>Chưa có lô hàng sử dụng</h2>;
       }
       const dataShipment = getShipmentData(currentShipment);
@@ -82,7 +82,10 @@ const UpdateProduct = () => {
    };
    const handleChangeShipment = (value: { value: string; label: string }) => {
       const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
-      form.setFieldValue('shipments',[selectedShipment,...shipments.filter(shipment=>shipment.idShipment !== value.value)])
+      form.setFieldValue('shipments', [
+         selectedShipment,
+         ...shipments.filter((shipment) => shipment.idShipment !== value.value)
+      ]);
       setCurrentShipment(selectedShipment);
    };
    const handleSubmit = async () => {
@@ -201,7 +204,7 @@ const UpdateProduct = () => {
                            value={categoryId}
                            className='flex flex-col gap-2 items-start'
                         >
-                           {categories?.body.map((cate) => (
+                           {categories?.body.data.map((cate) => (
                               <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
                                  {cate.cateName}
                               </Radio>

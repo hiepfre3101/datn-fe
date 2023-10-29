@@ -12,11 +12,15 @@ const ShipmentItem = ({ shipment }: Props) => {
       children: (
          <div className='flex flex-col gap-3'>
             <p>
-               <span>Ngày hết hạn: </span> {product.date}
+               <strong className='underline mr-3'>Ngày hết hạn: </strong> {product.date}
             </p>
             <p>
-               <span>Số lượng còn lại: </span>
+               <strong className='underline mr-3'>Số lượng còn lại: </strong>
                {product.weight} kg
+            </p>
+            <p>
+               <strong className='underline mr-3'>Khối lượng nhập: </strong>
+               {product.originWeight} kg
             </p>
          </div>
       )
