@@ -33,7 +33,7 @@ const cartSlice = createSlice({
          const items = localStorage.getItem(state.cartName) ? JSON.parse(localStorage.getItem(state.cartName)!) : [];
          state.items = items;
          state.totalPrice = items.reduce(
-            (accumulator: any, product: any) => accumulator + product.price * product.quantity,
+            (accumulator: any, product: any) => accumulator + product.price * product.size,
             0
          );
       },
@@ -43,14 +43,13 @@ const cartSlice = createSlice({
          const items = state.items.map((item: any) => {
             if (item?._id === value._id) {
                isItemExist = true;
-
-               item.quantity += value.quantity;
+               item.size += value.size;
             }
             return item;
          });
          if (isItemExist) {
             state.totalPrice += items.reduce(
-               (accumulator: any, product: any) => accumulator + product.price * product.quantity,
+               (accumulator: any, product: any) => accumulator + product.price * product.size,
                0
             );
 

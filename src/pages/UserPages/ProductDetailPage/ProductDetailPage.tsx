@@ -1,6 +1,6 @@
 import ProductThumbsGallery from './components/ProductThumbsGallery';
 import '../../../css/productdetailpage.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
 import { useGetOneProductQuery, useGetRelatedProductsQuery } from '../../../services/product.service';
@@ -11,10 +11,11 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../../slices/cartSlice';
+import {  IShipmentOfProduct } from '../../../interfaces/shipment';
 
 const ProductDetail = () => {
    const [inputSize, setinputSize] = useState<any>(0.5);
-   const [inputQuantity, setinputQuantity] = useState<number>(1);
+   const [totalWeight, setTotalWeight] = useState<number>()   
    const { id } = useParams();
    const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
 
@@ -25,17 +26,21 @@ const ProductDetail = () => {
    const { data: relatedProductsData } = useGetRelatedProductsQuery(objId!, {
       skip: !objId.idCategory || !objId.idProduct
    });
-   // const onChangeInputNumber = (value: any) => {};
+   useEffect(()=>{
+      setTotalWeight( oneProductData?.body.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
+         return accumulator + shipmentWeight.weight;
+       }, 0))
+   },[oneProductData])   
+   console.log(totalWeight);
+    
    const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
-         console.log(value);
          if (value.endsWith('.') && !/\.\d+$/.test(value)) {
             setinputSize(value);
          } else {
             const rounded = Math.floor(Number(e.target.value));
             const result = Number(e.target.value) - rounded;
-            console.log(rounded);
             if (result >= 0.5) {
                setinputSize(rounded + 0.5);
             } else {
@@ -48,24 +53,27 @@ const ProductDetail = () => {
    };
    const dispatch = useDispatch();
    const add_to_cart = () => {
-      const product = {
-         _id: oneProductData?.body._id,
-         name: oneProductData?.body.productName,
-         images: oneProductData?.body.images[0].url,
-         price: oneProductData?.body.shipments[0].price,
-         quantity: inputQuantity,
-         size: inputSize
-      };
-      console.log(product);
-
-      dispatch(addItem(product));
+      if(inputSize!=""){
+         const product = {
+            _id: oneProductData?.body._id,
+            name: oneProductData?.body.productName,
+            images: oneProductData?.body.images[0].url,
+            price: oneProductData?.body.shipments[0].price,
+            size: inputSize
+         };
+         dispatch(addItem(product));      
+      }
+      else{
+         setinputSize(0.5)
+         alert("Kg không hợp lệ")
+      }
    };
    const dec = () => {
-      setinputQuantity(inputQuantity + 1);
+      setinputSize(inputSize + 0.5);
    };
    const inc = () => {
-      if (inputQuantity > 1) {
-         setinputQuantity(inputQuantity - 1);
+      if (inputSize > 0.5) {
+         setinputSize(inputSize - 0.5);
       }
    };
    return (
@@ -107,7 +115,7 @@ const ProductDetail = () => {
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
                               <div className='product-price text-[20px] font-bold'>
-                                 {oneProductData?.body?.shipments[0]?.price}
+                                 {oneProductData?.body?.shipments[0]?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </div>
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
@@ -117,24 +125,15 @@ const ProductDetail = () => {
                               </div>
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
-                              <div className='stock-qty-title text-[20px]  text-[#333333] font-bold'>Size:</div>
-                              <input
-                                 className='outline-none border border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]'
-                                 type='text'
-                                 value={inputSize}
-                                 onChange={handleInputSize}
-                              />
-                           </div>
-                           <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
-                              <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng:</div>
+                              <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Kg:</div>
 
                               <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
                                  <div className='product-quantity-action flex lg:justify-center'>
                                     <div className='product-quantity flex  '>
                                        <input
-                                          type='number'
-                                          defaultValue={1}
-                                          value={inputQuantity}
+                                          type='text'
+                                          value={inputSize}
+                                          onChange={handleInputSize}
                                           className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                        />
                                        <div className='flex flex-col'>

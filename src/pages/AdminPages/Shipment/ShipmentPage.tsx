@@ -12,7 +12,7 @@ const ShipmentPage = () => {
    return (
       <div className='w-full px-10'>
          <div className='grid md:grid-cols-4 lg:grid-cols-3 gap-4 grid-cols-3'>
-            {data?.body.data.map((shipment) => (
+            {data?.body.data?.map((shipment) => (
                <Card
                   title={
                      <div className='flex justify-between items-center'>
