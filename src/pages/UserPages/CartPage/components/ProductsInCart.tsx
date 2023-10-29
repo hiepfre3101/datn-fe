@@ -6,6 +6,28 @@ const ProductsInCart = () => {
    const dispatch = useDispatch();
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
+   const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number) => {
+      if (/^[\d.]+$/.test(e.target.value)) {
+         const value = e.target.value;
+         if (Number(value) <= maxWeight) {
+            console.log(value);
+            if (value.endsWith('.') && !/\.\d+$/.test(value)) {
+               updateItem({ id: id, size: value });
+            } else {
+               const rounded = Math.floor(Number(e.target.value));
+               const result = Number(e.target.value) - rounded;
+               console.log(rounded);
+               if (result >= 0.5) {
+                  updateItem({ id: id, size: rounded + 0.5 });
+               } else {
+                  updateItem({ id: id, size: rounded });
+               }
+            }
+         }
+      } else {
+         updateItem({ id: id, size: 0.5 });
+      }
+   };
    return (
       <div>
          {cart?.items?.length === 0 ? (
@@ -63,12 +85,19 @@ const ProductsInCart = () => {
                            </div>
                         </div>
                         <div className='cart-item-qty lg:w-[20%] md:w-[50%] max-lg:pt-[15px] max-lg:flex max-lg:gap-[15px] max-sm:w-full '>
-                           <div className='product-quantity-action flex lg:justify-center'>
-                              <div className='product-quantity flex  '>
+                           <div className='product-size-action flex lg:justify-center'>
+                              <div className='product-size flex  '>
                                  <input
+                                    className='outline-none border border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]'
                                     type='text'
-                                    value={item.quantity}
-                                    className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
+                                    value={item.size}
+                                    onChange={(e) => handleInputSize(e, item._id, item.totalWeight || 8.5)}
+                                 />
+                                 {/* <input
+                                    min={0.5}
+                                    type='text'
+                                    value={item.size}
+                                    className='input-size text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
                                  />
                                  <div className='flex flex-col'>
                                     <button
@@ -76,7 +105,7 @@ const ProductsInCart = () => {
                                           dispatch(
                                              updateItem({
                                                 id: item._id,
-                                                quantity: item.quantity + 1
+                                                size: item.size + 0.5
                                              })
                                           )
                                        }
@@ -90,7 +119,7 @@ const ProductsInCart = () => {
                                           dispatch(
                                              updateItem({
                                                 id: item._id,
-                                                quantity: item.quantity - 1
+                                                size: item.size == 0.5 ? item.size : item.size - 0.5
                                              })
                                           )
                                        }
@@ -99,7 +128,7 @@ const ProductsInCart = () => {
                                     >
                                        -
                                     </button>
-                                 </div>
+                                 </div> */}
                               </div>
                            </div>
                            <div className='product-quanitity-remove flex justify-center lg:mt-[15px] '>
@@ -114,7 +143,7 @@ const ProductsInCart = () => {
                         </div>
                         <div className='cart-item-price sm:text-right max-sm:mt-[10px] w-[20%] max-lg:w-[50%]'>
                            <span className='full-price font-bold'>
-                              {(item.price * item.quantity).toLocaleString('vi-VN', {
+                              {(item.price * item.size).toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
