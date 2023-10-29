@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
+import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
 import { IShipmentFull, InputShipment } from '../interfaces/shipment';
 
 const shipmentApi = createApi({
@@ -24,7 +24,14 @@ const shipmentApi = createApi({
          },
          providesTags: ['shipment']
       }),
-      addShipment: builder.mutation<IShipmentFull, InputShipment>({
+      getOneShipment: builder.query<IResponse<IShipmentFull>, string>({
+         query: (idShipment) => {
+            return {
+               url: '/shipments/' + idShipment
+            };
+         }
+      }),
+      addShipment: builder.mutation<IResponse<IShipmentFull>, InputShipment>({
          query: (body) => {
             return {
                url: '/shipments',
@@ -33,9 +40,24 @@ const shipmentApi = createApi({
             };
          },
          invalidatesTags: ['shipment']
+      }),
+      updateShipment: builder.mutation<IResponse<IShipmentFull>, InputShipment & { idShipment: string }>({
+         query: ({ idShipment, ...body }) => {
+            return {
+               url: '/shipments/' + idShipment,
+               method: 'PATCH',
+               body: body
+            };
+         },
+         invalidatesTags: ['shipment']
       })
    })
 });
 
-export const { useGetAllShipmentExpandQuery, useAddShipmentMutation } = shipmentApi;
+export const {
+   useGetOneShipmentQuery,
+   useGetAllShipmentExpandQuery,
+   useAddShipmentMutation,
+   useUpdateShipmentMutation
+} = shipmentApi;
 export default shipmentApi;

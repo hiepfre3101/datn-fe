@@ -22,11 +22,13 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
    const checkDuplicateItemInArray = (idProduct: string) => {
       return productData.filter((item) => item.idProduct === idProduct);
    };
-   const handleAddProduct = (data: ProductInput) => {
+   const handleAddProduct = (data: ProductInput, type: 'save' | 'autosave') => {
       const UNIQE_COUNT = 1;
-      if (checkDuplicateItemInArray(data.idProduct).length === UNIQE_COUNT) {
-         message.warning('Đã tồn tại sản phẩm tương tự ');
-         return;
+      if (type === 'save') {
+         if (checkDuplicateItemInArray(data.idProduct).length === UNIQE_COUNT) {
+            message.warning('Đã tồn tại sản phẩm tương tự ');
+            return;
+         }
       }
       const newData = { ...data, date: data.date.toString() };
       setIsSave(true);
@@ -39,6 +41,17 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data]);
+
+   useEffect(() => {
+      if (isSave === true || data.idProduct === '') return;
+      const timeId = setTimeout(() => {
+         const newData = formProduct.getFieldsValue();
+         handleAddProduct(newData, 'autosave');
+         setIsSave(true);
+      }, 800);
+      return () => clearTimeout(timeId);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [isSave]);
    const handleConfirm = (id: string) => {
       removeProduct(id);
    };
@@ -49,8 +62,10 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
    return (
       <Form
          form={formProduct}
-         onFinish={handleAddProduct}
-         className='relative rounded-md border-[1px] border-[rgba(0,0,0,0.1)] p-3 flex justify-start items-center gap-10 flex-wrap w-full mb-[50px]'
+         onFinish={(value) => handleAddProduct(value, 'save')}
+         className={` relative rounded-md border-[1px] ${
+            isSave ? 'border-[rgba(0,0,0,0.1)]' : 'border-red-400'
+         } border-[rgba(0,0,0,0.1)] p-3 flex justify-start items-center gap-10 flex-wrap w-full mb-[50px]`}
       >
          <Space size={'large'} direction='vertical'>
             <Form.Item

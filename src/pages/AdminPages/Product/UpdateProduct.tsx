@@ -13,6 +13,7 @@ import { getShipmentData } from '../../../constants/configDescriptionAntd';
 import { IShipmentOfProduct } from '../../../interfaces/shipment';
 import { uploadImages } from '../../../api/upload';
 import Loading from '../../../components/Loading/Loading';
+import { IImage } from '../../../interfaces/image';
 
 const UpdateProduct = () => {
    const [form] = Form.useForm<InputProduct>();
@@ -52,7 +53,7 @@ const UpdateProduct = () => {
       setCurrentShipment(data?.body.data.shipments[0]);
       setShipments(data ? data.body.data.shipments! : []);
       const newBody = {
-         ...data?.body,
+         ...data?.body.data,
          _id: undefined,
          sold: undefined,
          comments: undefined,
@@ -82,10 +83,6 @@ const UpdateProduct = () => {
    };
    const handleChangeShipment = (value: { value: string; label: string }) => {
       const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
-      form.setFieldValue('shipments', [
-         selectedShipment,
-         ...shipments.filter((shipment) => shipment.idShipment !== value.value)
-      ]);
       setCurrentShipment(selectedShipment);
    };
    const handleSubmit = async () => {
@@ -96,7 +93,7 @@ const UpdateProduct = () => {
                data: { body }
             } = await uploadImages(filesToUpload);
             const newImages = defaultImages.map((image) => ({ url: image.url, public_id: image.uid }));
-            form.setFieldValue('images', [...body, ...newImages]);
+            form.setFieldValue('images', [...(body as IImage[]), ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
          await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } });
@@ -213,7 +210,7 @@ const UpdateProduct = () => {
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Lô hàng' className='min-w-[500px]'>
-                     <Form.Item name='shipments' hasFeedback>
+                     <Form.Item hasFeedback>
                         <Select
                            labelInValue
                            value={{

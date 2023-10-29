@@ -3,33 +3,19 @@ import HeadForm from '../../../components/HeadForm/HeadForm';
 import BlockForm from '../Product/BlockForm';
 import PlusIcon from '../../../components/Icons/PlusIcon';
 import { useGetAllWithoutExpandQuery } from '../../../services/product.service';
-import { useState } from 'react';
 import FormProduct from './components/FormProduct';
-import { InputShipment, ProductInput } from '../../../interfaces/shipment';
+import { InputShipment } from '../../../interfaces/shipment';
 import { message } from 'antd';
 import { useAddShipmentMutation } from '../../../services/shipment.service';
 import Loading from '../../../components/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
+import useFormProductInShipment from '../../../hooks/useFormProductInShipment';
 
 const AddShipment = () => {
    const { data } = useGetAllWithoutExpandQuery({ limit: 3000 });
    const [handleSubmit, { isLoading, isError }] = useAddShipmentMutation();
-   const [productData, setProductData] = useState<ProductInput[]>([]);
    const navigate = useNavigate();
-
-   const dataSubmitFactory = (data: ProductInput) => {
-      if (data.idProduct === '' && productData.filter((item) => item.idProduct === '').length === 1) {
-         message.warning('Hãy hoàn thành sản phẩm hiện tại');
-         return;
-      }
-      const notEmptyProduct = productData.filter((item) => item.idProduct !== '');
-      setProductData([...notEmptyProduct, data]);
-   };
-
-   const removeProduct = (idProduct: string) => {
-      setProductData((prev) => [...prev.filter((item) => item.idProduct !== idProduct)]);
-   };
-
+   const { productData, dataSubmitFactory, removeProduct } = useFormProductInShipment({});
    const handleSubmitForm = async () => {
       if (productData.length === 0 || productData.find((item) => item.idProduct === '')) {
          message.error('Hãy hoàn thành sản phẩm ');
@@ -62,7 +48,7 @@ const AddShipment = () => {
                />
                <BlockForm title='Sản phẩm lô hàng' className='mt-[50px] relative mb-[50px]'>
                   <div className='mt-[20px] min-h-[100px] relative '>
-                     {productData.length > 0 &&
+                     {productData?.length > 0 &&
                         productData.map((item) => (
                            <FormProduct
                               key={item.idProduct}
