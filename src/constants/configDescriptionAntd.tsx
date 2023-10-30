@@ -26,8 +26,8 @@ export const getShipmentData = (data: IShipmentOfProduct): DescriptionsProps['it
          label: 'Trạng thái',
          children: (
             <Badge
-               status={data.isDisabled ? 'error' : 'success'}
-               text={data.isDisabled ? 'Vô hiệu hóa (Sản phẩm sẽ không được hiển thị tại trang bán hàng !)' : 'Sử dụng'}
+               status={data.isDisable ? 'error' : 'success'}
+               text={data.isDisable ? 'Vô hiệu hóa (Sản phẩm sẽ không được hiển thị tại trang bán hàng !)' : 'Sử dụng'}
             />
          ),
          span: 5

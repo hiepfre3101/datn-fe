@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { message } from 'antd';
 export type ICartSlice = {
    name: string;
    email: string;
@@ -30,6 +31,7 @@ const cartSlice = createSlice({
          }
          const items = localStorage.getItem(state.cartName) ? JSON.parse(localStorage.getItem(state.cartName)!) : [];
          state.items = items;
+         state.items = items;
          state.totalPrice = items.reduce(
             (accumulator: any, product: any) => accumulator + product.price * product.weight,
             0
@@ -38,15 +40,20 @@ const cartSlice = createSlice({
       addItem: (state, action) => {
          const value = action.payload;
          let isItemExist = false;
+         let error = false;
          const items = state.items.map((item: any) => {
             if (item?._id === value._id) {
                isItemExist = true;
-
-               item.weight += value.weight;
+               if (item.weight + value.weight <= value.totalWeight) {
+                  item.weight += value.weight;
+               } else {
+                  message.error('sp da vuot qua so luong');
+                  error = true;
+               }
             }
             return item;
          });
-         if (isItemExist) {
+         if (isItemExist && !error) {
             state.totalPrice += items.reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
@@ -54,13 +61,15 @@ const cartSlice = createSlice({
 
             localStorage.setItem(state.cartName, JSON.stringify([...items]));
             state.items = items;
-         } else {
+            message.success('them sp thanh cong');
+         } else if (!isItemExist && !error) {
             state.totalPrice = [...state.items, value].reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
             );
             localStorage.setItem(state.cartName, JSON.stringify([...state.items, value]));
             state.items = [...state.items, value];
+            message.success('them sp thanh cong');
          }
       },
       removeFromCart: (state, action) => {

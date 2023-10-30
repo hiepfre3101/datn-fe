@@ -14,6 +14,7 @@ const productApi = createApi({
       },
       credentials: 'include'
    }),
+   
    reducerPath: 'products',
    tagTypes: ['product'],
    endpoints: (builder) => ({
@@ -38,7 +39,7 @@ const productApi = createApi({
          }
       }),
       getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
-         query: (idProduct) => {
+         query: (idProduct) => { 
             return {
                url: '/products/' + idProduct
             };

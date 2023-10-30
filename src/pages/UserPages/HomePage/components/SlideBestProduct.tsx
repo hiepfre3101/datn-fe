@@ -77,7 +77,7 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                                     -{item.discount}%
                                  </span>
                                  <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
-                                    <Link to={'/productdetail/'+item._id}>
+                                    <Link to={'/products/'+item._id}>
                                     <div
                                        className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '
                                     >
@@ -108,7 +108,7 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                                        </button>
                                     </div>
                                  </div>
-                                 <Link to={`/productdetail/`+item._id}>
+                                 <Link to={`/products/`+item._id}>
                                     <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
                                       
                                       {item.productName}

@@ -1,5 +1,5 @@
-import { Card, Dropdown } from 'antd';
-import { useGetAllShipmentExpandQuery } from '../../../services/shipment.service';
+import { Card, Dropdown, Modal } from 'antd';
+import { useGetAllShipmentExpandQuery, useUpdateShipmentMutation } from '../../../services/shipment.service';
 import { formatStringToDate } from '../../../helper';
 import ShipmentItem from './components/ShipmentItem';
 import ThreeDotsIcon from '../../../components/Icons/ThreeDots';
@@ -11,6 +11,7 @@ import HeadPage from '../../../components/HeadPage/HeadPage';
 
 const ShipmentPage = () => {
    const { data } = useGetAllShipmentExpandQuery({});
+   const [handleUpdateShipment] = useUpdateShipmentMutation();
    return (
       <>
          <Helmet>
@@ -18,7 +19,7 @@ const ShipmentPage = () => {
          </Helmet>
          <div className='w-full px-10'>
             <HeadPage title='Lô hàng' linkButton='/manage/add-shipment' titleButton='Tạo lô hàng mới' />
-            <div className='grid md:grid-cols-4 lg:grid-cols-3 gap-4 grid-cols-3 mt-[50px]'>
+            <div className='grid md:grid-cols-4 lg:grid-cols-3 gap-4 grid-cols-3 mt-[50px] pb-[100px]'>
                {data?.body.data.map((shipment) => (
                   <Card
                      title={
@@ -36,10 +37,34 @@ const ShipmentPage = () => {
                                        <PencilIcon />
                                        <span>Chi tiết</span>
                                     </Link>
-                                    <div className='text-slate-500 flex justify-between gap-2 cursor-pointer hover:text-red-400 duration-300'>
-                                       <EraserIcon className='w-[15px]' />
-                                       <span>Tạm dừng lô hàng</span>
-                                    </div>
+                                    {!shipment.isDisable && (
+                                       <div
+                                          onClick={() =>
+                                             Modal.confirm({
+                                                type: 'error',
+                                                title: 'Bạn muốn dừng toàn bộ lô hàng này ?',
+                                                content: 'Toàn bộ số lượng sản phẩm trong lô hàng sẽ bị vô hiệu hóa.',
+                                                onOk: () =>
+                                                   handleUpdateShipment({
+                                                      products: shipment.products.map((product) => ({
+                                                         idProduct: product.idProduct._id,
+                                                         date: product.date,
+                                                         weight: product.weight,
+                                                         price: product.price,
+                                                         originPrice: product.originPrice
+                                                      })),
+                                                      totalMoney: shipment.totalMoney,
+                                                      isDisable: true,
+                                                      idShipment: shipment._id
+                                                   })
+                                             })
+                                          }
+                                          className='text-slate-500 flex justify-between gap-2 cursor-pointer hover:text-red-400 duration-300'
+                                       >
+                                          <EraserIcon className='w-[15px]' />
+                                          <span>Tạm dừng lô hàng</span>
+                                       </div>
+                                    )}
                                  </div>
                               )}
                            >

@@ -7,7 +7,10 @@ import BannerSales from './components/BannerSales';
 import BestSellerProducts from './components/BestSellerProducts';
 import HappyClient from './components/HappyClient';
 const HomePage = () => {
+ 
+
    return (
+   
       <>
          <div className='main '>
             <SlideCateHomePage></SlideCateHomePage>

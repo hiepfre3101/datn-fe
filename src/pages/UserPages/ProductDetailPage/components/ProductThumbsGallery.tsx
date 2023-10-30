@@ -26,13 +26,13 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
             navigation={true}
             thumbs={{ swiper: thumbsSwiper && !thumbsSwiper['destroyed'] ? thumbsSwiper : null }}
             modules={[FreeMode, Navigation, Thumbs]}
-            className='mySwiper2 product-detail-slide '
-         >
-            {body?.map((item) => {
+        className="mySwiper2 product-detail-slide rounded-[5px]"
+      >
+               {body?.map((item) => {
                return (
                   <>
-                     <SwiperSlide className='border border-[#e2e2e2] overflow-hidden'>
-                        <img src={item.url} className='w-full cover max-h-[385px]' />
+                     <SwiperSlide  className='border  h-[527px] border-[#e2e2e2] overflow-hidden' >
+                        <img className='w-full h-full rounded-[5px]' src={item.url} />
                      </SwiperSlide>
                   </>
                );
@@ -62,9 +62,12 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
             {body?.map((item) => {
                return (
                   <>
-                     <SwiperSlide className='cursor-pointer'>
-                        <img className='border-[1px] border-[#e2e2e2] rounded-[5px] ' src={item.url} />
-                     </SwiperSlide>
+                      <SwiperSlide  className='cursor-pointer w-[115px] h-[140px]'>
+               <img
+                  className=' h-full w-full  rounded-[5px]'
+                  src={item.url}
+               />
+            </SwiperSlide>
                   </>
                );
             })}

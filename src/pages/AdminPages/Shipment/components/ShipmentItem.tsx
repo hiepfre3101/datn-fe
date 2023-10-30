@@ -1,3 +1,5 @@
+import DescTicket from '../../../../components/DescTicket/DescTicket';
+import { formatStringToDate } from '../../../../helper';
 import { IShipmentFull } from '../../../../interfaces/shipment';
 import { Collapse, CollapseProps } from 'antd';
 
@@ -12,7 +14,7 @@ const ShipmentItem = ({ shipment }: Props) => {
       children: (
          <div className='flex flex-col gap-3'>
             <p>
-               <strong className='underline mr-3'>Ngày hết hạn: </strong> {product.date}
+               <strong className='underline mr-3'>Ngày hết hạn: </strong> {formatStringToDate(product.date)}
             </p>
             <p>
                <strong className='underline mr-3'>Số lượng còn lại: </strong>
@@ -26,8 +28,12 @@ const ShipmentItem = ({ shipment }: Props) => {
       )
    }));
    return (
-      <div className='w-full max-h-[300px] overflow-auto'>
+      <div className='w-full max-h-[300px] overflow-auto relative'>
          <Collapse items={items} bordered={false} />
+         <DescTicket
+            type={shipment.isDisable ? 'error' : 'success'}
+            label={shipment.isDisable ? 'Dừng sử dụng' : 'Đang sử dụng'}
+         />
       </div>
    );
 };
