@@ -29,6 +29,9 @@ export interface IProductExpanded extends IProduct {
 export interface IDescProp{
    desc:string|undefined
 }
+export interface IProductInfoProp{
+   product_info: IProductExpanded|undefined
+}
 export interface IObjIdForGetRelatedProducts{
    idCategory: string|undefined;
    idProduct: string|undefined;
