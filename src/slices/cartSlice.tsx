@@ -31,7 +31,6 @@ const cartSlice = createSlice({
          }
          const items = localStorage.getItem(state.cartName) ? JSON.parse(localStorage.getItem(state.cartName)!) : [];
          state.items = items;
-         state.items = items;
          state.totalPrice = items.reduce(
             (accumulator: any, product: any) => accumulator + product.price * product.weight,
             0
