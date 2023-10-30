@@ -6,26 +6,31 @@ const ProductsInCart = () => {
    const dispatch = useDispatch();
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
+   console.log(cart.items);
+
    const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number) => {
+      if (e.target.value === '') {
+         return dispatch(updateItem({ id: id, size: '' }));
+      }
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
          if (Number(value) <= maxWeight) {
-            console.log(value);
             if (value.endsWith('.') && !/\.\d+$/.test(value)) {
-               updateItem({ id: id, size: value });
+               dispatch(updateItem({ id: id, size: value }));
             } else {
                const rounded = Math.floor(Number(e.target.value));
                const result = Number(e.target.value) - rounded;
+               console.log(result);
                console.log(rounded);
                if (result >= 0.5) {
-                  updateItem({ id: id, size: rounded + 0.5 });
+                  dispatch(updateItem({ id: id, size: rounded + 0.5 }));
                } else {
-                  updateItem({ id: id, size: rounded });
+                  dispatch(updateItem({ id: id, size: rounded }));
                }
             }
          }
       } else {
-         updateItem({ id: id, size: 0.5 });
+         dispatch(updateItem({ id: id, size: Number(e.target.value.replace(/\./g, ',')) }));
       }
    };
    return (
@@ -87,12 +92,19 @@ const ProductsInCart = () => {
                         <div className='cart-item-qty lg:w-[20%] md:w-[50%] max-lg:pt-[15px] max-lg:flex max-lg:gap-[15px] max-sm:w-full '>
                            <div className='product-size-action flex lg:justify-center'>
                               <div className='product-size flex  '>
-                                 <input
-                                    className='outline-none border border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]'
-                                    type='text'
-                                    value={item.size}
-                                    onChange={(e) => handleInputSize(e, item._id, item.totalWeight || 8.5)}
-                                 />
+                                 <span className='flex gap-2'>
+                                    <label htmlFor='size'>Sô lượng</label>
+                                    <input
+                                       id='size'
+                                       className={`outline-none border ${
+                                          item.size == '' ? 'border-red-500' : ''
+                                       } border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]`}
+                                       type='number'
+                                       value={item.size.toString()}
+                                       onChange={(e) => handleInputSize(e, item._id, item.totalWeight || 8.5)}
+                                    />
+                                    <span>Kg</span>
+                                 </span>
                                  {/* <input
                                     min={0.5}
                                     type='text'
@@ -131,6 +143,7 @@ const ProductsInCart = () => {
                                  </div> */}
                               </div>
                            </div>
+                           <p className='text-red-500'>{item.size == '' ? 'Bạn phải nhập số lượng' : ''}</p>
                            <div className='product-quanitity-remove flex justify-center lg:mt-[15px] '>
                               <button
                                  className='text-[#dc3545] transition-all duration-300 hover:text-[#ffc107] underline'
