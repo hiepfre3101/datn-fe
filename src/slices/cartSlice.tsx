@@ -47,7 +47,7 @@ const cartSlice = createSlice({
                if (item.weight + value.weight <= value.totalWeight) {
                   item.weight += value.weight;
                } else {
-                  message.error('sp da vuot qua so luong');
+                  message.error('số lượng đã quá số lượng hiện có');
                   error = true;
                }
             }
@@ -61,7 +61,7 @@ const cartSlice = createSlice({
 
             localStorage.setItem(state.cartName, JSON.stringify([...items]));
             state.items = items;
-            message.success('them sp thanh cong');
+            message.success('thêm sản phẩm vào giỏ hàng thành công');
          } else if (!isItemExist && !error) {
             state.totalPrice = [...state.items, value].reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
@@ -69,7 +69,7 @@ const cartSlice = createSlice({
             );
             localStorage.setItem(state.cartName, JSON.stringify([...state.items, value]));
             state.items = [...state.items, value];
-            message.success('them sp thanh cong');
+            message.success('thêm sản phẩm vào giỏ hàng thành công');
          }
       },
       removeFromCart: (state, action) => {
@@ -79,11 +79,13 @@ const cartSlice = createSlice({
             0
          );
          state.items = nextCartItems;
+         message.success('Xóa sản phẩm khỏi giỏ hàng thành công');
          localStorage.setItem(state.cartName, JSON.stringify(state.items));
       },
       removeAllProductFromCart: (state) => {
          state.items = [];
          state.totalPrice = 0;
+         message.success('Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công');
          localStorage.setItem(state.cartName, JSON.stringify(state.items));
       },
       updateItem: (state, action) => {
@@ -106,6 +108,7 @@ const cartSlice = createSlice({
             0
          );
          state.items = nextCartItems;
+         message.success('Cập nhật sản phẩm thành công');
       }
    }
 });

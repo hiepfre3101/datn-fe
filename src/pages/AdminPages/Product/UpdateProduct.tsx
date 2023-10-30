@@ -108,7 +108,7 @@ const UpdateProduct = () => {
    };
    if (isLoading) return <Loading sreenSize='lg' />;
    return (
-      <>
+      <div className='w-[80%]'>
          <Helmet>
             <title>Cập nhật sản phẩm</title>
          </Helmet>
@@ -249,7 +249,7 @@ const UpdateProduct = () => {
                </Form.Item>
             </div>
          </Form>
-      </>
+      </div>
    );
 };
 

@@ -481,7 +481,7 @@ const Footer = () => {
                                  <div className='product-info mt-[9px] flex'>
                                     <span className='product-qt text-[16px]'>{item.weight}kg ×</span>
                                     <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
-                                       {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                       {item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </span>
                                  </div>
                                  <div className='delete-cart'>
