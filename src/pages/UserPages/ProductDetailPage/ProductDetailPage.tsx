@@ -1,24 +1,14 @@
-import ProductThumbsGallery from './components/ProductThumbsGallery';
 import '../../../css/productdetailpage.css';
-import { useEffect, useState } from 'react';
-
 import { useParams } from 'react-router-dom';
 import { useGetOneProductQuery, useGetRelatedProductsQuery } from '../../../services/product.service';
 import ProductDescriptionTab from './components/ProductDescriptionTab';
-import { ConfigProvider, Rate } from 'antd';
-import { AiOutlineHeart } from 'react-icons/ai';
-
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
-import { useDispatch } from 'react-redux';
-import { addItem } from '../../../slices/cartSlice';
-import {  IShipmentOfProduct } from '../../../interfaces/shipment';
+import ProductInfo from './components/Productinfo';
 
 const ProductDetail = () => {
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   const [inputSize, setinputSize] = useState<any>(0.5);
-   const [totalWeight, setTotalWeight] = useState<number>()   
    const { id } = useParams();
    const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
+   console.log(oneProductData);
 
    const objId = {
       idCategory: oneProductData?.body.data.categoryId._id,
@@ -27,56 +17,7 @@ const ProductDetail = () => {
    const { data: relatedProductsData } = useGetRelatedProductsQuery(objId!, {
       skip: !objId.idCategory || !objId.idProduct
    });
-   useEffect(()=>{
-      setTotalWeight( oneProductData?.body.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
-         return accumulator + shipmentWeight.weight;
-       }, 0))
-   },[oneProductData])   
-   console.log(totalWeight);
-    
-   const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (/^[\d.]+$/.test(e.target.value)) {
-         const value = e.target.value;
-         if (value.endsWith('.') && !/\.\d+$/.test(value)) {
-            setinputSize(value);
-         } else {
-            const rounded = Math.floor(Number(e.target.value));
-            const result = Number(e.target.value) - rounded;
-            if (result >= 0.5) {
-               setinputSize(rounded + 0.5);
-            } else {
-               setinputSize(rounded);
-            }
-         }
-      } else {
-         setinputSize('');
-      }
-   };
-   const dispatch = useDispatch();
-   const add_to_cart = () => {
-      if(inputSize!=""){
-         const product = {
-            _id: oneProductData?.body._id,
-            name: oneProductData?.body.productName,
-            images: oneProductData?.body.images[0].url,
-            price: oneProductData?.body.shipments[0].price,
-            size: inputSize
-         };
-         dispatch(addItem(product));      
-      }
-      else{
-         setinputSize(0.5)
-         alert("Kg không hợp lệ")
-      }
-   };
-   const dec = () => {
-      setinputSize(inputSize + 0.5);
-   };
-   const inc = () => {
-      if (inputSize > 0.5) {
-         setinputSize(inputSize - 0.5);
-      }
-   };
+
    return (
       <>
          <div className='main'>
@@ -88,104 +29,7 @@ const ProductDetail = () => {
                </div>
             </section>
             <section className='section-product-detail-page lg:relative lg:py-[100px] md:py-[80px] max-md:py-[60px] border-b-[1px] border-[#e2e2e2]'>
-               <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
-                  <div className='pro-detail flex max-lg:flex-wrap lg:items-start mt-[-30px]'>
-                     <div className='pro-detail-header xl:w-[42%] lg:w-[50%] max-lg:w-full '>
-                        <ProductThumbsGallery body={oneProductData?.body.data.images}></ProductThumbsGallery>
-                     </div>
-                     <div className='pro-detail-content lg:sticky lg:top-[10px] xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
-                        <div className='rate flex items-center'>
-                           <ConfigProvider
-                              theme={{
-                                 token: {
-                                    controlHeightLG: 34
-                                 }
-                              }}
-                           >
-                              <Rate allowHalf disabled defaultValue={4.5} />
-                              <span className='text-[#bbb] before:content-["("] after:content-[")"] ml-[5px] after:absolute before:absolute after:right-0 before:left-0 relative px-[10px]'>
-                                 3 đánh giá
-                              </span>
-                           </ConfigProvider>
-                        </div>
-                        <div className='product-info-wrap'>
-                           <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                              <div className='product-name  lg:text-[28px] max-lg:text-[24px] text-[#333333] font-bold'>
-                                 {oneProductData?.body.data.productName}
-                              </div>
-                           </div>
-                           <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                              <div className='product-price text-[20px] font-bold'>
-                                 {oneProductData?.body?.shipments[0]?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-
-                              </div>
-                           </div>
-                           <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
-                              <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Trạng thái:</div>
-                              <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
-                                 Còn hàng
-                              </div>
-                           </div>
-                           <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
-                              <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Kg:</div>
-
-                              <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
-                                 <div className='product-quantity-action flex lg:justify-center'>
-                                    <div className='product-quantity flex  '>
-                                       <input
-                                          type='text'
-                                          value={inputSize}
-                                          onChange={handleInputSize}
-                                          className='input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]'
-                                       />
-                                       <div className='flex flex-col'>
-                                          <button
-                                             onClick={dec}
-                                             type='button'
-                                             className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
-                                          >
-                                             +
-                                          </button>
-                                          <button
-                                             onClick={inc}
-                                             type='button'
-                                             className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
-                                          >
-                                             -
-                                          </button>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
-                           </div>
-                        </div>
-                        <div className='product-btn md:mt-[30px] max-md:mt-[20px]  flex sm:gap-[30px] max-sm:flex-wrap max-sm:gap-y-[15px]'>
-                           <div className='btn-add-card-wrap group/btn-add-cart max-sm:w-full'>
-                              <button
-                                 type='button'
-                                 onClick={add_to_cart}
-                                 className=' btn-add-cart py-[12px] text-[#333333] w-full transition-colors duration-300 z-[3] before:z-[-1] px-[30px] text-center rounded-[5px] group-hover/btn-add-cart:text-white font-bold bg-[#333333] border-[2px] border-[#333333] before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-white before:transition-all before:duration-300 before:group-hover/btn-add-cart:scale-y-[0] before:origin-right   before:right-0 before:left-[0px] before:top-0'
-                              >
-                                 THÊM VÀO GIỎ HÀNG
-                              </button>
-                           </div>
-                           <div className='btn-checkout-wrap group/btn-add-cart max-sm:w-full border-[2px] border-[#333333] transition-colors duration-300 hover:border-[#d2401e] rounded-[5px] overflow-hidden'>
-                              <button
-                                 type='button'
-                                 className=' btn-checkout py-[12px] text-white w-full transition-colors duration-300 z-[3] before:z-[-1] sm:px-[71px] text-center   font-bold bg-[#d2401e]  before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-[#333333] before:transition-all  before:duration-300 before:group-hover/btn-add-cart:scale-x-[0]    before:right-0 before:left-[0px] before:top-0'
-                              >
-                                 MUA NGAY
-                              </button>
-                           </div>
-                        </div>
-                        <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
-                           <button className='btn-love text-[18px]  font-bold flex items-center hover:text-[#333333]'>
-                              <AiOutlineHeart className='text-[20px] mr-[5px]'></AiOutlineHeart>YÊU THÍCH
-                           </button>
-                        </div>
-                     </div>
-                  </div>
-               </div>
+               <ProductInfo product_info={oneProductData?.body.data}></ProductInfo>
             </section>
             <section className='section-description  lg:py-[100px] md:py-[80px] max-md:py-[60px]'>
                <ProductDescriptionTab desc={oneProductData?.body.data.desc}></ProductDescriptionTab>
@@ -197,9 +41,9 @@ const ProductDetail = () => {
                   </p>
                </div>
                <div className='related-product-content'>
-                  {/* <div className='slide-related-product  mt-[40px]'>
+                  <div className='slide-related-product  mt-[40px]'>
                      <SlideBestProduct productImgs={relatedProductsData?.body.data}></SlideBestProduct>
-                  </div> */}
+                  </div>
                </div>
             </section>
          </div>
