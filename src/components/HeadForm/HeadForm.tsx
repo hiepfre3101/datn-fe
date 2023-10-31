@@ -6,20 +6,22 @@ type Props = {
    changeValue: (value: string) => void;
    linkBack: string;
    initValue: string;
+   disabled?: boolean;
 };
 
-const HeadForm = ({ placeHolder, changeValue, linkBack, initValue }: Props) => {
+const HeadForm = ({ disabled = false, placeHolder, changeValue, linkBack, initValue }: Props) => {
    const [value, setValue] = useState<string>(initValue);
    useEffect(() => {
       setValue(initValue);
    }, [initValue]);
    return (
-      <div className='flex justify-between items-center'>
+      <div className='flex justify-between items-center w-full'>
          <input
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                setValue(e.target.value);
                changeValue(e.target.value);
             }}
+            disabled = {disabled}
             value={value}
             type='text'
             placeholder={placeHolder}

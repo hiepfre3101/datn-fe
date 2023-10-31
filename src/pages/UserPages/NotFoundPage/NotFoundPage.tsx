@@ -6,7 +6,7 @@ const NotFoundPage = () => {
       <div className="text-center">
 
         <div>
-          <img className="m-auto w-48" src="https://f46-zpg-r.zdn.vn/9171591183498640060/6cc7a48c6564b03ae975.jpg" alt="" />
+          <img className="m-auto w-48 mt-[5%] mb-[5%]" src="https://spacingtech.com/html/tm/freozy/freezy-ltr/image/logo/logo.png" alt="" />
         </div>
 
         <div className="text-5xl font-extrabold ...">

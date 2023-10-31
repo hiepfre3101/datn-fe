@@ -5,5 +5,5 @@ export interface IImage {
 
 
 export interface IImageResponse {
-   data: IImage[];
+   body: IImage[];
 }

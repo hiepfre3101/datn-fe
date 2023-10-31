@@ -4,13 +4,20 @@ import AdminLayout from '../layouts/AdminLayout';
 import Dashboard from '../pages/AdminPages/Dashboard';
 import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
 import AddProduct from '../pages/AdminPages/Product/AddProduct';
+import CategoryAdmin from '../pages/AdminPages/Category/CategoryAdmin';
+import AddCategory from '../pages/AdminPages/Category/AddCategory';
+import UpdateCategory from '../pages/AdminPages/Category/UpdateCategory';
 import HomePage from '../pages/UserPages/HomePage/HomePage';
 import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
+
+import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
+
 import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
 import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
+import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 
 const router = createBrowserRouter([
    {
@@ -62,7 +69,28 @@ const router = createBrowserRouter([
          {
             path: 'add-product',
             element: <AddProduct />
+         },
+         {
+            path: 'categories',
+            element: <CategoryAdmin />
+         },
+         {
+            path: 'add-category',
+            element: <AddCategory />
+         },
+         {
+            path: 'update-category/:id',
+            element: <UpdateCategory />
+         },
+         {
+            path: 'products/:id',
+            element: <UpdateProduct />
+         },
+         {
+            path: 'shipments',
+            element: <ShipmentPage />
          }
+
          // {
          //    path: 'accounts',
          //    element: <AccountManager />

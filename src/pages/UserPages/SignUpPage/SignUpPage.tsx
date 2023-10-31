@@ -1,4 +1,18 @@
+import  { useState } from 'react';
+
 const SignUpPage = () => {
+
+   const [first,setfirst] = useState('');
+   const [last,setlast] = useState('');
+   const [email,setemail] = useState('');
+   const [password,setpassword] = useState('');
+
+
+   const signHandle = ()=>{
+     console.log(first,last,email,password)
+     
+   }
+
    return (
       <>
          <div className='main'>
@@ -18,7 +32,7 @@ const SignUpPage = () => {
                      <p className='login-sub-title mt-[18px]'>Vui lòng điền thông tin tài khoản</p>
                   </div>
                   <div className='login-content xl:w-[50%] lg:w-[60%] md:w-[70%] max-md:w-[100%] m-auto'>
-                     <form action='' className='login-form'>
+                     <form action='' onSubmit={signHandle} className='login-form'>
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
                               First name
@@ -28,6 +42,8 @@ const SignUpPage = () => {
                               placeholder='First name'
                               id='first'
                               type='text'
+                              value={first}
+                              onChange={(e)=>setfirst (e.target.value)}
                            />
                         </div>
                         <div className='login-first-last mt-[25px]'>
@@ -39,6 +55,8 @@ const SignUpPage = () => {
                               placeholder='Last name'
                               id='last'
                               type='text'
+                              value={last}
+                              onChange={(e)=>setlast(e.target.value)}
                            />
                         </div>
                         <div className='login-mail mt-[25px]'>
@@ -49,7 +67,9 @@ const SignUpPage = () => {
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
                               placeholder='Email address'
                               id='mail'
-                              type='text'
+                              type='email'
+                              value={email}
+                              onChange={(e)=>setemail(e.target.value)}
                            />
                         </div>
                         <div className='login-password mt-[25px]'>
@@ -61,6 +81,8 @@ const SignUpPage = () => {
                               placeholder='Password'
                               id='password'
                               type='password'
+                              value={password}
+                              onChange={(e)=>setpassword(e.target.value)}
                            />
                         </div>
                         <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
