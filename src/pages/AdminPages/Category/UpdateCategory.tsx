@@ -82,7 +82,7 @@ const UpdateCategory = () => {
                 const {
                     data: { body }
                 } = await uploadImages(filesToUpload);
-                form.setFieldValue('image', body[0]);
+                form.setFieldValue('image', body.data[0]);
             }
            
             const newFormData = form.getFieldsValue(true);

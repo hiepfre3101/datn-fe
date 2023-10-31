@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
-import { IProduct, IProductExpanded, InputProduct } from '../interfaces/product';
+import { IObjIdForGetRelatedProducts, IProduct, IProductExpanded, InputProduct } from '../interfaces/product';
 import { paramTransformer } from '../utils/transformParams';
 
 const productApi = createApi({
@@ -14,6 +14,7 @@ const productApi = createApi({
       },
       credentials: 'include'
    }),
+   
    reducerPath: 'products',
    tagTypes: ['product'],
    endpoints: (builder) => ({
@@ -38,9 +39,16 @@ const productApi = createApi({
          }
       }),
       getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
-         query: (idProduct) => {
+         query: (idProduct) => { 
             return {
                url: '/products/' + idProduct
+            };
+         }
+      }),
+      getRelatedProducts: builder.query<IResponse<IProductExpanded[]>, object>({
+         query: ({idCategory,idProduct}:IObjIdForGetRelatedProducts) => {
+            return {
+               url: '/products/related/' + idCategory+"/"+idProduct
             };
          }
       }),
@@ -80,6 +88,7 @@ export const {
    useUpdateProductMutation,
    useGetAllWithoutExpandQuery,
    useGetAllExpandQuery,
+   useGetRelatedProductsQuery,
    useAddProductMutation,
    useGetOneProductQuery,
    useRemoveProductMutation

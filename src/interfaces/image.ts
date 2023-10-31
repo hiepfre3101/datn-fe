@@ -1,9 +1,9 @@
 export interface IImage {
    url: string;
-   publicId: string;
+   public_id: string;
 }
 
 
 export interface IImageResponse {
-   body: IImage[];
+   body: IImage[] | undefined;
 }

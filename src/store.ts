@@ -5,6 +5,8 @@ import productReducer from './services/product.service';
 import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
 import cartReducer from './slices/cartSlice';
+import userReducer from './slices/authSlice';
+import productSlice from './slices/productSlice';
 export const store = configureStore({
    reducer: {
       [authReducer.reducerPath]: authReducer.reducer,
@@ -12,7 +14,9 @@ export const store = configureStore({
       [productReducer.reducerPath]: productReducer.reducer,
       [userSlice.reducerPath]: userSlice.reducer,
       cart: cartReducer.reducer,
-      [shipmentReducer.reducerPath]: shipmentReducer.reducer
+      userReducer: userReducer,
+      [shipmentReducer.reducerPath]: shipmentReducer.reducer,
+      productSlice: productSlice
    },
    middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([

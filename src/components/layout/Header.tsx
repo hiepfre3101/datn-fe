@@ -2,8 +2,9 @@ import { SearchOutlined } from '@ant-design/icons';
 import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
-import { ICartSlice } from '../../slices/cartSlice';
+import {  useSelector } from 'react-redux';
+import { ICartSlice} from '../../slices/cartSlice';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
    function scrollFunction() {
@@ -58,7 +59,7 @@ const Header = () => {
    };
    var oldScrollY = window.scrollY;
    const fixedMenu = () => {
-      console.log(window.scrollY);
+    
       
       const header =document.querySelector(".header")
       const wrap_header = document.querySelector(".main-header")
@@ -77,9 +78,7 @@ const Header = () => {
       }
    
        else{
-         header?.classList.add('fixed')
-         console.log("helo");
-         
+         header?.classList.add('fixed')   
          wrap_header?.classList.add('xl:pt-[106px]')
          wrap_header?.classList.add('max-xl:pt-[76px]')
          header?.classList.remove('translate-y-[-100%]')
@@ -89,21 +88,20 @@ const Header = () => {
      oldScrollY = window.scrollY;
     
     };
-   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
-
+    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    return (
       <div className="main-header">
    <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
          <section className='mx-auto px-[30px] w-full relative max-w-[1520px] m-auto'>
             <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
                <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
-                  <a href='/'>
-                     <img
+                 <Link to="/">
+                 <img
                         className='logo-img max-w-[120px]'
                         src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/logo/logo.png'
                         alt=''
                      />
-                  </a>
+                 </Link>
                </div>
                <div
                   onClick={showMenuReponsive}
@@ -138,12 +136,12 @@ const Header = () => {
                            <span className='after:content-[""] xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                               Danh mục
                            </span>
-                           <a
-                              href='/products'
-                              className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
-                           >
+                           <Link to="/products">
+                           <span className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                               Danh mục
-                           </a>
+                           </span>
+                           </Link>
+                          
                            <span className='text-[11px] ml-[5px]'>
                               <FaChevronDown></FaChevronDown>
                            </span>
@@ -205,18 +203,18 @@ const Header = () => {
                      </li>
                      <li
                         onClick={showMiniCart}
+                        
                         className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
                      >
-                        <span>
                            <HiOutlineShoppingBag></HiOutlineShoppingBag>
-                        </span>{' '}
+      
                         <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                           {totalProductInCart}
+                        {totalProductInCart}
                         </span>
                      </li>
                   </ul>
                </div>
-            </div>
+               </div>
          </section>
       </header>
       </div>

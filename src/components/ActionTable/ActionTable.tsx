@@ -29,6 +29,7 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct }: Props) => {
                   getResultConfirm(true, idProduct);
                   setOpen(false);
                }}
+               okButtonProps={{ className: 'bg-blue-500' }}
             >
                <button
                   className='p-2 rounded-full bg-white w-10 h-10 shadow-md hover:w-11 hover:h-11 duration-100 '

@@ -13,6 +13,7 @@ import { getShipmentData } from '../../../constants/configDescriptionAntd';
 import { IShipmentOfProduct } from '../../../interfaces/shipment';
 import { uploadImages } from '../../../api/upload';
 import Loading from '../../../components/Loading/Loading';
+import { IImage } from '../../../interfaces/image';
 
 const UpdateProduct = () => {
    const [form] = Form.useForm<InputProduct>();
@@ -40,30 +41,30 @@ const UpdateProduct = () => {
    const { data: categories } = useGetAllCateQuery();
    useEffect(() => {
       const formatedFiles: UploadFile[] = [] as UploadFile[];
-      data?.body.images.forEach((img) => {
+      data?.body.data.images.forEach((img) => {
          const file: UploadFile = { uid: img.public_id, url: img.url, name: 'images', status: 'done' };
          formatedFiles.push(file);
       });
       setDefaultImages(formatedFiles);
-      const formatedCategories = data?.body.categoryId._id;
+      const formatedCategories = data?.body.data.categoryId._id;
       setCategoryId(formatedCategories);
-      setProductName(data?.body.productName as string);
-      setDefaultDesc(data?.body.desc as string);
-      setCurrentShipment(data?.body.shipments[0]);
-      setShipments(data ? data.body.shipments! : []);
+      setProductName(data?.body.data.productName as string);
+      setDefaultDesc(data?.body.data.desc as string);
+      setCurrentShipment(data?.body.data.shipments[0]);
+      setShipments(data ? data.body.data.shipments! : []);
       const newBody = {
-         ...data?.body,
+         ...data?.body.data,
          _id: undefined,
          sold: undefined,
          comments: undefined,
          createdAt: undefined,
          updatedAt: undefined,
          categoryId: formatedCategories,
-         images: data?.body.images.map((image: { url: string; public_id: string }) => ({
+         images: data?.body.data.images.map((image: { url: string; public_id: string }) => ({
             url: image.url,
             public_id: image.public_id
          })),
-         shipments: data?.body.shipments.map((shipment) => ({
+         shipments: data?.body.data.shipments.map((shipment) => ({
             ...shipment,
             _id: undefined
          }))
@@ -74,7 +75,7 @@ const UpdateProduct = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categories, data, form]);
    const displayShipment = () => {
-      if (data?.body.shipments.length === 0 || !currentShipment) {
+      if (data?.body.data.shipments.length === 0 || !currentShipment) {
          return <h2>Chưa có lô hàng sử dụng</h2>;
       }
       const dataShipment = getShipmentData(currentShipment);
@@ -82,7 +83,6 @@ const UpdateProduct = () => {
    };
    const handleChangeShipment = (value: { value: string; label: string }) => {
       const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
-      form.setFieldValue('shipments',[selectedShipment,...shipments.filter(shipment=>shipment.idShipment !== value.value)])
       setCurrentShipment(selectedShipment);
    };
    const handleSubmit = async () => {
@@ -93,7 +93,7 @@ const UpdateProduct = () => {
                data: { body }
             } = await uploadImages(filesToUpload);
             const newImages = defaultImages.map((image) => ({ url: image.url, public_id: image.uid }));
-            form.setFieldValue('images', [...body, ...newImages]);
+            form.setFieldValue('images', [...(body as IImage[]), ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
          await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } });
@@ -108,7 +108,7 @@ const UpdateProduct = () => {
    };
    if (isLoading) return <Loading sreenSize='lg' />;
    return (
-      <>
+      <div className='w-[80%]'>
          <Helmet>
             <title>Cập nhật sản phẩm</title>
          </Helmet>
@@ -201,7 +201,7 @@ const UpdateProduct = () => {
                            value={categoryId}
                            className='flex flex-col gap-2 items-start'
                         >
-                           {categories?.body.map((cate) => (
+                           {categories?.body.data.map((cate) => (
                               <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
                                  {cate.cateName}
                               </Radio>
@@ -210,7 +210,7 @@ const UpdateProduct = () => {
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Lô hàng' className='min-w-[500px]'>
-                     <Form.Item name='shipments' hasFeedback>
+                     <Form.Item hasFeedback>
                         <Select
                            labelInValue
                            value={{
@@ -249,7 +249,7 @@ const UpdateProduct = () => {
                </Form.Item>
             </div>
          </Form>
-      </>
+      </div>
    );
 };
 
