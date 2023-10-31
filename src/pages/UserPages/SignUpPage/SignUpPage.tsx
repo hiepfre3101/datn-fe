@@ -1,15 +1,50 @@
-import  { useState } from 'react';
+import { message } from 'antd';
+import  { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSignupMutation } from '../../../services/auth.service';
+import { saveTokenAndUser } from '../../../slices/authSlice';
+import { setCartName } from '../../../slices/cartSlice';
 
 const SignUpPage = () => {
 
-   const [first,setfirst] = useState('');
-   const [last,setlast] = useState('');
+   const [userName,setuserName] = useState('');
    const [email,setemail] = useState('');
    const [password,setpassword] = useState('');
+   const [confirmPassword,setconfirmPassword] = useState('');
 
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
+   const [signup, { data, isLoading, error }] = useSignupMutation();
+console.log(data)
+   useEffect(() => {
+      if (error && 'data' in error) {
+         const data = error.data as { message: string };
+         if ('message' in data) message.error(data?.message);
+      }
+   }, [error]);
+
+   useEffect(() => {
+      if (!isLoading && data) {
+         dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
+         dispatch(setCartName(data.body.data.data.email))
+         navigate('/');
+      }
+   }, [data, isLoading, error, dispatch, navigate]);
 
    const signHandle = ()=>{
-     console.log(first,last,email,password)
+      try {
+         signup({
+            userName,
+            email,
+            password,
+            confirmPassword,
+           
+         });
+         return;
+      } catch (error) {
+         alert('signup failed');
+      }
      
    }
 
@@ -32,33 +67,21 @@ const SignUpPage = () => {
                      <p className='login-sub-title mt-[18px]'>Vui lòng điền thông tin tài khoản</p>
                   </div>
                   <div className='login-content xl:w-[50%] lg:w-[60%] md:w-[70%] max-md:w-[100%] m-auto'>
-                     <form action='' onSubmit={signHandle} className='login-form'>
+                     <form action=''  className='login-form'>
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
-                              First name
+                           userName
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
-                              placeholder='First name'
-                              id='first'
+                              placeholder='userName'
+                              id='userName'
                               type='text'
-                              value={first}
-                              onChange={(e)=>setfirst (e.target.value)}
+                              value={userName}
+                              onChange={(e)=>setuserName (e.target.value)}
                            />
                         </div>
-                        <div className='login-first-last mt-[25px]'>
-                           <label htmlFor='last' className='block cursor-pointer mb-[10px]'>
-                              Last name
-                           </label>
-                           <input
-                              className='input-last w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
-                              placeholder='Last name'
-                              id='last'
-                              type='text'
-                              value={last}
-                              onChange={(e)=>setlast(e.target.value)}
-                           />
-                        </div>
+                       
                         <div className='login-mail mt-[25px]'>
                            <label htmlFor='mail' className='block cursor-pointer mb-[10px]'>
                               Email
@@ -85,9 +108,23 @@ const SignUpPage = () => {
                               onChange={(e)=>setpassword(e.target.value)}
                            />
                         </div>
+                        <div className='login-password mt-[25px]'>
+                           <label htmlFor='password' className='block cursor-pointer mb-[10px]'>
+                              confim Password
+                           </label>
+                           <input
+                              className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
+                              placeholder='confimpassword'
+                              id='confimpassword'
+                              type='password'
+                              value={confirmPassword}
+                              onChange={(e)=>setconfirmPassword(e.target.value)}
+                           />
+                        </div>
                         <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
                            <button
-                              type='submit'
+                              type='button'
+                              onClick={signHandle}
                               className='btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
                            >
                               Đăng ký
