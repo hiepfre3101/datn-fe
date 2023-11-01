@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSignupMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
-import { setCartName } from '../../../slices/cartSlice';
+import { setCartName, setItem } from '../../../slices/cartSlice';
 
 const SignUpPage = () => {
 
@@ -28,6 +28,7 @@ console.log(data)
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
          dispatch(setCartName(data.body.data.data.email))
+         dispatch(setItem())
          navigate('/');
       }
    }, [data, isLoading, error, dispatch, navigate]);

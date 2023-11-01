@@ -3,7 +3,7 @@ import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartSlice } from '../../slices/cartSlice';
+import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
 import { Link } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
@@ -15,6 +15,8 @@ const Header = () => {
    const dispatch = useDispatch();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
+      dispatch(setCartName("cart"))
+      dispatch(setItem())
       clearToken();
    };
    function scrollFunction() {

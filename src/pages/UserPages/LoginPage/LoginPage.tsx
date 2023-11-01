@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setCartName } from '../../../slices/cartSlice';
+import { setCartName, setItem } from '../../../slices/cartSlice';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { AuthLoginInput } from '../../../interfaces/auth';
@@ -26,6 +26,7 @@ const LoginPage = () => {
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
          dispatch(setCartName(data.body.data.data.email))
+         dispatch(setItem())
          if (data.body.data.data?.role == 'admin') return navigate('/admin');
          navigate('/');
       }
