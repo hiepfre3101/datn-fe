@@ -71,7 +71,7 @@ console.log(data)
                      <form action=''  className='login-form'>
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
-                           userName
+                           Tên
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
@@ -98,7 +98,7 @@ console.log(data)
                         </div>
                         <div className='login-password mt-[25px]'>
                            <label htmlFor='password' className='block cursor-pointer mb-[10px]'>
-                              Password
+                              Mật khẩu
                            </label>
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
@@ -111,7 +111,7 @@ console.log(data)
                         </div>
                         <div className='login-password mt-[25px]'>
                            <label htmlFor='password' className='block cursor-pointer mb-[10px]'>
-                              confim Password
+                              Nhập lại mật khẩu
                            </label>
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
