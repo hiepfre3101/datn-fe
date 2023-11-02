@@ -19,6 +19,8 @@ export interface AuthSignupInput {
    email: string;
    userName: string;
    password: string;
+   phoneNumber?: string;
+   address?: string;
    avatar?: string;
    confirmPassword: string;
 }
