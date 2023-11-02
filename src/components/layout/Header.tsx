@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { Popover } from 'antd';
+import { logoUrl } from '../../constants/imageUrl';
 
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -34,7 +35,7 @@ const Header = () => {
    window.onscroll = function () {
       scrollFunction();
       fixedMenu();
-   }; 
+   };
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -70,48 +71,41 @@ const Header = () => {
          section_search_modal?.classList.toggle('!translate-y-[0%]');
       }, 600);
    };
-   var oldScrollY = window.scrollY;
+   let oldScrollY = window.scrollY;
    const fixedMenu = () => {
-
-
-      const header = document.querySelector(".header")
-      const wrap_header = document.querySelector(".main-header")
+      const header = document.querySelector('.header');
+      const wrap_header = document.querySelector('.main-header');
 
       if (oldScrollY < window.scrollY) {
          if (document.documentElement.scrollTop > 99) {
-            header?.classList.add('translate-y-[-100%]')
+            header?.classList.add('translate-y-[-100%]');
          }
-
       } else {
          if (document.documentElement.scrollTop < 99) {
-            header?.classList.remove('fixed')
-            wrap_header?.classList.remove('xl:pt-[106px]')
-            wrap_header?.classList.remove('max-xl:pt-[76px]')
-            header?.classList.remove('translate-y-[-100%]')
+            header?.classList.remove('fixed');
+            wrap_header?.classList.remove('xl:pt-[106px]');
+            wrap_header?.classList.remove('max-xl:pt-[76px]');
+            header?.classList.remove('translate-y-[-100%]');
+         } else {
+            header?.classList.add('fixed');
+            wrap_header?.classList.add('xl:pt-[106px]');
+            wrap_header?.classList.add('max-xl:pt-[76px]');
+            header?.classList.remove('translate-y-[-100%]');
          }
-
-         else {
-            header?.classList.add('fixed')
-            wrap_header?.classList.add('xl:pt-[106px]')
-            wrap_header?.classList.add('max-xl:pt-[76px]')
-            header?.classList.remove('translate-y-[-100%]')
-         }
-
       }
       oldScrollY = window.scrollY;
-
    };
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    return (
-      <div className="main-header">
+      <div className='main-header'>
          <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
             <section className='mx-auto px-[30px] w-full relative max-w-[1520px] m-auto'>
                <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
                   <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
-                     <Link to="/">
+                     <Link to='/'>
                         <img
-                           className='logo-img max-w-[120px]'
-                           src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/logo/logo.png'
+                           className='logo-img max-w-[120px] max-h-[200px]'
+                           src={logoUrl}
                            alt=''
                         />
                      </Link>
@@ -149,7 +143,7 @@ const Header = () => {
                               <span className='after:content-[""] xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                  Danh mục
                               </span>
-                              <Link to="/products">
+                              <Link to='/products'>
                                  <span className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                     Danh mục
                                  </span>
@@ -161,7 +155,10 @@ const Header = () => {
                            </div>
                            <ul className='sub-menu xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 xl:group-hover/categories-menu:translate-y-[0%] xl:z-[-1] xl:group-hover/categories-menu:z-[3] xl:group-hover/categories-menu:visible xl:group-hover/categories-menu:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
                               <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
-                                 <a href='#' className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '>
+                                 <a
+                                    href='#'
+                                    className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
+                                 >
                                     Táo
                                  </a>
                               </li>
@@ -242,15 +239,16 @@ const Header = () => {
                                     }
                                     trigger='hover'
                                  >
-                                    <img src={auth?.user?.avatar} className='w-7  aspect-square m-0 rounded-full cursor-pointer' />
+                                    <img
+                                       src={auth?.user?.avatar}
+                                       className='w-7  aspect-square m-0 rounded-full cursor-pointer'
+                                    />
                                  </Popover>
                               </>
                            )}
-
                         </li>
                         <li
                            onClick={showMiniCart}
-
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
                         >
                            <HiOutlineShoppingBag></HiOutlineShoppingBag>
@@ -265,7 +263,6 @@ const Header = () => {
             </section>
          </header>
       </div>
-
    );
 };
 
