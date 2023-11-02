@@ -4,7 +4,7 @@ import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { Popover } from 'antd';
@@ -13,11 +13,13 @@ const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
+   const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
       dispatch(setCartName("cart"))
       dispatch(setItem())
       clearToken();
+      navigate('/')
    };
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
