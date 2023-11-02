@@ -2,12 +2,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ICartSlice } from '../../../../slices/cartSlice';
 import { removeFromCart, updateItem, removeAllProductFromCart } from '../../../../slices/cartSlice';
+import { message } from 'antd';
 const ProductsInCart = () => {
    const dispatch = useDispatch();
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
-   console.log(cart.items);
-
    const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number) => {
       if (e.target.value === '') {
          return dispatch(updateItem({ id: id, weight: '' }));
@@ -20,8 +19,6 @@ const ProductsInCart = () => {
             } else {
                const rounded = Math.floor(Number(e.target.value));
                const result = Number(e.target.value) - rounded;
-               console.log(result);
-               console.log(rounded);
                if (result >= 0.5) {
                   dispatch(updateItem({ id: id, weight: rounded + 0.5 }));
                } else {
@@ -88,28 +85,12 @@ const ProductsInCart = () => {
                               </span>
                            </div>
                         </div>
-                        <div className='cart-item-qty lg:w-[20%] md:w-[50%] max-lg:pt-[15px] max-lg:flex max-lg:gap-[15px] max-sm:w-full '>
-                           <div className='product-size-action flex lg:justify-center'>
-                              {/* <div className='product-size flex  '>
-                                 <span className='flex gap-2'>
-                                    <label htmlFor='size'>Sô lượng</label>
-                                    <input
-                                       id='size'
-                                       className={`outline-none border ${
-                                          item.weight == '' ? 'border-red-500' : ''
-                                       } border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]`}
-                                       type='number'
-                                       value={item?.weight?.toString()}
-                                       onChange={(e) => handleInputSize(e, item._id, item.totalWeight || 8.5)}
-                                    />
-                                    <span>Kg</span>
-                                 </span>
-                                
-                              </div> */}
-                              <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
+                        <div className='cart-item-qty lg:w-[20%] md:w-[50%] max-lg:pt-[15px] max-lg:flex-wrap md:mt-[30px] max-md:mt-[20px] max-lg:flex max-lg:items-center max-lg:gap-[15px] max-sm:w-full '>
+                           <div className='product-size-action flex lg:justify-center '>
+                              <div className='product-info  flex items-center'>
                                  <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Kg:</div>
 
-                                 <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
+                                 <div className='stock-qty-value text-[16px] xl:ml-[15px] text-[#198754] font-bold'>
                                     <div className='product-quantity-action flex lg:justify-center'>
                                        <div className='product-quantity flex  '>
                                           <input
@@ -118,21 +99,21 @@ const ProductsInCart = () => {
                                              onChange={(e) => handleInputSize(e, item._id, item.totalWeight)}
                                              className={`outline-none border ${
                                                 item.weight == '' ? 'border-red-500' : ''
-                                             } border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px] input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none border-[#e2e2e2] max-w-[50px] h-[50px]  border-[1px] rounded-[5px]`}
+                                             } border-[#e2e2e2] rounded-[5px]  ml-[10px] input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none max-w-[50px] h-[50px]  border-[1px] `}
                                           />
                                           <div className='flex flex-col'>
                                              <button
-                                                onClick={() =>
-                                                   dispatch(
-                                                      updateItem({
-                                                         id: item._id,
-                                                         weight:
-                                                            item.weight == item.totalWeight &&
-                                                            item.weight + 0.5 >= item.totalWeight
-                                                               ? item.weight
-                                                               : item.weight + 0.5
-                                                      })
-                                                   )
+                                                onClick={() => item.weight>=item.totalWeight?message.error('số lượng đã quá số lượng hiện có'):dispatch(
+                                                   updateItem({
+                                                      id: item._id,
+                                                      weight:
+                                                         item.weight == item.totalWeight &&
+                                                         item.weight + 0.5 >= item.totalWeight
+                                                            ? item.weight
+                                                            : item.weight + 0.5
+                                                   })
+                                                )
+                                          
                                                 }
                                                 type='button'
                                                 className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
@@ -162,8 +143,8 @@ const ProductsInCart = () => {
                                  </div>
                               </div>
                            </div>
-                           <p className='text-red-500'>{item.weight == '' ? 'Bạn phải nhập số lượng' : ''}</p>
-                           <div className='product-quanitity-remove flex justify-center lg:mt-[15px] '>
+                           <p className='text-red-500 max-lg:text-[14px] max-sm:order-3'>{item.weight == '' ? 'Bạn phải nhập số lượng' : ''}</p>
+                           <div className='product-quanitity-remove flex justify-center lg:mt-[15px] max-sm:order-2'>
                               <button
                                  className='text-[#dc3545] transition-all duration-300 hover:text-[#ffc107] underline'
                                  type='button'
@@ -185,12 +166,9 @@ const ProductsInCart = () => {
                   ))}
                </div>
                <div className='cart-footer flex justify-between py-[13px] flex-wrap gap-[15px]'>
-                  <a
-                     href='/products'
-                     className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'
-                  >
-                     TIẾP TỤC MUA HÀNG
-                  </a>
+                  <Link to="/products"  className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'>
+                  TIẾP TỤC MUA HÀNG
+                  </Link>
                   <button
                      onClick={() => dispatch(removeAllProductFromCart())}
                      className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'

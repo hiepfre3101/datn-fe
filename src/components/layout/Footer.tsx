@@ -4,28 +4,36 @@ import { BsBell } from 'react-icons/bs';
 import { HiOutlineShoppingBag, HiOutlineTrash } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
 import { FaArrowUp, FaPlus, FaWindowMinimize, FaInstagram } from 'react-icons/fa';
-import { FiHeadphones } from 'react-icons/fi';
+import { FiHeadphones, FiLogOut, FiLogIn } from 'react-icons/fi';
 import { ConfigProvider, InputNumber, Space } from 'antd';
 import ModalProductSlide from '../../pages/UserPages/ProductPage/components/ModalProductSlide';
-import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { AiOutlineCloseCircle, AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, removeFromCart } from '../../slices/cartSlice';
 import { Link } from 'react-router-dom';
 import { RootState } from '../../store';
+import { PiUserListBold } from 'react-icons/pi';
+import { RiBillLine } from 'react-icons/ri';
+import { MdOutlineLockReset } from 'react-icons/md';
+import { saveProduct } from '../../slices/productSlice';
 const Footer = () => {
+   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
+   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const dispatch = useDispatch();
+   const data = useSelector((state: RootState) => state.productSlice);
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
-      const section_search_modal = document.querySelector('.section-search-modal');
-      const section_overlay_search = document.querySelector('.section-overlay-search');
+      const modal_product = document.querySelector('.modal-product');
       setTimeout(() => {
-         section_search_modal?.classList.toggle('!translate-y-[0%]');
-      }, 300);
+         const modal_product_content = document.querySelector('.modal-product-content');
+         modal_product_content?.classList.toggle('lg:!scale-[1]');
+         modal_product_content?.classList.toggle('lg:opacity-100');
+         modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
+      }, 200);
       setTimeout(() => {
-         section_search_modal?.classList.toggle('hidden');
-      }, 400);
-      setTimeout(() => {
-         section_overlay_search?.classList.toggle('hidden');
+         modal_product?.classList.toggle('hidden');
+         modal_product?.classList.toggle('!z-[20]');
       }, 600);
    };
    const showModalSearch = () => {
@@ -62,14 +70,14 @@ const Footer = () => {
       const beforeSelecterElement = document.querySelector(beforeSelecter);
       beforeSelecterElement?.classList.toggle('hidden');
    };
-   const closeQuickViewModal = () => {
+   const closeModal = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
       const modal_product = document.querySelector('.modal-product');
       setTimeout(() => {
          const modal_product_content = document.querySelector('.modal-product-content');
          modal_product_content?.classList.toggle('lg:!scale-[1]');
-         modal_product_content?.classList.toggle('lg:opacity-100');
+         modal_product_content?.classList.toggle('lg:!opacity-100');
          modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
       }, 200);
       setTimeout(() => {
@@ -77,10 +85,18 @@ const Footer = () => {
          modal_product?.classList.toggle('!z-[20]');
       }, 600);
    };
-   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
-   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
-   const dispatch = useDispatch();
-   const data = useSelector((state: RootState) => state.productSlice);
+
+   const showUserTag = () => {
+      const bodyElement = document.querySelector('body');
+      bodyElement?.classList.toggle('overflow-hidden');
+      const overlay_user_tag_mobile = document.querySelector('.overlay-user-tag-mobile');
+      overlay_user_tag_mobile?.classList.toggle('!opacity-[0.15]');
+      overlay_user_tag_mobile?.classList.toggle('!visible');
+      const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
+      user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
+   };
+
+
    return (
       <>
          <footer className='bg-[#f8f8f8] '>
@@ -264,9 +280,13 @@ const Footer = () => {
             </div>
          </footer>
 
-         <section className=' modal-product fixed  top-0 left-0 w-full  h-full hidden  bg-[rgba(3,17,27,0.3)] z-[-2]    outline-none'>
-            <div className='modal-product-content delay-500 overflow-y-auto max-lg:h-[90%] max-lg:flex-wrap max-lg:fixed max-lg:bottom-0 max-lg:w-[100%] lg:opacity-0  max-lg:max-w-full transition-all opacity-100 duration-700 lg:scale-[0.8] max-lg:translate-y-[100%]  relative flex w-[80%] lg:my-[28px] lg:max-h-[615px] gap-[20px] lg:mx-auto lg:px-[20px] lg:py-[25px] p-[10px]  bg-white rounded-[3px] overflow-hidden border-[1px] outline-none border-[rgba(0,0,0,.2)]  max-w-[840px]'>
-               <div className='product-slide text-[14px] relative max-w-[calc(50%-10px)] z-[-1]  text-center max-lg:max-w-full max-lg:w-full'>
+         <section
+            className={`modal-product hidden  fixed  top-0 left-0 w-full  h-full   bg-[rgba(3,17,27,0.3)] z-[-2]   outline-none`}
+         >
+            <div
+               className={`modal-product-content delay-500 overflow-y-auto max-lg:h-[90%] max-lg:flex-wrap max-lg:fixed max-lg:bottom-0 max-lg:w-[100%] lg:opacity-0  max-lg:max-w-full transition-all opacity-100 duration-700 lg:scale-[0.8] max-lg:translate-y-[100%]  relative flex w-[80%] lg:my-[28px] lg:max-h-[615px] gap-[20px] lg:mx-auto lg:px-[20px] lg:py-[25px] p-[10px]  bg-white rounded-[3px] overflow-hidden border-[1px] outline-none border-[rgba(0,0,0,.2)]  max-w-[840px]`}
+            >
+               <div className='product-slide  text-[14px] relative max-w-[calc(50%-10px)] z-[-1]  text-center max-lg:max-w-full max-lg:w-full'>
                   <ModalProductSlide body={data?.products[0]?.images}></ModalProductSlide>
                   <div className='product-discount absolute text-[14px] text-white bg-red-500 px-[10px] py-[5px] rounded-br-[10px] w-[46px] z-[3] rounded-bl-[10px] left-0 top-0'>
                      <p>-{data.products[0]?.discount}%</p>
@@ -279,7 +299,7 @@ const Footer = () => {
                         {data.products[0]?.productName}
                      </div>
                      <span className='product-origin text-[14px]'>
-                        Thương hiệu:{' '}
+                        Thương hiệu:
                         <strong className='text-[#51A55C]'>{data.products[0]?.shipments[0]?.origin}</strong>
                      </span>
                   </div>
@@ -348,7 +368,7 @@ const Footer = () => {
                </div>
 
                <button
-                  onClick={closeQuickViewModal}
+                  onClick={closeModal}
                   type='button'
                   className='group/close-modal absolute right-4 z-[10] max-lg:top-0 max-lg:right-[10px]'
                >
@@ -388,8 +408,10 @@ const Footer = () => {
          <section className='section-mobile-menu max-sm:block hidden  '>
             <div className='mobile-menu-content  pt-[10px] z-[4] flex justify-between fixed bottom-0 left-0 right-0 rounded-t-xl shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]  bg-white'>
                <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
-                  <BiStore className='m-auto' style={{ fontSize: '24px' }} />
-                  <p className='  text-[10px] sm:text-[12px]'>Trang chủ</p>
+                  <Link to='/'>
+                     <BiStore className='m-auto' style={{ fontSize: '24px' }} />
+                     <p className='  text-[10px] sm:text-[12px]'>Trang chủ</p>
+                  </Link>
                </div>
 
                <div onClick={showModalSearch} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] '>
@@ -401,10 +423,10 @@ const Footer = () => {
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
 
                      <p className='custom-badge w-[16px] h-[16px] leading-[16px] rounded-[50%] text-[9px]  right-[-6px] top-[-1px] bg-[#d2401e] absolute text-white'>
-                        0
+                        {totalProductInCart}
                      </p>
                   </div>
-                  <p className='   text-[10px] mt-[2px] sm:text-[12px]'>Giỏ hàng</p>
+                  <p className=' text-[10px] mt-[2px] sm:text-[12px]'>Giỏ hàng</p>
                </div>
                <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <div className='test relative w-[24px] h-[24px] m-auto '>
@@ -416,7 +438,7 @@ const Footer = () => {
                   </div>
                   <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
                </div>
-               <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
+               <div onClick={showUserTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <UserOutlined style={{ fontSize: '24px' }} />
                   <p className='  text-[10px] sm:text-[12px]'>Tài khoản</p>
                </div>
@@ -507,17 +529,19 @@ const Footer = () => {
                      </div>
                      <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                         <Link
+                           onClick={showMiniCart}
                            to={'/cart'}
                            className='block  text-[14px] view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                         >
                            GIỎ HÀNG
                         </Link>
-                        <a
-                           href='/cart'
+                        <Link
+                           to='/checkout'
+                           onClick={showMiniCart}
                            className='block text-[14px]  view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center'
                         >
                            THANH TOÁN
-                        </a>
+                        </Link>
                      </div>
                   </div>
                </div>
@@ -545,6 +569,51 @@ const Footer = () => {
                className='to-top-content  transition-all duration-300 hover:bg-white hover:text-[#d2401e] text-white text-[16px] h-[40px] w-[40px] bg-[#d2401e] rounded-[5px] flex items-center justify-center shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'
             >
                <FaArrowUp></FaArrowUp>
+            </div>
+         </section>
+         <section className='user-tag-moble'>
+            <div
+               onClick={showUserTag}
+               className='overlay-user-tag-mobile xl:hidden fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
+            ></div>
+            <div className='user-tag-mobile-content transition duration-300 fixed top-0 left-0 h-full bg-white z-[8] min-w-[320px] translate-x-[-100%]'>
+               <ul>
+                  <li className='px-[15px] py-[10px] flex justify-end'>
+                     <span onClick={showUserTag} className='cursor-pointer text-center'>
+                        <FaXmark className='text-[20px]'></FaXmark>
+                     </span>
+                  </li>
+                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                        <PiUserListBold></PiUserListBold> Hồ sơ của bạn
+                     </Link>
+                  </li>
+                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                        <RiBillLine></RiBillLine> Lịch sử mua hàng
+                     </Link>
+                  </li>
+                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                        <FiLogIn></FiLogIn> Đăng nhập
+                     </Link>
+                  </li>
+                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                        <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
+                     </Link>
+                  </li>
+                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                        <FiLogOut></FiLogOut> Đăng xuất
+                     </Link>
+                  </li>
+                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                        <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
+                     </Link>
+                  </li>
+               </ul>
             </div>
          </section>
       </>

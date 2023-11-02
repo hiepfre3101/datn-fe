@@ -19,6 +19,7 @@ import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
+import CheckOutPage from '../pages/UserPages/CheckOutPage/CheckOutPage';
 const router = createBrowserRouter([
    {
       path: '/',
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
          {
             path: '/products/:id',
             element: <ProductDetail />
+         },
+         {
+            path: '/checkout',
+            element: <CheckOutPage />
          }
       ]
    },
