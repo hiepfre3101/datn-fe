@@ -18,6 +18,7 @@ import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
+import OrderDetail from '../pages/UserPages/OrderPage/OrderDetail';
 const router = createBrowserRouter([
    {
       path: '/',
@@ -46,12 +47,16 @@ const router = createBrowserRouter([
          {
             path: '/products/:id',
             element: <ProductDetail />
+         },
+         {
+            path: 'my-order/:id',
+            element: <OrderDetail />
          }
       ]
    },
    {
       path: '*',
-      element: <NotFoundPage/>
+      element: <NotFoundPage />
    },
    {
       path: '/manage',
