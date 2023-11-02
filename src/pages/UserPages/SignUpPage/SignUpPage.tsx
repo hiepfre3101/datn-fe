@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSignupMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
-import { setCartName } from '../../../slices/cartSlice';
+import { setCartName, setItem } from '../../../slices/cartSlice';
 
 const SignUpPage = () => {
 
@@ -12,6 +12,9 @@ const SignUpPage = () => {
    const [email,setemail] = useState('');
    const [password,setpassword] = useState('');
    const [confirmPassword,setconfirmPassword] = useState('');
+   const [phoneNumber, setphoneNumber] = useState('');
+   const [address, setaddress] = useState('');
+   
 
    const navigate = useNavigate();
    const dispatch = useDispatch();
@@ -28,6 +31,7 @@ console.log(data)
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
          dispatch(setCartName(data.body.data.data.email))
+         dispatch(setItem())
          navigate('/');
       }
    }, [data, isLoading, error, dispatch, navigate]);
@@ -39,7 +43,8 @@ console.log(data)
             email,
             password,
             confirmPassword,
-           
+            phoneNumber,
+            address,
          });
          return;
       } catch (error) {
@@ -70,7 +75,7 @@ console.log(data)
                      <form action=''  className='login-form'>
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
-                           userName
+                           Tên
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
@@ -78,7 +83,7 @@ console.log(data)
                               id='userName'
                               type='text'
                               value={userName}
-                              onChange={(e)=>setuserName (e.target.value)}
+                              onChange={(e)=>setuserName(e.target.value)}
                            />
                         </div>
                        
@@ -95,9 +100,39 @@ console.log(data)
                               onChange={(e)=>setemail(e.target.value)}
                            />
                         </div>
+
+                        <div className='login-first-name mt-[25px]'>
+                           <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
+                           Điện thoại
+                           </label>
+                           <input
+                              className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
+                              placeholder='Điện thoại'
+                              id='phoneNumber'
+                              type='text'
+                              value={phoneNumber}
+                              onChange={(e)=>setphoneNumber(e.target.value)}
+                           />
+                        </div>
+
+                        <div className='login-first-name mt-[25px]'>
+                           <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
+                           Địa chỉ
+                           </label>
+                           <input
+                              className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
+                              placeholder='Địa chỉ'
+                              id='address'
+                              type='text'
+                              value={address}
+                              onChange={(e)=>setaddress(e.target.value)}
+                           />
+                        </div>
+
+
                         <div className='login-password mt-[25px]'>
                            <label htmlFor='password' className='block cursor-pointer mb-[10px]'>
-                              Password
+                              Mật khẩu
                            </label>
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
@@ -110,7 +145,7 @@ console.log(data)
                         </div>
                         <div className='login-password mt-[25px]'>
                            <label htmlFor='password' className='block cursor-pointer mb-[10px]'>
-                              confim Password
+                              Nhập lại mật khẩu
                            </label>
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
