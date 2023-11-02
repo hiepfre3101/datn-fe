@@ -34,7 +34,9 @@ const Footer = () => {
       setTimeout(() => {
          modal_product?.classList.toggle('hidden');
          modal_product?.classList.toggle('!z-[20]');
+         dispatch(saveProduct(null));
       }, 600);
+      
    };
    const showModalSearch = () => {
       const bodyElement = document.querySelector('body');

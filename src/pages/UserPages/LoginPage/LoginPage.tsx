@@ -1,14 +1,46 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setCartName } from '../../../slices/cartSlice';
+import { setCartName, setItem } from '../../../slices/cartSlice';
+import { message } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { AuthLoginInput } from '../../../interfaces/auth';
+import { useLoginMutation } from '../../../services/auth.service';
+import { saveTokenAndUser } from '../../../slices/authSlice';
 
 const LoginPage = () => {
    const [email, setEmail] = useState('');
+   const [password, setpassword] = useState('');
+
+   const navigate = useNavigate();
    const dispatch = useDispatch();
-   const login = () => {
-      localStorage.setItem('user', JSON.stringify({ email: email }));
-      dispatch(setCartName(email));
+   const [login, { data, isLoading, error }] = useLoginMutation();
+
+   useEffect(() => {
+      if (error && 'data' in error) {
+         const data = error.data as { message: string };
+         if ('message' in data) message.error(data?.message);
+      }
+   }, [error]);
+
+   useEffect(() => {
+      if (!isLoading && data) {
+         dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
+         dispatch(setCartName(data.body.data.data.email))
+         dispatch(setItem())
+         if (data.body.data.data?.role == 'admin') return navigate('/admin');
+         navigate('/');
+      }
+   }, [data, dispatch, isLoading, navigate]);
+
+   const onFinish = () => {
+      try {
+         login({email,password});
+         return;
+      } catch (error) {
+         alert('Login failed');
+      }
    };
+
    return (
       <>
          <div className='main'>
@@ -51,14 +83,18 @@ const LoginPage = () => {
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
                               placeholder='Password'
+                              value={password}
                               id='password'
                               type='password'
+                              onChange={(e) => {
+                                 setpassword(e.target.value);
+                              }}
                            />
                         </div>
                         <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
                            <button
                               type='button'
-                              onClick={login}
+                              onClick={onFinish}
                               className=' text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
                            >
                               Đăng nhập

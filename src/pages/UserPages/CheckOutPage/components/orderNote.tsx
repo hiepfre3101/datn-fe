@@ -1,4 +1,7 @@
+import { useFormContext } from "react-hook-form";
+
 const OrderNote = () => {
+   const { register } = useFormContext();
    return (
       <>
          <div className='order-note'>
@@ -8,11 +11,11 @@ const OrderNote = () => {
                   <div className='order-form-item mt-[15px]'>
                      <label>
                         <textarea
-                           name=''
                            className='w-full resize-none mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
                            id=''
                            cols={30}
                            rows={10}
+                           {...register('note')}
                         ></textarea>
                      </label>
                   </div>
@@ -22,4 +25,5 @@ const OrderNote = () => {
       </>
    );
 };
+
 export default OrderNote;

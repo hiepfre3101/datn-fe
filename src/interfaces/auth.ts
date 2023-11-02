@@ -5,10 +5,14 @@ export interface ErrorResponse {
 }
 
 export interface DataAuthResponse {
-   accessToken: string;
+   body: {
+      data: {
+         accessToken: string;
+         expires: number;
+         data: IUser;
+      }
+   }
    message: string;
-   expires: number;
-   data: IUser;
 }
 
 export interface AuthSignupInput {
@@ -20,8 +24,8 @@ export interface AuthSignupInput {
 }
 
 export interface AuthLoginInput {
-    email: string;
-    password: string;
+   email: string;
+   password: string;
 }
 
 export interface IUser {
@@ -44,11 +48,11 @@ export interface IUser {
 export type InputUser = Omit<IUser, '_id' | 'createAt'>;
 
 export interface TokenResponse {
-    body: {
-        accessToken: string;
-        expries: number;
-        data: IUser
-    },
-    message: string;
-    status: number;
+   body: {
+      accessToken: string;
+      expries: number;
+      data: IUser
+   },
+   message: string;
+   status: number;
 }

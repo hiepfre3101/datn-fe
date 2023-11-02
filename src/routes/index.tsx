@@ -9,12 +9,11 @@ import AddCategory from '../pages/AdminPages/Category/AddCategory';
 import UpdateCategory from '../pages/AdminPages/Category/UpdateCategory';
 import HomePage from '../pages/UserPages/HomePage/HomePage';
 import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
-
 import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
-
 import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
+import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
@@ -54,6 +53,10 @@ const router = createBrowserRouter([
             element: <CheckOutPage />
          }
       ]
+   },
+   {
+      path: '*',
+      element: <NotFoundPage/>
    },
    {
       path: '/manage',
