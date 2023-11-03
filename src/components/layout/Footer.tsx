@@ -434,12 +434,42 @@ const Footer = () => {
                   <div className='wrap-mini-cart transition-all duration-300 translate-x-[100%] w-[320px] flex h-full fixed  top-0 right-0 flex-col bg-white text-[#6f6f6f]  z-[8]'>
                      <div className='mini-cart-header flex border-b-[#e2e2e2] border-[1px]    '>
                         {' '}
-                        <p>Cart is empty</p>
-                        <div className='start-shopping'>
-                           <Link to={'/product'}>
-                              <span>Start shopping</span>
-                           </Link>
-                        </div>
+                        <p className='cart-header-text w-full gap-[10px] py-[10px] px-[15px] flex items-center  text-[14px]'>
+                           <span className='cart-count px-[8px] text-[14px] py-[4px] text-white bg-[#d2401e]'>
+                              {totalProductInCart}
+                           </span>{' '}
+                           sản phẩm trong giỏ hàng
+                        </p>
+                        <button
+                           onClick={showMiniCart}
+                           className='close-mini-cart text-[#333333] text-[20px] mt-[5px] cursor-pointer hover:opacity-100 mr-[15px]  opacity-[0.5]'
+                           type='button'
+                        >
+                           <FaXmark></FaXmark>
+                        </button>
+                     </div>
+                     <div className='mini-cart-content overflow-auto m-h-[100%-269px]'>
+                        <ul className='cart-item relative'>
+                           <li className='cart-product border-[#e2e2e2] items-center text-center mt-[50] border-t-[1px] relative first:border-none '>
+                              <p className='cart-title xl:text-[20px] border-[#e2e2e2] max-xl:text-[20px] text-[red] font-bold pb-[12px]'>
+                                 Không có sản phẩm trong giỏ hàng
+                              </p>
+                              <div className='start-shopping cart-title  border-[#e2e2e2] gap-2 text-[#51A55C] font-bold flex justify-center items-center text-center pb-[12px]'>
+                                 <Link
+                                    to={'/products'}
+                                    className='block  xl:text-[14px] max-xl:text-[14px] view-cart w-[40%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[10px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
+                                 >
+                                    Mua hàng
+                                 </Link>
+                                 <Link
+                                    to={'/cart'}
+                                    className='block  xl:text-[14px] max-xl:text-[14px] view-cart w-[40%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[10px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
+                                 >
+                                    Giỏ hàng
+                                 </Link>
+                              </div>
+                           </li>
+                        </ul>
                      </div>
                   </div>
                </div>
