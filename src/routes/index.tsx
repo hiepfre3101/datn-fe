@@ -26,81 +26,100 @@ const router = createBrowserRouter([
       children: [
          {
             path: '/',
-            element: <HomePage />
+            element: <HomePage />,
+            errorElement: <NotFoundPage />
          },
          {
             path: '/products',
-            element: <ProductPage />
+            element: <ProductPage />,
+            errorElement: <NotFoundPage />
          },
          {
             path: '/login',
-            element: <LoginPage />
+            element: <LoginPage />,
+            errorElement: <NotFoundPage />
          },
          {
             path: '/signup',
-            element: <SignUpPage />
+            element: <SignUpPage />,
+            errorElement: <NotFoundPage />
          },
          {
             path: '/cart',
-            element: <CartPage />
+            element: <CartPage />,
+            errorElement: <NotFoundPage />
          },
          {
             path: '/products/:id',
-            element: <ProductDetail />
+            element: <ProductDetail />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'my-order/:id',
-            element: <OrderDetail />
+            element: <OrderDetail />,
+            errorElement: <NotFoundPage />
          }
       ]
    },
    {
       path: '*',
-      element: <NotFoundPage />
+      element: <NotFoundPage />,
+      errorElement: <NotFoundPage />
    },
    {
       path: '/manage',
       element: <AdminLayout />,
+      errorElement: <NotFoundPage />,
       children: [
          {
             path: 'dashboard',
-            element: <Dashboard />
+            element: <Dashboard />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'products',
-            element: <ProductAdmin />
+            element: <ProductAdmin />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'add-product',
-            element: <AddProduct />
+            element: <AddProduct />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'categories',
-            element: <CategoryAdmin />
+            element: <CategoryAdmin />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'add-category',
-            element: <AddCategory />
+            element: <AddCategory />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'update-category/:id',
-            element: <UpdateCategory />
+            element: <UpdateCategory />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'products/:id',
-            element: <UpdateProduct />
+            element: <UpdateProduct />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'shipments',
-            element: <ShipmentPage />
+            element: <ShipmentPage />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'add-shipment',
-            element: <AddShipment />
+            element: <AddShipment />,
+            errorElement: <NotFoundPage />
          },
          {
             path: 'shipments/:id',
-            element: <UpdateShipment />
+            element: <UpdateShipment />,
+            errorElement: <NotFoundPage />
          }
 
          // {
