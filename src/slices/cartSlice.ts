@@ -5,17 +5,25 @@ export type ICartSlice = {
    email: string;
    shippingAddress: string;
    phoneNumber: string;
-   products: any[];
-   totalPayment: number;
+   items: ICartItems[];
+   totalPrice: number;
    cartName: string;
 };
+export interface ICartItems {
+   _id: string;
+   name: string;
+   images: string;
+   price: number;
+   weight: number;
+   totalWeight: number;
+}
 const initialState: ICartSlice = {
    customerName: '',
    email: '',
    shippingAddress: '',
    phoneNumber: '',
-   products: [],
-   totalPayment: 0,
+   items: [],
+   totalPrice: 0,
    cartName: 'cart'
 };
 const cartSlice = createSlice({
@@ -30,8 +38,22 @@ const cartSlice = createSlice({
             localStorage.setItem(state.cartName, '[]');
          }
          const products = localStorage.getItem(state.cartName) ? JSON.parse(localStorage.getItem(state.cartName)!) : [];
-         state.products = products;
-         state.totalPayment = products.reduce(
+         state.items = products;
+         state.totalPrice = products.reduce(
+            (accumulator: any, product: any) => accumulator + product.price * product.weight,
+            0
+         );
+      },
+      updatePrice: (state, action) => {
+         const value = action.payload;
+
+         state.items.find((item: any) => {
+            if (item?._id === value._id) {
+               item.price = value.price;
+            }
+         });
+         localStorage.setItem(state.cartName, JSON.stringify(state.items));
+         state.totalPrice = state.items.reduce(
             (accumulator: any, product: any) => accumulator + product.price * product.weight,
             0
          );
@@ -44,7 +66,7 @@ const cartSlice = createSlice({
             message.error('Số lượng đã quá số lượng hiện có');
             error = true;
          }
-         const products = state.products.map((item: any) => {
+         const products = state.items.map((item: any) => {
             if (item?._id === value._id) {
                isItemExist = true;
                if (item.weight + value.weight <= value.totalWeight) {
@@ -57,44 +79,44 @@ const cartSlice = createSlice({
             return item;
          });
          if (isItemExist && !error) {
-            state.totalPayment += products.reduce(
+            state.totalPrice += products.reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
             );
 
             localStorage.setItem(state.cartName, JSON.stringify([...products]));
-            state.products = products;
+            state.items = products;
             message.success('thêm sản phẩm vào giỏ hàng thành công');
          } else if (!isItemExist && !error) {
-            state.totalPayment = [...state.products, value].reduce(
+            state.totalPrice = [...state.items, value].reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
             );
-            localStorage.setItem(state.cartName, JSON.stringify([...state.products, value]));
-            state.products = [...state.products, value];
+            localStorage.setItem(state.cartName, JSON.stringify([...state.items, value]));
+            state.items = [...state.items, value];
             message.success('thêm sản phẩm vào giỏ hàng thành công');
          }
       },
       removeFromCart: (state, action) => {
-         const nextCartproducts = state.products.filter((cartItem: any) => cartItem._id !== action.payload.id);
-         state.totalPayment = nextCartproducts.reduce(
+         const nextCartproducts = state.items.filter((cartItem: any) => cartItem._id !== action.payload.id);
+         state.totalPrice = nextCartproducts.reduce(
             (accumulator, product) => accumulator + product.price * product.weight,
             0
          );
-         state.products = nextCartproducts;
+         state.items = nextCartproducts;
          message.success('Xóa sản phẩm khỏi giỏ hàng thành công');
-         localStorage.setItem(state.cartName, JSON.stringify(state.products));
+         localStorage.setItem(state.cartName, JSON.stringify(state.items));
       },
       removeAllProductFromCart: (state) => {
-         state.products = [];
-         state.totalPayment = 0;
+         state.items = [];
+         state.totalPrice = 0;
          message.success('Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công');
-         localStorage.setItem(state.cartName, JSON.stringify(state.products));
+         localStorage.setItem(state.cartName, JSON.stringify(state.items));
       },
       updateItem: (state, action) => {
          console.log(action.payload);
 
-         const nextCartproducts = state.products.map((cartItem: any) => {
+         const nextCartproducts = state.items.map((cartItem: any) => {
             if (cartItem._id === action.payload.id) {
                if (action.payload.weight >= 0) {
                   return {
@@ -106,15 +128,15 @@ const cartSlice = createSlice({
             return cartItem;
          });
          localStorage.setItem(state.cartName, JSON.stringify(nextCartproducts));
-         state.totalPayment = nextCartproducts.reduce(
+         state.totalPrice = nextCartproducts.reduce(
             (accumulator, product) => accumulator + product.price * product.weight,
             0
          );
-         state.products = nextCartproducts;
+         state.items = nextCartproducts;
          message.success('Cập nhật sản phẩm thành công');
       }
    }
 });
-export const { addItem, removeFromCart, updateItem, removeAllProductFromCart, setItem, setCartName } =
+export const { addItem, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem, setCartName } =
    cartSlice.actions;
 export default cartSlice;

@@ -1,5 +1,5 @@
 import '../../../css/productdetailpage.css';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useGetOneProductQuery, useGetRelatedProductsQuery } from '../../../services/product.service';
 import ProductDescriptionTab from './components/ProductDescriptionTab';
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
@@ -24,7 +24,7 @@ const ProductDetail = () => {
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2] '>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
-                     <a href='/'>Trang chủ </a> / {oneProductData?.body.data.productName}
+                     <Link to='/'>Trang chủ / {oneProductData?.body.data.productName}</Link>
                   </span>
                </div>
             </section>
@@ -42,7 +42,7 @@ const ProductDetail = () => {
                </div>
                <div className='related-product-content'>
                   <div className='slide-related-product  mt-[40px]'>
-                     <SlideBestProduct productImgs={relatedProductsData?.body.data}></SlideBestProduct>
+                     <SlideBestProduct products={relatedProductsData?.body.data}></SlideBestProduct>
                   </div>
                </div>
             </section>
