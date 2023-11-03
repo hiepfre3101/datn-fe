@@ -126,7 +126,7 @@ const CheckOutPage = () => {
                         <div style={{ marginTop: 24 }}>
                            {current < steps.length - 1 && (
                               <Button
-                                 className='bg-[#51A55C] text-white hover:bg-[#51A55C] hover:!border-[#51A55C] hover:!text-white'
+                                 className='bg-[#51A55C] text-white hover:bg-[#51A55C] hover:!border-[#51A55C] hover:!text-black'
                                  type='text'
                                  onClick={methods.handleSubmit(onSubmit)}
                               >

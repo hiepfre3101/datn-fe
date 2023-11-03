@@ -20,6 +20,8 @@ import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
 import CheckOutPage from '../pages/UserPages/CheckOutPage/CheckOutPage';
 import OrderCompletePage from '../pages/UserPages/OrderCompletePage/OrderCompletePage';
+import OrderDetail from '../pages/UserPages/OrderPage/OrderDetail';
+
 const router = createBrowserRouter([
    {
       path: '/',
@@ -56,12 +58,16 @@ const router = createBrowserRouter([
          {
             path: '/orderComplete',
             element: <OrderCompletePage />
+         },
+         {
+            path: 'my-order/:id',
+            element: <OrderDetail />
          }
       ]
    },
    {
       path: '*',
-      element: <NotFoundPage/>
+      element: <NotFoundPage />
    },
    {
       path: '/manage',

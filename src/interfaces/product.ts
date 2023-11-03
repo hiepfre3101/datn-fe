@@ -15,7 +15,7 @@ export interface IProduct {
    images: { url: string; public_id: string }[];
    createAt: string;
    shipments: IShipmentOfProduct[];
-   price:number
+   price: number;
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
@@ -26,13 +26,21 @@ export interface IProductExpanded extends IProduct {
       _id: string;
    };
 }
-export interface IDescProp{
-   desc:string|undefined
+export interface IDescProp {
+   desc: string | undefined;
 }
-export interface IProductInfoProp{
-   product_info: IProductExpanded|undefined
+export interface IProductInfoProp {
+   product_info: IProductExpanded | undefined;
 }
-export interface IObjIdForGetRelatedProducts{
-   idCategory: string|undefined;
-   idProduct: string|undefined;
+export interface IObjIdForGetRelatedProducts {
+   idCategory: string | undefined;
+   idProduct: string | undefined;
 }
+
+export type IProductInOrder = {
+   _id: string;
+   name: string;
+   images: string;
+   weight: string;
+   price: number;
+};
