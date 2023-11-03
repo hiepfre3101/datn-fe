@@ -4,7 +4,7 @@ import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
-import {  Popover } from 'antd';
+import { Popover } from 'antd';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
@@ -25,7 +25,7 @@ const Header = () => {
       dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
-      navigate('/')
+      navigate('/');
    };
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
@@ -109,11 +109,7 @@ const Header = () => {
                <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
                   <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
                      <Link to='/'>
-                        <img
-                           className='logo-img max-w-[120px] max-h-[200px]'
-                           src={logoUrl}
-                           alt=''
-                        />
+                        <img className='logo-img max-w-[120px] max-h-[200px]' src={logoUrl} alt='' />
                      </Link>
                   </div>
                   <div
@@ -236,7 +232,7 @@ const Header = () => {
                                  trigger='hover'
                               >
                                  <span>
-                                 <AiOutlineUser></AiOutlineUser>
+                                    <AiOutlineUser></AiOutlineUser>
                                  </span>
                               </Popover>
                            ) : (
@@ -276,9 +272,7 @@ const Header = () => {
                               </>
                            )}
                         </li>
-                        <li
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
-                        >
+                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
                            <BsBell></BsBell>
 
                            <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>

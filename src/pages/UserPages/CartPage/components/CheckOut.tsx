@@ -37,19 +37,22 @@ const CheckOut = () => {
                   className='outline-none border-[1px] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] w-full'
                   placeholder='Mã Giảm giá'
                />
-               <button type='button' className=' bg-[#51A55C]  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px] transition-color duration-300 hover:bg-black'>
+               <button
+                  type='button'
+                  className=' bg-[#51A55C]  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px] transition-color duration-300 hover:bg-black'
+               >
                   Sử dụng
                </button>
             </div>
             <div className='btn-checkout'>
-             <Link to='/checkout'>
-             <button
-                  type='button'
-                  className=' bg-[#51A55C] w-full  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px] transition-color duration-300 hover:bg-black'
-               >
-                  Thanh toán
-               </button>
-             </Link>
+               <Link to='/checkout'>
+                  <button
+                     type='button'
+                     className=' bg-[#51A55C] w-full  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px] transition-color duration-300 hover:bg-black'
+                  >
+                     Thanh toán
+                  </button>
+               </Link>
             </div>
          </div>
       </div>

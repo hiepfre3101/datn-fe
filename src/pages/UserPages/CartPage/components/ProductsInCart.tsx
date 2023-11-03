@@ -103,24 +103,36 @@ const ProductsInCart = () => {
                                           />
                                           <div className='flex flex-col'>
                                              <button
-                                                onClick={() => item.weight>=item.totalWeight?message.error('số lượng đã quá số lượng hiện có'):dispatch(
-                                                   updateItem({
-                                                      id: item._id,
-                                                      weight:
-                                                         item.weight == item.totalWeight &&
-                                                         item.weight + 0.5 >= item.totalWeight
-                                                            ? item.weight
-                                                            : item.weight + 0.5
-                                                   })
-                                                )
-                                          
+                                                disabled={
+                                                   item.weight == item.totalWeight &&
+                                                   item.weight + 0.5 >= item.totalWeight
+                                                      ? true
+                                                      : false
+                                                }
+                                                onClick={() =>
+                                                   dispatch(
+                                                      updateItem({
+                                                         id: item._id,
+                                                         weight:
+                                                            item.weight == item.totalWeight &&
+                                                            item.weight + 0.5 >= item.totalWeight
+                                                               ? item.weight
+                                                               : item.weight + 0.5
+                                                      })
+                                                   )
                                                 }
                                                 type='button'
-                                                className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
+                                                className={`${
+                                                   item.weight == item.totalWeight &&
+                                                   item.weight + 0.5 >= item.totalWeight
+                                                      ? 'bg-gray-300'
+                                                      : ''
+                                                } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
                                              >
                                                 +
                                              </button>
                                              <button
+                                                disabled={item.weight == 0 && item.weight - 0.5 <= 0 ? true : false}
                                                 onClick={() =>
                                                    dispatch(
                                                       updateItem({
@@ -133,7 +145,9 @@ const ProductsInCart = () => {
                                                    )
                                                 }
                                                 type='button'
-                                                className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
+                                                className={`${
+                                                   item.weight == 0 && item.weight - 0.5 <= 0 ? 'bg-gray-300' : ''
+                                                } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
                                              >
                                                 -
                                              </button>
@@ -143,7 +157,9 @@ const ProductsInCart = () => {
                                  </div>
                               </div>
                            </div>
-                           <p className='text-red-500 max-lg:text-[14px] max-sm:order-3'>{item.weight == '' ? 'Bạn phải nhập số lượng' : ''}</p>
+                           <p className='text-red-500 max-lg:text-[14px] max-sm:order-3'>
+                              {item.weight == '' ? 'Bạn phải nhập số lượng' : ''}
+                           </p>
                            <div className='product-quanitity-remove flex justify-center lg:mt-[15px] max-sm:order-2'>
                               <button
                                  className='text-[#dc3545] transition-all duration-300 hover:text-[#ffc107] underline'
@@ -166,14 +182,17 @@ const ProductsInCart = () => {
                   ))}
                </div>
                <div className='cart-footer flex justify-between py-[13px] flex-wrap gap-[15px]'>
-                  <Link to="/products"  className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'>
-                  TIẾP TỤC MUA HÀNG
+                  <Link
+                     to='/products'
+                     className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'
+                  >
+                     TIẾP TỤC MUA HÀNG
                   </Link>
                   <button
-                     onClick={() =>{
-                        dispatch(removeAllProductFromCart())
+                     onClick={() => {
+                        dispatch(removeAllProductFromCart());
                         message.success('Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công');
-                     } }
+                     }}
                      className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'
                   >
                      XOÁ GIỎ HÀNG
