@@ -5,22 +5,24 @@ import { HiOutlineShoppingBag, HiOutlineTrash } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
 import { FaArrowUp, FaPlus, FaWindowMinimize, FaInstagram } from 'react-icons/fa';
 import { FiHeadphones, FiLogOut, FiLogIn } from 'react-icons/fi';
-import { ConfigProvider, InputNumber, Space } from 'antd';
-import ModalProductSlide from '../../pages/UserPages/ProductPage/components/ModalProductSlide';
-import { AiOutlineCloseCircle, AiOutlineUserAdd } from 'react-icons/ai';
-import { useDispatch, useSelector } from 'react-redux';
+import {AiOutlineUserAdd } from 'react-icons/ai';
+import {  useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, removeFromCart } from '../../slices/cartSlice';
 import { Link } from 'react-router-dom';
-import { RootState } from '../../store';
+
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { saveProduct } from '../../slices/productSlice';
+
+
 const Footer = () => {
+  
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const dispatch = useDispatch();
-   const data = useSelector((state: RootState) => state.productSlice);
+
+   
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -72,21 +74,7 @@ const Footer = () => {
       const beforeSelecterElement = document.querySelector(beforeSelecter);
       beforeSelecterElement?.classList.toggle('hidden');
    };
-   const closeModal = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
-      const modal_product = document.querySelector('.modal-product');
-      setTimeout(() => {
-         const modal_product_content = document.querySelector('.modal-product-content');
-         modal_product_content?.classList.toggle('lg:!scale-[1]');
-         modal_product_content?.classList.toggle('lg:!opacity-100');
-         modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
-      }, 200);
-      setTimeout(() => {
-         modal_product?.classList.toggle('hidden');
-         modal_product?.classList.toggle('!z-[20]');
-      }, 600);
-   };
+
 
    const showUserTag = () => {
       const bodyElement = document.querySelector('body');
@@ -281,103 +269,6 @@ const Footer = () => {
                </ul>
             </div>
          </footer>
-
-         <section
-            className={`modal-product hidden  fixed  top-0 left-0 w-full  h-full   bg-[rgba(3,17,27,0.3)] z-[-2]   outline-none`}
-         >
-            <div
-               className={`modal-product-content delay-500 overflow-y-auto max-lg:h-[90%] max-lg:flex-wrap max-lg:fixed max-lg:bottom-0 max-lg:w-[100%] lg:opacity-0  max-lg:max-w-full transition-all opacity-100 duration-700 lg:scale-[0.8] max-lg:translate-y-[100%]  relative flex w-[80%] lg:my-[28px] lg:max-h-[615px] gap-[20px] lg:mx-auto lg:px-[20px] lg:py-[25px] p-[10px]  bg-white rounded-[3px] overflow-hidden border-[1px] outline-none border-[rgba(0,0,0,.2)]  max-w-[840px]`}
-            >
-               <div className='product-slide  text-[14px] relative max-w-[calc(50%-10px)] z-[-1]  text-center max-lg:max-w-full max-lg:w-full'>
-                  <ModalProductSlide body={data?.products[0]?.images}></ModalProductSlide>
-                  <div className='product-discount absolute text-[14px] text-white bg-red-500 px-[10px] py-[5px] rounded-br-[10px] w-[46px] z-[3] rounded-bl-[10px] left-0 top-0'>
-                     <p>-{data.products[0]?.discount}%</p>
-                     <p>OFF</p>
-                  </div>
-               </div>
-               <div className='product-detail w-[calc(50%-10px)] lg:pt-[30px] max-lg:max-w-full max-lg:w-full'>
-                  <div className='product-name'>
-                     <div className='product-name-content  text-[18px] mb-[5px] font-[700]'>
-                        {data.products[0]?.productName}
-                     </div>
-                     <span className='product-origin text-[14px]'>
-                        Thương hiệu:
-                        <strong className='text-[#51A55C]'>{data.products[0]?.shipments[0]?.origin}</strong>
-                     </span>
-                  </div>
-                  <div className='product-price flex w-full items-center'>
-                     <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
-                     <div className='product-price-content text-[22px] text-red-500 pr-[10px] font-bold'>
-                        {data.products[0]?.shipments[0]?.price}
-                     </div>
-                  </div>
-                  <div className='product-select mt-[20px] flex  w-full items-center'>
-                     <div className='product-size-title min-w-[28%] text-[14px] font-[600]'>Size:</div>
-                     <div className='product-size w-[72%]'>
-                        <ConfigProvider
-                           theme={{
-                              components: {
-                                 InputNumber: {
-                                    colorPrimaryHover: '#51A55C'
-                                 }
-                              }
-                           }}
-                        >
-                           <Space wrap className='w-full ml-[15px]'>
-                              <InputNumber className='w-[200px]' step={0.5} min={0.5} defaultValue={1} />
-                           </Space>
-                        </ConfigProvider>
-                     </div>
-                  </div>
-                  <form className='product-form' action=''>
-                     <div className='form-product-content '>
-                        <div className='product-input-number mt-[20px] flex  w-full items-center '>
-                           <div className='product-input-number-title min-w-[28%] font-[600] text-[14px]'>
-                              Số lượng:
-                           </div>
-                           <div className='product-input-number-content text-[14px] flex w-[72%] max-lg:w-[140px] max-lg:h-[40px] max-lg:z-[11]'>
-                              <button
-                                 type='button'
-                                 className='btn-pro hover:text-[#333] h-[40px] w-[40px] leading-[20px] text-center bg-[#f3f4f4] border-[1px] text-[20px] text-[#a4aaaf]  border-[#f3f4f4]'
-                              >
-                                 -
-                              </button>
-                              <input
-                                 className='text-center w-[40px] h-[40px] font-bold outline-none  border-[1px] border-[#f3f4f4]'
-                                 type='text'
-                                 defaultValue={1}
-                                 min='1'
-                              />
-                              <button
-                                 type='button'
-                                 className='btn-pro hover:text-[#333] h-[40px] w-[40px] leading-[20px] text-center bg-[#f3f4f4] border-[1px] text-[20px] text-[#a4aaaf]  border-[#f3f4f4]'
-                              >
-                                 +
-                              </button>
-                           </div>
-                        </div>
-
-                        <button className='max-lg:w-full  btn-product-form bg-[#ff0000] rounded-[4px] text-white text-center w-full h-[40px] leading-[40px] border-[1px] border-[#ff0000] mt-[15px] text-[14px]'>
-                           THÊM VÀO GIỎ
-                        </button>
-                     </div>
-                  </form>
-                  <div className='link-product-detail mt-[10px]'>
-                     <Link to={`/products/` + data.products[0]?._id}>
-                        <span className='decoration-1 underline text-[14px]'>Xem chi tiết sản phẩm</span>
-                     </Link>
-                  </div>
-               </div>
-
-               <button
-                  onClick={closeModal}
-                  type='button'
-                  className='group/close-modal absolute right-4 z-[10] max-lg:top-0 max-lg:right-[10px]'
-               >
-                  <AiOutlineCloseCircle className=' text-[30px] max-lg:text-[40px]  group-hover/close-modal:fill-[#51A55C]'></AiOutlineCloseCircle>
-               </button>
-            </div>
-         </section>
          <section className='section-search-modal translate-y-[-100%] transition-all duration-300  hidden fixed top-0 left-0 right-0  py-[30px] bg-white z-[7] '>
             <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                <div className='search-modal-content '>

@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
 import { ICartSlice } from '../../../../slices/cartSlice';
+import { Link } from 'react-router-dom';
 
 const CheckOut = () => {
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
@@ -41,12 +42,14 @@ const CheckOut = () => {
                </button>
             </div>
             <div className='btn-checkout'>
-               <button
+             <Link to='/checkout'>
+             <button
                   type='button'
                   className=' bg-[#51A55C] w-full  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px] transition-color duration-300 hover:bg-black'
                >
                   Thanh toán
                </button>
+             </Link>
             </div>
          </div>
       </div>

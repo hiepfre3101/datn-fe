@@ -170,7 +170,10 @@ const ProductsInCart = () => {
                   TIẾP TỤC MUA HÀNG
                   </Link>
                   <button
-                     onClick={() => dispatch(removeAllProductFromCart())}
+                     onClick={() =>{
+                        dispatch(removeAllProductFromCart())
+                        message.success('Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công');
+                     } }
                      className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'
                   >
                      XOÁ GIỎ HÀNG

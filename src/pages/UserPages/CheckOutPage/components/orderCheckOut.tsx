@@ -1,15 +1,20 @@
-import { ConfigProvider, Radio, RadioChangeEvent } from 'antd';
+import { ConfigProvider, Radio, RadioChangeEvent,Button } from 'antd';
 import { useState } from 'react';
 import { ICartSlice } from '../../../../slices/cartSlice';
 import { useSelector } from 'react-redux';
-import { useForm } from 'react-hook-form';
-const OrderCheckOut = ({ onSubmit }) => {
+import {  UseFormReturn } from 'react-hook-form';
+import { IOrder } from '../../../../interfaces/order';
+interface Iprops{
+   onSubmit:(data: IOrder)=>void;
+   methods: UseFormReturn<IOrder, any, undefined>;
+   loadingState:boolean;
+}
+const OrderCheckOut = ({onSubmit,methods,loadingState }:Iprops) => {
    const [PayValue, setPayValue] = useState(1);
    const onChange = (e: RadioChangeEvent) => {
       console.log('radio checked', e.target.value);
       setPayValue(e.target.value);
    };
-   const {handleSubmit} = useForm()
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);   
    return (
       <>
@@ -111,8 +116,13 @@ const OrderCheckOut = ({ onSubmit }) => {
                         </form>
                      </div>
                   </div>
-                  <div className='wrap-btn-order-detail  mt-[28px] text-center text-[18px] font-bold transition-colors duration-300 hover:bg-black text-white bg-[#d2401e] rounded-[50px] '>
-                     <button onClick={handleSubmit(onSubmit)} className='w-full h-full py-[12px] px-[30px] '>MUA HÀNG</button>
+                  <div  className='wrap-btn-order-detail  mt-[28px] text-center text-[18px]  transition-colors duration-300 hover:bg-black  bg-[#d2401e] rounded-[50px] '>
+                     <Button
+          onClick={methods.handleSubmit(onSubmit)} className='w-full h-full py-[12px] border-none hover:!text-white px-[30px] font-bold text-white'
+          loading={loadingState}
+        >
+MUA HÀNG
+        </Button>
                   </div>
                </div>
             </div>

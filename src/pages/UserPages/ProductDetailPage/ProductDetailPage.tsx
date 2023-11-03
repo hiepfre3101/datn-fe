@@ -41,7 +41,7 @@ const ProductDetail = () => {
                </div>
                <div className='related-product-content'>
                   <div className='slide-related-product  mt-[40px]'>
-                     <SlideBestProduct productImgs={relatedProductsData?.body.data}></SlideBestProduct>
+                     <SlideBestProduct products={relatedProductsData?.body.data}></SlideBestProduct>
                   </div>
                </div>
             </section>

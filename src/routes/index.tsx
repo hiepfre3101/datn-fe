@@ -19,6 +19,7 @@ import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
 import CheckOutPage from '../pages/UserPages/CheckOutPage/CheckOutPage';
+import OrderCompletePage from '../pages/UserPages/OrderCompletePage/OrderCompletePage';
 const router = createBrowserRouter([
    {
       path: '/',
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
          {
             path: '/checkout',
             element: <CheckOutPage />
+         },
+         {
+            path: '/orderComplete',
+            element: <OrderCompletePage />
          }
       ]
    },

@@ -7,15 +7,20 @@ import { ConfigProvider, Rate } from 'antd';
 import { AiOutlineHeart, AiOutlineEye } from 'react-icons/ai';
 import { IProduct, IProductExpanded } from '../../../../interfaces/product';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveProduct } from '../../../../slices/productSlice';
 import { addItem } from '../../../../slices/cartSlice';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
+
+import QuickView from '../../../../components/QuickView/QuickView';
+import { RootState } from '../../../../store';
 interface IRelatedProduct {
-   productImgs: IProductExpanded[] | undefined;
+   products: IProductExpanded[] | undefined;
 }
-export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
+export default function SlideBestProduct({ products }: IRelatedProduct) {
    const dispatch = useDispatch();
+   const productSlice = useSelector((state: RootState) => state.productSlice.products);
+   
    const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -82,7 +87,7 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                modules={[Navigation, Autoplay]}
                className='mySwiper slide-best-pr pb-[75px]'
             >
-               {productImgs?.map((item) => {
+               {products?.map((item) => {
                   return (
                      <>
                         <SwiperSlide>
@@ -154,6 +159,7 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                })}
             </Swiper>
          </div>
+               <QuickView product_info={productSlice} ></QuickView>
       </>
    );
 }

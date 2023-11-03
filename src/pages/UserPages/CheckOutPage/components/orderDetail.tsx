@@ -8,8 +8,10 @@ const OrderDetail = () => {
    const { register ,formState: { errors },setValue} = useFormContext();
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer.user);
    useEffect(()=>{
-      setValue('name', auth.userName )
+      setValue('customerName', auth.userName )
       setValue('email', auth.email )
+      setValue('phoneNumber', auth.phoneNumber )
+      setValue('shippingAddress', auth.address )
    },[auth]) 
 
     return  <>
@@ -25,13 +27,13 @@ const OrderDetail = () => {
                         <input
                            type='text'
       
-                           {...register('name', { required: 'Họ và tên là trường bắt buộc' })}
+                           {...register('customerName', { required: 'Họ và tên là trường bắt buộc' })}
                            className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
                            placeholder='Họ và tên'
                         />
                      </label>
-                           {errors.name &&  (
-                              <p className='error-message text-[13px] text-red-500'>{errors?.name?.message?.toString()}</p>
+                           {errors.customerName &&  (
+                              <p className='error-message text-[13px] text-red-500'>{errors?.customerName?.message?.toString()}</p>
                            )}
                   </div>
                   <div className='order-form-item  double-input flex justify-between max-sm:flex-wrap'>
@@ -54,33 +56,36 @@ const OrderDetail = () => {
                         <label>
                            Số điện thoại
                            <input
-                           defaultValue={auth.phoneNumber}
-                           {...register('phonenumber')}
+                           {...register('phoneNumber', { 
+                              required: 'Số điện thoại là trường bắt buộc',
+                              pattern: {
+                                 value: /^0\d{9,10}$/,
+                                 message: 'Vui lòng nhập đúng định dạng số điện thoại'
+                              }
+                           })}
                               type='text'
                               className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
                               placeholder='Số điện thoại'
                            />
                         </label>
-                        {/* vì đăng ký chưa có trường phonenumber */}
-                        {/* {errors.name && typeof errors.name === 'object' && (
-                              <p className='error-message text-[13px] text-red-500'>{errors?.email?.message?.toString()}</p>
-                           )} */}
+                        {errors.phoneNumber  && (
+                              <p className='error-message text-[13px] text-red-500'>{errors?.phoneNumber?.message?.toString()}</p>
+                           )}
                      </div>
                   </div>
                   <div className='order-form-item mt-[15px]'>
                      <label>
                         Địa chỉ
-                        <input
-                                defaultValue={auth.address}
-                        {...register('address')}
+                        <input     
+                                {...register('shippingAddress', { required: 'Địa chỉ là trường bắt buộc' })}
                            type='text'
                            className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
                            placeholder='Địa chỉ'
                         />
                      </label>
-                     {/* {errors.name && typeof errors.name === 'object' && (
-                              <p className='error-message text-[13px] text-red-500'>{errors?.address?.message?.toString()}</p>
-                           )} */}
+                     {errors.shippingAddress  && (
+                              <p className='error-message text-[13px] text-red-500'>{errors?.shippingAddress?.message?.toString()}</p>
+                           )}
                   </div>
                </div>
             </form>

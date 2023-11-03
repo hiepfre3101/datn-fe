@@ -4,24 +4,26 @@ import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
-import { Link } from 'react-router-dom';
 import {  Popover } from 'antd';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
 import { BsBell } from 'react-icons/bs';
 import { MdOutlineLockReset } from 'react-icons/md';
-import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
+import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
+import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
+   const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
       dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
+      navigate('/')
    };
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
@@ -96,61 +98,7 @@ const Header = () => {
       }
       oldScrollY = window.scrollY;
    };
-   //    {
-   //       key: '1',
-   //       label: (
-   //         <Link to="" className='flex items-center gap-[5px] py-[5px]'>
-   //              <PiUserListBold></PiUserListBold>  Hồ sơ của bạn
-   //         </Link>
-   //       )
 
-   //    },
-   //    {
-   //       key: '2',
-   //       label: (
-   //         <Link to="" className='flex items-center gap-[5px] py-[5px]'>
-   //              <RiBillLine></RiBillLine>  Lịch sử mua hàng
-   //         </Link>
-   //       )
-
-   //    },
-   //    {
-   //       key: '3',
-   //       label: (
-   //         <Link to="" className='flex items-center gap-[5px] py-[5px]'>
-   //              <FiLogIn></FiLogIn>  Đăng nhập
-   //         </Link>
-   //       )
-
-   //    },
-   //    {
-   //       key: '4',
-   //       label: (
-   //         <Link to="" className='flex items-center gap-[5px] py-[5px]'>
-   //              <AiOutlineUserAdd></AiOutlineUserAdd>  Đăng ký
-   //         </Link>
-   //       )
-
-   //    },
-   //    {
-   //       key: '5',
-   //       label: (
-   //         <Link to="" className='flex items-center gap-[5px] py-[5px]'>
-   //              <FiLogOut></FiLogOut>  Đăng xuất
-   //         </Link>
-   //       )
-
-   //    },
-   //    {
-   //       key: '6',
-   //       label: (
-   //         <Link to="" className='flex items-center gap-[5px] py-[5px]'>
-   //              <MdOutlineLockReset></MdOutlineLockReset>  Quên mật khẩu
-   //         </Link>
-   //       )
-
-   //    },
-   // ];
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    return (
       <div className='main-header'>
