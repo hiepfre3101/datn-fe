@@ -5,8 +5,8 @@ import { removeFromCart, updateItem, removeAllProductFromCart } from '../../../.
 const ProductsInCart = () => {
    const dispatch = useDispatch();
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
-   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
-   console.log(cart.items);
+   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
+   console.log(cart.products);
 
    const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number) => {
       if (e.target.value === '') {
@@ -35,7 +35,7 @@ const ProductsInCart = () => {
    };
    return (
       <div>
-         {cart?.items?.length === 0 ? (
+         {cart?.products?.length === 0 ? (
             <div className='cart-emty'>
                <p className='cart-title xl:text-[30px]  border-[#e2e2e2] max-xl:text-[18px] text-[red] font-bold items-center text-center pb-[12px]'>
                   Không có sản phẩm trong giỏ hàng
@@ -61,7 +61,7 @@ const ProductsInCart = () => {
                   </span>
                </div>
                <div className='list-cart-item text-[#333333]'>
-                  {cart?.items?.map((item: any, index: number) => (
+                  {cart?.products?.map((item: any, index: number) => (
                      <div
                         key={index}
                         className='cart-item py-[30px] flex max-lg:flex-wrap items-center border-b-[1px] border-[#e2e2e2]'
@@ -90,22 +90,6 @@ const ProductsInCart = () => {
                         </div>
                         <div className='cart-item-qty lg:w-[20%] md:w-[50%] max-lg:pt-[15px] max-lg:flex max-lg:gap-[15px] max-sm:w-full '>
                            <div className='product-size-action flex lg:justify-center'>
-                              {/* <div className='product-size flex  '>
-                                 <span className='flex gap-2'>
-                                    <label htmlFor='size'>Sô lượng</label>
-                                    <input
-                                       id='size'
-                                       className={`outline-none border ${
-                                          item.weight == '' ? 'border-red-500' : ''
-                                       } border-[#e2e2e2] rounded-[5px] pl-[10px] ml-[10px]`}
-                                       type='number'
-                                       value={item?.weight?.toString()}
-                                       onChange={(e) => handleInputSize(e, item._id, item.totalWeight || 8.5)}
-                                    />
-                                    <span>Kg</span>
-                                 </span>
-                                
-                              </div> */}
                               <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                                  <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Kg:</div>
 
@@ -122,6 +106,12 @@ const ProductsInCart = () => {
                                           />
                                           <div className='flex flex-col'>
                                              <button
+                                                disabled={
+                                                   item.weight == item.totalWeight &&
+                                                   item.weight + 0.5 >= item.totalWeight
+                                                      ? true
+                                                      : false
+                                                }
                                                 onClick={() =>
                                                    dispatch(
                                                       updateItem({
@@ -135,11 +125,17 @@ const ProductsInCart = () => {
                                                    )
                                                 }
                                                 type='button'
-                                                className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
+                                                className={`${
+                                                   item.weight == item.totalWeight &&
+                                                   item.weight + 0.5 >= item.totalWeight
+                                                      ? 'bg-gray-300'
+                                                      : ''
+                                                } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
                                              >
                                                 +
                                              </button>
                                              <button
+                                                disabled={item.weight == 0 && item.weight - 0.5 <= 0 ? true : false}
                                                 onClick={() =>
                                                    dispatch(
                                                       updateItem({
@@ -152,7 +148,9 @@ const ProductsInCart = () => {
                                                    )
                                                 }
                                                 type='button'
-                                                className='inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]'
+                                                className={`${
+                                                   item.weight == 0 && item.weight - 0.5 <= 0 ? 'bg-gray-300' : ''
+                                                } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
                                              >
                                                 -
                                              </button>

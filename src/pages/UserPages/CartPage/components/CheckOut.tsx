@@ -9,7 +9,7 @@ const CheckOut = () => {
             <div className='temporary items-center flex justify-between pb-[17px] border-b-[1px] border-[#e2e2e2]'>
                <span className='temporary-title font-bold'>Tính tạm</span>
                <span className='temporary font-bold text-[#333333] '>
-                  {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                  {cart.totalPayment.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                </span>
             </div>
             <div className='discount flex justify-between items-center pb-[17px] border-b-[1px] border-[#e2e2e2] mt-[10px]'>

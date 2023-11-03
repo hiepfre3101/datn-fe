@@ -1,21 +1,21 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { message } from 'antd';
 export type ICartSlice = {
-   name: string;
+   customerName: string;
    email: string;
-   address: string;
+   shippingAddress: string;
    phoneNumber: string;
-   items: any[];
-   totalPrice: number;
+   products: any[];
+   totalPayment: number;
    cartName: string;
 };
 const initialState: ICartSlice = {
-   name: '',
+   customerName: '',
    email: '',
-   address: '',
+   shippingAddress: '',
    phoneNumber: '',
-   items: [],
-   totalPrice: 0,
+   products: [],
+   totalPayment: 0,
    cartName: 'cart'
 };
 const cartSlice = createSlice({
@@ -29,9 +29,9 @@ const cartSlice = createSlice({
          if (!localStorage.getItem(state.cartName)) {
             localStorage.setItem(state.cartName, '[]');
          }
-         const items = localStorage.getItem(state.cartName) ? JSON.parse(localStorage.getItem(state.cartName)!) : [];
-         state.items = items;
-         state.totalPrice = items.reduce(
+         const products = localStorage.getItem(state.cartName) ? JSON.parse(localStorage.getItem(state.cartName)!) : [];
+         state.products = products;
+         state.totalPayment = products.reduce(
             (accumulator: any, product: any) => accumulator + product.price * product.weight,
             0
          );
@@ -40,57 +40,61 @@ const cartSlice = createSlice({
          const value = action.payload;
          let isItemExist = false;
          let error = false;
-         const items = state.items.map((item: any) => {
+         if (value.weight > value.totalWeight) {
+            message.error('Số lượng đã quá số lượng hiện có');
+            error = true;
+         }
+         const products = state.products.map((item: any) => {
             if (item?._id === value._id) {
                isItemExist = true;
                if (item.weight + value.weight <= value.totalWeight) {
                   item.weight += value.weight;
                } else {
-                  message.error('số lượng đã quá số lượng hiện có');
+                  message.error('Số lượng đã quá số lượng hiện có');
                   error = true;
                }
             }
             return item;
          });
          if (isItemExist && !error) {
-            state.totalPrice += items.reduce(
+            state.totalPayment += products.reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
             );
 
-            localStorage.setItem(state.cartName, JSON.stringify([...items]));
-            state.items = items;
+            localStorage.setItem(state.cartName, JSON.stringify([...products]));
+            state.products = products;
             message.success('thêm sản phẩm vào giỏ hàng thành công');
          } else if (!isItemExist && !error) {
-            state.totalPrice = [...state.items, value].reduce(
+            state.totalPayment = [...state.products, value].reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
             );
-            localStorage.setItem(state.cartName, JSON.stringify([...state.items, value]));
-            state.items = [...state.items, value];
+            localStorage.setItem(state.cartName, JSON.stringify([...state.products, value]));
+            state.products = [...state.products, value];
             message.success('thêm sản phẩm vào giỏ hàng thành công');
          }
       },
       removeFromCart: (state, action) => {
-         const nextCartItems = state.items.filter((cartItem: any) => cartItem._id !== action.payload.id);
-         state.totalPrice = nextCartItems.reduce(
+         const nextCartproducts = state.products.filter((cartItem: any) => cartItem._id !== action.payload.id);
+         state.totalPayment = nextCartproducts.reduce(
             (accumulator, product) => accumulator + product.price * product.weight,
             0
          );
-         state.items = nextCartItems;
+         state.products = nextCartproducts;
          message.success('Xóa sản phẩm khỏi giỏ hàng thành công');
-         localStorage.setItem(state.cartName, JSON.stringify(state.items));
+         localStorage.setItem(state.cartName, JSON.stringify(state.products));
       },
       removeAllProductFromCart: (state) => {
-         state.items = [];
-         state.totalPrice = 0;
+         state.products = [];
+         state.totalPayment = 0;
          message.success('Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công');
-         localStorage.setItem(state.cartName, JSON.stringify(state.items));
+         localStorage.setItem(state.cartName, JSON.stringify(state.products));
       },
       updateItem: (state, action) => {
          console.log(action.payload);
 
-         const nextCartItems = state.items.map((cartItem: any) => {
+         const nextCartproducts = state.products.map((cartItem: any) => {
             if (cartItem._id === action.payload.id) {
                if (action.payload.weight >= 0) {
                   return {
@@ -101,12 +105,12 @@ const cartSlice = createSlice({
             }
             return cartItem;
          });
-         localStorage.setItem(state.cartName, JSON.stringify(nextCartItems));
-         state.totalPrice = nextCartItems.reduce(
+         localStorage.setItem(state.cartName, JSON.stringify(nextCartproducts));
+         state.totalPayment = nextCartproducts.reduce(
             (accumulator, product) => accumulator + product.price * product.weight,
             0
          );
-         state.items = nextCartItems;
+         state.products = nextCartproducts;
          message.success('Cập nhật sản phẩm thành công');
       }
    }

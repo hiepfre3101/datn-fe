@@ -8,7 +8,7 @@ import ProductInfo from './components/Productinfo';
 const ProductDetail = () => {
    const { id } = useParams();
    const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
-   console.log(oneProductData);
+   // console.log(oneProductData);
 
    const objId = {
       idCategory: oneProductData?.body.data.categoryId._id,
