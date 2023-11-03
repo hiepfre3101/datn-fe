@@ -1,16 +1,15 @@
-import { ConfigProvider, Rate } from 'antd';
+import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
 import { useDispatch } from 'react-redux';
-import { addItem } from '../../../../slices/cartSlice';
+import {  addItem } from '../../../../slices/cartSlice';
 import { useEffect, useState } from 'react';
 import { IProductInfoProp } from '../../../../interfaces/product';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import { AiOutlineHeart } from 'react-icons/ai';
+import { Link } from 'react-router-dom';
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
-   console.log(product_info);
-
    const [inputWeight, setinputWeight] = useState<any>(0.5);
-   const [totalWeight, setTotalWeight] = useState<number>();
+   const [totalWeight, setTotalWeight] = useState<number>();   
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
@@ -50,7 +49,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
          dispatch(addItem(product));
       } else {
          setinputWeight(0.5);
-         alert('Kg không hợp lệ');
+         message.error('Kg không hợp lệ');
       }
    };
    const dec = () => {
@@ -68,7 +67,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                <div className='pro-detail-header xl:w-[42%] lg:w-[50%] max-lg:w-full '>
                   <ProductThumbsGallery body={product_info?.images}></ProductThumbsGallery>
                </div>
-               <div className='pro-detail-content lg:sticky lg:top-[10px] xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
+               <div className='pro-detail-content max-lg:mt-[30px] lg:sticky lg:top-[10px] xl:pl-[60px] lg:pl-[30px] xl:w-[58%] lg:w-[50%] max-lg:w-full '>
                   <div className='rate flex items-center'>
                      <ConfigProvider
                         theme={{
@@ -145,12 +144,15 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                         </button>
                      </div>
                      <div className='btn-checkout-wrap group/btn-add-cart max-sm:w-full border-[2px] border-[#333333] transition-colors duration-300 hover:border-[#d2401e] rounded-[5px] overflow-hidden'>
+                        <Link to="/cart">
                         <button
+                           onClick={add_to_cart}
                            type='button'
                            className=' btn-checkout py-[12px] text-white w-full transition-colors duration-300 z-[3] before:z-[-1] sm:px-[71px] text-center   font-bold bg-[#d2401e]  before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-[#333333] before:transition-all  before:duration-300 before:group-hover/btn-add-cart:scale-x-[0]    before:right-0 before:left-[0px] before:top-0'
                         >
                            MUA NGAY
                         </button>
+                        </Link>       
                      </div>
                   </div>
                   <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
