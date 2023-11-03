@@ -9,16 +9,16 @@ import AddCategory from '../pages/AdminPages/Category/AddCategory';
 import UpdateCategory from '../pages/AdminPages/Category/UpdateCategory';
 import HomePage from '../pages/UserPages/HomePage/HomePage';
 import ProductPage from '../pages/UserPages/ProductPage/ProductPage';
-
 import UpdateProduct from '../pages/AdminPages/Product/UpdateProduct';
-
 import LoginPage from '../pages/UserPages/LoginPage/LoginPage';
 import SignUpPage from '../pages/UserPages/SignUpPage/SignUpPage';
 import CartPage from '../pages/UserPages/CartPage/CartPage';
+import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
+import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
-import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
+import OrderDetail from '../pages/UserPages/OderPage/OrderDetail'
 import OrderPage from '../pages/UserPages/OderPage/OrderPage';
 const router = createBrowserRouter([
    {
@@ -52,8 +52,16 @@ const router = createBrowserRouter([
          {
             path: '/products/:id',
             element: <ProductDetail />
+         },
+         {
+            path: '/my-order/:id',
+            element: <OrderDetail />
          }
       ]
+   },
+   {
+      path: '*',
+      element: <NotFoundPage />
    },
    {
       path: '/manage',

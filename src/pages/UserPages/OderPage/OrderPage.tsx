@@ -1,52 +1,43 @@
 
 import { Link } from "react-router-dom";
 import InputComponent from "./Component/TabInput"
-import { Button, Divider, Space, Table, Tag } from 'antd'
+import { Button, Divider, Space, Table, Tag, message } from 'antd'
+import { useEffect, useState } from "react";
+import { IOder } from "../../../interfaces/order";
+import Loading from "../../../components/Loading/Loading";
+import { getOrder } from "../../../api/order";
+
 
 const { Column } = Table;
 
-interface DataType {
-  key: React.Key;
-  id: string;
-  name: string;
-  date: string;
-  phone: string;
-  trangthai: string;
-}
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-// data fake
-const data: DataType[] = [
-  {
-    key: '1',
-    id: '1',
-    name: 'John',
-    date: '23/10/2023',
-    phone: '09876543',
-    trangthai: 'đã giao'
-  },
-  {
-    key: '2',
-    id: '2',
-    name: 'John',
-    date: '23/10/2023',
-    phone: '09876543',
-    trangthai: 'đang giao'
-  },
-  {
-    key: '3',
-    id: '3',
-    name: 'John',
-    date: '23/10/2023',
-    phone: '09876543',
-    trangthai: 'đã hủy'
-  },
-
-];
 
 const OrderPage = () => {
 
+  const [orders, setOrders] = useState<IOder>();
+  const [loading, setLoading] = useState<boolean>(false);
 
+  // const orderDatas = orders && orderData(orders)
+  useEffect(() => {
+
+    (async () => {
+      try {
+        setLoading(true);
+        const {
+          data: { body }
+        } = await getOrder();
+        setOrders(body.data);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        message.error('Loi he thong!');
+        console.log(error);
+      }
+    })();
+  }, []);
+  console.log(orders);
+
+
+  if (loading) return <Loading sreenSize='lg' />;
   return (
     <div className="main">
 
@@ -91,25 +82,25 @@ const OrderPage = () => {
           <Divider></Divider>
 
           <div className="bg-slate-50">
-            <Table dataSource={data} pagination={{ pageSize: 10 }} scroll={{ y: 800 }} >
-              <Column title="ID" dataIndex="id" key="id" />
-              <Column title="Ngày mua" dataIndex="date" key="date" />
-              <Column title="Tên" dataIndex="name" key="name" />
-              <Column title="Số điện thoại" dataIndex="phone" key="phone" />
-              <Column title="Trạng thái" dataIndex="trangthai" key="trangthai"
-                render={(_: any, record: DataType) => {
+            <Table dataSource={orders} pagination={{ pageSize: 10 }} scroll={{ y: 800 }} >
+              <Column title="ID" dataIndex="_id" key="id" />
+              <Column title="Ngày mua" dataIndex="createdAt" key="createdAt" />
+              <Column title="Tên" dataIndex="customerName" key="customerName" />
+              <Column title="Số điện thoại" dataIndex="phoneNumber" key="phoneNumber" />
+              <Column title="Trạng thái" dataIndex="status" key="status"
+                render={(_: IOder, record: IOder) => {
                   let color = 'white'
-                  if (record.trangthai == 'đang giao') {
+                  if (record.status == 'chờ xác nhận') {
                     color = 'yellow'
                   }
-                  if (record.trangthai == 'đã giao') {
+                  if (record.status == 'đang giao hàng') {
                     color = 'green'
                   }
-                  if (record.trangthai == 'đã hủy') {
+                  if (record.status == 'giao hàng thành công') {
                     color = 'red'
                   }
                   return (<Tag color={color}>
-                    {record.trangthai}
+                    {record.status}
                   </Tag>)
                 }
                 }
@@ -117,16 +108,38 @@ const OrderPage = () => {
               <Column
                 title="Hành động"
                 key="action"
-                render={(_: any, record: DataType) => (
+                render={(_: IOder, record: IOder) => (
                   <Space size="middle">
 
                     <Link to={''}><Button className="bg-amber-500" >Mua lại</Button></Link>
-                    <Link to={'/my-order/:id'}><Button className="bg-greenPrimary">Chi tiết</Button></Link>
+                    <Link to={'/my-order/' + record?._id}><Button className="bg-greenPrimary">Chi tiết</Button></Link>
 
                   </Space>
                 )}
               />
             </Table>
+            {/* <table className="w-full table-auto">
+              <thead>
+                <tr>
+                  <th>Song</th>
+                  <th>Artist</th>
+                  <th>Year</th>
+                </tr>
+              </thead>
+              <tbody>
+                
+                {
+                  orders?.map((item) =>{
+                    return <tr>
+                    <td>{item._id}</td>
+                    <td>{item.createdAt}</td>
+                    <td>{item.customerName}</td>
+                    <td ></td>
+                  </tr>
+                  })
+                }
+              </tbody>
+            </table> */}
           </div>
         </div>
       </div>

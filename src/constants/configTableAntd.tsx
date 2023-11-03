@@ -1,6 +1,7 @@
-import { IProductExpanded } from '../interfaces/product';
+import { IProductExpanded, IProductInOrder } from '../interfaces/product';
 import { IResponseHasPaginate } from '../interfaces/base';
 import { IUser } from '../interfaces/auth';
+import { IOder } from '../interfaces/order';
 type DataType = {
    key: string;
    _id?: string;
@@ -24,6 +25,22 @@ type UserDataType = DataType & {
    vouchers?: string[];
    state?: boolean;
 };
+
+type OrderDataType = DataType & {
+  
+   userId?: string | null;
+   products?: IProductInOrder[];
+   totalPayment?: number;
+   customerName?: string;
+   phoneNumber?: string;
+   email?: string;
+   note?: string;
+   shippingAddress?: string;
+   receivedDate?: null;
+   pay?: boolean;
+   status?: string;
+   createdAt?: string;
+}
 
 export const productData = (data: IResponseHasPaginate<IProductExpanded>): ProductDataType[] => {
    return data.body.data.map((product, index) => ({
@@ -52,3 +69,22 @@ export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {
       vouchers: user.voucher
    }));
 };
+
+export const orderData = (data: IResponseHasPaginate<IOder>): OrderDataType[] => {
+   return data.body.data.map((order, index) => ({
+      key: index.toString(),
+      _id: order._id,
+      userId: order.userId,
+      products: order.products,
+      totalPayment: order.totalPayment,
+      customerName: order.customerName,
+      phoneNumber: order.phoneNumber,
+      email: order.email,
+      note: order.note,
+      shippingAddress: order.shippingAddress,
+      receivedDate: order.receivedDate,
+      pay: order.pay,
+      status: order.status,
+      createdAt: order.createdAt
+   }));
+}

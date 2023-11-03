@@ -1,12 +1,11 @@
 import { useState } from "react";
-import {  Radio , Input } from 'antd';
+import { Radio, Input } from 'antd';
 const InputComponent = ({ inputs }) => {
     const [input, setInput] = useState(inputs[0]);
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleClick = (id: any) => {
         setInput(inputs[id]);
-    };
+    }
 
     return (
         <div>
@@ -16,10 +15,13 @@ const InputComponent = ({ inputs }) => {
                 <Radio.Button onClick={() => handleClick(2)} >Số điện thoại</Radio.Button>
                 <Radio.Button onClick={() => handleClick(3)} >Ngày mua</Radio.Button>
                 <Radio.Button onClick={() => handleClick(4)} >ID</Radio.Button>
+
             </div >
             <div>
+                <form action="" >
 
-                <Input className="w-[40%]" type="text" value={input.value} placeholder={input.label} />
+                    <Input className="w-[40%]" type="text" value={input.value} placeholder={input.label} />
+                </form>
             </div>
         </div>
     );

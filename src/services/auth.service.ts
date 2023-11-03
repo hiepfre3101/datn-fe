@@ -5,7 +5,7 @@ import { AuthLoginInput } from '../interfaces/auth';
 const authApi = createApi({
    reducerPath: 'authApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/api',
+      baseUrl: 'http://localhost:8080/api',
       credentials: 'include',
    }),
    tagTypes: ['auth'],
@@ -30,7 +30,7 @@ const authApi = createApi({
          },
          invalidatesTags: ['auth']
       }),
-      getToken: builder.query<TokenResponse, void>({
+      getToken: builder.query<DataAuthResponse, void>({
          query: () => ({
             url: '/token',
             method: 'GET',
