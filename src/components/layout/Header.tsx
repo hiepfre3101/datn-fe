@@ -4,20 +4,23 @@ import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { Popover } from 'antd';
+import { logoUrl } from '../../constants/imageUrl';
 
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
+   const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
       dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
+      navigate('/')
    };
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
@@ -68,7 +71,7 @@ const Header = () => {
          section_search_modal?.classList.toggle('!translate-y-[0%]');
       }, 600);
    };
-   var oldScrollY = window.scrollY;
+   let oldScrollY = window.scrollY;
    const fixedMenu = () => {
       const header = document.querySelector('.header');
       const wrap_header = document.querySelector('.main-header');
@@ -101,8 +104,8 @@ const Header = () => {
                   <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
                      <Link to='/'>
                         <img
-                           className='logo-img max-w-[120px]'
-                           src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/logo/logo.png'
+                           className='logo-img max-w-[120px] max-h-[200px]'
+                           src={logoUrl}
                            alt=''
                         />
                      </Link>
