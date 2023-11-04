@@ -19,9 +19,6 @@ const CheckOutPage = () => {
    const [handleAddOrder] = useAddOrderMutation();
    const [current, setCurrent] = useState(0);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
-   if(cart.items.length <= 0) {
-      window.location.href = '/';
-   }
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const navaigate = useNavigate()
    const dispatch = useDispatch();
