@@ -6,3 +6,12 @@ import { IOder } from '../interfaces/order';
 export const getDetailOrder = (id: string): Promise<AxiosResponse<IResponse<IOder>>> => {
    return instance.get('orders/' + id);
 };
+export const getOrder = (): Promise<AxiosResponse<IResponse<IOder[]>>> => {
+   return instance.get('orders');
+};
+
+export const getOrderForMember = (): Promise<AxiosResponse<IResponse<IOder[]>>> => {
+   return instance.get('/orders-member', {
+      withCredentials: true
+   });
+};

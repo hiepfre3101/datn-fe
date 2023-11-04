@@ -18,7 +18,8 @@ import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
 import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
-import OrderDetail from '../pages/UserPages/OrderPage/OrderDetail';
+import OrderDetail from '../pages/UserPages/OderPage/OrderDetail'
+import OrderPage from '../pages/UserPages/OderPage/OrderPage';
 const router = createBrowserRouter([
    {
       path: '/',
@@ -48,6 +49,10 @@ const router = createBrowserRouter([
             path: '/cart',
             element: <CartPage />,
             errorElement: <NotFoundPage />
+         },
+         {
+            path: '/orders',
+            element: <OrderPage />
          },
          {
             path: '/products/:id',
