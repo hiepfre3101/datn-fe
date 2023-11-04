@@ -11,7 +11,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const [inputWeight, setinputWeight] = useState<any>(0.5);
    const [totalWeight, setTotalWeight] = useState<number>();   
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (/^[\d.]+$/.test(e.target.value)){
+      if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
          if (value.endsWith('.') && !/\.\d+$/.test(value)) {
             setinputWeight(value);
