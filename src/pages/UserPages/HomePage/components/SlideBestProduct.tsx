@@ -7,14 +7,21 @@ import { ConfigProvider, Rate } from 'antd';
 import { AiOutlineHeart, AiOutlineEye } from 'react-icons/ai';
 import { IProduct, IProductExpanded } from '../../../../interfaces/product';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { saveProduct } from '../../../../slices/productSlice';
+import { addItem } from '../../../../slices/cartSlice';
+import { IShipmentOfProduct } from '../../../../interfaces/shipment';
+
+import QuickView from '../../../../components/QuickView/QuickView';
+import { RootState } from '../../../../store';
 interface IRelatedProduct {
-   productImgs: IProductExpanded[] | undefined;
+   products: IProductExpanded[] | undefined;
 }
-export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
-   const dispatch = useDispatch()
-   const openQuickViewModal = (data:IProduct) => {
+export default function SlideBestProduct({ products }: IRelatedProduct) {
+   const dispatch = useDispatch();
+   const productSlice = useSelector((state: RootState) => state.productSlice.products);
+   
+   const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
       const modal_product = document.querySelector('.modal-product');
@@ -25,13 +32,26 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
       setTimeout(() => {
          const modal_product_content = document.querySelector('.modal-product-content');
          modal_product_content?.classList.toggle('lg:!scale-[1]');
-         modal_product_content?.classList.toggle('lg:opacity-100');
+         modal_product_content?.classList.toggle('lg:!opacity-100');
          modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
       }, 300);
       dispatch(saveProduct(data))
-   };
 
-   
+   };
+   const add_to_cart = (data: IProductExpanded) => {
+      const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
+         return accumulator + shipmentWeight.weight;
+      }, 0);
+      const product = {
+         _id: data?._id,
+         name: data?.productName,
+         images: data?.images[0].url,
+         price: data?.shipments[0]?.price,
+         weight: 1,
+         totalWeight: totalWeight
+      };
+      dispatch(addItem(product));
+   };
    return (
       <>
          <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
@@ -67,7 +87,7 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                modules={[Navigation, Autoplay]}
                className='mySwiper slide-best-pr pb-[75px]'
             >
-               {productImgs?.map((item) => {
+               {products?.map((item) => {
                   return (
                      <>
                         <SwiperSlide>
@@ -77,28 +97,29 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                                     -{item.discount}%
                                  </span>
                                  <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
-                                    <Link to={'/products/'+item._id}>
-                                    <div
-                                       className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '
-                                    >
-                                       <img
-                                          className='product-main-img  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover object-left-bottom'
-                                          src={item.images[0].url}
-                                          alt=''
-                                       />
-                                       <img
-                                          className='product-sub-img max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover object-left-bottom'
-                                          src={item.images[1].url}
-                                          alt=''
-                                       />
-                                    </div>
+                                    <Link to={'/products/' + item._id}>
+                                       <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
+                                          <img
+                                             className='product-main-img w-[280px] h-[340px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover object-left-bottom'
+                                             src={item.images[0].url}
+                                             alt=''
+                                          />
+                                          <img
+                                             className='product-sub-img w-[280px] h-[340px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover object-left-bottom'
+                                             src={item.images[1].url}
+                                             alt=''
+                                          />
+                                       </div>
                                     </Link>
                                     <div className='product-action max-xl:w-full max-xl:justify-center  transition-all duration-300 xl:invisible xl:opacity-0 flex absolute xl:bottom-[50%] bottom-0 xl:right-[50%] xl:translate-x-[50%] xl:gap-[15px]  max-xl:gap-[10px] group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible'>
-                                       <button className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'>
+                                       <button
+                                          onClick={() => add_to_cart(item)}
+                                          className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'
+                                       >
                                           <HiOutlineShoppingBag></HiOutlineShoppingBag>
                                        </button>
                                        <button
-                                          onClick={()=>openQuickViewModal(item)}
+                                          onClick={() => openQuickViewModal(item)}
                                           className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'
                                        >
                                           <AiOutlineEye></AiOutlineEye>
@@ -108,10 +129,9 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                                        </button>
                                     </div>
                                  </div>
-                                 <Link to={`/products/`+item._id}>
+                                 <Link to={`/products/` + item._id}>
                                     <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
-                                      
-                                      {item.productName}
+                                       {item.productName}
                                     </p>
                                  </Link>
                                  <div className='rate text-center'>
@@ -139,6 +159,7 @@ export default function SlideBestProduct({ productImgs }: IRelatedProduct) {
                })}
             </Swiper>
          </div>
+               <QuickView product_info={productSlice} ></QuickView>
       </>
    );
 }

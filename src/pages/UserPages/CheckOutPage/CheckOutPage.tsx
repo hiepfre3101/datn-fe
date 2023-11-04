@@ -1,85 +1,168 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from 'react';
+import OrderDetail from './components/orderDetail';
+import OrderNote from './components/orderNote';
+import OrderCheckOut from './components/orderCheckOut';
+import { Button, ConfigProvider, Steps, message, notification } from 'antd';
+import { Link, useNavigate } from 'react-router-dom';
+import { FormProvider, useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+   ICartItems,
+   ICartSlice,
+   removeAllProductFromCart,
+   removeFromCart,
+   updatePrice
+} from '../../../slices/cartSlice';
+import { useAddOrderMutation } from '../../../services/order.service';
+import { IOrder } from '../../../interfaces/order';
 const CheckOutPage = () => {
+   // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
+
+   // const handleChangeCheckOutState = (state:string) => {
+   //    setCheckOutState(state)
+   // }
+   const methods = useForm<IOrder>();
+   const [handleAddOrder] = useAddOrderMutation();
+   const [current, setCurrent] = useState(0);
+   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const [loadingState, setLoadingState] = useState<boolean>(false);
+   const navaigate = useNavigate();
+   const dispatch = useDispatch();
+   const onSubmit = async (data: IOrder) => {
+      if (current < 2) {
+         next();
+      }
+      if (current == 2) {
+         setLoadingState(!loadingState);
+         if (data.note == '') {
+            delete data.note;
+         }
+         data.products = cart.items;
+         data.totalPayment = cart.totalPrice;
+         try {
+            await handleAddOrder(data)
+               .then((res) => {
+                  if ('error' in res && res.error && 'data' in res.error) {
+                     const errorData = res.error.data as any;
+                     if (errorData.message == 'Product not exist') {
+                        errorData.body.data.map((item: ICartItems) => {
+                           dispatch(removeFromCart({ id: item._id }));
+                        });
+                        notification.info({
+                           message: 'Cập nhật sản phẩm trong giỏ hàng',
+                           description:
+                              'Trong giỏ hàng của bạn có tồn tại sản phẩm không có trên hệ thống và đã được cập nhật lại.'
+                        });
+                     } else if (errorData.message == 'Price is not valid') {
+                        errorData.body.data.map((item: ICartItems) => {
+                           dispatch(updatePrice(item));
+                        });
+                        notification.info({
+                           message: 'Cập nhật sản phẩm trong giỏ hàng',
+                           description:
+                              'Thông tin sản phẩm trong giỏ hàng của bạn không thống nhất với hệ thống và đã được cập nhật lại.'
+                        });
+                     } else {
+                        notification.error({
+                           message: 'Mua hàng thấy bại',
+                           description: errorData.message
+                        });
+                     }
+                  } else {
+                     if ('data' in res && 'status' in res.data && res.data.status == 201) {
+                        message.success('Mua hàng thành công');
+                        navaigate('/ordercomplete');
+                        dispatch(removeAllProductFromCart());
+                     }
+                  }
+               })
+               .finally(() => {
+                  setLoadingState(false);
+               });
+         } catch (error) {
+            console.log(error);
+         }
+      }
+   };
+   const next = () => {
+      setCurrent(current + 1);
+   };
+
+   const prev = () => {
+      setCurrent(current - 1);
+   };
+   const steps = [
+      {
+         title: 'Thông tin người nhận',
+         content: <OrderDetail></OrderDetail>
+      },
+      {
+         title: 'Ghi chú',
+         content: <OrderNote></OrderNote>
+      },
+      {
+         title: 'Thanh toán',
+         content: <OrderCheckOut loadingState={loadingState} methods={methods} onSubmit={onSubmit}></OrderCheckOut>
+      }
+   ];
+   const items = steps.map((item) => ({ key: item.title, title: item.title }));
    return (
       <>
          <div className='main'>
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
-                     <a href=''>Trang chủ </a> / Thanh toán
+                     <Link to='/'>Trang chủ </Link> / Thanh toán
                   </span>
                </div>
             </section>
-            <section className='section-chekout lg:my-[100px] md:my-[80px] max-md:my-[60px]'>
-               <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
-                  <div className='checkout-header'>
-                     <div className='checkout-tab'>
-                        <ul className='flex items-center justify-center mb-[24px] gap-[40px]'>
-                           <li className='text-[#51A55C] text-[20px] w-[40px] h-[40px] flex items-center justify-center font-bold shadow-[0px_0px_10px_rgba(51,51,51,0.15)] rounded-[100%]'>
-                              1
-                           </li>
-                           <li className='text-[#51A55C] text-[20px] w-[40px] h-[40px] flex items-center justify-center font-bold shadow-[0px_0px_10px_rgba(51,51,51,0.15)] rounded-[100%]'>
-                              2
-                           </li>
-                           <li className='text-[#51A55C] text-[20px] w-[40px] h-[40px] flex items-center justify-center font-bold shadow-[0px_0px_10px_rgba(51,51,51,0.15)] rounded-[100%]'>
-                              3
-                           </li>
-                        </ul>
+
+            <FormProvider {...methods}>
+               <section className='section-chekout lg:my-[100px] md:my-[80px] max-md:my-[60px]'>
+                  <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
+                     <div className='checkout-header mb-[40px]'>
+                        <div className='checkout-tab'>
+                           <ConfigProvider
+                              theme={{
+                                 components: {
+                                    Steps: {
+                                       colorPrimary: '#51A55C'
+                                    }
+                                 }
+                              }}
+                           >
+                              <Steps current={current} items={items} />
+                           </ConfigProvider>
+                        </div>
+                     </div>
+
+                     <div className='checkout-content'>
+                        <div>{steps[current].content}</div>
+                        <div style={{ marginTop: 24 }}>
+                           {current < steps.length - 1 && (
+                              <Button
+                                 className='bg-[#51A55C] text-white hover:bg-[#51A55C] hover:!border-[#51A55C] hover:!text-black'
+                                 type='text'
+                                 onClick={methods.handleSubmit(onSubmit)}
+                              >
+                                 Next
+                              </Button>
+                           )}
+                           {current > 0 && (
+                              <Button
+                                 className=' hover:!border-[#51A55C] hover:!text-[#51A55C] '
+                                 style={{ margin: '0 8px' }}
+                                 onClick={() => prev()}
+                              >
+                                 Previous
+                              </Button>
+                           )}
+                        </div>
                      </div>
                   </div>
-                  <div className='checkout-content'>
-                     <div className='order-detail'>
-                        <form action=''>
-                           <h2 className='form-title text-[26px] text-[#333333] font-bold'>Thông tin đơn hàng</h2>
-                           <div className='order-form mt-[24px]'>
-                              <div className='order-form-item mt-[15px]'>
-                                 <label>
-                                    Họ và tên
-                                    <input
-                                       type='text'
-                                       className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
-                                       placeholder='Họ và tên'
-                                    />
-                                 </label>
-                              </div>
-                              <div className="order-form-item  double-input flex justify-between">
-                              <div className='form-item mt-[15px] w-[calc(50%-7px)]'>
-                                 <label>
-                                    Email
-                                    <input
-                                       type='text'
-                                       className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
-                                       placeholder='Email'
-                                    />
-                                 </label>
-                              </div>
-                              <div className='form-item mt-[15px] w-[calc(50%-7px)]'>
-                                 <label>
-                                    Số điện thoại
-                                    <input
-                                       type='text'
-                                       className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
-                                       placeholder='Số điện thoại'
-                                    />
-                                 </label>
-                              </div>
-                              </div>
-                              <div className='order-form-item mt-[15px]'>
-                                 <label>
-                                    Địa chỉ
-                                    <input
-                                       type='text'
-                                       className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
-                                       placeholder='Địa chỉ'
-                                    />
-                                 </label>
-                              </div>
-                           </div>
-                           <button className="order-detail-btn transition bg-[#d2401e] text-white px-[20px] py-[15px] rounded-[20px]">Xác nhận</button>
-                        </form>
-                     </div>
-                  </div>
-               </div>
-            </section>
+               </section>
+            </FormProvider>
          </div>
       </>
    );

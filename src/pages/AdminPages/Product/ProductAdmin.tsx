@@ -75,7 +75,12 @@ const ProductAdmin = () => {
                         Lọc
                      </button>
                   </header>
-                  <Table dataSource={products} pagination={{ pageSize: 50 }} scroll={{ y: 800 }} loading={isLoading}>
+                  <Table
+                     dataSource={products}
+                     pagination={{ pageSize: 50 }}
+                     scroll={{ y: 800, x: 2000 }}
+                     loading={isLoading}
+                  >
                      <Column
                         title='Ảnh sản phẩm'
                         fixed='left'
@@ -87,9 +92,11 @@ const ProductAdmin = () => {
                      <Column title='Tên' dataIndex='productName' key='productName' width={150} />
                      <Column title='Giá' dataIndex='price' key='price' width={150} />
                      <Column title='Danh mục ' dataIndex='category' key='category' width={150} />
-                     <Column title='Kho hàng' dataIndex='stock' key='stock' width={150} />
+                     <Column title='Số lượng kho hàng' dataIndex='stock' key='stock' width={150} />
+                     <Column title='Hạn sử dụng' dataIndex='expDate' key='stock' width={150} />
                      <Column
-                        width={150}
+                        fixed='right'
+                        width={100}
                         title='Chức năng '
                         key='_id'
                         dataIndex={'_id'}

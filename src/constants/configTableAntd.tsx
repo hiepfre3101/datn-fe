@@ -2,6 +2,7 @@ import { IProductExpanded, IProductInOrder } from '../interfaces/product';
 import { IResponseHasPaginate } from '../interfaces/base';
 import { IUser } from '../interfaces/auth';
 import { IOder } from '../interfaces/order';
+import { formatStringToDate } from '../helper';
 type DataType = {
    key: string;
    _id?: string;
@@ -27,7 +28,6 @@ type UserDataType = DataType & {
 };
 
 type OrderDataType = DataType & {
-  
    userId?: string | null;
    products?: IProductInOrder[];
    totalPayment?: number;
@@ -40,7 +40,7 @@ type OrderDataType = DataType & {
    pay?: boolean;
    status?: string;
    createdAt?: string;
-}
+};
 
 export const productData = (data: IResponseHasPaginate<IProductExpanded>): ProductDataType[] => {
    return data.body.data.map((product, index) => ({
@@ -49,7 +49,9 @@ export const productData = (data: IResponseHasPaginate<IProductExpanded>): Produ
       productName: product.productName,
       category: product.categoryId.cateName,
       image: product.images[0].url,
-      price: product.shipments[0]?.price || 0
+      price: product.shipments[0]?.price || 0,
+      stock: product.shipments[0]?.weight,
+      expDate: formatStringToDate(product.shipments[0]?.date)
    }));
 };
 
@@ -87,4 +89,4 @@ export const orderData = (data: IResponseHasPaginate<IOder>): OrderDataType[] =>
       status: order.status,
       createdAt: order.createdAt
    }));
-}
+};

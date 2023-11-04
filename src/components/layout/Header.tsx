@@ -1,16 +1,20 @@
 import { SearchOutlined } from '@ant-design/icons';
-import { AiOutlineUser, AiOutlineMenu } from 'react-icons/ai';
+import { AiOutlineUser, AiOutlineMenu, AiOutlineUserAdd } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
+import { RiBillLine } from 'react-icons/ri';
+import { FiLogIn, FiLogOut } from 'react-icons/fi';
+import { MdOutlineLockReset } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { Popover, Tooltip } from 'antd';
 import { logoUrl } from '../../constants/imageUrl';
 import { useEffect } from 'react';
-import { PiPackageLight } from 'react-icons/pi';
+import { BsBell } from 'react-icons/bs';
+import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [clearToken] = useClearTokenMutation();
@@ -102,6 +106,7 @@ const Header = () => {
       }
       oldScrollY = window.scrollY;
    };
+
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    return (
       <div className='main-header'>
@@ -125,12 +130,12 @@ const Header = () => {
                            </span>
                         </li>
                         <li className=' cursor-pointer main-menu-item group/menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative'>
-                           <a
-                              href=''
+                           <Link
+                              to='/'
                               className='group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px] '
                            >
                               Trang chủ
-                           </a>
+                           </Link>
                         </li>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
                            <a
@@ -205,47 +210,72 @@ const Header = () => {
                         >
                            <AiOutlineMenu></AiOutlineMenu>
                         </li>
+
                         <li
                            onClick={showModalSearch}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
                         >
                            <SearchOutlined></SearchOutlined>
                         </li>
-                        <li className='ml-[30px]'>
-                           <Link to='/orders'>
-                              <Tooltip title={<span className='text-white font-thin'>Tra cứu đơn hàng</span>}>
-                                 {' '}
-                                 <PiPackageLight className='w-6 h-6 hover:text-[#d2401e] text-[#6f6f6f]' />
-                              </Tooltip>
-                           </Link>
-                        </li>
+                        {!auth?.accessToken && (
+                           <li className='ml-[30px]'>
+                              <Link to='/orders'>
+                                 <Tooltip title={<span className='text-white font-thin'>Tra cứu đơn hàng</span>}>
+                                    {' '}
+                                    <PiPackageLight className='w-6 h-6 hover:text-[#d2401e] text-[#6f6f6f]' />
+                                 </Tooltip>
+                              </Link>
+                           </li>
+                        )}
                         <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
                            {!auth?.accessToken ? (
                               <Popover
                                  placement='bottom'
                                  content={
                                     <>
-                                       <Link to={'/signup'}>Đăng ký</Link>
-                                       <br />
-                                       <Link to={'/login'}>Đăng nhập</Link>
+                                       <Link to={'/login'} className='flex items-center gap-[5px] py-[5px]'>
+                                          <FiLogIn></FiLogIn>Đăng nhập
+                                       </Link>
+                                       <Link to={'/signup'} className='flex items-center gap-[5px] py-[5px]'>
+                                          <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
+                                       </Link>
+
+                                       <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                          <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
+                                       </Link>
                                     </>
                                  }
                                  trigger='hover'
                               >
                                  <span>
-                                    <AiOutlineUser className='w-7 h-7' />
+                                    <AiOutlineUser></AiOutlineUser>
                                  </span>
                               </Popover>
                            ) : (
                               <>
-                                 <div className='w-[5%] h-full'></div>
                                  <Popover
                                     placement='bottom'
                                     content={
                                        <>
-                                          <Link to={'/signup'}>Tài Khoản</Link>
-                                          <br />
-                                          <button onClick={() => onHandleLogout()}>Đăng xuất</button>
+                                          <div>
+                                             <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                                <PiUserListBold></PiUserListBold> Hồ sơ của bạn
+                                             </Link>
+                                          </div>
+
+                                          <div>
+                                             <Link to='/orders' className='flex items-center gap-[5px] py-[5px]'>
+                                                <RiBillLine></RiBillLine> Lịch sử mua hàng
+                                             </Link>
+                                          </div>
+                                          <div>
+                                             <button
+                                                className='flex items-center gap-[5px] py-[5px]'
+                                                onClick={() => onHandleLogout()}
+                                             >
+                                                <FiLogOut></FiLogOut>Đăng xuất
+                                             </button>
+                                          </div>
                                        </>
                                     }
                                     trigger='hover'
@@ -259,6 +289,13 @@ const Header = () => {
                            )}
                         </li>
 
+                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
+                           <BsBell></BsBell>
+
+                           <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
+                              10
+                           </span>
+                        </li>
                         <li
                            onClick={showMiniCart}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '

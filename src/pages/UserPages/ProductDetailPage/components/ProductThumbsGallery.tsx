@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import {  useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -15,10 +15,6 @@ import { IImageResponse } from '../../../../interfaces/image';
 
 export default function ProductThumbsGallery({ body }: IImageResponse) {
    const [thumbsSwiper, setThumbsSwiper] = useState<Swiperz | null>(null);
-   const [test, setTest] = useState(true);
-   useEffect(() => {
-      setTest(!test);
-   }, [body]);
    return (
       <>
          <Swiper
@@ -31,7 +27,7 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
                {body?.map((item) => {
                return (
                   <>
-                     <SwiperSlide  className='border  h-[527px] border-[#e2e2e2] overflow-hidden' >
+                     <SwiperSlide  className='border  sm:h-[527px] max-sm:h-[400px] border-[#e2e2e2] ' >
                         <img className='w-full h-full rounded-[5px]' src={item.url} />
                      </SwiperSlide>
                   </>
@@ -57,7 +53,7 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
             freeMode={true}
             watchSlidesProgress={true}
             modules={[FreeMode, Navigation, Thumbs]}
-            className='mySwiper product-sub-img mx-[35px] sm:mt-[30px] max-sm:mt-[15px]'
+            className='mySwiper product-sub-img sm:mx-[35px] max-sm:mx-[10px] sm:mt-[30px] max-sm:mt-[15px]'
          >
             {body?.map((item) => {
                return (
