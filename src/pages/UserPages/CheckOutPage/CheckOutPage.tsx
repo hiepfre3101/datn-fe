@@ -6,7 +6,7 @@ import { Button, ConfigProvider, Steps, message, notification } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartItems, ICartSlice, removeAllProductFromCart ,updatePrice} from '../../../slices/cartSlice';
+import { ICartItems, ICartSlice, removeAllProductFromCart ,removeFromCart,updatePrice} from '../../../slices/cartSlice';
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
 const CheckOutPage = () => {
@@ -37,13 +37,19 @@ const CheckOutPage = () => {
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
-            console.log(data);
-            
             await handleAddOrder(data).then(res=>{
                if ("error" in res && res.error && "data" in res.error) {
                   const errorData = res.error.data as any;
-                  console.log(errorData.message);
-                  if(errorData.message == "Dữ liệu không hợp lệ (price)"){
+                 if(errorData.message == "Product not exist"){
+                  errorData.body.data.map((item:ICartItems)=>{        
+                     dispatch(removeFromCart({ id: item._id }))
+                  })  
+                  notification.info({
+                     message:"Cập nhật sản phẩm trong giỏ hàng",
+                     description:"Trong giỏ hàng của bạn có tồn tại sản phẩm không có trên hệ thống và đã được cập nhật lại."
+                  })
+                 }
+                  else if(errorData.message == "Price is not valid"){
                      errorData.body.data.map((item:ICartItems)=>{
                         dispatch(updatePrice(item))
                      })  
@@ -52,9 +58,15 @@ const CheckOutPage = () => {
                         description:"Thông tin sản phẩm trong giỏ hàng của bạn không thống nhất với hệ thống và đã được cập nhật lại."
                      })                
                   }
+                  else{
+                     notification.error({
+                        message:"Mua hàng thấy bại",
+                        description:errorData.message
+                     }) 
+                  }
                 }   
                 else{
-                  if("data" in res && "status" in res.data) {
+                  if("data" in res && "status" in res.data && res.data.status == 201) {
                      message.success('Mua hàng thành công')
                      navaigate("/ordercomplete")
                      dispatch(removeAllProductFromCart())

@@ -4,6 +4,7 @@ import { ICartSlice } from '../../../../slices/cartSlice';
 import { useSelector } from 'react-redux';
 import {  UseFormReturn } from 'react-hook-form';
 import { IOrder } from '../../../../interfaces/order';
+import { Link } from 'react-router-dom';
 interface Iprops{
    onSubmit:(data: IOrder)=>void;
    methods: UseFormReturn<IOrder, any, undefined>;
@@ -34,9 +35,9 @@ const OrderCheckOut = ({onSubmit,methods,loadingState }:Iprops) => {
                            />
                         </div>
                         <div className='check-pro-content ml-[15px]'>
-                           <a href='#' className='block font-bold text-[#333333]'>
+                           <Link to={"/products/"+item._id} className='block font-bold text-[#333333]'>
                               {item.name}
-                           </a>
+                           </Link>
                            <span className='block font-bold mt-[2px]'>
                               Xuất sứ: <span className='font-[500]'>Trung Quốc</span>
                            </span>
