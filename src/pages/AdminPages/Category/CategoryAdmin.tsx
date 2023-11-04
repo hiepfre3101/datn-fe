@@ -21,7 +21,7 @@ const CategoryAdmin = () => {
                 <title>Danh mục</title>
             </Helmet>
 
-            <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '90%' }}>
+            <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
                 <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%]'>
                     <div className='flex justify-between items-center w-[90%]'>
                         <h1 className='text-3xl font-semibold text-[rgba(0,0,0,0.7)]'>Danh mục</h1>
@@ -59,7 +59,7 @@ const CategoryAdmin = () => {
 
                             {
                                 isLoading ? 'loading' :
-                                    data?.body.map((cate, index) => {
+                                    data?.body.data.map((cate, index) => {
 
                                         return <Card style={{ backgroundImage: `url(${cate.image.url})` }} className={`w-[200px] h-[200px] lg:w-[300px] lg:h-[300px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`} key={index}>
 

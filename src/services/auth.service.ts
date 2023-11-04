@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { AuthSignupInput, DataAuthResponse, TokenResponse } from '../interfaces/auth';
+import { AuthSignupInput, DataAuthResponse } from '../interfaces/auth';
 import { AuthLoginInput } from '../interfaces/auth';
 
 const authApi = createApi({
