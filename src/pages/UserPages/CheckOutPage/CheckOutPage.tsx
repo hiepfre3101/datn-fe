@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
@@ -6,7 +7,13 @@ import { Button, ConfigProvider, Steps, message, notification } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartItems, ICartSlice, removeAllProductFromCart ,updatePrice} from '../../../slices/cartSlice';
+import {
+   ICartItems,
+   ICartSlice,
+   removeAllProductFromCart,
+   removeFromCart,
+   updatePrice
+} from '../../../slices/cartSlice';
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
 const CheckOutPage = () => {
@@ -19,11 +26,8 @@ const CheckOutPage = () => {
    const [handleAddOrder] = useAddOrderMutation();
    const [current, setCurrent] = useState(0);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
-   if(cart.items.length <= 0) {
-      window.location.href = '/';
-   }
    const [loadingState, setLoadingState] = useState<boolean>(false);
-   const navaigate = useNavigate()
+   const navaigate = useNavigate();
    const dispatch = useDispatch();
    const onSubmit = async (data: IOrder) => {
       if (current < 2) {
@@ -31,40 +35,52 @@ const CheckOutPage = () => {
       }
       if (current == 2) {
          setLoadingState(!loadingState);
-         if(data.note==""){
-            delete data.note
+         if (data.note == '') {
+            delete data.note;
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
-            console.log(data);
-            
-            await handleAddOrder(data).then(res=>{
-               if ("error" in res && res.error && "data" in res.error) {
-                  const errorData = res.error.data as any;
-                  console.log(errorData.message);
-                  if(errorData.message == "Dữ liệu không hợp lệ (price)"){
-                     errorData.body.data.map((item:ICartItems)=>{
-                        dispatch(updatePrice(item))
-                     })  
-                     notification.info({
-                        message:"Cập nhật sản phẩm trong giỏ hàng",
-                        description:"Thông tin sản phẩm trong giỏ hàng của bạn không thống nhất với hệ thống và đã được cập nhật lại."
-                     })                
+            await handleAddOrder(data)
+               .then((res) => {
+                  if ('error' in res && res.error && 'data' in res.error) {
+                     const errorData = res.error.data as any;
+                     if (errorData.message == 'Product not exist') {
+                        errorData.body.data.map((item: ICartItems) => {
+                           dispatch(removeFromCart({ id: item._id }));
+                        });
+                        notification.info({
+                           message: 'Cập nhật sản phẩm trong giỏ hàng',
+                           description:
+                              'Trong giỏ hàng của bạn có tồn tại sản phẩm không có trên hệ thống và đã được cập nhật lại.'
+                        });
+                     } else if (errorData.message == 'Price is not valid') {
+                        errorData.body.data.map((item: ICartItems) => {
+                           dispatch(updatePrice(item));
+                        });
+                        notification.info({
+                           message: 'Cập nhật sản phẩm trong giỏ hàng',
+                           description:
+                              'Thông tin sản phẩm trong giỏ hàng của bạn không thống nhất với hệ thống và đã được cập nhật lại.'
+                        });
+                     } else {
+                        notification.error({
+                           message: 'Mua hàng thấy bại',
+                           description: errorData.message
+                        });
+                     }
+                  } else {
+                     if ('data' in res && 'status' in res.data && res.data.status == 201) {
+                        message.success('Mua hàng thành công');
+                        navaigate('/ordercomplete');
+                        dispatch(removeAllProductFromCart());
+                     }
                   }
-                }   
-                else{
-                  if("data" in res && "status" in res.data) {
-                     message.success('Mua hàng thành công')
-                     navaigate("/ordercomplete")
-                     dispatch(removeAllProductFromCart())
-                  }   
-                }     
-            }).finally(() => {
-               setLoadingState(false);
-            });
-           
-            } catch (error) {
+               })
+               .finally(() => {
+                  setLoadingState(false);
+               });
+         } catch (error) {
             console.log(error);
          }
       }

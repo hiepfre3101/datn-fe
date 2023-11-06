@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Form, Input, Layout,  UploadFile, Divider} from 'antd';
+import { Form, Input, Layout,  UploadFile, Divider, message} from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import UploadButton from '../../../components/UploadButton/UploadButton';
@@ -43,18 +43,18 @@ const UpdateCategory = () => {
         if (!data) {
             return
         }
-        setCategoryName(data.body.cateName!)
-        setCategoryType(data.body.type)
-        const formatedFiles: UploadFile[] = [{ uid: data.body.image.public_id, url: data.body.image.url, name: 'image', status: 'done' }] as UploadFile[];
+        setCategoryName(data.body.data.cateName!)
+        setCategoryType(data.body.data.type)
+        const formatedFiles: UploadFile[] = [{ uid: data.body.data.image.public_id, url: data.body.data.image.url, name: 'image', status: 'done' }] as UploadFile[];
         setDefaultImages(formatedFiles);
         const newbody = {
-            ...data?.body,
+            ...data?.body.data,
             _id: undefined,
             createdAt: undefined,
             updatedAt: undefined,
             image: {
-                url: data?.body.image.url,
-                public_id: data?.body.image.public_id
+                url: data?.body.data.image.url,
+                public_id: data?.body.data.image.public_id
             }
         }
         // console.log(newbody);
@@ -77,15 +77,21 @@ const UpdateCategory = () => {
         setLoading(true);
         try {
             const filesToUpload: File[] = files.filter((file) => file !== undefined);
-            console.log(filesToUpload);
+           
             if (filesToUpload.length > 0) {
                 const {
                     data: { body }
                 } = await uploadImages(filesToUpload);
+                
+                if(!body.data){
+                  message.error('Tải ảnh lỗi')
+                  return
+                }
                 form.setFieldValue('image', body.data[0]);
             }
            
             const newFormData = form.getFieldsValue(true);
+            
             await handleUpdateCategory({ id: id!, ...newFormData, cateName: categoryName })
             setLoading(false);
             navigate('/manage/categories');
@@ -105,7 +111,7 @@ const UpdateCategory = () => {
                 <title>Chỉnh sửa danh mục</title>
             </Helmet>
 
-            <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '90%' }}>
+            <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
         {/* <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%] '> */}
 
         <Form form={form} onFinish={handleSubmit} className='mt-10 flex justify-center items-center flex-col w-[100%] ' >

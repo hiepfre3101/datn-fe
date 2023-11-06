@@ -1,5 +1,5 @@
 
-import { Form, Input, Divider, Layout } from 'antd';
+import { Form, Input, Divider, Layout, message } from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -42,7 +42,11 @@ const AddCategory = () => {
       const {
         data: { body }
       } = await uploadImages(files);
-      form.setFieldValue('image', body[0]);
+      if(!body.data){
+        message.error('Tải ảnh lỗi')
+        return
+      }
+      form.setFieldValue('image', body.data[0]);
       form.setFieldValue('cateName', categoryName)
       const newFormData = form.getFieldsValue(true);
       await handleAddCategory(newFormData);
@@ -65,7 +69,7 @@ const AddCategory = () => {
         <title>Thêm danh mục</title>
       </Helmet>
 
-      <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '90%' }}>
+      <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
         {/* <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%] '> */}
 
         <Form form={form} onFinish={handleSubmit} className='mt-10 flex justify-center items-center flex-col w-[100%] ' >

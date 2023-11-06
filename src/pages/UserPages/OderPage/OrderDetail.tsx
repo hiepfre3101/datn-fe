@@ -8,7 +8,7 @@ import Loading from '../../../components/Loading/Loading';
 import { IOder } from '../../../interfaces/order';
 import { formatStringToDate, transformCurrency, uppercaseFirstLetter } from '../../../helper';
 import { ORDER_OF_STATUS, PENDING_ORDER, SHIPPING_ORDER, SUCCESS_ORDER } from '../../../constants/orderStatus';
-import ProductInOrder from './components/ProductInOrder';
+import ProductInOrder from './Component/ProductInOrder';
 const OrderDetail = () => {
    const { id } = useParams();
    const [order, setOrder] = useState<IOder>();
