@@ -1,16 +1,19 @@
 import { Link } from 'react-router-dom';
-import { Button, Divider, Space, Table, Tag, message } from 'antd';
-import { useEffect, useState } from 'react';
+import { Button, Divider, Space, Table, Tag, message, notification } from 'antd';
+import { useEffect, useState, useCallback } from 'react';
 import { IOder } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
-import { getOrderForMember } from '../../../api/order';
+import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
+import FormQuery from './Component/FormQuery';
+import { formatStringToDate } from '../../../helper';
 
 const { Column } = Table;
 
 const OrderPage = () => {
-   const [orders, setOrders] = useState<IOder[]>();
+   const [orders, setOrders] = useState<IOder[]>([]);
+   console.log(orders);
    const [loading, setLoading] = useState<boolean>(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    // const orderDatas = orders && orderData(orders)
@@ -22,7 +25,7 @@ const OrderPage = () => {
             const {
                data: { body }
             } = await getOrderForMember();
-            setOrders(body.data);
+            setOrders([...body.data.map((order) => ({ ...order, createdAt: formatStringToDate(order.createdAt) }))]);
             setLoading(false);
          } catch (error) {
             setLoading(false);
@@ -31,7 +34,20 @@ const OrderPage = () => {
          }
       })();
    }, [auth.accessToken]);
-
+   const handleSubmit = async (invoiceId: string) => {
+      try {
+         setLoading(true);
+         const { data } = await getOrderForGuest(invoiceId);
+         setOrders([...data.body.data.map((order) => ({ ...order, createdAt: formatStringToDate(order.createdAt) }))]);
+         setLoading(false);
+      } catch (error) {
+         setLoading(false);
+         notification.error({
+            message: 'Lỗi hệ thống'
+         });
+      }
+   };
+   const handleFindOrder = useCallback((invoiceId: string) => handleSubmit(invoiceId), []);
    if (loading) return <Loading sreenSize='lg' />;
    return (
       <div className='main'>
@@ -45,11 +61,10 @@ const OrderPage = () => {
 
          <div className=' cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start pb-[50px]'>
             <div className='mt-10 w-full font-bold'>
+               <FormQuery handleSubmit={handleFindOrder} />
                <Divider></Divider>
-
                <div className='bg-slate-50'>
-                  <Table dataSource={auth?.accessToken ? orders : []} pagination={{ pageSize: 10 }} scroll={{ y: 800 }}>
-                     <Column title='ID' dataIndex='_id' key='id' />
+                  <Table dataSource={orders} pagination={{ pageSize: 10 }} scroll={{ y: 800 }}>
                      <Column title='Ngày mua' dataIndex='createdAt' key='createdAt' />
                      <Column title='Tên' dataIndex='customerName' key='customerName' />
                      <Column title='Số điện thoại' dataIndex='phoneNumber' key='phoneNumber' />
