@@ -15,3 +15,7 @@ export const getOrderForMember = (): Promise<AxiosResponse<IResponse<IOder[]>>> 
       withCredentials: true
    });
 };
+
+export const getOrderForGuest = (invoiceId: string): Promise<AxiosResponse<IResponse<IOder[]>>> => {
+   return instance.post('/orders-guest', { invoiceId });
+};
