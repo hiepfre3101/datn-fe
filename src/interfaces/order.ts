@@ -17,6 +17,7 @@ export interface IOrder {
    products: IProductOrder[];
    note: string | undefined;
    userId: string | undefined;
+   paymentMethod: 'cod' | 'momo';
 }
 
 import { IProductInOrder } from './product';
@@ -36,4 +37,5 @@ export type IOder = {
    status: string;
    createdAt: string;
    invoiceId: string;
+   paymentMethod: 'cod' | 'momo';
 };
