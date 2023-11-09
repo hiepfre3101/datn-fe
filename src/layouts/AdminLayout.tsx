@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    PieChartOutlined,
    NotificationOutlined,
@@ -15,7 +15,11 @@ import { Link } from 'react-router-dom';
 import TicketIcon from '../components/Icons/TicketIcon';
 import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
-
+import { useNavigate } from 'react-router-dom';
+import { useGetTokenQuery } from '../services/auth.service';
+import { useDispatch } from 'react-redux';
+import { saveTokenAndUser } from '../slices/authSlice';
+import { setCartName } from '../slices/cartSlice';
 const { Content, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -45,13 +49,25 @@ const items: MenuItem[] = [
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
    const [open, setOpen] = useState(false);
+   const { data, isLoading } = useGetTokenQuery();
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
    );
    const {
       token: { colorBgContainer }
    } = theme.useToken();
-
+   useEffect(() => {
+      if (!isLoading && data) {
+         dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
+         dispatch(setCartName(data.body.data.data.email || 'cart'));
+         if (data.body.data.data.role !== 'admin') {
+            navigate('/');
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [data, isLoading]);
    return (
       <Layout style={{ minHeight: '100vh' }}>
          <Sider
