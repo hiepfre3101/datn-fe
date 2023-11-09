@@ -22,6 +22,7 @@ import CheckOutPage from '../pages/UserPages/CheckOutPage/CheckOutPage';
 import OrderCompletePage from '../pages/UserPages/OrderCompletePage/OrderCompletePage';
 import OrderPage from '../pages/UserPages/OderPage/OrderPage';
 import OrderDetail from '../pages/UserPages/OderPage/OrderDetail';
+import OrdersAdmin from '../pages/AdminPages/Orders/OrdersAdmin';
 
 const router = createBrowserRouter([
    {
@@ -136,7 +137,12 @@ const router = createBrowserRouter([
             path: 'shipments/:id',
             element: <UpdateShipment />,
             errorElement: <NotFoundPage />
-         }
+         },
+         {
+            path: 'orders',
+            element: <OrdersAdmin/>,
+            errorElement: <NotFoundPage />
+         },
 
          // {
          //    path: 'accounts',
