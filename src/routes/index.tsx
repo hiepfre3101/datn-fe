@@ -136,7 +136,7 @@ const router = createBrowserRouter([
             path: 'shipments/:id',
             element: <UpdateShipment />,
             errorElement: <NotFoundPage />
-         }
+         },
 
          // {
          //    path: 'accounts',
