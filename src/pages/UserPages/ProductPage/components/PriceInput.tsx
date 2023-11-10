@@ -1,74 +1,31 @@
-import React, { useState } from 'react';
-import { Col, InputNumber, Row, Slider } from 'antd';
 
-export const IntegerStep: React.FC = () => {
-  const [inputValue, setInputValue] = useState<number|null>(1);
+import { Slider } from 'antd';
+import { useContext } from 'react';
+import { FilterFieldContext } from '../ProductPage';
 
-  const onChange = (newValue: number|null) => {
-    setInputValue(newValue);
-  };
 
-  return (
-    <Row>
-      <Col span={12}>
-        <Slider
-          min={1}
-          max={20}
-          onChange={onChange}
-          value={typeof inputValue === 'number' ? inputValue : 0}
-        />
-      </Col>
-      <Col span={4}>
-        <InputNumber
-          min={1}
-          max={20}
-          style={{ margin: '0 16px' }}
-          value={inputValue}
-          onChange={onChange}
-        />
-      </Col>
-    </Row>
-  );
-};
-
-export const DecimalStep: React.FC = () => {
-  const [inputValue, setInputValue] = useState<number|null>(0);
-
-  const onChange = (valuee: number|null) => {
-  if(valuee){
-    if (isNaN(valuee)) {
-        return;
-      }
-      if(valuee>20){
-        setInputValue(valuee);
-      }
+const  InputRange: React.FC = () => {
+  const filter = useContext(FilterFieldContext)
+  const changePrice =  (value:any)=>{
+    if (filter.setfield) {
+      filter.setfield({
+        ...filter,
+        field: {
+          ...filter.field,
+          min: value[0],
+          max: value[1],
+        },
+      });
+    }
+  
+  
   }
  
-  
-
-  };
-
-  return (
-    <Row>
-      <Col span={12}>
-        <Slider
-          min={0}
-          max={100}
-          onChange={onChange}
-          value={typeof inputValue === 'number' ? inputValue : 0}
-          step={1}
-        />
-      </Col>
-      <Col span={4}>
-        <InputNumber
-          min={0}
-          max={100}
-          style={{ margin: '0 16px' }}
-          step={1}
-          value={inputValue}
-          onChange={onChange}
-        />
-      </Col>
-    </Row>
-  );
+  return<>
+  <Slider onChange={(current:any)=>(changePrice(current))}  range={{ draggableTrack: true }} defaultValue={[1, 100]} />
+  <span>{filter.field.min}</span>
+  <br />
+  <span>{filter.field.max}</span>
+  </>
 };
+export default InputRange

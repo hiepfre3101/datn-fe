@@ -13,8 +13,6 @@ export interface QuickViewProp{
     product_info:IProduct[]
 }
 const QuickView = ({ product_info }: QuickViewProp)=>{
-    console.log(product_info);
-    
     const dispatch = useDispatch();
     const [inputWeight, setinputWeight] = useState<any>(0.5);
     const [totalWeight, setTotalWeight] = useState<number>();  

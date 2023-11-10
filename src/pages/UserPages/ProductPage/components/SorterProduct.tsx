@@ -1,6 +1,5 @@
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineSortAscending } from 'react-icons/ai';
-
 const SorterProduct = () => {
    const showSuccessSort = (index: number) => {
       const sortby_option_item = document.querySelectorAll('.collection-sortby-option-item');

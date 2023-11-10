@@ -1,17 +1,25 @@
 import { ConfigProvider, Rate } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
-import { useGetAllExpandQuery } from '../../../../services/product.service';
-import { Link } from 'react-router-dom';
 
-const ShowProducts = () => {
-   const { data } = useGetAllExpandQuery({ expand: true });
-//   console.log(data?.body.data);
-  
-   const openQuickViewModal = () => {
+import { Link } from 'react-router-dom';
+import { IResponseHasPaginate } from '../../../../interfaces/base';
+import { IProduct, IProductExpanded } from '../../../../interfaces/product';
+import QuickView from '../../../../components/QuickView/QuickView';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '../../../../store';
+import { saveProduct } from '../../../../slices/productSlice';
+
+interface IProps{
+   data:  IResponseHasPaginate<IProductExpanded> | undefined
+}
+const ShowProducts = ({data}:IProps) => {
+   const dispatch = useDispatch();
+   const productSlice = useSelector((state: RootState) => state.productSlice.products);
+   
+   const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
-
       const modal_product = document.querySelector('.modal-product');
       setTimeout(() => {
          modal_product?.classList.toggle('hidden');
@@ -23,6 +31,8 @@ const ShowProducts = () => {
          modal_product_content?.classList.toggle('lg:!opacity-100');
          modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
       }, 300);
+      dispatch(saveProduct(data))
+
    };
    return (
       <div>
@@ -54,12 +64,10 @@ const ShowProducts = () => {
                            <HiOutlineShoppingBag></HiOutlineShoppingBag>
                         </button>
                         <button
-                           onClick={openQuickViewModal}
+                        onClick={() => openQuickViewModal(item)}
                            className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'
                         >
-                           <Link to={"/products/"+item._id}>
                            <AiOutlineEye></AiOutlineEye>
-                           </Link>
                         </button>
                         <button className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'>
                            <AiOutlineHeart></AiOutlineHeart>
@@ -96,7 +104,9 @@ const ShowProducts = () => {
        })}
 
          </div>
+         <QuickView product_info={productSlice} ></QuickView>
       </div>
+
    );
 };
 

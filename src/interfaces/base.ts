@@ -4,14 +4,11 @@
 export interface IResponseHasPaginate<T> {
    body: {
       data: T[];
-      totalDocs: number;
-      limit: number;
-      page: number;
-      pagingCounter: number;
-      hasPrevPage: boolean;
-      hasNextPage: boolean;
-      prevPage: null;
-      nextPage: null;
+      pagination:{
+         currentPage:number;
+         totalPages:number;
+         totalItems:number;
+      }
    };
    message: string;
    status: number;

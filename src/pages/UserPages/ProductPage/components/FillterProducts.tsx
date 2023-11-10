@@ -1,5 +1,5 @@
 import { Checkbox, ConfigProvider, Space } from 'antd';
-import { DecimalStep, IntegerStep } from './PriceInput';
+import InputRange from './PriceInput';
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 
@@ -184,10 +184,7 @@ const FillterProducts = () => {
                      }}
                   >
                      <Space style={{ width: '100%' }} direction='vertical'>
-                        max
-                        <IntegerStep />
-                        min
-                        <DecimalStep />
+                     <InputRange></InputRange>
                      </Space>
                   </ConfigProvider>
                </div>
