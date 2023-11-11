@@ -4,14 +4,12 @@
 export interface IResponseHasPaginate<T> {
    body: {
       data: T[];
-      totalDocs: number;
-      limit: number;
-      page: number;
-      pagingCounter: number;
-      hasPrevPage: boolean;
-      hasNextPage: boolean;
-      prevPage: null;
-      nextPage: null;
+      pagination:{
+         currentPage:number;
+         totalPages:number;
+         totalItems:number;
+      }
+      maxPrice?:number;
    };
    message: string;
    status: number;
@@ -30,9 +28,13 @@ export interface IQueryParam {
    order: 'asc' | 'desc';
    limit: number;
    page: number;
+   minPrice:number;
+   maxPrice:number;
    expand: boolean;
    q: string;
-   category: string;
+   categoryId: string;
+   originId:string[]|string;
    brand: string;
    subCate: string;
+   maxPriceOfQuery?:number;
 }

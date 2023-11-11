@@ -8,9 +8,11 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { Navigation, Pagination } from 'swiper/modules';
-import { IImageResponse } from '../../../../interfaces/image';
-
-export default function ModalProductSlide({ body }: IImageResponse) {
+import { IImage } from '../../../../interfaces/image';
+interface IProps{
+   body:IImage[]
+}
+export default function ModalProductSlide({ body }:IProps ) {
    if (!body) {
       return null;
    }

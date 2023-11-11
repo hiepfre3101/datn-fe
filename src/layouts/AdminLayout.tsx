@@ -7,7 +7,7 @@ import {
    MenuUnfoldOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, message, theme } from 'antd';
+import { Button, Layout, Menu, theme } from 'antd';
 import { Outlet } from 'react-router';
 import { logoUrl } from '../constants/imageUrl';
 import ProductIcon from '../components/Icons/ProductIcon';
@@ -59,9 +59,9 @@ const AdminLayout = () => {
    const dispatch = useDispatch();
    const audioPlayer = useRef(null);
 
-   function playAudio() {
-      audioPlayer?.current?.play();
-   }
+   // function playAudio() {
+   //    audioPlayer?.current?.play();
+   // }
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
    );
@@ -90,7 +90,7 @@ const AdminLayout = () => {
       if (socket != null) {
          console.log(socket);
 
-         (socket as Socket).on('alert', (res: any) => {
+         (socket as Socket).on('alert', () => {
             // message.warning(res);
             // playAudio();
          });
