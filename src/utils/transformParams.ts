@@ -8,9 +8,10 @@ export const paramTransformer = (raw: Record<string, boolean | string | number |
             rawConverted[key] = undefined;
          }
       }
-      console.log(rawConverted);
-      
+
+      console.log(raw); 
       return rawConverted;
    }
+
    return raw;
 };

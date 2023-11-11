@@ -12,8 +12,8 @@ const  InputRange: React.FC = () => {
         ...filter,
         field: {
           ...filter.field,
-          min: value[0],
-          max: value[1],
+          minPrice: value[0],
+          maxPrice: value[1],
         },
       });
     }
@@ -22,10 +22,14 @@ const  InputRange: React.FC = () => {
   }
  
   return<>
-  <Slider onChange={(current:any)=>(changePrice(current))}  range={{ draggableTrack: true }} defaultValue={[1, 100]} />
-  <span>{filter.field.min}</span>
+  <Slider onChange={(current:any)=>(changePrice(current))} step={10000}  range={{ draggableTrack: true }} max={500000} defaultValue={[1,500000]} />
+
   <br />
-  <span>{filter.field.max}</span>
+<div className='flex justify-between'>
+<span>{filter.field.minPrice}</span>
+  
+  <span>{filter.field.maxPrice}</span>
+</div>
   </>
 };
 export default InputRange

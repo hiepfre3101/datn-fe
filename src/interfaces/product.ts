@@ -17,11 +17,13 @@ export interface IProduct {
    shipments: IShipmentOfProduct[];
    price: number;
    originId: string;
+
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
 
 export interface IProductExpanded extends IProduct {
+
    categoryId: {
       cateName: string;
       _id: string;

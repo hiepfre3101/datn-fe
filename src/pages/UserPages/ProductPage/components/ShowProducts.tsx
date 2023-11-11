@@ -9,6 +9,8 @@ import QuickView from '../../../../components/QuickView/QuickView';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { saveProduct } from '../../../../slices/productSlice';
+import { addItem } from '../../../../slices/cartSlice';
+import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 
 interface IProps{
    data:  IResponseHasPaginate<IProductExpanded> | undefined
@@ -34,6 +36,20 @@ const ShowProducts = ({data}:IProps) => {
       dispatch(saveProduct(data))
 
    };
+   const add_to_cart = (data: IProductExpanded) => {
+      const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
+         return accumulator + shipmentWeight.weight;
+      }, 0);
+      const product = {
+         _id: data?._id,
+         name: data?.productName,
+         images: data?.images[0].url,
+         price: data?.shipments[0]?.price,
+         weight: 1,
+         totalWeight: totalWeight
+      };
+      dispatch(addItem(product));
+   };
    return (
       <div>
          <div className='list-products grid xl:grid-cols-3 pt-[30px] lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 max-sm:grid-cols-2  md:gap-[25px] max-md:gap-[12px]'>
@@ -58,7 +74,7 @@ const ShowProducts = ({data}:IProps) => {
                                  />
                               </div>
                               <div className='product-action max-xl:w-full max-xl:justify-center  transition-all duration-300 xl:invisible xl:opacity-0 flex absolute xl:bottom-[50%] bottom-0 xl:right-[50%] xl:translate-x-[50%] xl:gap-[15px]  max-xl:gap-[10px] group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible'>
-                        <button className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'>
+                        <button  onClick={() => add_to_cart(item)} className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'>
                            <HiOutlineShoppingBag></HiOutlineShoppingBag>
                         </button>
                         <button

@@ -1,6 +1,9 @@
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineSortAscending } from 'react-icons/ai';
-const SorterProduct = () => {
+interface IProps{
+   setSortState: (state:string)=>void;
+}
+const SorterProduct = ({setSortState}:IProps) => {
    const showSuccessSort = (index: number) => {
       const sortby_option_item = document.querySelectorAll('.collection-sortby-option-item');
       for (let i = 0; i < sortby_option_item.length; i++) {
@@ -11,7 +14,7 @@ const SorterProduct = () => {
       sortby_option_item[index].classList.add('before:scale-1');
    };
    const showFilter = () => {
-      const main_header = document.querySelector('.main-header');
+      const main_header = document.querySelector('.main-header-filter');
       main_header?.classList.toggle('max-lg:!translate-y-[0%]');
       const main_header_overlay = document.querySelector('.main-header-overlay');
       main_header_overlay?.classList.toggle('hidden');
@@ -39,13 +42,19 @@ const SorterProduct = () => {
                <div className='collection-sortby-option  group-hover/sort:visible invisible  group-hover/sort:top-[100%] group-hover/sort:opacity-[1] bg-white  absolute top-[calc(100%+10px)] opacity-0 left-0 right-0 border-[1px] border-[#eae4e8] transition-all duration-300'>
                   <ul className='collection-sortby-option-list py-[5px] px-[10px] z-[10]'>
                      <li
-                        onClick={() => showSuccessSort(0)}
+                        onClick={() => {
+                           setSortState("")
+                           showSuccessSort(0)
+                        }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-1  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Sản phẩm nổi bật</span>
                      </li>
                      <li
-                        onClick={() => showSuccessSort(1)}
+                        onClick={() => {
+                           setSortState("priceAsc")
+                           showSuccessSort(1)
+                        }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Giá: Tăng dần</span>

@@ -2,8 +2,39 @@ import { Checkbox, ConfigProvider, Space } from 'antd';
 import InputRange from './PriceInput';
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
+import { useGetAllCateQuery } from '../../../../services/cate.service';
+import { useContext, useState,useEffect } from 'react';
+import { FilterFieldContext } from '../ProductPage';
+import { getOriginData } from '../../../../api/origin';
+import { IOrigin } from '../../../../interfaces/origin';
+import { CheckboxChangeEvent } from 'antd/es/checkbox';
 
 const FillterProducts = () => {
+   const { data } = useGetAllCateQuery()
+   const filter = useContext(FilterFieldContext)
+   const [origins, setOrigins] = useState<IOrigin[]>([]);
+   useEffect(() => {
+      (async () => {
+         try {
+            const { data } = await getOriginData();
+            setOrigins(data.body.data);
+         } catch (error) {
+            console.log(error);
+         }
+      })();
+   }, []);
+   const setCategoryId = (cate_id:string) => {
+      if (filter.setfield) {
+         filter.setfield({
+           ...filter,
+           field: {
+             ...filter.field,
+             category: cate_id,
+            
+           },
+         });
+       }  
+   }
    const showSub = (name: string, afterName: string) => {
       const cate_title = document.querySelector(afterName);
       cate_title?.classList.toggle('after:!rotate-[225deg]');
@@ -13,13 +44,26 @@ const FillterProducts = () => {
       categories?.classList.toggle(`max-lg:!h-[47px]`);
    };
    const showFilter = () => {
-      const main_header = document.querySelector('.main-header');
+      const main_header = document.querySelector('.main-header-filter');
       main_header?.classList.toggle('max-lg:!translate-y-[0%]');
       const main_header_overlay = document.querySelector('.main-header-overlay');
       main_header_overlay?.classList.toggle('hidden');
    };
+   const onChange = (e: CheckboxChangeEvent) => {
+      if (filter.setfield) {
+         filter.setfield({
+           ...filter,
+           field: {
+             ...filter.field,
+             origin: filter.field.origin ? [...filter.field.origin, e.target.value] : [e.target.value],
+            
+           },
+         });
+       }  
+    };
    return (
-      <div>
+      
+       <div className='main-header-filter lg:bg-[#f8f8f8] max-lg:!mt-[-120px] max-lg:flex max-lg:flex-col  overflow-y-auto max-lg:bottom-0 max-lg:translate-y-[130%] transition-transform duration-500 max-lg:right-0 max-lg:left-0  lg:mx-[-15px] lg:sticky w-[25%] top-[120px]  max-lg:w-[100%] max-lg:fixed max-lg:z-[13] bg-white  max-md:p-0 '>
          <div className='main-header-title  lg:hidden px-[10px] py-[5px] bg-red-500 flex justify-between items-center'>
             <div>
                <FilterOutlined className='text-white' />
@@ -30,9 +74,7 @@ const FillterProducts = () => {
          </div>
          <div className='max-lg:overflow-y-auto max-lg:px-[10px] max-lg:pt-[10px] lg:px-[5px]'>
             <div
-               className={`categories lg:h-[${60 * 8}px]   max-lg:h-[${
-                  60 * (8 / 2)
-               }px]  overflow-hidden   transition-all duration-200 ease-linear   pb-[30px] mb-[30px] shadow-[0_0_3px_rgba(0,0,0,0.08)] rounded-[4px]`}
+               className={`categories   overflow-hidden   transition-all duration-200 ease-linear   pb-[30px] mb-[30px] shadow-[0_0_3px_rgba(0,0,0,0.08)] rounded-[4px]`}
             >
                <div
                   className='group'
@@ -45,95 +87,22 @@ const FillterProducts = () => {
                   </h1>
                </div>
                <div className='list-categories p-[10px]  border-t-[1px] border-[#eae4e8] gap-y-[20px] flex max-lg:gap-y-[15px] flex-col max-lg:flex-wrap max-lg:flex-row  '>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
+              {data?.body.data.map(item=>{
+               return<>
+                   <div className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
                   >
-                     <img
+                    <button type='button' onClick={()=>setCategoryId(item._id)}>
+                    <img
                         className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-16-20230608080047.gif'
+                        src={item.image.url}
                         alt=''
                      />
-                     <span className='max-lg:text-[12px] text-center '> Cherry</span>
-                  </a>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-10-20230608075857.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '> Táo</span>
-                  </a>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-16-20230608080047.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '> Nho</span>
-                  </a>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-10-20230608075857.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '>Lê</span>
-                  </a>
+                     <span className='max-lg:text-[12px] text-center '> {item.cateName}</span>
+                    </button>
+                  </div>
+               </>
+              })}
 
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-16-20230608080047.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '>Ổi</span>
-                  </a>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-10-20230608075857.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '>Dâu</span>
-                  </a>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-16-20230608080047.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '> Cherry</span>
-                  </a>
-                  <a
-                     href=''
-                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
-                  >
-                     <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src='https://hcm.fstorage.vn/images/2023/06/artboard-16-20230608080047.gif'
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '> Cherry</span>
-                  </a>
                </div>
             </div>
             <div
@@ -156,12 +125,11 @@ const FillterProducts = () => {
                            }
                         }}
                      >
-                        <Checkbox className='font-[500] font-Quicksand'>Mỹ</Checkbox>
-                        <Checkbox className='font-[500] font-Quicksand'>Việt Nam</Checkbox>
-                        <Checkbox className='font-[500] font-Quicksand'>Liên Xô</Checkbox>
-                        <Checkbox className='font-[500] font-Quicksand'>Tây Đức</Checkbox>
-                        <Checkbox className='font-[500] font-Quicksand'>Đông Đức</Checkbox>
-                        <Checkbox className='font-[500] font-Quicksand'>Long Biên</Checkbox>
+                        {origins.map(item=>{
+                           return<>
+                             <Checkbox onChange={onChange} className='font-[500] font-Quicksand' value={item._id}>{item.name}</Checkbox>
+                           </>
+                        })}
                      </ConfigProvider>
                   </form>
                </div>

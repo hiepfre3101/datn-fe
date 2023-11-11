@@ -9,6 +9,7 @@ export interface IResponseHasPaginate<T> {
          totalPages:number;
          totalItems:number;
       }
+      maxPrice?:number;
    };
    message: string;
    status: number;
@@ -27,9 +28,13 @@ export interface IQueryParam {
    order: 'asc' | 'desc';
    limit: number;
    page: number;
+   minPrice:number;
+   maxPrice:number;
    expand: boolean;
    q: string;
-   category: string;
+   categoryId: string;
+   originId:string[]|string;
    brand: string;
    subCate: string;
+   maxPriceOfQuery?:number;
 }
