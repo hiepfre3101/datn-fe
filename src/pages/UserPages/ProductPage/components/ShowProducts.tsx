@@ -3,11 +3,16 @@ import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useGetAllExpandQuery } from '../../../../services/product.service';
 import { Link } from 'react-router-dom';
+import { addToWhishList } from '../../../../slices/whishListSlice';
+import { useDispatch } from 'react-redux';
 
 const ShowProducts = () => {
    const { data } = useGetAllExpandQuery({ expand: true });
+   const dispatch = useDispatch();
    //   console.log(data?.body.data);
-
+   const add_to_wishList = (product: any) => {
+      dispatch(addToWhishList(product));
+   };
    const openQuickViewModal = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -58,7 +63,10 @@ const ShowProducts = () => {
                                  >
                                     <AiOutlineEye></AiOutlineEye>
                                  </button>
-                                 <button className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'>
+                                 <button
+                                    onClick={() => add_to_wishList(item)}
+                                    className='add-to-card flex items-center justify-center transition-all duration-300 cursor-pointer hover:bg-[#51A55C] w-[40px] h-[40px] text-[20px] rounded-[100%] text-white bg-[#7aa32a]'
+                                 >
                                     <AiOutlineHeart></AiOutlineHeart>
                                  </button>
                               </div>
