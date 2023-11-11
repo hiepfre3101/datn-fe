@@ -4,17 +4,17 @@ import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
-import {  Popover } from 'antd';
-import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
-import { BsBell } from 'react-icons/bs';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
+import { Popover, Tooltip } from 'antd';
 import { logoUrl } from '../../constants/imageUrl';
-
+import { useEffect } from 'react';
+import { BsBell } from 'react-icons/bs';
+import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [clearToken] = useClearTokenMutation();
@@ -25,7 +25,7 @@ const Header = () => {
       dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
-      navigate('/')
+      navigate('/');
    };
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
@@ -37,10 +37,16 @@ const Header = () => {
          btn_totop?.classList.remove('!opacity-100');
       }
    }
-   window.onscroll = function () {
-      scrollFunction();
-      fixedMenu();
-   };
+   useEffect(() => {
+      const handleScroll = () => {
+         scrollFunction();
+         fixedMenu();
+      };
+      window.addEventListener('scroll', () => handleScroll());
+      return window.removeEventListener('scroll', () => handleScroll());
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   });
+
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -109,11 +115,7 @@ const Header = () => {
                <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
                   <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
                      <Link to='/'>
-                        <img
-                           className='logo-img max-w-[120px] max-h-[200px]'
-                           src={logoUrl}
-                           alt=''
-                        />
+                        <img className='logo-img max-w-[120px] max-h-[200px]' src={logoUrl} alt='' />
                      </Link>
                   </div>
                   <div
@@ -215,6 +217,16 @@ const Header = () => {
                         >
                            <SearchOutlined></SearchOutlined>
                         </li>
+                        {!auth?.accessToken && (
+                           <li className='ml-[30px]'>
+                              <Link to='/orders'>
+                                 <Tooltip title={<span className='text-white font-thin'>Tra cứu đơn hàng</span>}>
+                                    {' '}
+                                    <PiPackageLight className='w-6 h-6 hover:text-[#d2401e] text-[#6f6f6f]' />
+                                 </Tooltip>
+                              </Link>
+                           </li>
+                        )}
                         <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
                            {!auth?.accessToken ? (
                               <Popover
@@ -236,7 +248,7 @@ const Header = () => {
                                  trigger='hover'
                               >
                                  <span>
-                                 <AiOutlineUser></AiOutlineUser>
+                                    <AiOutlineUser></AiOutlineUser>
                                  </span>
                               </Popover>
                            ) : (
@@ -252,7 +264,7 @@ const Header = () => {
                                           </div>
 
                                           <div>
-                                             <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                             <Link to='/orders' className='flex items-center gap-[5px] py-[5px]'>
                                                 <RiBillLine></RiBillLine> Lịch sử mua hàng
                                              </Link>
                                           </div>
@@ -276,9 +288,8 @@ const Header = () => {
                               </>
                            )}
                         </li>
-                        <li
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
-                        >
+
+                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
                            <BsBell></BsBell>
 
                            <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>

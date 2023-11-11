@@ -14,6 +14,8 @@ import { IShipmentOfProduct } from '../../../interfaces/shipment';
 import { uploadImages } from '../../../api/upload';
 import Loading from '../../../components/Loading/Loading';
 import { IImage } from '../../../interfaces/image';
+import { IOrigin } from '../../../interfaces/origin';
+import { getOriginData } from '../../../api/origin';
 
 const UpdateProduct = () => {
    const [form] = Form.useForm<InputProduct>();
@@ -23,6 +25,7 @@ const UpdateProduct = () => {
    const [defaultImages, setDefaultImages] = useState<UploadFile[]>([]);
    const [defaultDesc, setDefaultDesc] = useState<string>('');
    const [categoryId, setCategoryId] = useState<string>();
+   const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
    const [shipments, setShipments] = useState<IShipmentOfProduct[]>([]);
    const [currentShipment, setCurrentShipment] = useState<IShipmentOfProduct>();
@@ -39,6 +42,16 @@ const UpdateProduct = () => {
    const [handleUpdateProduct, { isLoading, error }] = useUpdateProductMutation();
    const { data } = useGetOneProductQuery(id!, { skip: !id });
    const { data: categories } = useGetAllCateQuery();
+   useEffect(() => {
+      (async () => {
+         try {
+            const { data } = await getOriginData();
+            setOrigins(data.body.data);
+         } catch (error) {
+            console.log(error);
+         }
+      })();
+   }, []);
    useEffect(() => {
       const formatedFiles: UploadFile[] = [] as UploadFile[];
       data?.body.data.images.forEach((img) => {
@@ -93,7 +106,7 @@ const UpdateProduct = () => {
                data: { body }
             } = await uploadImages(filesToUpload);
             const newImages = defaultImages.map((image) => ({ url: image.url, public_id: image.uid }));
-            form.setFieldValue('images', [...(body as IImage[]), ...newImages]);
+            form.setFieldValue('images', [...(body.data as IImage[]), ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
          await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } });
@@ -128,7 +141,7 @@ const UpdateProduct = () => {
                         rules={[{ required: true, message: 'Vui lòng tải ảnh lên !' }]}
                      >
                         <UploadButton
-                           maxCount={3}
+                           maxCount={4}
                            multiple
                            listStyle='picture-card'
                            getListFiles={handleGetFiles}
@@ -204,6 +217,27 @@ const UpdateProduct = () => {
                            {categories?.body.data.map((cate) => (
                               <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
                                  {cate.cateName}
+                              </Radio>
+                           ))}
+                        </Radio.Group>
+                     </Form.Item>
+                  </BlockForm>
+                  <BlockForm title='Nguồn gốc' className='min-w-[500px]'>
+                     <Form.Item<InputProduct>
+                        name='originId'
+                        hasFeedback
+                        rules={[{ required: true, message: 'Hãy chọn nguồn gốc sản phẩm !' }]}
+                     >
+                        <Radio.Group
+                           onChange={(e) => {
+                              setCategoryId(e.target.value);
+                              form.setFieldValue('originId', e.target.value);
+                           }}
+                           className='flex flex-col gap-2 items-start'
+                        >
+                           {origins.map((or) => (
+                              <Radio name='originId' value={or._id} className='!text-lg' key={or._id}>
+                                 {or.name}
                               </Radio>
                            ))}
                         </Radio.Group>

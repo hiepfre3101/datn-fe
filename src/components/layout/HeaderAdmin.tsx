@@ -3,6 +3,8 @@ import { Dropdown, Input, Layout, MenuProps } from 'antd';
 import BellIcon from '../Icons/BellIcon';
 import MoonIcon from '../Icons/MoonIcon';
 import { useState } from 'react';
+import { IAuth } from '../../slices/authSlice';
+import { useSelector } from 'react-redux';
 
 const { Header } = Layout;
 
@@ -24,6 +26,7 @@ const items: MenuProps['items'] = [
    }
 ];
 const HeaderAdmin = () => {
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [triggerDrop, setTriggerDrop] = useState(false);
    return (
       <Header
@@ -42,9 +45,9 @@ const HeaderAdmin = () => {
             <SearchOutlined width={'1.5rem'} height={'1.5rem'} color='rgba(0,0,0,0.2)' />
             <Input className='outline-none border-none' placeholder='Tìm kiếm' />
          </div>
-         <div className='max-w-[50%] flex justify-end items-center gap-3'>
-            <div className='flex justify-around items-center gap-2 border-[1px] border-[rgba(0,0,0,0.1)] p-2 rounded-lg overflow-hidden h-[3rem] w-[50%]'>
-               <img src='https://picsum.photos/100/100' alt='avatar' className='rounded-md object-cover w-[20%]' />
+         <div className='max-w-[25%] flex justify-end items-center gap-3'>
+            <div className='flex justify-start items-center gap-2 border-[1px] border-[rgba(0,0,0,0.1)] p-2 rounded-lg overflow-hidden h-[3rem] w-[50%]'>
+               <img src={auth.user.avatar} alt='avatar' className='rounded-md object-cover w-[20%] aspect-square' />
                <Dropdown
                   menu={{ items }}
                   trigger={['click']}
@@ -52,8 +55,8 @@ const HeaderAdmin = () => {
                      setTriggerDrop(open);
                   }}
                >
-                  <div className='flex-1 flex justify-start gap-2 items-center cursor-pointer p-1 text-center'>
-                     <span className='font-medium text-sm text-[#6b6765] '>Bố là admin</span>
+                  <div className='flex-1 flex justify-start gap-2 items-center cursor-pointer p-1 text-center '>
+                     <span className='font-medium text-sm text-[#6b6765] '>{auth.user.userName}</span>
                      <div className={triggerDrop ? 'round-up' : 'round-down'}>
                         {' '}
                         <DownOutlined color='#6b6765' size={1} />

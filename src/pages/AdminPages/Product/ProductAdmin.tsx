@@ -36,7 +36,7 @@ const ProductAdmin = () => {
          <Helmet>
             <title>Sản phẩm</title>
          </Helmet>
-         <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '90%' }}>
+         <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
             <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[90%]'>
                <div className='flex justify-between items-center w-[90%]'>
                   <h1 className='text-3xl font-semibold text-[rgba(0,0,0,0.7)]'>Sản phẩm</h1>
@@ -75,7 +75,12 @@ const ProductAdmin = () => {
                         Lọc
                      </button>
                   </header>
-                  <Table dataSource={products} pagination={{ pageSize: 50 }} scroll={{ y: 800 }} loading={isLoading}>
+                  <Table
+                     dataSource={products}
+                     pagination={{ pageSize: 50 }}
+                     scroll={{ y: 800, x: 2000 }}
+                     loading={isLoading}
+                  >
                      <Column
                         title='Ảnh sản phẩm'
                         fixed='left'
@@ -87,9 +92,11 @@ const ProductAdmin = () => {
                      <Column title='Tên' dataIndex='productName' key='productName' width={150} />
                      <Column title='Giá' dataIndex='price' key='price' width={150} />
                      <Column title='Danh mục ' dataIndex='category' key='category' width={150} />
-                     <Column title='Kho hàng' dataIndex='stock' key='stock' width={150} />
+                     <Column title='Số lượng kho hàng' dataIndex='stock' key='stock' width={150} />
+                     <Column title='Hạn sử dụng' dataIndex='expDate' key='stock' width={150} />
                      <Column
-                        width={150}
+                        fixed='right'
+                        width={100}
                         title='Chức năng '
                         key='_id'
                         dataIndex={'_id'}

@@ -5,8 +5,8 @@ import { HiOutlineShoppingBag, HiOutlineTrash } from 'react-icons/hi2';
 import { FaXmark } from 'react-icons/fa6';
 import { FaArrowUp, FaPlus, FaWindowMinimize, FaInstagram } from 'react-icons/fa';
 import { FiHeadphones, FiLogOut, FiLogIn } from 'react-icons/fi';
-import {AiOutlineUserAdd } from 'react-icons/ai';
-import {  useDispatch, useSelector } from 'react-redux';
+import { AiOutlineUserAdd } from 'react-icons/ai';
+import { useDispatch, useSelector } from 'react-redux';
 import { ICartSlice, removeFromCart } from '../../slices/cartSlice';
 import { Link } from 'react-router-dom';
 
@@ -15,14 +15,11 @@ import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { saveProduct } from '../../slices/productSlice';
 
-
 const Footer = () => {
-  
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const dispatch = useDispatch();
 
-   
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -38,7 +35,6 @@ const Footer = () => {
          modal_product?.classList.toggle('!z-[20]');
          dispatch(saveProduct(null));
       }, 600);
-      
    };
    const showModalSearch = () => {
       const bodyElement = document.querySelector('body');
@@ -75,7 +71,6 @@ const Footer = () => {
       beforeSelecterElement?.classList.toggle('hidden');
    };
 
-
    const showUserTag = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -85,7 +80,6 @@ const Footer = () => {
       const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
       user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
    };
-
 
    return (
       <>
@@ -337,109 +331,150 @@ const Footer = () => {
                </div>
             </div>
          </section>
-         {cart?.items?.length === 0 ? (
-            <div className='cart-emty'>
-               <p>Cart is empty</p>
-               <div className='start-shopping'>
-                  <Link to={'/product'}>
-                     <span>Start shopping</span>
-                  </Link>
-               </div>
-            </div>
-         ) : (
-            <section className='section-mini-cart '>
-               <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
-                  <div
-                     onClick={showMiniCart}
-                     className='mini-cart-overlay hidden overlay-menu-homepage  fixed w-[110%] top-0 bottom-0 left-0 right-0 z-[6] opacity-[0.5] bg-[#333333]  '
-                  ></div>
-               </div>
-               <div className='wrap-mini-cart transition-all duration-300 translate-x-[100%] w-[320px] flex h-full fixed  top-0 right-0 flex-col bg-white text-[#6f6f6f]  z-[8]'>
-                  <div className='mini-cart-header flex border-b-[#e2e2e2] border-[1px]    '>
-                     <p className='cart-header-text w-full gap-[10px] py-[10px] px-[15px] flex items-center  text-[14px]'>
-                        <span className='cart-count px-[8px] text-[14px] py-[4px] text-white bg-[#d2401e]'>
-                           {totalProductInCart}
-                        </span>{' '}
-                        sản phẩm trong giỏ hàng
-                     </p>
-                     <button
+         <section className='section-mini-cart '>
+            {cart?.items?.length === 0 ? (
+               <div className='cart-emty'>
+                  <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
+                     <div
                         onClick={showMiniCart}
-                        className='close-mini-cart text-[#333333] text-[20px] mt-[5px] cursor-pointer hover:opacity-100 mr-[15px]  opacity-[0.5]'
-                        type='button'
-                     >
-                        <FaXmark></FaXmark>
-                     </button>
+                        className='mini-cart-overlay hidden overlay-menu-homepage  fixed w-[110%] top-0 bottom-0 left-0 right-0 z-[6] opacity-[0.5] bg-[#333333]  '
+                     ></div>
                   </div>
-                  <div className='mini-cart-content overflow-auto m-h-[100%-269px]'>
-                     <ul className='cart-item relative'>
-                        {cart?.items?.map((item: any, index: number) => (
-                           <li
-                              key={index}
-                              className='cart-product p-[15px] flex border-[#e2e2e2] border-t-[1px] relative first:border-none '
-                           >
-                              <div className='cart-img w-[65px]'>
-                                 <a href=''>
-                                    <img
-                                       className='m-w-full h-[69px]  border-[#e2e2e2] border-[1px]'
-                                       src={item.images}
-                                       alt=''
-                                    />
-                                 </a>
-                              </div>
-                              <div className='cart-content w-[calc(100%-65px)] pl-[15px] flex flex-col justify-center'>
-                                 <a
-                                    href=''
-                                    className='product-name font-bold text-[16px] text-[#6f6f6f] overflow-ellipsis whitespace-nowrap'
+                  <div className='wrap-mini-cart transition-all duration-300 translate-x-[100%] w-[320px] flex h-full fixed  top-0 right-0 flex-col bg-white text-[#6f6f6f]  z-[8]'>
+                     <div className='mini-cart-header flex border-b-[#e2e2e2] border-[1px]    '>
+                        {' '}
+                        <p className='cart-header-text w-full gap-[10px] py-[10px] px-[15px] flex items-center  text-[14px]'>
+                           <span className='cart-count px-[8px] text-[14px] py-[4px] text-white bg-[#d2401e]'>
+                              {totalProductInCart}
+                           </span>{' '}
+                           sản phẩm trong giỏ hàng
+                        </p>
+                        <button
+                           onClick={showMiniCart}
+                           className='close-mini-cart text-[#333333] text-[20px] mt-[5px] cursor-pointer hover:opacity-100 mr-[15px]  opacity-[0.5]'
+                           type='button'
+                        >
+                           <FaXmark></FaXmark>
+                        </button>
+                     </div>
+                     <div className='mini-cart-content overflow-auto m-h-[100%-269px]'>
+                        <ul className='cart-item relative'>
+                           <li className='cart-product border-[#e2e2e2] items-center text-center mt-[50] border-t-[1px] relative first:border-none '>
+                              <p className='cart-title xl:text-[20px] border-[#e2e2e2] max-xl:text-[20px] text-[red] font-bold pb-[12px]'>
+                                 Không có sản phẩm trong giỏ hàng
+                              </p>
+                              <div className='start-shopping cart-title  border-[#e2e2e2] gap-2 text-[#51A55C] font-bold flex justify-center items-center text-center pb-[12px]'>
+                                 <Link
+                                    to={'/products'}
+                                    className='block  xl:text-[14px] max-xl:text-[14px] view-cart w-[40%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[10px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                                  >
-                                    {item.name}{' '}
-                                 </a>
-                                 <div className='product-info mt-[9px] flex'>
-                                    <span className='product-qt text-[16px]'>{item.weight}kg ×</span>
-                                    <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
-                                       {item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                                    </span>
-                                 </div>
-                                 <div className='delete-cart'>
-                                    <button
-                                       onClick={() => dispatch(removeFromCart({ id: item._id }))}
-                                       type='button'
-                                       className='absolute right-[15px] bottom-[15px] text-[20px] opacity-[0.6] text-[#dc3545] hover:opacity-100'
-                                    >
-                                       <HiOutlineTrash></HiOutlineTrash>
-                                    </button>
-                                 </div>
+                                    Mua hàng
+                                 </Link>
+                                 <Link
+                                    to={'/cart'}
+                                    className='block  xl:text-[14px] max-xl:text-[14px] view-cart w-[40%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[10px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
+                                 >
+                                    Giỏ hàng
+                                 </Link>
                               </div>
                            </li>
-                        ))}
-                     </ul>
-                  </div>
-                  <div className='mini-cart-footer'>
-                     <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                        <span className='subtotal-title text-[16px] '>Subtotal:</span>
-                        <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                           {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                        </span>
-                     </div>
-                     <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
-                        <Link
-                           onClick={showMiniCart}
-                           to={'/cart'}
-                           className='block  text-[14px] view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
-                        >
-                           GIỎ HÀNG
-                        </Link>
-                        <Link
-                           to='/checkout'
-                           onClick={showMiniCart}
-                           className='block text-[14px]  view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center'
-                        >
-                           THANH TOÁN
-                        </Link>
+                        </ul>
                      </div>
                   </div>
                </div>
-            </section>
-         )}
+            ) : (
+               <div>
+                  <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
+                     <div
+                        onClick={showMiniCart}
+                        className='mini-cart-overlay hidden overlay-menu-homepage  fixed w-[110%] top-0 bottom-0 left-0 right-0 z-[6] opacity-[0.5] bg-[#333333]  '
+                     ></div>
+                  </div>
+                  <div className='wrap-mini-cart transition-all duration-300 translate-x-[100%] w-[320px] flex h-full fixed  top-0 right-0 flex-col bg-white text-[#6f6f6f]  z-[8]'>
+                     <div className='mini-cart-header flex border-b-[#e2e2e2] border-[1px]    '>
+                        <p className='cart-header-text w-full gap-[10px] py-[10px] px-[15px] flex items-center  text-[14px]'>
+                           <span className='cart-count px-[8px] text-[14px] py-[4px] text-white bg-[#d2401e]'>
+                              {totalProductInCart}
+                           </span>{' '}
+                           sản phẩm trong giỏ hàng
+                        </p>
+                        <button
+                           onClick={showMiniCart}
+                           className='close-mini-cart text-[#333333] text-[20px] mt-[5px] cursor-pointer hover:opacity-100 mr-[15px]  opacity-[0.5]'
+                           type='button'
+                        >
+                           <FaXmark></FaXmark>
+                        </button>
+                     </div>
+                     <div className='mini-cart-content overflow-auto m-h-[100%-269px]'>
+                        <ul className='cart-item relative'>
+                           {cart?.items?.map((item: any, index: number) => (
+                              <li
+                                 key={index}
+                                 className='cart-product p-[15px] flex border-[#e2e2e2] border-t-[1px] relative first:border-none '
+                              >
+                                 <div className='cart-img w-[65px]'>
+                                    <a href=''>
+                                       <img
+                                          className='m-w-full h-[69px]  border-[#e2e2e2] border-[1px]'
+                                          src={item.images}
+                                          alt=''
+                                       />
+                                    </a>
+                                 </div>
+                                 <div className='cart-content w-[calc(100%-65px)] pl-[15px] flex flex-col justify-center'>
+                                    <a
+                                       href=''
+                                       className='product-name font-bold text-[16px] text-[#6f6f6f] overflow-ellipsis whitespace-nowrap'
+                                    >
+                                       {item.name}{' '}
+                                    </a>
+                                    <div className='product-info mt-[9px] flex'>
+                                       <span className='product-qt text-[16px]'>{item.weight}kg ×</span>
+                                       <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
+                                          {item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                       </span>
+                                    </div>
+                                    <div className='delete-cart'>
+                                       <button
+                                          onClick={() => dispatch(removeFromCart({ id: item._id }))}
+                                          type='button'
+                                          className='absolute right-[15px] bottom-[15px] text-[20px] opacity-[0.6] text-[#dc3545] hover:opacity-100'
+                                       >
+                                          <HiOutlineTrash></HiOutlineTrash>
+                                       </button>
+                                    </div>
+                                 </div>
+                              </li>
+                           ))}
+                        </ul>
+                     </div>
+                     <div className='mini-cart-footer'>
+                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Subtotal:</span>
+                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                              {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           </span>
+                        </div>
+                        <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
+                           <Link
+                              to={'/cart'}
+                              className='block  text-[14px] view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
+                           >
+                              GIỎ HÀNG
+                           </Link>
+                           <a
+                              href='/cart'
+                              className='block text-[14px]  view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center'
+                           >
+                              THANH TOÁN
+                           </a>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            )}
+         </section>
          <section className=' section-icon-contact fixed bottom-[105px] right-[24px] cursor-pointer z-[4]'>
             <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
                <svg

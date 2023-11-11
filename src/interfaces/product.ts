@@ -16,6 +16,7 @@ export interface IProduct {
    createAt: string;
    shipments: IShipmentOfProduct[];
    price: number;
+   originId: string;
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;

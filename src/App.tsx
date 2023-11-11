@@ -7,14 +7,15 @@ import { useGetTokenQuery } from './services/auth.service';
 import { saveTokenAndUser } from './slices/authSlice';
 function App() {
    const dispatch = useDispatch();
-   const {data,isLoading} = useGetTokenQuery();
+   const { data, isLoading } = useGetTokenQuery();
    useEffect(() => {
-      if(!isLoading && data){
+      if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-      dispatch(setCartName(data.body.data.data.email || 'cart'));
+         dispatch(setCartName(data.body.data.data.email || 'cart'));
       }
       dispatch(setItem());
-   }, [data,isLoading]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [data, isLoading]);
 
    return <RouterProvider router={router} />;
 }

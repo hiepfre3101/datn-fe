@@ -1,23 +1,23 @@
-
-export interface IOrderDetailProps{
+export interface IOrderDetailProps {
    setState: (state: string) => void;
 }
-export interface IProductOrder{
+export interface IProductOrder {
    _id: string;
    images: string;
    name: string;
    weight: number;
-   price:number;
+   price: number;
 }
-export interface IOrder{
-   customerName:string;
-   phoneNumber:number;
-   shippingAddress:string;
-   email:string;
-   totalPayment:number;
-   products:IProductOrder[];
-   note:string|undefined
-   userId:string|undefined
+export interface IOrder {
+   customerName: string;
+   phoneNumber: number;
+   shippingAddress: string;
+   email: string;
+   totalPayment: number;
+   products: IProductOrder[];
+   note: string | undefined;
+   userId: string | undefined;
+   paymentMethod: 'cod' | 'momo';
 }
 
 import { IProductInOrder } from './product';
@@ -36,5 +36,6 @@ export type IOder = {
    pay: boolean;
    status: string;
    createdAt: string;
+   invoiceId: string;
+   paymentMethod: 'cod' | 'momo';
 };
-
