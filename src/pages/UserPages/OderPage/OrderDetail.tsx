@@ -5,13 +5,13 @@ import style from './OrderDetail.module.css';
 import { useEffect, useState } from 'react';
 import { getDetailOrder } from '../../../api/order';
 import Loading from '../../../components/Loading/Loading';
-import { IOder } from '../../../interfaces/order';
+import { IOrderFull } from '../../../interfaces/order';
 import { formatStringToDate, transformCurrency, uppercaseFirstLetter } from '../../../helper';
 import { ORDER_OF_STATUS, PENDING_ORDER, SHIPPING_ORDER, SUCCESS_ORDER } from '../../../constants/orderStatus';
 import ProductInOrder from './Component/ProductInOrder';
 const OrderDetail = () => {
    const { id } = useParams();
-   const [order, setOrder] = useState<IOder>();
+   const [order, setOrder] = useState<IOrderFull>();
    const [loading, setLoading] = useState<boolean>(false);
    useEffect(() => {
       (async () => {
@@ -30,7 +30,11 @@ const OrderDetail = () => {
       })();
    }, [id]);
    const getStatusOfOrder = () => {
-      return ORDER_OF_STATUS.indexOf(uppercaseFirstLetter(order ? order?.status : 'chờ xác nhận'));
+      return ORDER_OF_STATUS.indexOf(
+         ORDER_OF_STATUS.find(
+            (status) => status.status === uppercaseFirstLetter(order ? order.status : 'chờ xác nhận')
+         )!
+      );
    };
    if (loading) return <Loading sreenSize='lg' />;
    return (
@@ -43,7 +47,7 @@ const OrderDetail = () => {
             <span className='text-xl font-semibold text-black'>
                Cảm ơn quý khách, <span className='text-greenPrimary'>{order?.customerName}!</span>
             </span>
-            <p className='mt-2 text-black font-bold text-lg'>Đơn hàng #{order?._id}</p>
+            <p className='mt-2 text-black font-bold text-lg'>Đơn hàng (#) {order?.invoiceId}</p>
             <Divider />
             <div className='w-full flex justify-start gap-5 flex-wrap'>
                <div className='w-[40%]'>
@@ -102,11 +106,11 @@ const OrderDetail = () => {
                   <Divider />
                   <div className='flex justify-between items-center text-black px-10'>
                      <strong>Tổng sản phẩm</strong>
-                     <span className='font-semibold'>150.000 vnd</span>
+                     <span className='font-semibold'>{transformCurrency(order ? order?.totalPayment : 0)}</span>
                   </div>
                   <div className='mt-3 flex justify-between items-center text-black px-10'>
                      <strong>Khuyến mãi</strong>
-                     <span className='font-semibold'>15.000 vnd</span>
+                     <span className='font-semibold'>0 vnd</span>
                   </div>
                   <div className='mt-3 flex justify-between items-center text-black px-10 text-xl '>
                      <strong className='font-bold'>Tổng tiền</strong>

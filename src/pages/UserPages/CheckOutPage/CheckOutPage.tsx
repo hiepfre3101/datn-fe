@@ -4,7 +4,7 @@ import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
 import OrderCheckOut from './components/orderCheckOut';
 import { Button, ConfigProvider, Steps, message, notification } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -27,7 +27,6 @@ const CheckOutPage = () => {
    const [current, setCurrent] = useState(0);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const [loadingState, setLoadingState] = useState<boolean>(false);
-   const navaigate = useNavigate();
    const dispatch = useDispatch();
    const onSubmit = async (data: IOrder) => {
       if (current < 2) {
@@ -72,8 +71,9 @@ const CheckOutPage = () => {
                   } else {
                      if ('data' in res && 'status' in res.data && res.data.status == 201) {
                         message.success('Mua hàng thành công');
-                        navaigate('/ordercomplete');
                         dispatch(removeAllProductFromCart());
+                        console.log(res);
+                        // navaigate('/ordercomplete');
                      }
                   }
                })

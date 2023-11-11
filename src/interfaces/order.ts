@@ -10,21 +10,21 @@ export interface IProductOrder {
 }
 export interface IOrder {
    customerName: string;
-   phoneNumber: number;
+   phoneNumber: string;
    shippingAddress: string;
    email: string;
    totalPayment: number;
    products: IProductOrder[];
    note: string | undefined;
    userId: string | undefined;
+   paymentMethod: 'cod' | 'momo';
+   status?: string;
 }
 
-import { IProductInOrder } from './product';
-
-export type IOder = {
+export type IOrderFull = {
    _id: string;
    userId: string | null;
-   products: IProductInOrder[];
+   products: IProductOrder[];
    totalPayment: number;
    customerName: string;
    phoneNumber: string;
@@ -36,4 +36,5 @@ export type IOder = {
    status: string;
    createdAt: string;
    invoiceId: string;
+   paymentMethod: 'cod' | 'momo';
 };
