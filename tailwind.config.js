@@ -10,7 +10,10 @@
             greenbbf7d0: '#bbf7d0',
             gray300: '#d1d5db',
             greenP800: '#093e1b',
-            greenP500: '#6ada92'
+            greenP500: '#6ada92',
+            greenP300: '#d8fae4',
+            redP300: '#f7b5b3',
+            redP500: '#ea3933'
          }
       },
       screens: {

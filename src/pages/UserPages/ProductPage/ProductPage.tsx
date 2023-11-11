@@ -1,4 +1,3 @@
-import '../../../css/productpage.css';
 import { ConfigProvider, Pagination } from 'antd';
 import FillterProducts from './components/FillterProducts';
 import SorterProduct from './components/SorterProduct';

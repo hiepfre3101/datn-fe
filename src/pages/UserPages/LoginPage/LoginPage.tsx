@@ -26,7 +26,7 @@ const LoginPage = () => {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
          dispatch(setCartName(data.body.data.data.email));
          dispatch(setItem());
-         if (data.body.data.data?.role == 'admin') return navigate('/manage/dashboard');
+         if (data.body.data.data?.role === 'admin') return navigate('/manage/dashboard');
          navigate('/');
       }
    }, [data, dispatch, isLoading, navigate]);
