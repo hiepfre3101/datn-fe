@@ -4,4 +4,10 @@ export const SHIPPING_ORDER = 'Đang giao hàng';
 export const FAIL_ORDER = 'Đã hủy đơn hàng';
 
 //đừng động vào cái mảng này nhé :)
-export const ORDER_OF_STATUS = [PENDING_ORDER, SHIPPING_ORDER, SUCCESS_ORDER, FAIL_ORDER];
+export const ORDER_OF_STATUS = [
+   { status: PENDING_ORDER, color: '#e3dc1c' },
+   { status: SHIPPING_ORDER, color: '#e77e18' },
+   { status: SUCCESS_ORDER, color: '#80b235' }
+];
+
+

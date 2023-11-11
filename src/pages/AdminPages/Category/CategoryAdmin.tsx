@@ -22,7 +22,7 @@ const CategoryAdmin = () => {
             </Helmet>
 
             <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
-                <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%]'>
+                <div  className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%]'>
                     <div className='flex justify-between items-center w-[90%]'>
                         <h1 className='text-3xl font-semibold text-[rgba(0,0,0,0.7)]'>Danh mục</h1>
 
@@ -54,7 +54,7 @@ const CategoryAdmin = () => {
 
 
 
-                        <div className="flex gap-7 flex-wrap" style={{ margin: 30 }}>
+                        <div className="flex gap-7 flex-wrap" style={{ margin: 30 }} >
 
 
                             {
