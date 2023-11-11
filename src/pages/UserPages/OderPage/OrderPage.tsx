@@ -13,7 +13,7 @@ const { Column } = Table;
 
 const OrderPage = () => {
    const [orders, setOrders] = useState<IOder[]>([]);
-   console.log(orders);
+  
    const [loading, setLoading] = useState<boolean>(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    // const orderDatas = orders && orderData(orders)

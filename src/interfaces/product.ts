@@ -40,10 +40,4 @@ export interface IObjIdForGetRelatedProducts {
    idProduct: string | undefined;
 }
 
-export type IProductInOrder = {
-   _id: string;
-   name: string;
-   images: string;
-   weight: string;
-   price: number;
-};
+
