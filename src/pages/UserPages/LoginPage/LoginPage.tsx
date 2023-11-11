@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { setCartName, setItem } from '../../../slices/cartSlice';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
-import { AuthLoginInput } from '../../../interfaces/auth';
 import { useLoginMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
 
@@ -25,16 +24,16 @@ const LoginPage = () => {
    useEffect(() => {
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         dispatch(setCartName(data.body.data.data.email))
-         dispatch(setItem())
-         if (data.body.data.data?.role == 'admin') return navigate('/admin');
+         dispatch(setCartName(data.body.data.data.email));
+         dispatch(setItem());
+         if (data.body.data.data?.role == 'admin') return navigate('/manage/dashboard');
          navigate('/');
       }
    }, [data, dispatch, isLoading, navigate]);
 
    const onFinish = () => {
       try {
-         login({email,password});
+         login({ email, password });
          return;
       } catch (error) {
          alert('Login failed');

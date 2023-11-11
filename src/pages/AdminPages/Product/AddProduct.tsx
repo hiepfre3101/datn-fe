@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Link, useNavigate } from 'react-router-dom';
 import { InputProduct } from '../../../interfaces/product';
 import UploadButton from '../../../components/UploadButton/UploadButton';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { uploadImages } from '../../../api/upload';
 import BlockForm from './BlockForm';
 import TextQuill from '../../../components/TextQuill/TextQuill';
@@ -11,11 +11,14 @@ import { useAddProductMutation } from '../../../services/product.service';
 import { useGetAllCateQuery } from '../../../services/cate.service';
 import Loading from '../../../components/Loading/Loading';
 import HeadForm from '../../../components/HeadForm/HeadForm';
+import { IOrigin } from '../../../interfaces/origin';
+import { getOriginData } from '../../../api/origin';
 
 const AddProduct = () => {
    const [loading, setLoading] = useState<boolean>(false);
    const [files, setFiles] = useState<File[]>([]);
    const [categoryId, setCategoryId] = useState<string>();
+   const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
    const [form] = Form.useForm<InputProduct>();
    const navigate = useNavigate();
@@ -25,6 +28,17 @@ const AddProduct = () => {
    };
    const { data: categories } = useGetAllCateQuery();
    const [handleAddProduct, { error }] = useAddProductMutation();
+
+   useEffect(() => {
+      (async () => {
+         try {
+            const { data } = await getOriginData();
+            setOrigins(data.body.data);
+         } catch (error) {
+            console.log(error);
+         }
+      })();
+   }, []);
    const handleSubmit = async () => {
       try {
          setLoading(true);
@@ -33,7 +47,7 @@ const AddProduct = () => {
             data: { body }
          } = await uploadImages(files);
          //2: lấy đc data :{url:string, public_id:string}[]
-         form.setFieldValue('images', body);
+         form.setFieldValue('images', body.data);
          const newFormData = form.getFieldsValue(true);
          await handleAddProduct(newFormData);
          if (error) {
@@ -69,7 +83,7 @@ const AddProduct = () => {
                         hasFeedback
                         rules={[{ required: true, message: 'Vui lòng tải ảnh lên !' }]}
                      >
-                        <UploadButton maxCount={3} multiple listStyle='picture-card' getListFiles={handleGetFiles} />
+                        <UploadButton maxCount={4} multiple listStyle='picture-card' getListFiles={handleGetFiles} />
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Thông tin sản phẩm'>
@@ -119,28 +133,51 @@ const AddProduct = () => {
                      </Space>
                   </BlockForm>
                </Space>
-               <BlockForm title='Danh mục' className='min-w-[500px]'>
-                  <Form.Item<InputProduct>
-                     name='categoryId'
-                     hasFeedback
-                     rules={[{ required: true, message: 'Hãy chọn danh mục !' }]}
-                  >
-                     <Radio.Group
-                        onChange={(e) => {
-                           setCategoryId(e.target.value);
-                           form.setFieldValue('categoryId', e.target.value);
-                        }}
-                        value={categoryId}
-                        className='flex flex-col gap-2 items-start'
+               <Space size={'large'} direction='vertical'>
+                  <BlockForm title='Danh mục' className='min-w-[500px]'>
+                     <Form.Item<InputProduct>
+                        name='categoryId'
+                        hasFeedback
+                        rules={[{ required: true, message: 'Hãy chọn danh mục !' }]}
                      >
-                        {categories?.body.data.map((cate) => (
-                           <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
-                              {cate.cateName}
-                           </Radio>
-                        ))}
-                     </Radio.Group>
-                  </Form.Item>
-               </BlockForm>
+                        <Radio.Group
+                           onChange={(e) => {
+                              setCategoryId(e.target.value);
+                              form.setFieldValue('categoryId', e.target.value);
+                           }}
+                           value={categoryId}
+                           className='flex flex-col gap-2 items-start'
+                        >
+                           {categories?.body.data.map((cate) => (
+                              <Radio name='categoryId' value={cate._id} className='!text-lg' key={cate._id}>
+                                 {cate.cateName}
+                              </Radio>
+                           ))}
+                        </Radio.Group>
+                     </Form.Item>
+                  </BlockForm>
+                  <BlockForm title='Nguồn gốc' className='min-w-[500px]'>
+                     <Form.Item<InputProduct>
+                        name='originId'
+                        hasFeedback
+                        rules={[{ required: true, message: 'Hãy chọn nguồn gốc sản phẩm !' }]}
+                     >
+                        <Radio.Group
+                           onChange={(e) => {
+                              setCategoryId(e.target.value);
+                              form.setFieldValue('originId', e.target.value);
+                           }}
+                           className='flex flex-col gap-2 items-start'
+                        >
+                           {origins.map((or) => (
+                              <Radio name='originId' value={or._id} className='!text-lg' key={or._id}>
+                                 {or.name}
+                              </Radio>
+                           ))}
+                        </Radio.Group>
+                     </Form.Item>
+                  </BlockForm>
+               </Space>
             </Space>
             <Divider />
             <div className='flex justify-end items-center gap-5 pb-[50px]'>

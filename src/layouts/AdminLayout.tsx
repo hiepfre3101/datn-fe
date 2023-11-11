@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
    PieChartOutlined,
    NotificationOutlined,
@@ -7,7 +7,7 @@ import {
    MenuUnfoldOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Button, Layout, Menu, message, theme } from 'antd';
 import { Outlet } from 'react-router';
 import { logoUrl } from '../constants/imageUrl';
 import ProductIcon from '../components/Icons/ProductIcon';
@@ -15,7 +15,13 @@ import { Link } from 'react-router-dom';
 import TicketIcon from '../components/Icons/TicketIcon';
 import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
-
+import { useNavigate } from 'react-router-dom';
+import { useGetTokenQuery } from '../services/auth.service';
+import { useDispatch } from 'react-redux';
+import { saveTokenAndUser } from '../slices/authSlice';
+import { setCartName } from '../slices/cartSlice';
+import { Socket, io } from 'socket.io-client';
+import NotificationSound from '../assets/notification-sound.mp3';
 const { Content, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -43,15 +49,53 @@ const items: MenuItem[] = [
 ];
 
 const AdminLayout = () => {
+   const [socket, setSocket] = useState<unknown | Socket | null>(null);
    const [collapsed, setCollapsed] = useState(false);
    const [open, setOpen] = useState(false);
+   // const [message, setMessage] = useState<any[]>([]);
+   const { data, isLoading } = useGetTokenQuery();
+
+   const navigate = useNavigate();
+   const dispatch = useDispatch();
+   const audioPlayer = useRef(null);
+
+   function playAudio() {
+      audioPlayer?.current?.play();
+   }
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
    );
    const {
       token: { colorBgContainer }
    } = theme.useToken();
+   useEffect(() => {
+      if (!isLoading && data) {
+         dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
+         dispatch(setCartName(data.body.data.data.email || 'cart'));
+         if (data.body.data.data.role !== 'admin') {
+            navigate('/');
+         }
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [data, isLoading]);
+   useEffect(() => {
+      const newSocket = io('http://localhost:8080');
+      setSocket(newSocket);
 
+      return () => {
+         newSocket.disconnect();
+      };
+   }, []);
+   useEffect(() => {
+      if (socket != null) {
+         console.log(socket);
+
+         (socket as Socket).on('alert', (res: any) => {
+            // message.warning(res);
+            // playAudio();
+         });
+      }
+   }, [socket]);
    return (
       <Layout style={{ minHeight: '100vh' }}>
          <Sider
@@ -88,6 +132,7 @@ const AdminLayout = () => {
          )}
          <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px]' : 'md:pl-[80px] ')}>
             <HeaderAdmin />
+            <audio ref={audioPlayer} src={NotificationSound} />
             <Content className=' w-full px-6  pt-[50px] pb-[50px] flex justify-center '>
                <Outlet />
             </Content>

@@ -66,14 +66,15 @@ const CheckOutPage = () => {
                      } else {
                         notification.error({
                            message: 'Mua hàng thấy bại',
-                           description: errorData.message
+                           description: 'Lỗi hệ thống'
                         });
                      }
                   } else {
                      if ('data' in res && 'status' in res.data && res.data.status == 201) {
                         message.success('Mua hàng thành công');
-                        navaigate('/ordercomplete');
                         dispatch(removeAllProductFromCart());
+                        console.log(res);
+                        // navaigate('/ordercomplete');
                      }
                   }
                })
