@@ -1,74 +1,35 @@
-import React, { useState } from 'react';
-import { Col, InputNumber, Row, Slider } from 'antd';
 
-export const IntegerStep: React.FC = () => {
-  const [inputValue, setInputValue] = useState<number|null>(1);
+import { Slider } from 'antd';
+import { useContext } from 'react';
+import { FilterFieldContext } from '../ProductPage';
 
-  const onChange = (newValue: number|null) => {
-    setInputValue(newValue);
-  };
 
-  return (
-    <Row>
-      <Col span={12}>
-        <Slider
-          min={1}
-          max={20}
-          onChange={onChange}
-          value={typeof inputValue === 'number' ? inputValue : 0}
-        />
-      </Col>
-      <Col span={4}>
-        <InputNumber
-          min={1}
-          max={20}
-          style={{ margin: '0 16px' }}
-          value={inputValue}
-          onChange={onChange}
-        />
-      </Col>
-    </Row>
-  );
-};
-
-export const DecimalStep: React.FC = () => {
-  const [inputValue, setInputValue] = useState<number|null>(0);
-
-  const onChange = (valuee: number|null) => {
-  if(valuee){
-    if (isNaN(valuee)) {
-        return;
-      }
-      if(valuee>20){
-        setInputValue(valuee);
-      }
+const  InputRange: React.FC = () => {
+  const filter = useContext(FilterFieldContext)
+  const changePrice =  (value:any)=>{
+    if (filter.setfield) {
+      filter.setfield({
+        ...filter,
+        field: {
+          ...filter.field,
+          minPrice: value[0],
+          maxPrice: value[1],
+        },
+      });
+    }
+  
+  
   }
  
+  return<>
+  <Slider onChange={(current:any)=>(changePrice(current))} step={10000}  range={{ draggableTrack: true }} max={500000} defaultValue={[1,500000]} />
+
+  <br />
+<div className='flex justify-between'>
+<span>{filter.field.minPrice}</span>
   
-
-  };
-
-  return (
-    <Row>
-      <Col span={12}>
-        <Slider
-          min={0}
-          max={100}
-          onChange={onChange}
-          value={typeof inputValue === 'number' ? inputValue : 0}
-          step={1}
-        />
-      </Col>
-      <Col span={4}>
-        <InputNumber
-          min={0}
-          max={100}
-          style={{ margin: '0 16px' }}
-          step={1}
-          value={inputValue}
-          onChange={onChange}
-        />
-      </Col>
-    </Row>
-  );
+  <span>{filter.field.maxPrice}</span>
+</div>
+  </>
 };
+export default InputRange
