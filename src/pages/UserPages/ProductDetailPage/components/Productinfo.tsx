@@ -1,15 +1,17 @@
 import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
-import { useDispatch } from 'react-redux';
-import {  addItem } from '../../../../slices/cartSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem } from '../../../../slices/cartSlice';
 import { useEffect, useState } from 'react';
 import { IProductInfoProp } from '../../../../interfaces/product';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
+import { addToWhishList } from '../../../../slices/whishListSlice';
+import { FcLike } from 'react-icons/fc';
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const [inputWeight, setinputWeight] = useState<any>(0.5);
-   const [totalWeight, setTotalWeight] = useState<number>();   
+   const [totalWeight, setTotalWeight] = useState<number>();
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
@@ -52,6 +54,15 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
          message.error('Kg không hợp lệ');
       }
    };
+   const add_to_whishList = () => {
+      const product = {
+         _id: product_info?._id,
+         name: product_info?.productName,
+         images: product_info?.images[0].url,
+         price: product_info?.shipments[0]?.price
+      };
+      dispatch(addToWhishList(product));
+   };
    const dec = () => {
       setinputWeight(inputWeight + 0.5);
    };
@@ -60,6 +71,10 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
          setinputWeight(inputWeight - 0.5);
       }
    };
+   const isAdded = useSelector(
+      (state: any) => state?.whishList?.items?.find((item: any) => item?._id === product_info?._id)
+      // console.log(state?.whishList?.items)
+   );
    return (
       <>
          <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
@@ -155,20 +170,29 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                         </button>
                      </div>
                      <div className='btn-checkout-wrap group/btn-add-cart max-sm:w-full border-[2px] border-[#333333] transition-colors duration-300 hover:border-[#d2401e] rounded-[5px] overflow-hidden'>
-                        <Link to="/cart">
-                        <button
-                           onClick={add_to_cart}
-                           type='button'
-                           className=' btn-checkout py-[12px] text-white w-full transition-colors duration-300 z-[3] before:z-[-1] sm:px-[71px] text-center   font-bold bg-[#d2401e]  before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-[#333333] before:transition-all  before:duration-300 before:group-hover/btn-add-cart:scale-x-[0]    before:right-0 before:left-[0px] before:top-0'
-                        >
-                           MUA NGAY
-                        </button>
-                        </Link>       
+                        <Link to='/cart'>
+                           <button
+                              onClick={add_to_cart}
+                              type='button'
+                              className=' btn-checkout py-[12px] text-white w-full transition-colors duration-300 z-[3] before:z-[-1] sm:px-[71px] text-center   font-bold bg-[#d2401e]  before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-[#333333] before:transition-all  before:duration-300 before:group-hover/btn-add-cart:scale-x-[0]    before:right-0 before:left-[0px] before:top-0'
+                           >
+                              MUA NGAY
+                           </button>
+                        </Link>
                      </div>
                   </div>
                   <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
-                     <button className='btn-love text-[18px]  font-bold flex items-center hover:text-[#333333]'>
-                        <AiOutlineHeart className='text-[20px] mr-[5px]'></AiOutlineHeart>YÊU THÍCH
+                     <button
+                        onClick={add_to_whishList}
+                        type='button'
+                        className='btn-love text-[18px]  font-bold flex items-center hover:text-[#333333]'
+                     >
+                        {isAdded ? (
+                           <FcLike className='text-[22px] mr-[5px] bg-red' />
+                        ) : (
+                           <AiOutlineHeart className='text-[20px] mr-[5px] bg-red' />
+                        )}
+                        YÊU THÍCH
                      </button>
                   </div>
                </div>

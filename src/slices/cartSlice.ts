@@ -79,7 +79,7 @@ const cartSlice = createSlice({
             return item;
          });
          if (isItemExist && !error) {
-            state.totalPrice += products.reduce(
+            state.totalPrice = products.reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
                0
             );
