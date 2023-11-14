@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { IProductInOrder } from '../../../../interfaces/product';
 import { Button, ConfigProvider, Form, Input, Modal, Rate, Space } from 'antd';
 import TextQuill from '../../../../components/TextQuill/TextQuill';
+import { IProductOrder } from '../../../../interfaces/order';
 type Props = {
-   product: IProductInOrder;
+   product: IProductOrder;
 };
 
 const ProductInOrder = ({ product }: Props) => {

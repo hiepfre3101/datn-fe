@@ -19,10 +19,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { IAuth } from '../slices/authSlice';
-import { useGetTokenQuery } from '../services/auth.service';
-import { useDispatch } from 'react-redux';
-import { saveTokenAndUser } from '../slices/authSlice';
-import { setCartName } from '../slices/cartSlice';
 import { Socket, io } from 'socket.io-client';
 import NotificationSound from '../assets/notification-sound.mp3';
 
@@ -58,9 +54,7 @@ const AdminLayout = () => {
    const [open, setOpen] = useState(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const navigate = useNavigate();
-   const dispatch = useDispatch();
    const audioPlayer = useRef(null);
-
 
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
