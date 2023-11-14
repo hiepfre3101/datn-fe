@@ -16,12 +16,16 @@ import TicketIcon from '../components/Icons/TicketIcon';
 import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
 import { useNavigate } from 'react-router-dom';
+
+import { useSelector } from 'react-redux';
+import { IAuth } from '../slices/authSlice';
 import { useGetTokenQuery } from '../services/auth.service';
 import { useDispatch } from 'react-redux';
 import { saveTokenAndUser } from '../slices/authSlice';
 import { setCartName } from '../slices/cartSlice';
 import { Socket, io } from 'socket.io-client';
 import NotificationSound from '../assets/notification-sound.mp3';
+
 const { Content, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -52,16 +56,12 @@ const AdminLayout = () => {
    const [socket, setSocket] = useState<unknown | Socket | null>(null);
    const [collapsed, setCollapsed] = useState(false);
    const [open, setOpen] = useState(false);
-   // const [message, setMessage] = useState<any[]>([]);
-   const { data, isLoading } = useGetTokenQuery();
-
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const navigate = useNavigate();
    const dispatch = useDispatch();
    const audioPlayer = useRef(null);
 
-   // function playAudio() {
-   //    audioPlayer?.current?.play();
-   // }
+
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
    );
@@ -69,19 +69,15 @@ const AdminLayout = () => {
       token: { colorBgContainer }
    } = theme.useToken();
    useEffect(() => {
-      if (!isLoading && data) {
-         dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         dispatch(setCartName(data.body.data.data.email || 'cart'));
-         if (data.body.data.data.role !== 'admin') {
-            navigate('/');
-         }
+      if (auth.user.role !== 'admin') {
+         navigate('/');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [data, isLoading]);
+   }, []);
+
    useEffect(() => {
       const newSocket = io('http://localhost:8080');
       setSocket(newSocket);
-
       return () => {
          newSocket.disconnect();
       };
