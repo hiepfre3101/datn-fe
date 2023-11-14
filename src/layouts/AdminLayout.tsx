@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
    PieChartOutlined,
    NotificationOutlined,
@@ -16,8 +16,12 @@ import TicketIcon from '../components/Icons/TicketIcon';
 import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
 import { useNavigate } from 'react-router-dom';
+
 import { useSelector } from 'react-redux';
 import { IAuth } from '../slices/authSlice';
+import { Socket, io } from 'socket.io-client';
+import NotificationSound from '../assets/notification-sound.mp3';
+
 const { Content, Sider } = Layout;
 
 type MenuItem = Required<MenuProps>['items'][number];
@@ -45,10 +49,13 @@ const items: MenuItem[] = [
 ];
 
 const AdminLayout = () => {
+   const [socket, setSocket] = useState<unknown | Socket | null>(null);
    const [collapsed, setCollapsed] = useState(false);
    const [open, setOpen] = useState(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const navigate = useNavigate();
+   const audioPlayer = useRef(null);
+
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>
    );
@@ -56,13 +63,29 @@ const AdminLayout = () => {
       token: { colorBgContainer }
    } = theme.useToken();
    useEffect(() => {
-      console.log(auth.user.role);
-      return;
       if (auth.user.role !== 'admin') {
          navigate('/');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth]);
+   }, []);
+
+   useEffect(() => {
+      const newSocket = io('http://localhost:8080');
+      setSocket(newSocket);
+      return () => {
+         newSocket.disconnect();
+      };
+   }, []);
+   useEffect(() => {
+      if (socket != null) {
+         console.log(socket);
+
+         (socket as Socket).on('alert', () => {
+            // message.warning(res);
+            // playAudio();
+         });
+      }
+   }, [socket]);
    return (
       <Layout style={{ minHeight: '100vh' }}>
          <Sider
@@ -99,6 +122,7 @@ const AdminLayout = () => {
          )}
          <Layout className={'transition-all ' + (!collapsed ? 'md:pl-[250px]' : 'md:pl-[80px] ')}>
             <HeaderAdmin />
+            <audio ref={audioPlayer} src={NotificationSound} />
             <Content className=' w-full px-6  pt-[50px] pb-[50px] flex justify-center '>
                <Outlet />
             </Content>
