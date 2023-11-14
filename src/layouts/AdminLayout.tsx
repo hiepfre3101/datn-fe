@@ -56,11 +56,13 @@ const AdminLayout = () => {
       token: { colorBgContainer }
    } = theme.useToken();
    useEffect(() => {
+      console.log(auth.user.role);
+      return;
       if (auth.user.role !== 'admin') {
          navigate('/');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   }, [auth]);
    return (
       <Layout style={{ minHeight: '100vh' }}>
          <Sider

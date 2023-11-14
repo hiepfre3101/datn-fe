@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BsCircle, BsCheck2Circle } from 'react-icons/bs';
 type Props = {
-   onClick: (value: string) => void;
+   onClick: (value: string) => Promise<void>;
    disable: boolean;
    colorPrimary: string;
    value: string;
@@ -19,8 +19,7 @@ const ButtonCheck = ({ onClick, disable, colorPrimary, value }: Props) => {
          }`}
          onClick={() => {
             if (isClicked) return;
-            setIsClicked(true);
-            onClick(value.toLowerCase());
+            onClick(value.toLowerCase()).then(() => setIsClicked(true));
          }}
          style={{ color: colorPrimary, border: `1px solid ${colorPrimary}`, borderRadius: '5px' }}
       >
