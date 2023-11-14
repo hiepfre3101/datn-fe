@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setCartName, setItem } from '../../../slices/cartSlice';
 import { message } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
+import Loading from '../../../components/Loading/Loading';
 
 const LoginPage = () => {
    const [email, setEmail] = useState('');
@@ -12,34 +13,24 @@ const LoginPage = () => {
 
    const navigate = useNavigate();
    const dispatch = useDispatch();
-   const [login, { data, isLoading, error }] = useLoginMutation();
+   const [login, { isLoading }] = useLoginMutation();
 
-   useEffect(() => {
-      if (error && 'data' in error) {
-         const data = error.data as { message: string };
-         if ('message' in data) message.error(data?.message);
-      }
-   }, [error]);
-
-   useEffect(() => {
-      if (!isLoading && data) {
-         dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         dispatch(setCartName(data.body.data.data.email));
-         dispatch(setItem());
-         if (data.body.data.data?.role === 'admin') return navigate('/manage/dashboard');
-         navigate('/');
-      }
-   }, [data, dispatch, isLoading, navigate]);
-
-   const onFinish = () => {
+   const onFinish = async () => {
       try {
-         login({ email, password });
-         return;
+         const data = await login({ email, password }).unwrap();
+         dispatch(saveTokenAndUser({ accessToken: data?.body.data.accessToken, user: data?.body.data.data }));
+         dispatch(setCartName(data?.body.data.data.email));
+         dispatch(setItem());
+         if (data?.body.data.data.role !== 'admin') {
+            navigate('/');
+         } else {
+            navigate('/manage/dashboard');
+         }
       } catch (error) {
-         alert('Login failed');
+         message.error('Lỗi hệ thống !');
       }
    };
-
+   if (isLoading) return <Loading sreenSize='lg' />;
    return (
       <>
          <div className='main'>
