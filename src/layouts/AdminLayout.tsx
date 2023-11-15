@@ -62,12 +62,12 @@ const AdminLayout = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
-   useEffect(() => {
-      if (auth.user.role !== 'admin') {
-         navigate('/');
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, []);
+   // useEffect(() => {
+   //    if (auth.user.role !== 'admin') {
+   //       navigate('/');
+   //    }
+   //    // eslint-disable-next-line react-hooks/exhaustive-deps
+   // }, []);
 
    useEffect(() => {
       const newSocket = io('http://localhost:8080');

@@ -13,7 +13,7 @@ function App() {
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
          dispatch(setCartName(data.body.data.data.email || 'cart'));
-         dispatch(setwhishListName(data.body.data.data.userName || 'whishList'));
+         dispatch(setwhishListName(data.body.data.data.userName || 'wishList'));
       }
       dispatch(setItem());
       dispatch(setwhishList());
