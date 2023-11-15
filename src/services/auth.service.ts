@@ -43,7 +43,8 @@ const authApi = createApi({
             url: '/token',
             method: 'DELETE',
             credentials: 'include'
-         })
+         }),
+         invalidatesTags: ['auth']
       })
    })
 });

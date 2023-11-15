@@ -7,7 +7,7 @@ import {
    MenuUnfoldOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, theme } from 'antd';
+import { Button, Layout, Menu, Spin, message, theme } from 'antd';
 import { Outlet } from 'react-router';
 import { logoUrl } from '../constants/imageUrl';
 import ProductIcon from '../components/Icons/ProductIcon';
@@ -17,10 +17,12 @@ import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
 import { useNavigate } from 'react-router-dom';
 
-import { useSelector } from 'react-redux';
-import { IAuth } from '../slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { saveTokenAndUser } from '../slices/authSlice';
 import { Socket, io } from 'socket.io-client';
 import NotificationSound from '../assets/notification-sound.mp3';
+import { useGetTokenQuery } from '../services/auth.service';
+import { setCartName } from '../slices/cartSlice';
 
 const { Content, Sider } = Layout;
 
@@ -51,9 +53,12 @@ const items: MenuItem[] = [
 const AdminLayout = () => {
    const [socket, setSocket] = useState<unknown | Socket | null>(null);
    const [collapsed, setCollapsed] = useState(false);
+   const [checking, setChecking] = useState(true);
    const [open, setOpen] = useState(false);
-   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const { data, isLoading } = useGetTokenQuery()
+   const auth = useSelector((state: any) => state.userReducer)
    const navigate = useNavigate();
+   const dispatch = useDispatch();
    const audioPlayer = useRef(null);
 
    const ButtonTrigger = (
@@ -62,12 +67,28 @@ const AdminLayout = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
-   // useEffect(() => {
-   //    if (auth.user.role !== 'admin') {
-   //       navigate('/');
-   //    }
-   //    // eslint-disable-next-line react-hooks/exhaustive-deps
-   // }, []);
+   console.log(data?.body.data);
+
+   useEffect(() => {
+      setChecking(true)
+      if (!isLoading && data?.body?.data && Object.keys(auth.user).length == 0) {
+if (Object.keys(data.body.data.data).length > 0) {
+            dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
+            dispatch(setCartName(data.body.data.data.email || 'cart'));
+         } else {
+            message.warning('You are not logged in')
+            navigate('/');
+         }
+         setChecking(false)
+      } else if (Object.keys(auth.user).length > 0) {
+         if (auth.user.role !== 'admin') {
+            message.warning('You are not allowed to arrive this')
+            navigate('/');
+         }
+         setChecking(false)
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [data, isLoading, auth.user])
 
    useEffect(() => {
       const newSocket = io('http://localhost:8080');
@@ -86,6 +107,11 @@ const AdminLayout = () => {
          });
       }
    }, [socket]);
+   if (checking) {
+      return <div className='h-screen flex items-center justify-center'>
+         <Spin size='large' />
+      </div>
+   }
    return (
       <Layout style={{ minHeight: '100vh' }}>
          <Sider
@@ -126,7 +152,7 @@ const AdminLayout = () => {
             <Content className=' w-full px-6  pt-[50px] pb-[50px] flex justify-center '>
                <Outlet />
             </Content>
-         </Layout>
+</Layout>
       </Layout>
    );
 };

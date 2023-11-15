@@ -37,7 +37,7 @@ console.log(data)
    }, [data, isLoading, error, dispatch, navigate]);
 
    const signHandle = ()=>{
-      try {
+      
          signup({
             userName,
             email,
@@ -47,9 +47,6 @@ console.log(data)
             address,
          });
          return;
-      } catch (error) {
-         alert('signup failed');
-      }
      
    }
 
@@ -140,7 +137,7 @@ console.log(data)
                               id='password'
                               type='password'
                               value={password}
-                              onChange={(e)=>setpassword(e.target.value)}
+                              onChange={(e)=>setpassword(e.target.value.trim())}
                            />
                         </div>
                         <div className='login-password mt-[25px]'>
@@ -153,7 +150,7 @@ console.log(data)
                               id='confimpassword'
                               type='password'
                               value={confirmPassword}
-                              onChange={(e)=>setconfirmPassword(e.target.value)}
+                              onChange={(e)=>setconfirmPassword(e.target.value.trim())}
                            />
                         </div>
                         <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
