@@ -15,7 +15,7 @@ const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    const [idOrder, setIdOrder] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
-   const { data, isLoading } = useGetAllOrderQuery({});
+   const { data, isLoading } = useGetAllOrderQuery({ order: 'desc' });
    const {
       token: { colorBgContainer }
    } = theme.useToken();
@@ -82,7 +82,8 @@ const OrdersAdmin = () => {
                      />
                      <Column align='center' width={250} title='Tổng tiền' dataIndex='totalPayment' key='totalPayment' />
                      <Column
-                        width={250}
+                        fixed='right'
+                        width={200}
                         title='Trạng thái'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => (
@@ -97,7 +98,13 @@ const OrdersAdmin = () => {
                         )}
                      />
                   </Table>
-                  <Modal width={1000} onCancel={() => setIsOpen(false)} open={isOpen} footer={[]}>
+                  <Modal
+                     width={1000}
+                     onCancel={() => setIsOpen(false)}
+                     open={isOpen}
+                     footer={[]}
+                     style={{ top: 50, left: 50 }}
+                  >
                      <DetailOrder idOrder={idOrder} />
                   </Modal>
                </div>

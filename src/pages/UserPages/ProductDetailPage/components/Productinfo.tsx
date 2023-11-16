@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +13,7 @@ import { FcLike } from 'react-icons/fc';
 
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const [inputWeight, setinputWeight] = useState<any>(0.5);
-   const [totalWeight, setTotalWeight] = useState<number>();
+   const [totalWeight, setTotalWeight] = useState<number>(0);
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
@@ -34,8 +35,8 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    useEffect(() => {
       setTotalWeight(
          product_info?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
-            return accumulator + shipmentWeight.weight;
-         }, 0)
+            return (accumulator += shipmentWeight.weight);
+         }, 0) as number
       );
    }, [product_info]);
    const dispatch = useDispatch();
@@ -87,7 +88,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                      <ConfigProvider
                         theme={{
                            token: {
-                              controlHeightLG: 34
+                              controlHeightLG: 35
                            }
                         }}
                      >
@@ -114,7 +115,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                         <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng còn lại:</div>
                         <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
-                           {totalWeight}
+                           {totalWeight} kg
                         </div>
                      </div>
                      {product_info?.shipments.length!=0 ?(

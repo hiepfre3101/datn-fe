@@ -70,15 +70,15 @@ const AddProduct = () => {
          <Helmet>
             <title>Thêm sản phẩm</title>
          </Helmet>
-         <Form className='w-[80%] mt-20 pb-10' form={form} onFinish={handleSubmit} layout='vertical'>
+         <Form className='w-[100%] mt-20 pb-10' form={form} onFinish={handleSubmit} layout='vertical'>
             <HeadForm
                placeHolder='Sản phẩm không tên'
                linkBack='/manage/products'
                changeValue={(value) => setProductName(value)}
                initValue={productName}
             />
-            <Space size={'large'} className='w-full !items-start mt-5'>
-               <Space direction='vertical' size={'middle'} className='min-w-[800px]'>
+            <div className='w-full mt-5 flex flex-wrap gap-5'>
+               <div className='min-w-[800px] flex flex-col gap-5 w-full'>
                   <BlockForm title='Hình ảnh sản phẩm'>
                      <Form.Item<InputProduct>
                         name='images'
@@ -134,8 +134,8 @@ const AddProduct = () => {
                         </Form.Item>
                      </Space>
                   </BlockForm>
-               </Space>
-               <Space size={'large'} direction='vertical'>
+               </div>
+               <div className='flex flex-col w-full gap-5'>
                   <BlockForm title='Danh mục' className='min-w-[500px]'>
                      <Form.Item<InputProduct>
                         name='categoryId'
@@ -179,8 +179,8 @@ const AddProduct = () => {
                         </Radio.Group>
                      </Form.Item>
                   </BlockForm>
-               </Space>
-            </Space>
+               </div>
+            </div>
             <Divider />
             <div className='flex justify-end items-center gap-5 pb-[50px]'>
                <Link to={'/manage/products'}>
