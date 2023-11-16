@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { createSlice } from '@reduxjs/toolkit';
 import { message } from 'antd';
 export type ICartSlice = {
@@ -86,7 +87,7 @@ const cartSlice = createSlice({
 
             localStorage.setItem(state.cartName, JSON.stringify([...products]));
             state.items = products;
-            message.success('thêm sản phẩm vào giỏ hàng thành công');
+            message.success('Thêm sản phẩm vào giỏ hàng thành công');
          } else if (!isItemExist && !error) {
             state.totalPrice = [...state.items, value].reduce(
                (accumulator: any, product: any) => accumulator + product.price * product.weight,
@@ -94,7 +95,7 @@ const cartSlice = createSlice({
             );
             localStorage.setItem(state.cartName, JSON.stringify([...state.items, value]));
             state.items = [...state.items, value];
-            message.success('thêm sản phẩm vào giỏ hàng thành công');
+            message.success('Thêm sản phẩm vào giỏ hàng thành công');
          }
       },
       removeFromCart: (state, action) => {

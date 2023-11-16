@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +12,7 @@ import { addToWhishList } from '../../../../slices/whishListSlice';
 import { FcLike } from 'react-icons/fc';
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const [inputWeight, setinputWeight] = useState<any>(0.5);
-   const [totalWeight, setTotalWeight] = useState<number>();
+   const [totalWeight, setTotalWeight] = useState<number>(0);
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
@@ -33,8 +34,8 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    useEffect(() => {
       setTotalWeight(
          product_info?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
-            return accumulator + shipmentWeight.weight;
-         }, 0)
+            return (accumulator += shipmentWeight.weight);
+         }, 0) as number
       );
    }, [product_info]);
    const dispatch = useDispatch();
@@ -87,7 +88,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                      <ConfigProvider
                         theme={{
                            token: {
-                              controlHeightLG: 34
+                              controlHeightLG: 35
                            }
                         }}
                      >
@@ -114,7 +115,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                         <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng còn lại:</div>
                         <div className='stock-qty-value text-[16px] ml-[15px] text-[#198754] font-bold'>
-                           {totalWeight}
+                           {totalWeight} kg
                         </div>
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
@@ -135,7 +136,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                                        onClick={dec}
                                        type='button'
                                        className={`${
-                                          inputWeight >= totalWeight! ? 'bg-gray-300' : ''
+                                          inputWeight >= totalWeight! ? 'bg-gray-300 cursor-not-allowed text-gray-400' : ''
                                        } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
                                     >
                                        +
@@ -145,7 +146,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                                        onClick={inc}
                                        type='button'
                                        className={`${
-                                          inputWeight <= 0 ? 'bg-gray-300' : ''
+                                          inputWeight <= 0 ? 'bg-gray-300 cursor-not-allowed text-gray-400' : ''
                                        } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
                                     >
                                        -
