@@ -33,7 +33,7 @@ const ProductsInCart = () => {
    return (
       <div>
          {cart?.items?.length === 0 ? (
-            <div className='cart-emty'>
+            <div className='art-item-wrap md:px-[20px] md:pt-[20px] md:pb-[7px] max-md:px-[12px] max-md:py-[30px] border-[#e2e2e2] border-[1px] '>
                <p className='cart-title xl:text-[30px]  border-[#e2e2e2] max-xl:text-[18px] text-[red] font-bold items-center text-center pb-[12px]'>
                   Không có sản phẩm trong giỏ hàng
                </p>
