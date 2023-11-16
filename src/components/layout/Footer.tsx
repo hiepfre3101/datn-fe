@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { BiStore } from 'react-icons/bi';
 import { BsBell } from 'react-icons/bs';
@@ -14,6 +15,7 @@ import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { saveProduct } from '../../slices/productSlice';
+import { logoUrl } from '../../constants/imageUrl';
 
 const Footer = () => {
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
@@ -88,11 +90,7 @@ const Footer = () => {
                <ul className='footer-list flex py-[60px] flex-wrap ml-[-30px]'>
                   <li className='footer-if  w-full lg:w-[calc(35%-30px)] ml-[30px]'>
                      <div className='logo-ft '>
-                        <img
-                           className='max-w-[120px]'
-                           src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/logo/logo.png'
-                           alt=''
-                        />
+                        <img className='max-w-[120px]' src={logoUrl} alt='logo' />
                      </div>
                      <div className='footer-if-text leading-7 '>
                         <p>

@@ -1,5 +1,4 @@
-import { message } from 'antd';
-import { LegacyRef, useMemo, useRef, useState } from 'react';
+import { LegacyRef, useEffect, useMemo, useRef, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 type Props = {
@@ -28,33 +27,12 @@ const TextQuill = ({ getValue, defaultValue }: Props) => {
       getValue(value);
       setValue(value);
    };
-
+   useEffect(() => {
+      if (defaultValue !== undefined) {
+         setValue(defaultValue);
+      }
+   }, [defaultValue]);
    const quillRef = useRef() as LegacyRef<ReactQuill>;
-   const imageHandler = (e) => {
-      if (!quillRef) return;
-      console.log(quillRef);
-      return;
-      const editor = quillRef.current.getEditor();
-      console.log(editor);
-      const input = document.createElement('input');
-      input.setAttribute('type', 'file');
-      input.setAttribute('accept', 'image/*');
-      input.click();
-
-      input.onchange = async () => {
-         const file = input.files[0];
-         if (/^image\//.test(file.type)) {
-            console.log(file);
-            const formData = new FormData();
-            formData.append('image', file);
-            const res = await ImageUpload(formData); // upload data into server or aws or cloudinary
-            const url = res?.data?.url;
-            editor.insertEmbed(editor.getSelection(), 'image', url);
-         } else {
-            message.error('You could only upload images.');
-         }
-      };
-   };
    const modules = useMemo(
       () => ({
          toolbar: [
@@ -72,7 +50,7 @@ const TextQuill = ({ getValue, defaultValue }: Props) => {
          theme='snow'
          formats={formats}
          modules={modules}
-         value={defaultValue ? defaultValue : value}
+         value={value}
          onChange={(value) => handleGetValue(value)}
          ref={quillRef}
       />

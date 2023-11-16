@@ -1,7 +1,7 @@
 import DescTicket from '../../../../components/DescTicket/DescTicket';
 import { formatStringToDate } from '../../../../helper';
 import { IShipmentFull } from '../../../../interfaces/shipment';
-import { Collapse, CollapseProps } from 'antd';
+import { Collapse, CollapseProps, Tag } from 'antd';
 
 type Props = {
    shipment: IShipmentFull;
@@ -13,6 +13,11 @@ const ShipmentItem = ({ shipment }: Props) => {
       label: product.idProduct.productName,
       children: (
          <div className='flex flex-col gap-3'>
+            {product.weight === 0 && (
+               <Tag color='red' className='w-[30%] text-center'>
+                  Hết hàng
+               </Tag>
+            )}
             <p>
                <strong className='underline mr-3'>Ngày hết hạn: </strong> {formatStringToDate(product.date)}
             </p>
