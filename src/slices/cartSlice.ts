@@ -110,7 +110,6 @@ const cartSlice = createSlice({
       removeAllProductFromCart: (state) => {
          state.items = [];
          state.totalPrice = 0;
-         message.success('Xóa toàn bộ sản phẩm khỏi giỏ hàng thành công');
          localStorage.setItem(state.cartName, JSON.stringify(state.items));
       },
       updateItem: (state, action) => {
