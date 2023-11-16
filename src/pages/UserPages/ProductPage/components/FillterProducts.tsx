@@ -49,18 +49,31 @@ const FillterProducts = () => {
       const main_header_overlay = document.querySelector('.main-header-overlay');
       main_header_overlay?.classList.toggle('hidden');
    };
-   const onChange = (e: CheckboxChangeEvent) => {
-      if (filter.setfield) {
-         filter.setfield({
-           ...filter,
-           field: {
-             ...filter.field,
-             origin: filter.field.origin ? [...filter.field.origin, e.target.value] : [e.target.value],
-            
-           },
-         });
-       }  
-    };
+      const onChange = (e: CheckboxChangeEvent) => {
+         if (filter.setfield) {   
+         if(e.target.checked) {
+            filter.setfield({
+               ...filter,
+               field: {
+               ...filter.field,
+               origin: filter.field.origin ? filter.field.origin +","+ e.target.value : e.target.value,
+               
+               },
+            });
+         }
+         else{
+            filter.setfield({
+               ...filter,
+               field: {
+                 ...filter.field,
+                 origin: filter.field.origin?.includes(e.target.value + ",")
+                   ? filter.field.origin?.replace( e.target.value  + ",", "")
+                   : filter.field.origin?.replace(e.target.value, ""),
+               },
+             });
+         }
+         }  
+      };
    return (
       
        <div className='main-header-filter lg:bg-[#f8f8f8] max-lg:!mt-[-120px] max-lg:flex max-lg:flex-col  overflow-y-auto max-lg:bottom-0 max-lg:translate-y-[130%] transition-transform duration-500 max-lg:right-0 max-lg:left-0  lg:mx-[-15px] lg:sticky w-[25%] top-[120px]  max-lg:w-[100%] max-lg:fixed max-lg:z-[13] bg-white  max-md:p-0 '>
@@ -125,9 +138,9 @@ const FillterProducts = () => {
                            }
                         }}
                      >
-                        {origins.map(item=>{
+                        {origins.map((item)=>{
                            return<>
-                             <Checkbox onChange={onChange} className='font-[500] font-Quicksand' value={item._id}>{item.name}</Checkbox>
+                             <Checkbox onChange={(e)=>onChange(e)} className='font-[500] font-Quicksand' value={item._id}>{item.name}</Checkbox>
                            </>
                         })}
                      </ConfigProvider>
