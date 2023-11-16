@@ -54,7 +54,7 @@ const CategoryAdmin = () => {
 
 
 
-                        <div className="flex gap-7 flex-wrap" style={{ margin: 30 }} >
+                        <div className="flex gap-20 flex-wrap " style={{ margin: 30 }} >
 
 
                             {
@@ -80,6 +80,7 @@ const CategoryAdmin = () => {
                                                                     className={``}
                                                                     description="Bạn chắc chắn muốn xóa danh mục chứ?"
                                                                     okText="Đồng ý"
+                                                                    okButtonProps={{className:'bg-blue-400'}}
                                                                     cancelText="Hủy bỏ"
                                                                     title="Bạn có muốn xóa?"
                                                                     onConfirm={() => handleDelete(cate._id)}>
@@ -100,26 +101,7 @@ const CategoryAdmin = () => {
 
                                                 </div>
                                             </div>
-                                            {/* <Link to={'/manage/update-category/' + cate._id}>
-                                                <div >
-                                                    <Image className="min-h-[300px]" src={cate.image.url}></Image>
-                                                </div>
-                                            </Link> */}
-                                            {/* <div className="flex justify-end ">
-                                                <Link to={'/manage/update-category/' + cate._id}>
-                                                    <button type="button" className="focus:outline-none text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">Chỉnh sửa</button>
-                                                </Link>
-
-                                                <Popconfirm
-                                                    className={`bg-green-700`}
-                                                    description="Bạn chắc chắn muốn xóa danh mục chứ?"
-                                                    okText="Đồng ý"
-                                                    cancelText="Hủy bỏ"
-                                                    title="Bạn có muốn xóa?"
-                                                    onConfirm={() => handleDelete(cate._id)}>
-                                                    <button type="button" className="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Xóa</button>
-                                                </Popconfirm>
-                                            </div> */}
+                                            
 
                                         </Card>
 
