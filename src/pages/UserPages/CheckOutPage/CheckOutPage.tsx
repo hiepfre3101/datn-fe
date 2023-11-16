@@ -4,7 +4,7 @@ import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
 import OrderCheckOut from './components/orderCheckOut';
 import { Button, ConfigProvider, Steps, message, notification } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -18,7 +18,7 @@ import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
-
+   const navigate = useNavigate();
    // const handleChangeCheckOutState = (state:string) => {
    //    setCheckOutState(state)
    // }
@@ -64,16 +64,15 @@ const CheckOutPage = () => {
                         });
                      } else {
                         notification.error({
-                           message: 'Mua hàng thấy bại',
+                           message: 'Mua hàng thất bại',
                            description: 'Lỗi hệ thống'
                         });
                      }
                   } else {
-                     if ('data' in res && 'status' in res.data && res.data.status == 201) {
+                     if ('data' in res && 'status' in res.data) {
                         message.success('Mua hàng thành công');
                         dispatch(removeAllProductFromCart());
-                        console.log(res);
-                        // navaigate('/ordercomplete');
+                        navigate('/ordercomplete');
                      }
                   }
                })

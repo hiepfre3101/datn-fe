@@ -6,6 +6,7 @@ import ShowProducts from './components/ShowProducts';
 import { useGetAllExpandQuery } from '../../../services/product.service';
 import { IProductExpanded } from '../../../interfaces/product';
 import { IResponseHasPaginate } from '../../../interfaces/base';
+import { Link, useParams } from 'react-router-dom';
 export interface IFilterFieldProductPage {
    field: {
       page: number;
@@ -13,7 +14,8 @@ export interface IFilterFieldProductPage {
       maxPrice?: number;
       category?: string;
       origin?: string;
-      maxPriceOfQuery?: number;
+      maxPriceOfAllProducts?: number;
+      minPriceOfAllProducts?: number;
    };
    setfield?: (value: IFilterFieldProductPage) => void;
 }
@@ -23,8 +25,9 @@ export const FilterFieldContext = createContext<IFilterFieldProductPage>({
 });
 
 const ProductPage = () => {
+   const {cate_id} = useParams()
    let [filter, setFilter] = useState<IFilterFieldProductPage>({
-      field: { page: 1 },
+      field: { page: 1,category:cate_id },
       setfield: (value: IFilterFieldProductPage) => {
          setFilter(value);
       }
@@ -79,7 +82,8 @@ const ProductPage = () => {
          ...prevFilter,
          field: {
             ...prevFilter.field,
-            maxPriceOfQuery: data?.body.maxPrice
+            maxPriceOfAllProducts: data?.body.maxPrice,
+            minPriceOfAllProducts: data?.body.minPrice
          }
       }));
    }, [data, SortState]);
@@ -106,7 +110,7 @@ const ProductPage = () => {
                <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                   <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                      <span>
-                        <a href=''>Trang chủ </a> / Sản phẩm
+                        <Link to="/">Trang chủ</Link> / Sản phẩm
                      </span>
                   </div>
                </section>

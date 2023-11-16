@@ -6,7 +6,7 @@ import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
 import FilterIcon from '../../../components/Icons/FilterIcon';
 import { Helmet } from 'react-helmet';
 import { formatStringToDate, transformStatusOrder } from '../../../helper';
-import DetailOrder from '../Order/DetailOrder';
+import DetailOrder from './DetailOrder';
 const { Column } = Table;
 import '../../../css/admin-order.css';
 import { useGetAllOrderQuery } from '../../../services/order.service';
@@ -66,6 +66,13 @@ const OrdersAdmin = () => {
                      }}
                   >
                      <Column align='center' width={250} title='Ngày mua' dataIndex='createdAt' key='createdAt' />
+                     <Column
+                        align='center'
+                        width={250}
+                        title='Khách hàng'
+                        dataIndex='customerName'
+                        key='customerName'
+                     />
                      <Column
                         align='center'
                         width={250}

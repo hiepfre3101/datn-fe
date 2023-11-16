@@ -92,8 +92,22 @@ const ProductAdmin = () => {
                      <Column title='Tên' dataIndex='productName' key='productName' width={150} />
                      <Column title='Giá' dataIndex='price' key='price' width={150} />
                      <Column title='Danh mục ' dataIndex='category' key='category' width={150} />
-                     <Column title='Số lượng kho hàng' dataIndex='stock' key='stock' width={150} />
-                     <Column title='Hạn sử dụng' dataIndex='expDate' key='stock' width={150} />
+                     <Column
+                        title='Số lượng kho hàng (kg)'
+                        dataIndex='stock'
+                        key='stock'
+                        width={150}
+                        render={(stock) => <span className='w-[3rem] h-[3rem]'>{stock || 0}</span>}
+                     />
+                     <Column
+                        title='Hạn sử dụng'
+                        dataIndex='expDate'
+                        key='expDate'
+                        width={150}
+                        render={(date) => {
+                           return <span className='w-[3rem] h-[3rem]'>{date.includes('NaN') ? 'Hết hàng' : date}</span>;
+                        }}
+                     />
                      <Column
                         fixed='right'
                         width={100}

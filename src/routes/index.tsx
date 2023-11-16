@@ -16,7 +16,6 @@ import CartPage from '../pages/UserPages/CartPage/CartPage';
 import NotFoundPage from '../pages/UserPages/NotFoundPage/NotFoundPage';
 import ShipmentPage from '../pages/AdminPages/Shipment/ShipmentPage';
 import AddShipment from '../pages/AdminPages/Shipment/AddShipment';
-import UpdateShipment from '../pages/AdminPages/Shipment/UpdateShipment';
 import ProductDetail from '../pages/UserPages/ProductDetailPage/ProductDetailPage';
 import CheckOutPage from '../pages/UserPages/CheckOutPage/CheckOutPage';
 import OrderCompletePage from '../pages/UserPages/OrderCompletePage/OrderCompletePage';
@@ -134,15 +133,10 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
-            path: 'shipments/:id',
-            element: <UpdateShipment />,
-            errorElement: <NotFoundPage />
-         },
-         {
             path: 'orders',
-            element: <OrdersAdmin/>,
+            element: <OrdersAdmin />,
             errorElement: <NotFoundPage />
-         },
+         }
 
          // {
          //    path: 'accounts',

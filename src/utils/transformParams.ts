@@ -1,6 +1,6 @@
 export const paramTransformer = (raw: Record<string, boolean | string | number | undefined>) => {
    if (typeof raw === 'object' && !Array.isArray(raw)) {
-      let rawConverted = { ...raw };
+      const rawConverted = { ...raw };
       for (const key in raw) {
          const keyConverted = `_${key}`;
          if (keyConverted && rawConverted) {

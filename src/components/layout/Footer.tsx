@@ -13,8 +13,6 @@ import { Link } from 'react-router-dom';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
-import { saveProduct } from '../../slices/productSlice';
-
 const Footer = () => {
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
@@ -23,18 +21,19 @@ const Footer = () => {
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
-      const modal_product = document.querySelector('.modal-product');
+
+      const section_search_modal = document.querySelector('.section-search-modal');
+      const section_overlay_search = document.querySelector('.section-overlay-search');
       setTimeout(() => {
-         const modal_product_content = document.querySelector('.modal-product-content');
-         modal_product_content?.classList.toggle('lg:!scale-[1]');
-         modal_product_content?.classList.toggle('lg:opacity-100');
-         modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
+         section_search_modal?.classList.toggle('!translate-y-[0%]');
+   
+      }, 100);
+      setTimeout(() => {
+         section_search_modal?.classList.toggle('hidden');
       }, 200);
       setTimeout(() => {
-         modal_product?.classList.toggle('hidden');
-         modal_product?.classList.toggle('!z-[20]');
-         dispatch(saveProduct(null));
-      }, 600);
+         section_overlay_search?.classList.toggle('hidden');
+      }, 400);
    };
    const showModalSearch = () => {
       const bodyElement = document.querySelector('body');
