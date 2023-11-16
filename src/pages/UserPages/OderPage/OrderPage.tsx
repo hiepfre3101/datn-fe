@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button, Divider, Space, Table, Tag, message, notification } from 'antd';
 import { useEffect, useState, useCallback } from 'react';
-import { IOder } from '../../../interfaces/order';
+import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
 import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
@@ -12,8 +12,8 @@ import { formatStringToDate } from '../../../helper';
 const { Column } = Table;
 
 const OrderPage = () => {
-   const [orders, setOrders] = useState<IOder[]>([]);
-  
+   const [orders, setOrders] = useState<IOrderFull[]>([]);
+
    const [loading, setLoading] = useState<boolean>(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    // const orderDatas = orders && orderData(orders)
@@ -72,7 +72,7 @@ const OrderPage = () => {
                         title='Trạng thái'
                         dataIndex='status'
                         key='status'
-                        render={(_: IOder, record: IOder) => {
+                        render={(_: IOrderFull, record: IOrderFull) => {
                            let color = 'white';
                            if (record.status == 'chờ xác nhận') {
                               color = 'yellow';
@@ -89,7 +89,7 @@ const OrderPage = () => {
                      <Column
                         title='Hành động'
                         key='action'
-                        render={(_: IOder, record: IOder) => (
+                        render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
                               <Link to={''}>
                                  <Button className='bg-amber-500'>Mua lại</Button>

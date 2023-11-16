@@ -94,7 +94,7 @@ const FillterProducts = () => {
                     <button type='button' onClick={()=>setCategoryId(item._id)}>
                     <img
                         className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src={item.image.url}
+                        src={item.image?.url}
                         alt=''
                      />
                      <span className='max-lg:text-[12px] text-center '> {item.cateName}</span>

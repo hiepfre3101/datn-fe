@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Form, Space, Input, Radio, Divider, UploadFile, Descriptions, Select } from 'antd';
+import { Form, Space, Input, Radio, Divider, UploadFile, Descriptions, Select, message } from 'antd';
 import HeadForm from '../../../components/HeadForm/HeadForm';
 import { InputProduct } from '../../../interfaces/product';
 import UploadButton from '../../../components/UploadButton/UploadButton';
@@ -76,10 +76,6 @@ const UpdateProduct = () => {
          images: data?.body.data.images.map((image: { url: string; public_id: string }) => ({
             url: image.url,
             public_id: image.public_id
-         })),
-         shipments: data?.body.data.shipments.map((shipment) => ({
-            ...shipment,
-            _id: undefined
          }))
       };
       form.setFieldsValue({
@@ -109,8 +105,10 @@ const UpdateProduct = () => {
             form.setFieldValue('images', [...(body.data as IImage[]), ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
+         newFormData.shipments = undefined;
          await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } });
          if (error) {
+            message.error('Lỗi hệ thống !');
             console.log(error);
             return;
          }
@@ -244,7 +242,7 @@ const UpdateProduct = () => {
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Lô hàng' className='min-w-[500px]'>
-                     <Form.Item hasFeedback>
+                     <div>
                         <Select
                            labelInValue
                            value={{
@@ -259,7 +257,7 @@ const UpdateProduct = () => {
                            }))}
                         />
                         {displayShipment()}
-                     </Form.Item>
+                     </div>
                   </BlockForm>
                </Space>
             </Space>
