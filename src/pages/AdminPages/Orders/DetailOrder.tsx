@@ -4,7 +4,6 @@ import { Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
 import { ORDER_OF_STATUS } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
-import { uppercaseFirstLetter } from '../../../helper';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 
 type Props = {
@@ -13,23 +12,30 @@ type Props = {
 
 const DetailOrder = ({ idOrder }: Props) => {
    const [order, setOrder] = useState<IOrderFull>();
-   const [statusOrder, setStatusOrder] = useState<string[]>([]);
+   const [statusOrder, setStatusOrder] = useState<string>();
    const [handleUpdateOrder, { isLoading }] = useUpdateOrderMutation();
    useEffect(() => {
       (async () => {
          try {
             const { data } = await getDetailOrder(idOrder);
             setOrder(data.body.data);
-            setStatusOrder([data.body.data.status]);
+            setStatusOrder(data.body.data.status);
          } catch (error) {
             message.error('Lỗi hệ thống!');
          }
       })();
    }, [idOrder]);
-   const handleChangeStatus = async (value: string) => {
+   const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
+      if (
+         ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!) !==
+         ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === value)!) - 1
+      ) {
+         message.warning('Cần thay đổi trạng thái theo thứ tự');
+         return Promise.reject();
+      }
       try {
-         const res = await handleUpdateOrder({
+         await handleUpdateOrder({
             idOrder,
             customerName: order.customerName!,
             email: order.email!,
@@ -42,17 +48,11 @@ const DetailOrder = ({ idOrder }: Props) => {
             totalPayment: order.totalPayment!,
             status: value.toLowerCase()
          });
-         console.log(res);
       } catch (error) {
          message.error('Lỗi hệ thống !');
-         console.log(error);
+         return Promise.reject();
       }
-      const previousStatus = ORDER_OF_STATUS.filter(
-         (_, index) =>
-            index <
-            ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((record) => uppercaseFirstLetter(value) === record.status)!)
-      ).map((record) => record.status.toLowerCase());
-      const newStatus = [...previousStatus, value];
+      const newStatus = value;
       setStatusOrder(newStatus);
    };
    return (
@@ -126,7 +126,11 @@ const DetailOrder = ({ idOrder }: Props) => {
                   <ButtonCheck
                      colorPrimary={status.color}
                      value={status.status}
-                     disable={!!statusOrder.find((record) => record === status.status.toLowerCase())}
+                     disable={
+                        ORDER_OF_STATUS.indexOf(
+                           ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
+                        ) >= index
+                     }
                      onClick={(value) => handleChangeStatus(value)}
                   />
                </Col>

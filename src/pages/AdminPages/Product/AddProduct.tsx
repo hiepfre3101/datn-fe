@@ -20,6 +20,7 @@ const AddProduct = () => {
    const [categoryId, setCategoryId] = useState<string>();
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [form] = Form.useForm<InputProduct>();
    const navigate = useNavigate();
    const handleGetFiles = (files: File[]) => {
@@ -39,6 +40,7 @@ const AddProduct = () => {
          }
       })();
    }, []);
+
    const handleSubmit = async () => {
       try {
          setLoading(true);

@@ -4,30 +4,47 @@ import BellIcon from '../Icons/BellIcon';
 import MoonIcon from '../Icons/MoonIcon';
 import { useState } from 'react';
 import { IAuth } from '../../slices/authSlice';
-import { useSelector } from 'react-redux';
-
+import { useDispatch, useSelector } from 'react-redux';
+import { FiLogOut } from 'react-icons/fi';
+import { useClearTokenMutation } from '../../services/auth.service';
+import { useNavigate } from 'react-router-dom';
 const { Header } = Layout;
-
-const items: MenuProps['items'] = [
-   {
-      label: <a href='https://www.antgroup.com'>1st menu item</a>,
-      key: '0'
-   },
-   {
-      label: <a href='https://www.aliyun.com'>2nd menu item</a>,
-      key: '1'
-   },
-   {
-      type: 'divider'
-   },
-   {
-      label: '3rd menu item',
-      key: '3'
-   }
-];
+import { deleteTokenAndUser } from '../../slices/authSlice';
+import { setCartName, setItem } from '../../slices/cartSlice';
 const HeaderAdmin = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [triggerDrop, setTriggerDrop] = useState(false);
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch();
+   const navigate = useNavigate();
+   const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setCartName('cart'));
+      dispatch(setItem());
+      clearToken();
+      navigate('/');
+   };
+   const items: MenuProps['items'] = [
+      {
+         label: <a href='https://www.antgroup.com'>1st menu item</a>,
+         key: '0'
+      },
+      {
+         label: <a href='https://www.aliyun.com'>2nd menu item</a>,
+         key: '1'
+      },
+      {
+         type: 'divider'
+      },
+      {
+         label: (
+            <button className='flex items-center gap-[5px] py-[5px]' onClick={() => onHandleLogout()}>
+               <FiLogOut></FiLogOut>Đăng xuất
+            </button>
+         ),
+         key: '3'
+      }
+   ];
    return (
       <Header
          style={{
