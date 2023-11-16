@@ -26,8 +26,8 @@ const LoginPage = () => {
          } else {
             navigate('/manage/dashboard');
          }
-      } catch (error) {
-         message.error('Lỗi hệ thống !');
+      } catch (error:any) {
+         message.error(error.data.message);
       }
    };
    if (isLoading) return <Loading sreenSize='lg' />;
@@ -77,7 +77,7 @@ const LoginPage = () => {
                               id='password'
                               type='password'
                               onChange={(e) => {
-                                 setpassword(e.target.value);
+                                 setpassword(e.target.value.trim());
                               }}
                            />
                         </div>
