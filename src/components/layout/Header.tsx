@@ -115,7 +115,7 @@ const Header = () => {
                <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
                   <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
                      <Link to='/'>
-                        <img className='logo-img max-w-[120px] max-h-[200px]' src={logoUrl} alt='' />
+                        <img className='logo-img max-w-[120px]' src={logoUrl} alt='' />
                      </Link>
                   </div>
                   <div

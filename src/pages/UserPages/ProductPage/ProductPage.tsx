@@ -12,7 +12,7 @@ export interface IFilterFieldProductPage {
     minPrice?: number;
     maxPrice?: number;
     category?: string;
-    origin?: string[];
+    origin?: string;
     maxPriceOfQuery?: number;
   };
   setfield?: (value: IFilterFieldProductPage) => void;
