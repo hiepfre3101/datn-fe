@@ -133,7 +133,6 @@ const cartSlice = createSlice({
             0
          );
          state.items = nextCartproducts;
-         message.success('Cập nhật sản phẩm thành công');
       }
    }
 });

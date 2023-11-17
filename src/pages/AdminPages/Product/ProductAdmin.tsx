@@ -77,7 +77,7 @@ const ProductAdmin = () => {
                   </header>
                   <Table
                      dataSource={products}
-                     pagination={{ pageSize: 50 }}
+                     pagination={{ pageSize: 5 }}
                      scroll={{ y: 800, x: 2000 }}
                      loading={isLoading}
                      rowClassName={(record) => {

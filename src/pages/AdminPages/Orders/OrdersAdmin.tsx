@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Layout, Modal, Radio, Space, Table, Tag, theme } from 'antd';
 import { useState } from 'react';
 import Loading from '../../../components/Loading/Loading';
@@ -20,7 +21,6 @@ const OrdersAdmin = () => {
       token: { colorBgContainer }
    } = theme.useToken();
    const { data, isLoading } = useFilterAdminOrdersQuery(orders);
-   console.log(orders);
 
    if (isLoading) return <Loading sreenSize='lg' />;
 
@@ -123,7 +123,8 @@ const OrdersAdmin = () => {
                   right: 0,
                   minHeight: '100vh',
                   boxShadow: '-10px 0px 10px -2px #d8d6d6',
-                  zIndex: '100'
+                  zIndex: '100',
+                  padding:"0 15px"
                }}
                collapsible
                collapsed={collapsed}

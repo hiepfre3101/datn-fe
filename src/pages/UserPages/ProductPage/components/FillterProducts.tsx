@@ -3,15 +3,15 @@ import InputRange from './PriceInput';
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { useGetAllCateQuery } from '../../../../services/cate.service';
-import { useContext, useState,useEffect } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { FilterFieldContext } from '../ProductPage';
 import { getOriginData } from '../../../../api/origin';
 import { IOrigin } from '../../../../interfaces/origin';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useNavigate } from 'react-router-dom';
 const FillterProducts = () => {
-   const { data } = useGetAllCateQuery()
-   const filter = useContext(FilterFieldContext)
+   const { data } = useGetAllCateQuery();
+   const filter = useContext(FilterFieldContext);
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    useEffect(() => {
       (async () => {
@@ -23,21 +23,20 @@ const FillterProducts = () => {
          }
       })();
    }, []);
-   const navigate = useNavigate()
-   const setCategoryId = (cate_id:string) => {
+   const navigate = useNavigate();
+   const setCategoryId = (cate_id: string) => {
       if (filter.setfield) {
          filter.setfield({
-           ...filter,
-           field: {
-             ...filter.field,
-             category: cate_id,
-            
-           },
+            ...filter,
+            field: {
+               ...filter.field,
+               category: cate_id
+            }
          });
-       }  
+      }
 
-      cate_id!=""?navigate("/collections?cate_id="+cate_id):navigate("/collections")
-   }
+      cate_id != '' ? navigate('/collections?cate_id=' + cate_id) : navigate('/collections');
+   };
    const showSub = (name: string, afterName: string) => {
       const cate_title = document.querySelector(afterName);
       cate_title?.classList.toggle('after:!rotate-[225deg]');
@@ -52,35 +51,32 @@ const FillterProducts = () => {
       const main_header_overlay = document.querySelector('.main-header-overlay');
       main_header_overlay?.classList.toggle('hidden');
    };
-      const onChange = (e: CheckboxChangeEvent) => {
-         if (filter.setfield) {   
-         if(e.target.checked) {
+   const onChange = (e: CheckboxChangeEvent) => {
+      if (filter.setfield) {
+         if (e.target.checked) {
             filter.setfield({
                ...filter,
                field: {
-               ...filter.field,
-               origin: filter.field.origin ? filter.field.origin +","+ e.target.value : e.target.value,
-               
-               },
+                  ...filter.field,
+                  origin: filter.field.origin ? filter.field.origin + ',' + e.target.value : e.target.value
+               }
+            });
+         } else {
+            const temp = filter.field.origin?.split(',');
+            const filterOriginId = temp?.filter((string: string) => string !== e.target.value);
+            const newOriginId = filterOriginId?.join(',');
+            filter.setfield({
+               ...filter,
+               field: {
+                  ...filter.field,
+                  origin: newOriginId
+               }
             });
          }
-         else{       
-            let temp = filter.field.origin?.split(",")
-            let filterOriginId = temp?.filter((string:string) => string !== e.target.value);
-            let newOriginId = filterOriginId?.join(",");
-            filter.setfield({
-               ...filter,
-               field: {
-                 ...filter.field,
-                 origin: newOriginId
-               },
-             });
-         }
-         }  
-      };
+      }
+   };
    return (
-      
-       <div className='main-header-filter lg:mt-[20px] lg:bg-[#f8f8f8] max-lg:!mt-[-120px] max-lg:flex max-lg:flex-col  overflow-y-auto max-lg:bottom-0 max-lg:translate-y-[130%] transition-transform duration-500 max-lg:right-0 max-lg:left-0  lg:mx-[-15px] lg:sticky w-[25%] top-[120px]  max-lg:w-[100%] max-lg:fixed max-lg:z-[13] bg-white  max-md:p-0 '>
+      <div className='main-header-filter lg:mt-[20px] lg:bg-[#f8f8f8] max-lg:!mt-[-120px] max-lg:flex max-lg:flex-col  overflow-y-auto max-lg:bottom-0 max-lg:translate-y-[130%] transition-transform duration-500 max-lg:right-0 max-lg:left-0  lg:mx-[-15px] lg:sticky w-[25%] top-[120px]  max-lg:w-[100%] max-lg:fixed max-lg:z-[13] bg-white  max-md:p-0 '>
          <div className='main-header-title  lg:hidden px-[10px] py-[5px] bg-red-500 flex justify-between items-center'>
             <div>
                <FilterOutlined className='text-white' />
@@ -104,37 +100,44 @@ const FillterProducts = () => {
                   </h1>
                </div>
                <div className='list-categories p-[10px]  border-t-[1px] border-[#eae4e8] gap-y-[20px] flex max-lg:gap-y-[15px] flex-col max-lg:flex-wrap max-lg:flex-row  '>
-   
-            <div  onClick={()=>setCategoryId("")} style={{ background: filter.field.category == ""? '#51A55C': '',color: filter.field.category == ""? 'white': '',borderRadius: filter.field.category == ""? '2px': ''}}
-               className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-cente hover:text-[#51A55C]'
-                >
-                  <button type='button'>
-                  <img
-                      className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                      src={"sdasd"}
-                      alt=''
-                   />
-                   <span className='max-lg:text-[12px] text-center '>Tất cả</span>
-                  </button>
-                </div>
-              {data?.body.data.map(item=>{
-               
-               return<>
-               
-                   <div onClick={()=>setCategoryId(item._id)}  style={{ background: filter.field.category == item._id? '#51A55C': '',borderRadius: filter.field.category == item._id? '2px': '',color: filter.field.category == item._id? 'white': ''}} className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C]'
+                  <div
+                     onClick={() => setCategoryId('')}
+                     style={{
+                        background: filter.field.category == '' ? '#51A55C' : '',
+                        color: filter.field.category == '' ? 'white' : '',
+                        borderRadius: filter.field.category == '' ? '2px' : ''
+                     }}
+                     className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-cente hover:text-[#51A55C] py-2 px-3'
                   >
-                    <button type='button' >
-                    <img
-                        className='w-[48px] h-[48px] cate-img hidden max-lg:block'
-                        src={item.image?.url}
-                        alt=''
-                     />
-                     <span className='max-lg:text-[12px] text-center '> {item.cateName}</span>
-                    </button>
+                     <button type='button'>
+                        <img className='w-[48px] h-[48px] cate-img hidden max-lg:block' src={'sdasd'} alt='' />
+                        <span className='max-lg:text-[12px] text-center '>Tất cả</span>
+                     </button>
                   </div>
-               </>
-              })}
-
+                  {data?.body.data.map((item) => {
+                     return (
+                        <>
+                           <div
+                              onClick={() => setCategoryId(item._id)}
+                              style={{
+                                 background: filter.field.category == item._id ? '#51A55C' : '',
+                                 borderRadius: filter.field.category == item._id ? '2px' : '',
+                                 color: filter.field.category == item._id ? 'white' : ''
+                              }}
+                              className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C] py-2 px-3'
+                           >
+                              <button type='button'>
+                                 <img
+                                    className='w-[48px] h-[48px] cate-img hidden max-lg:block'
+                                    src={item.image?.url}
+                                    alt=''
+                                 />
+                                 <span className='max-lg:text-[12px] text-center '> {item.cateName}</span>
+                              </button>
+                           </div>
+                        </>
+                     );
+                  })}
                </div>
             </div>
             <div
@@ -157,10 +160,18 @@ const FillterProducts = () => {
                            }
                         }}
                      >
-                        {origins.map((item)=>{
-                           return<>
-                             <Checkbox onChange={(e)=>onChange(e)} className='font-[500] font-Quicksand' value={item._id}>{item.name}</Checkbox>
-                           </>
+                        {origins.map((item) => {
+                           return (
+                              <>
+                                 <Checkbox
+                                    onChange={(e) => onChange(e)}
+                                    className='font-[500] font-Quicksand'
+                                    value={item._id}
+                                 >
+                                    {item.name}
+                                 </Checkbox>
+                              </>
+                           );
                         })}
                      </ConfigProvider>
                   </form>
@@ -184,7 +195,7 @@ const FillterProducts = () => {
                      }}
                   >
                      <Space style={{ width: '100%' }} direction='vertical'>
-                     <InputRange></InputRange>
+                        <InputRange></InputRange>
                      </Space>
                   </ConfigProvider>
                </div>
