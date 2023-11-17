@@ -43,10 +43,32 @@ const orderApi = createApi({
             };
          },
          invalidatesTags: ['orders']
+      }),
+      filterOrders: builder.query<IResponseHasPaginate<IOrderFull>, { status?: string; day?: string }>({
+         query: (params) => {
+            return {
+               url: `/orders-member-filter`,
+               params: params
+            };
+         }
+      }),
+      filterAdminOrders: builder.query<IResponseHasPaginate<IOrderFull>, { status?: string; day?: string }>({
+         query: (params) => {
+            return {
+               url: `/orders-admin-filter`,
+               params: params
+            };
+         }
       })
    })
 });
 
-export const { useAddOrderMutation, useUpdateOrderMutation, useGetAllOrderQuery } = orderApi;
+export const {
+   useAddOrderMutation,
+   useUpdateOrderMutation,
+   useGetAllOrderQuery,
+   useFilterOrdersQuery,
+   useFilterAdminOrdersQuery
+} = orderApi;
 
 export default orderApi;
