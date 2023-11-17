@@ -1,4 +1,4 @@
-import { Layout, Modal, Space, Table, Tag, theme } from 'antd';
+import { Button, Layout, Modal, Radio, Space, Table, Tag, theme } from 'antd';
 import { useState } from 'react';
 import Loading from '../../../components/Loading/Loading';
 import { IOrderFull } from '../../../interfaces/order';
@@ -9,17 +9,21 @@ import { formatStringToDate, transformStatusOrder } from '../../../helper';
 import DetailOrder from './DetailOrder';
 const { Column } = Table;
 import '../../../css/admin-order.css';
-import { useGetAllOrderQuery } from '../../../services/order.service';
+import { useFilterAdminOrdersQuery } from '../../../services/order.service';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    const [idOrder, setIdOrder] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
-   const { data, isLoading } = useGetAllOrderQuery({ order: 'desc' });
+   const [orders, setOrders] = useState<any>({});
    const {
       token: { colorBgContainer }
    } = theme.useToken();
+   const { data, isLoading } = useFilterAdminOrdersQuery(orders);
+   console.log(orders);
+
    if (isLoading) return <Loading sreenSize='lg' />;
+
    return (
       <>
          <Helmet>
@@ -50,7 +54,7 @@ const OrdersAdmin = () => {
                   </header>
 
                   <Table
-                     dataSource={data?.body.data.map((order) => ({
+                     dataSource={data?.body?.data?.map((order) => ({
                         ...order,
                         createdAt: formatStringToDate(order.createdAt)
                      }))}
@@ -127,12 +131,34 @@ const OrdersAdmin = () => {
                trigger={null}
                collapsedWidth={0}
             >
-               <div className='flex justify-between items-center p-3'>
-                  <p className='text-lg font-semibold text-[rgba(0,0,0,0.5)]'>Lọc đơn hàng</p>
-                  <button onClick={() => setCollapsed(true)}>
-                     <CloseOutlined className='text-greenPrimary' />
-                  </button>
+               <div className=' relative'>
+                  <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
+                     <CloseOutlined className='text-red-500 ' />
+                  </Button>
+                  <p className='text-center items-center text-2xl py-10 font-semibold text-[rgba(0,0,0,0.5)]'>
+                     Lọc đơn hàng
+                  </p>
+
+                  <h1 className='pb-3'>Trạng thái:</h1>
+                  <Radio.Group
+                     value={orders?.status || ''}
+                     onChange={(e) => setOrders((prev: any) => ({ ...prev, status: e.target.value }))}
+                  >
+                     <Radio value={'chờ xác nhận'}>Chờ xác nhận</Radio>
+                     <Radio value={'đang giao hàng'}>Đang giao hàng</Radio>
+                  </Radio.Group>
+                  <h1 className='pt-5 pb-3'>Ngày:</h1>
+                  <Radio.Group
+                     value={orders?.day || ''}
+                     onChange={(e) => setOrders((prev: any) => ({ ...prev, day: e.target.value }))}
+                  >
+                     <Radio value={'7'}>7 ngày</Radio>
+                     <Radio value={'30'}>30 ngày</Radio>
+                  </Radio.Group>
                </div>
+               <Button className='text-center items-center mt-4' onClick={() => setOrders({})}>
+                  Đặt lại
+               </Button>
             </Layout.Sider>
          </Layout>
       </>
