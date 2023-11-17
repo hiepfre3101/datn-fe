@@ -15,6 +15,7 @@ import { logoUrl } from '../../constants/imageUrl';
 import { useEffect } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
+import { useGetAllCateQuery } from '../../services/cate.service';
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [clearToken] = useClearTokenMutation();
@@ -27,6 +28,7 @@ const Header = () => {
       clearToken();
       navigate('/');
    };
+   const {data} = useGetAllCateQuery()
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
       if (document.documentElement.scrollTop > 400) {
@@ -44,7 +46,6 @@ const Header = () => {
       };
       window.addEventListener('scroll', () => handleScroll());
       return window.removeEventListener('scroll', () => handleScroll());
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    });
 
    const showMiniCart = () => {
@@ -151,7 +152,7 @@ const Header = () => {
                               <span className='after:content-[""] xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                  Danh mục
                               </span>
-                              <Link to='/products'>
+                              <Link to='/collections'>
                                  <span className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                     Danh mục
                                  </span>
@@ -162,34 +163,18 @@ const Header = () => {
                               </span>
                            </div>
                            <ul className='sub-menu xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 xl:group-hover/categories-menu:translate-y-[0%] xl:z-[-1] xl:group-hover/categories-menu:z-[3] xl:group-hover/categories-menu:visible xl:group-hover/categories-menu:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
-                              <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
-                                 <a
-                                    href='#'
+                             {data?.body.data.map(item=>{
+                              return<>
+                               <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
+                                 <Link
+                                    to={"/collections?cate_id="+item._id}
                                     className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
                                  >
-                                    Táo
-                                 </a>
+                                    {item.cateName}
+                                 </Link>
                               </li>
-                              <li className='group/sub-menu sub-menu-item py-[10px] px-[15px] cursor-pointer'>
-                                 <a href='#' className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium'>
-                                    Xoài
-                                 </a>
-                              </li>
-                              <li className='group/sub-menu sub-menu-item py-[10px] px-[15px] cursor-pointer'>
-                                 <a href='#' className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium'>
-                                    Táo
-                                 </a>
-                              </li>
-                              <li className='group/sub-menu sub-menu-item py-[10px] px-[15px] cursor-pointer'>
-                                 <a href='#' className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium'>
-                                    Táo
-                                 </a>
-                              </li>
-                              <li className='group/sub-menu sub-menu-item py-[10px] px-[15px] cursor-pointer'>
-                                 <a href='#' className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium'>
-                                    Táo
-                                 </a>
-                              </li>
+                              </>
+                             })}
                            </ul>
                         </li>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>

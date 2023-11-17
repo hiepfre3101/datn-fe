@@ -1,35 +1,65 @@
-
 import { Slider } from 'antd';
 import { useContext } from 'react';
 import { FilterFieldContext } from '../ProductPage';
 
+const debounce = (func: Function, delay: number) => {
+   let timeoutId: NodeJS.Timeout;
 
-const  InputRange: React.FC = () => {
-  const filter = useContext(FilterFieldContext)
-  const changePrice =  (value:any)=>{
-    if (filter.setfield) {
-      filter.setfield({
-        ...filter,
-        field: {
-          ...filter.field,
-          minPrice: value[0],
-          maxPrice: value[1],
-        },
-      });
-    }
-  
-  
-  }
- 
-  return<>
-  <Slider onChange={(current:any)=>(changePrice(current))} step={10000}  range={{ draggableTrack: true }} max={500000} defaultValue={[1,500000]} />
+   return (...args: any[]) => {
+      clearTimeout(timeoutId);
 
-  <br />
-<div className='flex justify-between'>
-<span>{filter.field.minPrice}</span>
-  
-  <span>{filter.field.maxPrice}</span>
-</div>
-  </>
+      timeoutId = setTimeout(() => {
+         func(...args);
+      }, delay);
+   };
 };
-export default InputRange
+
+const InputRange: React.FC = () => {
+   const filter = useContext(FilterFieldContext);
+   const changePrice = (value: [number, number]) => {
+      if (filter.setfield) {
+         filter.setfield({
+            ...filter,
+            field: {
+               ...filter.field,
+               minPrice: value[0],
+               maxPrice: value[1]
+            }
+         });
+      }
+   };
+   const handleChange = debounce(changePrice, 500);
+
+   return (
+      <>
+         {filter.field.minPriceOfAllProducts && filter.field.maxPriceOfAllProducts && (
+            <Slider
+               onChange={(current: [number, number]) => handleChange(current)}
+               step={10000}
+               range={{ draggableTrack: true }}
+               min={filter.field.minPriceOfAllProducts}
+               max={filter.field.maxPriceOfAllProducts}
+               defaultValue={[filter.field.minPriceOfAllProducts, filter.field.maxPriceOfAllProducts]}
+            />
+         )}
+
+         <br />
+         <div className='flex justify-between'>
+            <span>
+               {filter.field.minPriceOfAllProducts?.toLocaleString('vi-VN', {
+                  style: 'currency',
+                  currency: 'VND'
+               })}
+            </span>
+
+            <span>
+               {filter.field.maxPriceOfAllProducts?.toLocaleString('vi-VN', {
+                  style: 'currency',
+                  currency: 'VND'
+               })}
+            </span>
+         </div>
+      </>
+   );
+};
+export default InputRange;

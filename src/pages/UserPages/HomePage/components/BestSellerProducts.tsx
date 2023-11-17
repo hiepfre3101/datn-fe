@@ -1,6 +1,10 @@
-// import SlideBestProduct from './SlideBestProduct';
+
+import { Link } from "react-router-dom";
+import { useGetProductSoldDescQuery } from "../../../../services/product.service";
+import SlideBestProduct from "./SlideBestProduct";
 
 const BestSellerProducts = () => {
+   const {data} = useGetProductSoldDescQuery()
    return (
       <div>
          <section className='section-best-product bg-[#f8f8f8] xl:py-[100px] lg:py-[80px] max-lg:py-[60px]'>
@@ -11,16 +15,16 @@ const BestSellerProducts = () => {
                </p>
             </div>
             <div className='best-product-content'>
-               <div className='slide-best-pr'>
-                  {/* <SlideBestProduct></SlideBestProduct> */}
+               <div id='slide-best-pr'>
+               <SlideBestProduct products={data?.body.data}></SlideBestProduct>
                </div>
                <div className='link-to-product-page text-center mt-[40px] '>
-                  <a
+                  <Link
                      className='text-white px-[40px] py-[18px] bg-[#51A55C] hover:bg-[#7aa32a] transition-colors duration-500 rounded-[50px] text-center'
-                     href='/products'
+                     to='/collections'
                   >
                      XEM TẤT CẢ SẢN PHẨM
-                  </a>
+                  </Link>
                </div>
             </div>
          </section>

@@ -29,14 +29,20 @@ const productApi = createApi({
       }),
       getAllExpand: builder.query<
          IResponseHasPaginate<IProductExpanded>,
-         Partial<IQueryParam> & Pick<IQueryParam, 'expand'>
-      >({
+         Partial<IQueryParam> & Pick<IQueryParam, 'expand'>>({
          query: (params) => {
             return {
                url: '/products',
                params: paramTransformer(params)
             };
          }
+      }),
+      getProductSoldDesc: builder.query<IResponse<IProductExpanded[]>,void>({
+         query: () => {
+            return {
+               url: '/products-sold',
+            };
+         },
       }),
       getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
          query: (idProduct) => { 
@@ -85,6 +91,7 @@ const productApi = createApi({
 });
 
 export const {
+   useGetProductSoldDescQuery,
    useUpdateProductMutation,
    useGetAllWithoutExpandQuery,
    useGetAllExpandQuery,

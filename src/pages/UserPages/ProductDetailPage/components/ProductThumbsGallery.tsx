@@ -1,14 +1,11 @@
 import {  useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
-
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import '../../../../css/productdetailpage.css';
-// import required modules
 import { FreeMode, Navigation, Thumbs } from 'swiper/modules';
 import Swiperz from 'swiper';
 import { IImageResponse } from '../../../../interfaces/image';

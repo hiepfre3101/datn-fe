@@ -1,89 +1,90 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useState } from 'react';
-import { useDispatch} from 'react-redux';
-import {message } from 'antd';
+import { useDispatch } from 'react-redux';
+import { message } from 'antd';
 import ModalProductSlide from '../../pages/UserPages/ProductPage/components/ModalProductSlide';
-import { AiOutlineCloseCircle} from 'react-icons/ai';
+import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IShipmentOfProduct } from '../../interfaces/shipment';
-import { IProduct} from '../../interfaces/product';
+import { IProduct } from '../../interfaces/product';
 import { Link } from 'react-router-dom';
 import { addItem } from '../../slices/cartSlice';
 import { saveProduct } from '../../slices/productSlice';
-export interface QuickViewProp{
-    product_info:IProduct[]
+export interface QuickViewProp {
+   product_info: IProduct[];
 }
-const QuickView = ({ product_info }: QuickViewProp)=>{
-    const dispatch = useDispatch();
-    const [inputWeight, setinputWeight] = useState<any>(0.5);
-    const [totalWeight, setTotalWeight] = useState<number>();  
+const QuickView = ({ product_info }: QuickViewProp) => {
+   const dispatch = useDispatch();
+   const [inputWeight, setinputWeight] = useState<any>(0.5);
+   const [totalWeight, setTotalWeight] = useState<number>();
    useEffect(() => {
-    setTotalWeight(
-       product_info[0]?.shipments?.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
-          return accumulator + shipmentWeight.weight;
-       }, 0)
-    );
- }, [product_info]);
- const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (/^[\d.]+$/.test(e.target.value)) {
-       const value = e.target.value;
-       if (value.endsWith('.') && !/\.\d+$/.test(value)) {
-          setinputWeight(value);
-       } else {
-          const rounded = Math.floor(Number(e.target.value));
-          const result = Number(e.target.value) - rounded;
-          if (result >= 0.5) {
-             setinputWeight(rounded + 0.5);
-          } else {
-             setinputWeight(rounded);
-          }
-       }
-    } else {
-       setinputWeight('');
-    }
- };
- const add_to_cart = () => {
-    if (inputWeight != '') {
-       const product = {
-          _id: product_info[0]._id,
-          name: product_info[0].productName,
-          images: product_info[0].images[0].url,
-          price: product_info[0].shipments[0]?.price,
-          weight: inputWeight,
-          totalWeight: totalWeight
-       };
-       dispatch(addItem(product));
-    } else {
-       setinputWeight(0.5);
-       message.error('Kg không hợp lệ');
-    }
- };
- const dec = () => {
-    setinputWeight(inputWeight + 0.5);
- };
- const inc = () => {
-    if (inputWeight > 0.5) {
-       setinputWeight(inputWeight - 0.5);
-    }
- };
- const closeModal = () => {
-    const bodyElement = document.querySelector('body');
-    bodyElement?.classList.toggle('overflow-hidden');
-    const modal_product = document.querySelector('.modal-product');
-    setTimeout(() => {
-       const modal_product_content = document.querySelector('.modal-product-content');
-       modal_product_content?.classList.toggle('lg:!scale-[1]');
-       modal_product_content?.classList.toggle('lg:!opacity-100');
-       modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
-    }, 200);
-    setTimeout(() => {
-       modal_product?.classList.toggle('hidden');
-       modal_product?.classList.toggle('!z-[20]');
-       dispatch(saveProduct(null))
-    }, 600);
- };
-    return<>
-       <section
+      setTotalWeight(
+         product_info[0]?.shipments?.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
+            return accumulator + shipmentWeight.weight;
+         }, 0)
+      );
+   }, [product_info]);
+   const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (/^[\d.]+$/.test(e.target.value)) {
+         const value = e.target.value;
+         if (value.endsWith('.') && !/\.\d+$/.test(value)) {
+            setinputWeight(value);
+         } else {
+            const rounded = Math.floor(Number(e.target.value));
+            const result = Number(e.target.value) - rounded;
+            if (result >= 0.5) {
+               setinputWeight(rounded + 0.5);
+            } else {
+               setinputWeight(rounded);
+            }
+         }
+      } else {
+         setinputWeight('');
+      }
+   };
+   const add_to_cart = () => {
+      if (inputWeight != '') {
+         const product = {
+            _id: product_info[0]._id,
+            name: product_info[0].productName,
+            images: product_info[0].images[0].url,
+            price: product_info[0].shipments[0]?.price,
+            weight: inputWeight,
+            totalWeight: totalWeight
+         };
+         dispatch(addItem(product));
+      } else {
+         setinputWeight(0.5);
+         message.error('Kg không hợp lệ');
+      }
+   };
+   const dec = () => {
+      setinputWeight(inputWeight + 0.5);
+   };
+   const inc = () => {
+      if (inputWeight > 0.5) {
+         setinputWeight(inputWeight - 0.5);
+      }
+   };
+   const closeModal = () => {
+      const bodyElement = document.querySelector('body');
+      bodyElement?.classList.toggle('overflow-hidden');
+      const modal_product = document.querySelector('.modal-product');
+      setTimeout(() => {
+         const modal_product_content = document.querySelector('.modal-product-content');
+         modal_product_content?.classList.toggle('lg:!scale-[1]');
+         modal_product_content?.classList.toggle('lg:!opacity-100');
+         modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
+      }, 200);
+      setTimeout(() => {
+         modal_product?.classList.toggle('hidden');
+         modal_product?.classList.toggle('!z-[20]');
+         dispatch(saveProduct(null));
+      }, 600);
+   };
+   return (
+      <>
+         <section
             className={`modal-product hidden  fixed  top-0 left-0 w-full  h-full   bg-[rgba(3,17,27,0.3)] z-[-2]   outline-none`}
          >
             <div
@@ -91,10 +92,12 @@ const QuickView = ({ product_info }: QuickViewProp)=>{
             >
                <div className='product-slide  text-[14px] relative max-w-[calc(50%-10px)] z-[-1]  text-center max-lg:max-w-full max-lg:w-full'>
                   <ModalProductSlide body={product_info?.[0]?.images}></ModalProductSlide>
-                  <div className='product-discount absolute text-[14px] text-white bg-red-500 px-[10px] py-[5px] rounded-br-[10px] w-[46px] z-[3] rounded-bl-[10px] left-0 top-0'>
-                     <p>-{product_info[0]?.discount}%</p>
-                     <p>OFF</p>
-                  </div>
+                 {product_info[0]?.discount>0 && product_info[0].shipments.length>0 && 
+                 <div className='product-discount absolute text-[14px] text-white bg-red-500 px-[10px] py-[5px] rounded-br-[10px] w-[46px] z-[3] rounded-bl-[10px] left-0 top-0'>
+            
+                      <p>-{product_info[0]?.discount}%</p>
+                      <p>OFF</p>
+                  </div>}
                </div>
                <div className='product-detail w-[calc(50%-10px)] lg:pt-[30px] max-lg:max-w-full max-lg:w-full'>
                   <div className='product-name'>
@@ -106,19 +109,21 @@ const QuickView = ({ product_info }: QuickViewProp)=>{
                         <strong className='text-[#51A55C]'>{product_info[0]?.shipments[0]?.origin}</strong>
                      </span>
                   </div>
-                  <div className='product-price flex w-full items-center'>
+                  {product_info[0]?.shipments.length>0&&     <div className='product-price flex w-full items-center'>
                      <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
                      <div className='product-price-content text-[22px] text-red-500 pr-[10px] font-bold'>
                         {product_info[0]?.shipments[0]?.price.toLocaleString('vi-VN', {
-                              style: 'currency',
-                              currency: 'VND'
-                           })}
+                           style: 'currency',
+                           currency: 'VND'
+                        })}
                      </div>
-                  </div>
-                  <div className='product-select mt-[20px] flex  w-full items-center'>
-                     <div className='product-size-title min-w-[28%] text-[14px] font-[600]'>Size:</div>
+                  </div>}
+             
+                  {product_info[0]?.shipments.length>0?<>
+                     <div className='product-select mt-[20px] flex  w-full items-center'>
+                     <div className='product-size-title min-w-[28%] text-[14px] font-[600]'>Kg:</div>
                      <div className='product-size w-[72%]'>
-                     <div className='stock-qty-value text-[16px] text-[#198754] font-bold'>
+                        <div className='stock-qty-value text-[16px] text-[#198754] font-bold'>
                            <div className='product-quantity-action flex '>
                               <div className='product-quantity flex  '>
                                  <input
@@ -147,14 +152,20 @@ const QuickView = ({ product_info }: QuickViewProp)=>{
                            </div>
                         </div>
                      </div>
-                  </div>       
-                     <div className='product-content '>
-
-                        <button   onClick={add_to_cart} className='max-lg:w-full  btn-product-form bg-[#ff0000] rounded-[4px] text-white text-center w-full h-[40px] leading-[40px] border-[1px] border-[#ff0000] mt-[15px] text-[14px]'>
-                           THÊM VÀO GIỎ
-                        </button>
-                     </div>
-                  <div className='link-product-detail mt-[10px]'>
+                  </div>
+                  <div className='product-content '>
+                     <button
+                        onClick={add_to_cart}
+                        className='max-lg:w-full  btn-product-form bg-[#ff0000] rounded-[4px] text-white text-center w-full h-[40px] leading-[40px] border-[1px] border-[#ff0000] mt-[15px] text-[14px]'
+                     >
+                        THÊM VÀO GIỎ
+                     </button>
+                  </div>
+                  </>:(
+                     <h1 className='text-red-500 text-[23px] font-bold'>Hết hàng</h1>
+                  )}
+          
+                  <div onClick={closeModal} className='link-product-detail mt-[10px]'>
                      <Link to={`/products/` + product_info[0]?._id}>
                         <span className='decoration-1 underline text-[14px]'>Xem chi tiết sản phẩm</span>
                      </Link>
@@ -169,7 +180,8 @@ const QuickView = ({ product_info }: QuickViewProp)=>{
                   <AiOutlineCloseCircle className=' text-[30px] max-lg:text-[40px]  group-hover/close-modal:fill-[#51A55C]'></AiOutlineCloseCircle>
                </button>
             </div>
-         </section> 
-    </>
-}
-export default QuickView
+         </section>
+      </>
+   );
+};
+export default QuickView;

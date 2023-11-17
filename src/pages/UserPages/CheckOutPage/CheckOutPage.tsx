@@ -64,7 +64,7 @@ const CheckOutPage = () => {
                         });
                      } else {
                         notification.error({
-                           message: 'Mua hàng thấy bại',
+                           message: 'Mua hàng thất bại',
                            description: 'Lỗi hệ thống'
                         });
                      }

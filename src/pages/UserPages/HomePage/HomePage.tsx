@@ -6,6 +6,7 @@ import MyService from './components/MyService';
 import BannerSales from './components/BannerSales';
 import BestSellerProducts from './components/BestSellerProducts';
 import HappyClient from './components/HappyClient';
+
 const HomePage = () => {
  
 
