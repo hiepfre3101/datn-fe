@@ -2,6 +2,7 @@
  * @type T : type of documents array in body response
  */
 export interface IResponseHasPaginate<T> {
+   [x: string]: any;
    body: {
       data: T[];
       pagination: {
