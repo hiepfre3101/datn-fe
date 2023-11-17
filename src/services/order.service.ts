@@ -17,7 +17,7 @@ const orderApi = createApi({
    tagTypes: ['orders'],
    reducerPath: 'orders',
    endpoints: (builder) => ({
-      getAllOrder: builder.query<IResponseHasPaginate<IOrderFull>, Partial<Omit<IQueryParam, '  '>>>({
+      getAllOrder: builder.query<IResponseHasPaginate<IOrderFull>, Partial<Omit<IQueryParam, ' '>>>({
          query: (params) => {
             return {
                url: '/orders',

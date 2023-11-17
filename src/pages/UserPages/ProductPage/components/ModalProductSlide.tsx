@@ -29,7 +29,7 @@ export default function ModalProductSlide({ body }:IProps ) {
                return (
                   <>
                      <SwiperSlide>
-                        <img className=' w-[298px] object-fill m-auto' src={item.url} alt='' />
+                        <img className=' w-[298px] h-[362px] object-fill m-auto' src={item.url} alt='' />
                      </SwiperSlide>
                   </>
                );
