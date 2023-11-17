@@ -14,7 +14,7 @@ const productApi = createApi({
       },
       credentials: 'include'
    }),
-   
+
    reducerPath: 'products',
    tagTypes: ['product'],
    endpoints: (builder) => ({
@@ -29,32 +29,35 @@ const productApi = createApi({
       }),
       getAllExpand: builder.query<
          IResponseHasPaginate<IProductExpanded>,
-         Partial<IQueryParam> & Pick<IQueryParam, 'expand'>>({
+         Partial<IQueryParam> & Pick<IQueryParam, 'expand'>
+      >({
          query: (params) => {
             return {
                url: '/products',
                params: paramTransformer(params)
             };
-         }
+         },
+         providesTags: ['product']
       }),
-      getProductSoldDesc: builder.query<IResponse<IProductExpanded[]>,void>({
+      getProductSoldDesc: builder.query<IResponse<IProductExpanded[]>, void>({
          query: () => {
             return {
-               url: '/products-sold',
+               url: '/products-sold'
             };
-         },
+         }
       }),
       getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
-         query: (idProduct) => { 
+         query: (idProduct) => {
             return {
                url: '/products/' + idProduct
             };
-         }
+         },
+         providesTags: ['product']
       }),
       getRelatedProducts: builder.query<IResponse<IProductExpanded[]>, object>({
-         query: ({idCategory,idProduct}:IObjIdForGetRelatedProducts) => {
+         query: ({ idCategory, idProduct }: IObjIdForGetRelatedProducts) => {
             return {
-               url: '/products/related/' + idCategory+"/"+idProduct
+               url: '/products/related/' + idCategory + '/' + idProduct
             };
          }
       }),
@@ -76,7 +79,7 @@ const productApi = createApi({
                body: body
             };
          },
-         invalidatesTags: ['product']
+         invalidatesTags: (result) => [{ type: 'product', id: result?._id }]
       }),
       removeProduct: builder.mutation<IProduct, string>({
          query: (id) => {

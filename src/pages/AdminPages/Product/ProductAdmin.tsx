@@ -22,8 +22,7 @@ const ProductAdmin = () => {
          return;
       }
       try {
-         const res = await handleRemoveProduct(id);
-         console.log(res);
+         await handleRemoveProduct(id);
       } catch (error) {
          console.log(error);
       }
