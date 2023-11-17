@@ -8,6 +8,7 @@ import { FilterFieldContext } from '../ProductPage';
 import { getOriginData } from '../../../../api/origin';
 import { IOrigin } from '../../../../interfaces/origin';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
+import { useNavigate } from 'react-router-dom';
 const FillterProducts = () => {
    const { data } = useGetAllCateQuery()
    const filter = useContext(FilterFieldContext)
@@ -22,6 +23,7 @@ const FillterProducts = () => {
          }
       })();
    }, []);
+   const navigate = useNavigate()
    const setCategoryId = (cate_id:string) => {
       if (filter.setfield) {
          filter.setfield({
@@ -33,6 +35,8 @@ const FillterProducts = () => {
            },
          });
        }  
+
+      cate_id!=""?navigate("/collections?cate_id="+cate_id):navigate("/collections")
    }
    const showSub = (name: string, afterName: string) => {
       const cate_title = document.querySelector(afterName);

@@ -33,7 +33,7 @@ export interface IQueryParam {
    maxPrice: number;
    expand: boolean;
    q: string;
-   categoryId: string;
+   categoryId: string|null;
    originId:string;
    brand: string;
    subCate: string;

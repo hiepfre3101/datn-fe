@@ -109,7 +109,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                         <strong className='text-[#51A55C]'>{product_info[0]?.shipments[0]?.origin}</strong>
                      </span>
                   </div>
-                  <div className='product-price flex w-full items-center'>
+                  {product_info[0]?.shipments.length>0&&     <div className='product-price flex w-full items-center'>
                      <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
                      <div className='product-price-content text-[22px] text-red-500 pr-[10px] font-bold'>
                         {product_info[0]?.shipments[0]?.price.toLocaleString('vi-VN', {
@@ -117,7 +117,8 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                            currency: 'VND'
                         })}
                      </div>
-                  </div>
+                  </div>}
+             
                   {product_info[0]?.shipments.length>0?<>
                      <div className='product-select mt-[20px] flex  w-full items-center'>
                      <div className='product-size-title min-w-[28%] text-[14px] font-[600]'>Kg:</div>

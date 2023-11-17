@@ -1,7 +1,7 @@
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineSortAscending } from 'react-icons/ai';
 interface IProps{
-   setSortState: (state:string)=>void;
+   setSortState: (sort?:string,order?:'asc' | 'desc')=>void;
 }
 const SorterProduct = ({setSortState}:IProps) => {
    const showSuccessSort = (index: number) => {
@@ -43,7 +43,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                   <ul className='collection-sortby-option-list py-[5px] px-[10px] z-[10]'>
                      <li
                         onClick={() => {
-                           setSortState("")
+                           setSortState()
                            showSuccessSort(0)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-1  before:rotate-[-45deg]'
@@ -52,7 +52,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                      </li>
                      <li
                         onClick={() => {
-                           setSortState("priceAsc")
+                           setSortState("price","asc")
                            showSuccessSort(1)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
@@ -61,7 +61,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                      </li>
                      <li
                          onClick={() => {
-                           setSortState("priceDesc")
+                           setSortState("price","desc")
                            showSuccessSort(2)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
@@ -70,7 +70,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                      </li>
                      <li
                         onClick={() => {
-                           setSortState("NameAsc")
+                           setSortState("productName","asc")
                            showSuccessSort(3)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
@@ -79,7 +79,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                      </li>
                      <li
                           onClick={() => {
-                           setSortState("NameDesc")
+                           setSortState("productName","desc")
                            showSuccessSort(4)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
@@ -88,7 +88,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                      </li>
                      <li
                      onClick={() => {
-                        setSortState("dayAsc")
+                        setSortState("createdAt","asc")
                         showSuccessSort(5)
                      }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
@@ -97,7 +97,7 @@ const SorterProduct = ({setSortState}:IProps) => {
                      </li>
                      <li
                 onClick={() => {
-                  setSortState("dayDesc")
+                  setSortState("createdAt","desc")
                   showSuccessSort(6)
                }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
@@ -105,7 +105,10 @@ const SorterProduct = ({setSortState}:IProps) => {
                         <span className='text-[14px] hover:text-[#51A55C]'>Mới nhất</span>
                      </li>
                      <li
-                        onClick={() => showSuccessSort(4)}
+                        onClick={() => {
+                           setSortState("sold","desc")
+                           showSuccessSort(7)
+                        }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Bán chạy nhất</span>

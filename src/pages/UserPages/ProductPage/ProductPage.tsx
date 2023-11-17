@@ -6,26 +6,35 @@ import ShowProducts from './components/ShowProducts';
 import { useGetAllExpandQuery } from '../../../services/product.service';
 import { IProductExpanded } from '../../../interfaces/product';
 import { IResponseHasPaginate } from '../../../interfaces/base';
-import { Link, useParams } from 'react-router-dom';
+import { Link,useLocation  } from 'react-router-dom';
 export interface IFilterFieldProductPage {
    field: {
       page: number;
       minPrice?: number;
       maxPrice?: number;
-      category?: string;
+      category: string|null;
       origin?: string;
       maxPriceOfAllProducts?: number;
       minPriceOfAllProducts?: number;
+      sort?: string;
+      order?: 'asc' | 'desc';
    };
    setfield?: (value: IFilterFieldProductPage) => void;
 }
-
+export interface ISort{
+   sort?: string;
+   order?: 'asc' | 'desc';
+}
 export const FilterFieldContext = createContext<IFilterFieldProductPage>({
-   field: { page: 1 }
+   field: { page: 1,category:"" }
 });
 
 const ProductPage = () => {
-   const {cate_id} = useParams()
+   const location  = useLocation()
+   const searchParams = new URLSearchParams(location.search);
+   const cate_id = searchParams.get('cate_id')!=null?searchParams.get('cate_id'):"";
+  
+   
    let [filter, setFilter] = useState<IFilterFieldProductPage>({
       field: { page: 1,category:cate_id },
       setfield: (value: IFilterFieldProductPage) => {
@@ -33,7 +42,7 @@ const ProductPage = () => {
       }
    });
    const [products, setProduct] = useState<IResponseHasPaginate<IProductExpanded>>();
-   const [SortState, setSortState] = useState<string>('');
+   const [SortState, setSortState] = useState<ISort|undefined>();
    const { data } = useGetAllExpandQuery({
       expand: true,
       limit: 9,
@@ -41,43 +50,49 @@ const ProductPage = () => {
       minPrice: filter.field.minPrice,
       maxPrice: filter.field.maxPrice,
       categoryId: filter.field.category,
-      originId: filter.field.origin
+      originId: filter.field.origin,
+      sort: filter.field.sort,
+      order: filter.field.order
    });
-
+   useEffect(()=>{
+      if (filter.setfield) {
+         filter.setfield({
+           ...filter,
+           field: {
+             ...filter.field,
+             category: cate_id,
+            
+           },
+         });
+       }  
+   },[cate_id])
+   useEffect(()=>{
+      if (filter.setfield) {
+         filter.setfield({
+           ...filter,
+           field: {
+             ...filter.field,
+             sort: SortState?.sort,
+            order: SortState?.order,
+           },
+         });
+       }  
+   
+       
+   },[SortState])
    useEffect(() => {
-      let sortedData;
-      let temp = data?.body.data ? [...data.body.data] : [];
-      if (SortState == 'priceAsc') {
-         sortedData = temp.sort((a, b) => a?.shipments[0]?.price - b?.shipments[0]?.price);
-      } else if (SortState == 'priceDesc') {
-         sortedData = temp.sort((a, b) => b?.shipments[0]?.price - a?.shipments[0]?.price);
-      } 
-       else if (SortState == 'NameAsc') {
-         sortedData = temp.sort((a, b) =>a.productName.localeCompare(b.productName));
-      } 
-      else if (SortState == 'NameDesc') {
-         sortedData = temp.sort((a, b) =>b.productName.localeCompare(a.productName));
-      } 
-      else if (SortState == 'dayAsc') {
-         sortedData = temp.sort((a, b) =>  new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
-      } 
-      else if (SortState == 'dayDesc') {
-         sortedData = temp.sort((a, b) =>new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-      } 
-      else {
-         sortedData = data?.body.data;
+      if(data?.body.data.length==0){
+        if(filter.setfield){
+         filter.setfield({
+            ...filter,
+            field: {
+              ...filter.field,
+              page: 1,
+            },
+          });
+        }
       }
-
-      const newData: IResponseHasPaginate<IProductExpanded> = {
-         message: data?.message || '',
-         status: data?data.status:1,
-         body: {
-            data: sortedData?sortedData:[],
-            pagination: data?.body?.pagination || { currentPage: 0, totalPages: 0, totalItems: 0 },
-            maxPrice: data?.body?.maxPrice
-         }
-      };
-      setProduct(newData);
+      setProduct(data);
       setFilter((prevFilter) => ({
          ...prevFilter,
          field: {
@@ -86,12 +101,10 @@ const ProductPage = () => {
             minPriceOfAllProducts: data?.body.minPrice
          }
       }));
-   }, [data, SortState]);
+   }, [data]);
 
-   const handleChangeSortState = (state: string) => {
-      console.log(state);
-
-      setSortState(state);
+   const handleChangeSortState = (sort?:string,order?: 'asc' | 'desc') => {
+      setSortState({sort:sort,order:order});
    };
    const handlePageChange = (pageNumber: number) => {
       setFilter({
@@ -102,7 +115,6 @@ const ProductPage = () => {
          }
       });
    };
-
    return (
       <FilterFieldContext.Provider value={filter}>
          <>
