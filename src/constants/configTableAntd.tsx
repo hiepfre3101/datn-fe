@@ -1,7 +1,7 @@
-import { IProductExpanded, IProductInOrder } from '../interfaces/product';
+import { IProductExpanded } from '../interfaces/product';
 import { IResponseHasPaginate } from '../interfaces/base';
 import { IUser } from '../interfaces/auth';
-import { IOder } from '../interfaces/order';
+import { IOrderFull, IProductOrder } from '../interfaces/order';
 import { formatStringToDate } from '../helper';
 type DataType = {
    key: string;
@@ -12,6 +12,8 @@ type ProductDataType = DataType & {
    productName: string;
    category: string;
    price: number;
+   stock:number,
+   expDate:string
 };
 
 type UserDataType = DataType & {
@@ -29,7 +31,7 @@ type UserDataType = DataType & {
 
 type OrderDataType = DataType & {
    userId?: string | null;
-   products?: IProductInOrder[];
+   products?: IProductOrder[];
    totalPayment?: number;
    customerName?: string;
    phoneNumber?: string;
@@ -72,7 +74,7 @@ export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {
    }));
 };
 
-export const orderData = (data: IResponseHasPaginate<IOder>): OrderDataType[] => {
+export const orderData = (data: IResponseHasPaginate<IOrderFull>): OrderDataType[] => {
    return data.body.data.map((order, index) => ({
       key: index.toString(),
       _id: order._id,

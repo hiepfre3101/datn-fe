@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 
 import { IOrder, IOrderFull } from '../interfaces/order';
 import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
+import { paramTransformer } from '../utils/transformParams';
 const orderApi = createApi({
    baseQuery: fetchBaseQuery({
       baseUrl: 'http://localhost:8080/api',
@@ -20,7 +21,7 @@ const orderApi = createApi({
          query: (params) => {
             return {
                url: '/orders',
-               params
+               params: paramTransformer(params)
             };
          },
          providesTags: ['orders']

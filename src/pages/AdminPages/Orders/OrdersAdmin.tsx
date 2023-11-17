@@ -9,7 +9,7 @@ import { formatStringToDate, transformStatusOrder } from '../../../helper';
 import DetailOrder from './DetailOrder';
 const { Column } = Table;
 import '../../../css/admin-order.css';
-import { useFilterOrdersQuery, useFilterAdminOrdersQuery } from '../../../services/order.service';
+import { useFilterAdminOrdersQuery } from '../../../services/order.service';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -86,7 +86,8 @@ const OrdersAdmin = () => {
                      />
                      <Column align='center' width={250} title='Tổng tiền' dataIndex='totalPayment' key='totalPayment' />
                      <Column
-                        width={250}
+                        fixed='right'
+                        width={200}
                         title='Trạng thái'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => (
@@ -101,7 +102,13 @@ const OrdersAdmin = () => {
                         )}
                      />
                   </Table>
-                  <Modal width={1000} onCancel={() => setIsOpen(false)} open={isOpen} footer={[]}>
+                  <Modal
+                     width={1000}
+                     onCancel={() => setIsOpen(false)}
+                     open={isOpen}
+                     footer={[]}
+                     style={{ top: 50, left: 50 }}
+                  >
                      <DetailOrder idOrder={idOrder} />
                   </Modal>
                </div>
@@ -124,10 +131,15 @@ const OrdersAdmin = () => {
                trigger={null}
                collapsedWidth={0}
             >
-               <div className='  p-3'>
-                  <p className='text-lg font-semibold text-[rgba(0,0,0,0.5)]'>Lọc đơn hàng</p>
-                  <Button onClick={() => setOrders({})}>Đặt lại</Button>
-                  <h1>Trạng thái</h1>
+               <div className=' relative'>
+                  <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
+                     <CloseOutlined className='text-red-500 ' />
+                  </Button>
+                  <p className='text-center items-center text-2xl py-10 font-semibold text-[rgba(0,0,0,0.5)]'>
+                     Lọc đơn hàng
+                  </p>
+
+                  <h1 className='pb-3'>Trạng thái:</h1>
                   <Radio.Group
                      value={orders?.status || ''}
                      onChange={(e) => setOrders((prev: any) => ({ ...prev, status: e.target.value }))}
@@ -135,7 +147,7 @@ const OrdersAdmin = () => {
                      <Radio value={'chờ xác nhận'}>Chờ xác nhận</Radio>
                      <Radio value={'đang giao hàng'}>Đang giao hàng</Radio>
                   </Radio.Group>
-                  <h1>Ngày</h1>
+                  <h1 className='pt-5 pb-3'>Ngày:</h1>
                   <Radio.Group
                      value={orders?.day || ''}
                      onChange={(e) => setOrders((prev: any) => ({ ...prev, day: e.target.value }))}
@@ -143,10 +155,10 @@ const OrdersAdmin = () => {
                      <Radio value={'7'}>7 ngày</Radio>
                      <Radio value={'30'}>30 ngày</Radio>
                   </Radio.Group>
-                  <button onClick={() => setCollapsed(true)}>
-                     <CloseOutlined className='text-red-500' />
-                  </button>
                </div>
+               <Button className='text-center items-center mt-4' onClick={() => setOrders({})}>
+                  Đặt lại
+               </Button>
             </Layout.Sider>
          </Layout>
       </>
