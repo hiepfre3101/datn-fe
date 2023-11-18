@@ -10,9 +10,13 @@ export const getOrder = (): Promise<AxiosResponse<IResponse<IOrderFull[]>>> => {
    return instance.get('orders');
 };
 
-export const getOrderForMember = (): Promise<AxiosResponse<IResponse<IOrderFull[]>>> => {
+export const getOrderForMember = (status?: string, day?: string): Promise<AxiosResponse<IResponse<IOrderFull[]>>> => {
    return instance.get('/orders-member', {
-      withCredentials: true
+      withCredentials: true,
+      params: {
+         _status: status,
+         _day: day
+      }
    });
 };
 
