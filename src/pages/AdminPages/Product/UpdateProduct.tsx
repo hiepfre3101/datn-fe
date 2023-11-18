@@ -123,15 +123,15 @@ const UpdateProduct = () => {
          <Helmet>
             <title>Cập nhật sản phẩm</title>
          </Helmet>
-         <Form className='w-[80%] mt-20 pb-10' form={form} onFinish={handleSubmit} layout='vertical'>
+         <Form className='w-[100%] mt-20 pb-10' form={form} onFinish={handleSubmit} layout='vertical'>
             <HeadForm
                placeHolder='Sản phẩm không tên'
                linkBack='/manage/products'
                changeValue={(value) => setProductName(value)}
                initValue={productName}
             />
-            <Space size={'large'} className='w-full !items-start mt-5'>
-               <Space direction='vertical' size={'middle'} className='min-w-[800px]'>
+            <div className='w-full mt-5 flex flex-wrap gap-5'>
+               <div className='min-w-[800px] flex flex-col gap-5 w-full'>
                   <BlockForm title='Hình ảnh sản phẩm'>
                      <Form.Item<InputProduct>
                         name='images'
@@ -196,9 +196,9 @@ const UpdateProduct = () => {
                         </Form.Item>
                      </Space>
                   </BlockForm>
-               </Space>
-               <Space direction='vertical'>
-                  <BlockForm title='Danh mục' className='min-w-[500px]'>
+               </div>
+               <div className='flex flex-col w-full gap-5'>
+                  <BlockForm title='Danh mục' className='min-w-[500px] w-full'>
                      <Form.Item<InputProduct>
                         name='categoryId'
                         hasFeedback
@@ -247,7 +247,9 @@ const UpdateProduct = () => {
                            labelInValue
                            value={{
                               value: currentShipment?.idShipment as string,
-                              label: 'Lô hàng ngày: ' + currentShipment?.date
+                              label: currentShipment?.date
+                                 ? 'Lô hàng ngày: ' + currentShipment?.date
+                                 : 'Chưa có lô hàng '
                            }}
                            style={{ width: '100%', marginBottom: '30px' }}
                            onChange={handleChangeShipment}
@@ -255,12 +257,13 @@ const UpdateProduct = () => {
                               value: shipment.idShipment,
                               label: 'Lô hàng ngày: ' + shipment.date
                            }))}
+                           disabled={currentShipment?.date === undefined}
                         />
                         {displayShipment()}
                      </div>
                   </BlockForm>
-               </Space>
-            </Space>
+               </div>
+            </div>
             <Divider />
             <div className='flex justify-end items-center gap-5 pb-[50px]'>
                <Link to={'/manage/products'}>

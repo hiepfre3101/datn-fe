@@ -22,8 +22,7 @@ const ProductAdmin = () => {
          return;
       }
       try {
-         const res = await handleRemoveProduct(id);
-         console.log(res);
+         await handleRemoveProduct(id);
       } catch (error) {
          console.log(error);
       }
@@ -77,16 +76,22 @@ const ProductAdmin = () => {
                   </header>
                   <Table
                      dataSource={products}
-                     pagination={{ pageSize: 50 }}
+                     pagination={{ pageSize: 5 }}
                      scroll={{ y: 800, x: 2000 }}
                      loading={isLoading}
+                     rowClassName={(record) => {
+                        if (!record.stock || record.expDate.includes('NaN')) {
+                           return 'bg-red-100';
+                        }
+                        return '';
+                     }}
                   >
                      <Column
                         title='Ảnh sản phẩm'
                         fixed='left'
                         dataIndex='image'
                         key='image'
-                        width={150}
+                        width={80}
                         render={(image) => <img src={image} className='w-[3rem] h-[3rem]' />}
                      />
                      <Column title='Tên' dataIndex='productName' key='productName' width={150} />
@@ -110,7 +115,7 @@ const ProductAdmin = () => {
                      />
                      <Column
                         fixed='right'
-                        width={100}
+                        width={80}
                         title='Chức năng '
                         key='_id'
                         dataIndex={'_id'}

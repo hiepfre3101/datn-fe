@@ -1,4 +1,5 @@
-import { Layout, Modal, Space, Table, Tag, theme } from 'antd';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button, Layout, Modal, Radio, Space, Table, Tag, theme } from 'antd';
 import { useState } from 'react';
 import Loading from '../../../components/Loading/Loading';
 import { IOrderFull } from '../../../interfaces/order';
@@ -10,16 +11,20 @@ import DetailOrder from './DetailOrder';
 const { Column } = Table;
 import '../../../css/admin-order.css';
 import { useGetAllOrderQuery } from '../../../services/order.service';
+import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    const [idOrder, setIdOrder] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
-   const { data, isLoading } = useGetAllOrderQuery({});
+   const [orders, setOrders] = useState<any>({});
    const {
       token: { colorBgContainer }
    } = theme.useToken();
+   const { data, isLoading } = useGetAllOrderQuery({ ...orders, order: 'desc' });
+
    if (isLoading) return <Loading sreenSize='lg' />;
+
    return (
       <>
          <Helmet>
@@ -50,7 +55,7 @@ const OrdersAdmin = () => {
                   </header>
 
                   <Table
-                     dataSource={data?.body.data.map((order) => ({
+                     dataSource={data?.body?.data?.map((order) => ({
                         ...order,
                         createdAt: formatStringToDate(order.createdAt)
                      }))}
@@ -75,7 +80,8 @@ const OrdersAdmin = () => {
                      />
                      <Column align='center' width={250} title='Tổng tiền' dataIndex='totalPayment' key='totalPayment' />
                      <Column
-                        width={250}
+                        fixed='right'
+                        width={200}
                         title='Trạng thái'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => (
@@ -90,7 +96,13 @@ const OrdersAdmin = () => {
                         )}
                      />
                   </Table>
-                  <Modal width={1000} onCancel={() => setIsOpen(false)} open={isOpen} footer={[]}>
+                  <Modal
+                     width={1000}
+                     onCancel={() => setIsOpen(false)}
+                     open={isOpen}
+                     footer={[]}
+                     style={{ top: 50, left: 50 }}
+                  >
                      <DetailOrder idOrder={idOrder} />
                   </Modal>
                </div>
@@ -112,13 +124,37 @@ const OrdersAdmin = () => {
                onCollapse={(value) => setCollapsed(value)}
                trigger={null}
                collapsedWidth={0}
+               
             >
-               <div className='flex justify-between items-center p-3'>
-                  <p className='text-lg font-semibold text-[rgba(0,0,0,0.5)]'>Lọc đơn hàng</p>
-                  <button onClick={() => setCollapsed(true)}>
-                     <CloseOutlined className='text-greenPrimary' />
-                  </button>
+               <div className=' relative px-4'>
+                  <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
+                     <CloseOutlined className='text-red-500 ' />
+                  </Button>
+                  <p className='text-center items-center text-2xl py-10 font-semibold text-[rgba(0,0,0,0.5)]'>
+                     Lọc đơn hàng
+                  </p>
+
+                  <h1 className='pb-3'>Trạng thái:</h1>
+                  <Radio.Group
+                     value={orders?.status || ''}
+                     onChange={(e) => setOrders((prev: any) => ({ ...prev, status: e.target.value }))}
+                  >
+                     {ORDER_STATUS_FULL.map((statusOrder) => (
+                        <Radio className='mt-5' value={statusOrder.status.toLowerCase()}>{statusOrder.status}</Radio>
+                     ))}
+                  </Radio.Group>
+                  <h1 className='pt-5 pb-3'>Ngày:</h1>
+                  <Radio.Group
+                     value={orders?.day || ''}
+                     onChange={(e) => setOrders((prev: any) => ({ ...prev, day: e.target.value }))}
+                  >
+                     <Radio value={'7'}>7 ngày</Radio>
+                     <Radio value={'30'}>30 ngày</Radio>
+                  </Radio.Group>
                </div>
+               <Button className='text-center items-center mt-4 ml-4' onClick={() => setOrders({})}>
+                  Đặt lại
+               </Button>
             </Layout.Sider>
          </Layout>
       </>

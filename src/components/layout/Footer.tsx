@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { BiStore } from 'react-icons/bi';
 import { BsBell } from 'react-icons/bs';
@@ -13,28 +14,30 @@ import { Link } from 'react-router-dom';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
-import { saveProduct } from '../../slices/productSlice';
+import { logoUrl } from '../../constants/imageUrl';
+import { useGetAllCateQuery } from '../../services/cate.service';
 
 const Footer = () => {
    const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const dispatch = useDispatch();
-
+   const {data} = useGetAllCateQuery()
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
-      const modal_product = document.querySelector('.modal-product');
+
+      const section_search_modal = document.querySelector('.section-search-modal');
+      const section_overlay_search = document.querySelector('.section-overlay-search');
       setTimeout(() => {
-         const modal_product_content = document.querySelector('.modal-product-content');
-         modal_product_content?.classList.toggle('lg:!scale-[1]');
-         modal_product_content?.classList.toggle('lg:opacity-100');
-         modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
+         section_search_modal?.classList.toggle('!translate-y-[0%]');
+   
+      }, 100);
+      setTimeout(() => {
+         section_search_modal?.classList.toggle('hidden');
       }, 200);
       setTimeout(() => {
-         modal_product?.classList.toggle('hidden');
-         modal_product?.classList.toggle('!z-[20]');
-         dispatch(saveProduct(null));
-      }, 600);
+         section_overlay_search?.classList.toggle('hidden');
+      }, 400);
    };
    const showModalSearch = () => {
       const bodyElement = document.querySelector('body');
@@ -88,11 +91,7 @@ const Footer = () => {
                <ul className='footer-list flex py-[60px] flex-wrap ml-[-30px]'>
                   <li className='footer-if  w-full lg:w-[calc(35%-30px)] ml-[30px]'>
                      <div className='logo-ft '>
-                        <img
-                           className='max-w-[120px]'
-                           src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/logo/logo.png'
-                           alt=''
-                        />
+                        <img className='max-w-[120px]' src={logoUrl} alt='logo' />
                      </div>
                      <div className='footer-if-text leading-7 '>
                         <p>
@@ -127,21 +126,13 @@ const Footer = () => {
                      </div>
 
                      <ul className='ft-sublist'>
-                        <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                           <a href='#'>Xoài nhập khẩu Ấn Độ</a>
+                       {data?.body.data.slice(0,5).map((item)=>{
+                        return<>
+                         <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
+                           <Link to="dfa">{item.cateName}</Link>
                         </li>
-                        <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                           <a href='#'>Táo nhập khẩu Liên Xô</a>
-                        </li>
-                        <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                           <a href='#'>Dưa lưới nhập khẩu Liên Xô</a>
-                        </li>
-                        <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                           <a href='#'>Hồng nhập khẩu Liên Xô</a>
-                        </li>
-                        <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                           <a href='#'>Xoài nhập khẩu Liên Xô</a>
-                        </li>
+                        </>
+                       })} 
                      </ul>
                   </li>
                   <li className='footer-if list-link ft-policy ml-[30px] transition-all duration-500  lg:w-[calc(21%-30px)] w-full max-lg:mt-[15px] max-lg:h-[45px]  overflow-hidden max-lg:pb-[10px]'>
@@ -365,13 +356,15 @@ const Footer = () => {
                               </p>
                               <div className='start-shopping cart-title  border-[#e2e2e2] gap-2 text-[#51A55C] font-bold flex justify-center items-center text-center pb-[12px]'>
                                  <Link
-                                    to={'/products'}
+                                    to={'/collections'}
+                                    onClick={showMiniCart}
                                     className='block  xl:text-[14px] max-xl:text-[14px] view-cart w-[40%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[10px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                                  >
                                     Mua hàng
                                  </Link>
                                  <Link
                                     to={'/cart'}
+                                    onClick={showMiniCart}
                                     className='block  xl:text-[14px] max-xl:text-[14px] view-cart w-[40%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[10px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                                  >
                                     Giỏ hàng
@@ -459,16 +452,18 @@ const Footer = () => {
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                            <Link
                               to={'/cart'}
+                              onClick={showMiniCart}
                               className='block  text-[14px] view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center mb-[20px]'
                            >
                               GIỎ HÀNG
                            </Link>
-                           <a
-                              href='/cart'
+                           <Link
+                              to={'/checkout'}
+                              onClick={showMiniCart}
                               className='block text-[14px]  view-cart w-[100%] transition-all duration-300 hover:bg-[#333333] rounded-[50px] py-[12px] px-[30px] bg-[#d2401e] text-white text-center'
                            >
                               THANH TOÁN
-                           </a>
+                           </Link>
                         </div>
                      </div>
                   </div>

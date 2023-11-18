@@ -5,7 +5,5 @@ export interface IImage {
 
 
 export interface IImageResponse {
-   body:{
-      data: IImage[] | undefined;
-   } 
+   body:IImage[] | undefined
 }

@@ -1,7 +1,7 @@
 import DescTicket from '../../../../components/DescTicket/DescTicket';
 import { formatStringToDate } from '../../../../helper';
 import { IShipmentFull } from '../../../../interfaces/shipment';
-import { Collapse, CollapseProps } from 'antd';
+import { Collapse, CollapseProps, Tag } from 'antd';
 
 type Props = {
    shipment: IShipmentFull;
@@ -10,9 +10,18 @@ type Props = {
 const ShipmentItem = ({ shipment }: Props) => {
    const items: CollapseProps['items'] = shipment?.products.map((product) => ({
       key: product.idProduct._id,
-      label: product.idProduct.productName,
+      label: (
+         <p className='flex justify-start items-center gap-2 '>
+            {product.idProduct.productName}{' '}
+            {product.weight === 0 && (
+               <Tag color='red' className='w-[50%] text-center'>
+                  Hết hàng
+               </Tag>
+            )}{' '}
+         </p>
+      ),
       children: (
-         <div className='flex flex-col gap-3'>
+         <div className={`flex flex-col gap-3`}>
             <p>
                <strong className='underline mr-3'>Ngày hết hạn: </strong> {formatStringToDate(product.date)}
             </p>
@@ -28,12 +37,14 @@ const ShipmentItem = ({ shipment }: Props) => {
       )
    }));
    return (
-      <div className='w-full max-h-[300px] overflow-auto relative'>
-         <Collapse items={items} bordered={false} />
-         <DescTicket
-            type={shipment.isDisable ? 'error' : 'success'}
-            label={shipment.isDisable ? 'Dừng sử dụng' : 'Đang sử dụng'}
-         />
+      <div className='w-full max-h-[300px] overflow-auto '>
+         <Collapse items={items} bordered={false} className='mb-14'/>
+        <div className=' absolute bottom-2 '>
+            <DescTicket
+               type={shipment.isDisable ? 'error' : 'success'}
+               label={shipment.isDisable ? 'Dừng sử dụng' : 'Đang sử dụng'}
+            />
+        </div>
       </div>
    );
 };

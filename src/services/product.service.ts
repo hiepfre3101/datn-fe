@@ -14,7 +14,7 @@ const productApi = createApi({
       },
       credentials: 'include'
    }),
-   
+
    reducerPath: 'products',
    tagTypes: ['product'],
    endpoints: (builder) => ({
@@ -22,7 +22,7 @@ const productApi = createApi({
          query: (params) => {
             return {
                url: '/products',
-               params: params
+               params: paramTransformer(params)
             };
          },
          providesTags: ['product']
@@ -36,19 +36,28 @@ const productApi = createApi({
                url: '/products',
                params: paramTransformer(params)
             };
-         }
+         },
+         providesTags: ['product']
       }),
-      getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
-         query: (idProduct) => { 
+      getProductSoldDesc: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
             return {
-               url: '/products/' + idProduct
+               url: '/products-sold'
             };
          }
       }),
-      getRelatedProducts: builder.query<IResponse<IProductExpanded[]>, object>({
-         query: ({idCategory,idProduct}:IObjIdForGetRelatedProducts) => {
+      getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
+         query: (idProduct) => {
             return {
-               url: '/products/related/' + idCategory+"/"+idProduct
+               url: '/products/' + idProduct
+            };
+         },
+         providesTags: ['product']
+      }),
+      getRelatedProducts: builder.query<IResponse<IProductExpanded[]>, object>({
+         query: ({ idCategory, idProduct }: IObjIdForGetRelatedProducts) => {
+            return {
+               url: '/products/related/' + idCategory + '/' + idProduct
             };
          }
       }),
@@ -70,7 +79,7 @@ const productApi = createApi({
                body: body
             };
          },
-         invalidatesTags: ['product']
+         invalidatesTags: (result) => [{ type: 'product', id: result?._id }]
       }),
       removeProduct: builder.mutation<IProduct, string>({
          query: (id) => {
@@ -85,6 +94,7 @@ const productApi = createApi({
 });
 
 export const {
+   useGetProductSoldDescQuery,
    useUpdateProductMutation,
    useGetAllWithoutExpandQuery,
    useGetAllExpandQuery,

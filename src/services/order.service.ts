@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 
 import { IOrder, IOrderFull } from '../interfaces/order';
 import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
+import { paramTransformer } from '../utils/transformParams';
 const orderApi = createApi({
    baseQuery: fetchBaseQuery({
       baseUrl: 'http://localhost:8080/api',
@@ -16,11 +17,11 @@ const orderApi = createApi({
    tagTypes: ['orders'],
    reducerPath: 'orders',
    endpoints: (builder) => ({
-      getAllOrder: builder.query<IResponseHasPaginate<IOrderFull>, Partial<Omit<IQueryParam, '  '>>>({
+      getAllOrder: builder.query<IResponseHasPaginate<IOrderFull>, Partial<Omit<IQueryParam, ' '>>>({
          query: (params) => {
             return {
                url: '/orders',
-               params
+               params: paramTransformer(params)
             };
          },
          providesTags: ['orders']
@@ -43,10 +44,32 @@ const orderApi = createApi({
             };
          },
          invalidatesTags: ['orders']
+      }),
+      filterOrders: builder.query<IResponseHasPaginate<IOrderFull>, { status?: string; day?: string }>({
+         query: (params) => {
+            return {
+               url: `/orders-member-filter`,
+               params: params
+            };
+         }
+      }),
+      filterAdminOrders: builder.query<IResponseHasPaginate<IOrderFull>, { status?: string; day?: string }>({
+         query: (params) => {
+            return {
+               url: `/orders-admin-filter`,
+               params: params
+            };
+         }
       })
    })
 });
 
-export const { useAddOrderMutation, useUpdateOrderMutation, useGetAllOrderQuery } = orderApi;
+export const {
+   useAddOrderMutation,
+   useUpdateOrderMutation,
+   useGetAllOrderQuery,
+   useFilterOrdersQuery,
+   useFilterAdminOrdersQuery
+} = orderApi;
 
 export default orderApi;
