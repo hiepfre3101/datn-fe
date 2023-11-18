@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * @type T : type of documents array in body response
  */
@@ -34,8 +35,10 @@ export interface IQueryParam {
    maxPrice: number;
    expand: boolean;
    q: string;
-   categoryId: string|null;
-   originId:string;
+   categoryId: string | null;
+   originId: string;
    brand: string;
    subCate: string;
+   day: string;
+   statusOrder: string;
 }

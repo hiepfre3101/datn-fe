@@ -23,7 +23,8 @@ const AddShipment = () => {
       }
       const totalMoney = productData.reduce((money, product) => {
          const originPrice: number = Number(product.originPrice);
-         return money + originPrice;
+         const weight: number = Number(product.weight);
+         return (money += originPrice * weight);
       }, 0);
       const dataForm: InputShipment = { totalMoney, products: productData };
       try {

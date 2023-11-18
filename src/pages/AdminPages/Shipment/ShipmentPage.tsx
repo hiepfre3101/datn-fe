@@ -30,8 +30,9 @@ const ShipmentPage = () => {
                      }}
                   >
                      <Card
+                        className='max-h-[400px]  relative'
                         title={
-                           <div className='flex justify-between items-center'>
+                           <div className='flex justify-between items-center '>
                               <span>Lô hàng ngày {formatStringToDate(shipment.createdAt)} </span>
                               {!shipment.isDisable && (
                                  <Dropdown
@@ -49,14 +50,6 @@ const ShipmentPage = () => {
                                                          'Toàn bộ số lượng sản phẩm trong lô hàng sẽ bị chuyển thành trạng thái hỏng và không thể bán.',
                                                       onOk: () =>
                                                          handleUpdateShipment({
-                                                            products: shipment.products.map((product) => ({
-                                                               idProduct: product.idProduct._id,
-                                                               date: product.date,
-                                                               weight: product.weight,
-                                                               price: product.price,
-                                                               originPrice: product.originPrice
-                                                            })),
-                                                            totalMoney: shipment.totalMoney,
                                                             isDisable: true,
                                                             idShipment: shipment._id
                                                          })

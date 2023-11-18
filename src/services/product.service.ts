@@ -22,7 +22,7 @@ const productApi = createApi({
          query: (params) => {
             return {
                url: '/products',
-               params: params
+               params: paramTransformer(params)
             };
          },
          providesTags: ['product']

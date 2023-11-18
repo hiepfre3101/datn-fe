@@ -10,7 +10,8 @@ import { formatStringToDate, transformStatusOrder } from '../../../helper';
 import DetailOrder from './DetailOrder';
 const { Column } = Table;
 import '../../../css/admin-order.css';
-import { useFilterAdminOrdersQuery } from '../../../services/order.service';
+import { useGetAllOrderQuery } from '../../../services/order.service';
+import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -20,7 +21,7 @@ const OrdersAdmin = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
-   const { data, isLoading } = useFilterAdminOrdersQuery(orders);
+   const { data, isLoading } = useGetAllOrderQuery({ ...orders, order: 'desc' });
 
    if (isLoading) return <Loading sreenSize='lg' />;
 
@@ -123,16 +124,16 @@ const OrdersAdmin = () => {
                   right: 0,
                   minHeight: '100vh',
                   boxShadow: '-10px 0px 10px -2px #d8d6d6',
-                  zIndex: '100',
-                  padding:"0 15px"
+                  zIndex: '100'
                }}
                collapsible
                collapsed={collapsed}
                onCollapse={(value) => setCollapsed(value)}
                trigger={null}
                collapsedWidth={0}
+               
             >
-               <div className=' relative'>
+               <div className=' relative px-4'>
                   <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
                      <CloseOutlined className='text-red-500 ' />
                   </Button>
@@ -145,8 +146,9 @@ const OrdersAdmin = () => {
                      value={orders?.status || ''}
                      onChange={(e) => setOrders((prev: any) => ({ ...prev, status: e.target.value }))}
                   >
-                     <Radio value={'chờ xác nhận'}>Chờ xác nhận</Radio>
-                     <Radio value={'đang giao hàng'}>Đang giao hàng</Radio>
+                     {ORDER_STATUS_FULL.map((statusOrder) => (
+                        <Radio className='mt-5' value={statusOrder.status.toLowerCase()}>{statusOrder.status}</Radio>
+                     ))}
                   </Radio.Group>
                   <h1 className='pt-5 pb-3'>Ngày:</h1>
                   <Radio.Group
@@ -157,7 +159,7 @@ const OrdersAdmin = () => {
                      <Radio value={'30'}>30 ngày</Radio>
                   </Radio.Group>
                </div>
-               <Button className='text-center items-center mt-4' onClick={() => setOrders({})}>
+               <Button className='text-center items-center mt-4 ml-4' onClick={() => setOrders({})}>
                   Đặt lại
                </Button>
             </Layout.Sider>
