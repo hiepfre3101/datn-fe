@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from 'react';
 import {
    PieChartOutlined,
@@ -19,7 +20,6 @@ import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { saveTokenAndUser } from '../slices/authSlice';
-import { Socket, io } from 'socket.io-client';
 import NotificationSound from '../assets/notification-sound.mp3';
 import { useGetTokenQuery } from '../services/auth.service';
 import { setCartName } from '../slices/cartSlice';
@@ -51,12 +51,11 @@ const items: MenuItem[] = [
 ];
 
 const AdminLayout = () => {
-   const [socket, setSocket] = useState<unknown | Socket | null>(null);
    const [collapsed, setCollapsed] = useState(false);
    const [checking, setChecking] = useState(true);
    const [open, setOpen] = useState(false);
-   const { data, isLoading } = useGetTokenQuery()
-   const auth = useSelector((state: any) => state.userReducer)
+   const { data, isLoading } = useGetTokenQuery();
+   const auth = useSelector((state: any) => state.userReducer);
    const navigate = useNavigate();
    const dispatch = useDispatch();
    const audioPlayer = useRef(null);
@@ -67,50 +66,32 @@ const AdminLayout = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
-   console.log(data?.body.data);
-
    useEffect(() => {
-      setChecking(true)
+      setChecking(true);
       if (!isLoading && data?.body?.data && Object.keys(auth.user).length == 0) {
-if (Object.keys(data.body.data.data).length > 0) {
+         if (Object.keys(data.body.data.data).length > 0) {
             dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
             dispatch(setCartName(data.body.data.data.email || 'cart'));
          } else {
-            message.warning('You are not logged in')
+            message.warning('You are not logged in');
             navigate('/');
          }
-         setChecking(false)
+         setChecking(false);
       } else if (Object.keys(auth.user).length > 0) {
          if (auth.user.role !== 'admin') {
-            message.warning('You are not allowed to arrive this')
+            message.warning('You are not allowed to arrive this');
             navigate('/');
          }
-         setChecking(false)
+         setChecking(false);
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [data, isLoading, auth.user])
-
-   useEffect(() => {
-      const newSocket = io('http://localhost:8080');
-      setSocket(newSocket);
-      return () => {
-         newSocket.disconnect();
-      };
-   }, []);
-   useEffect(() => {
-      if (socket != null) {
-         console.log(socket);
-
-         (socket as Socket).on('alert', () => {
-            // message.warning(res);
-            // playAudio();
-         });
-      }
-   }, [socket]);
+   }, [data, isLoading, auth.user]);
    if (checking) {
-      return <div className='h-screen flex items-center justify-center'>
-         <Spin size='large' />
-      </div>
+      return (
+         <div className='h-screen flex items-center justify-center'>
+            <Spin size='large' />
+         </div>
+      );
    }
    return (
       <Layout style={{ minHeight: '100vh' }}>
@@ -152,7 +133,7 @@ if (Object.keys(data.body.data.data).length > 0) {
             <Content className=' w-full px-6  pt-[50px] pb-[50px] flex justify-center '>
                <Outlet />
             </Content>
-</Layout>
+         </Layout>
       </Layout>
    );
 };

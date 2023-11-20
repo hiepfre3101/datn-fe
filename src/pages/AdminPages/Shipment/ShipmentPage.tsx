@@ -20,6 +20,7 @@ const ShipmentPage = () => {
             <div className='grid  2xl:grid-cols-3 gap-4 grid-cols-3 mt-[50px] pb-[100px] grid-cols-2'>
                {data?.body.data.map((shipment) => (
                   <ConfigProvider
+                     key={shipment._id}
                      theme={{
                         components: {
                            Modal: {

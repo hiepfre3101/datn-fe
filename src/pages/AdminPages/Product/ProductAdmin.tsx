@@ -1,6 +1,6 @@
 import { SearchOutlined, PlusCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import Table from 'antd/es/table';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { productData } from '../../../constants/configTableAntd';
@@ -8,15 +8,18 @@ import { useGetAllExpandQuery, useRemoveProductMutation } from '../../../service
 import Column from 'antd/es/table/Column';
 import ActionTable from '../../../components/ActionTable/ActionTable';
 import FilterIcon from '../../../components/Icons/FilterIcon';
-import { Layout, theme } from 'antd';
-
+import { Layout, Tag, Tooltip, theme } from 'antd';
+import { adminSocket } from '../../../config/socket';
+import { IProduct } from '../../../interfaces/product';
 const ProductAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const [expiredProducts, setExpiredProducts] = useState<any>([]);
    const { data, isLoading } = useGetAllExpandQuery({ expand: true });
    const [handleRemoveProduct] = useRemoveProductMutation();
    const products = data && productData(data);
-
+   const lastEventId = useRef<null | string>(null);
    const getConfirmResultToDelete = async (result: boolean, id: string) => {
       if (!result) {
          return;
@@ -30,6 +33,26 @@ const ProductAdmin = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
+   useEffect(() => {
+      adminSocket.open();
+      adminSocket.on('expireProduct', (data) => {
+         if (data.eventId !== lastEventId.current) {
+            setExpiredProducts(data);
+            lastEventId.current = data.eventId;
+         } else {
+            console.log('not run');
+         }
+      });
+      return () => {
+         adminSocket.disconnect();
+      };
+   }, [data]);
+   const checkExpireProduct = (idProduct: string) => {
+      // return true;
+      //đợi sắp đến ngày hết hạn hoặc là cái socket lâu quá nên comment lại lúc khác mở
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      return expiredProducts.find((product: any) => product.idProduct === idProduct);
+   };
    return (
       <>
          <Helmet>
@@ -94,7 +117,22 @@ const ProductAdmin = () => {
                         width={80}
                         render={(image) => <img src={image} className='w-[3rem] h-[3rem]' />}
                      />
-                     <Column title='Tên' dataIndex='productName' key='productName' width={150} />
+                     <Column
+                        title='Tên'
+                        dataIndex='productName'
+                        key='productName'
+                        width={150}
+                        render={(name, product: IProduct) => (
+                           <div className='flex justify-start items-center gap-2'>
+                              <span>{name}</span>
+                              {checkExpireProduct(product?._id) && (
+                                 <Tooltip title='Lô hàng sản phẩm hiện tại sắp hết hạn, bạn nên thanh lý sớm lô hàng này ->'>
+                                    <Tag color='orange'>Sắp hết hạn</Tag>
+                                 </Tooltip>
+                              )}
+                           </div>
+                        )}
+                     />
                      <Column title='Giá' dataIndex='price' key='price' width={150} />
                      <Column title='Danh mục ' dataIndex='category' key='category' width={150} />
                      <Column
@@ -121,6 +159,7 @@ const ProductAdmin = () => {
                         dataIndex={'_id'}
                         render={(id) => (
                            <ActionTable
+                              isSale={checkExpireProduct(id)}
                               idProduct={id}
                               linkToUpdate={`/manage/products/${id}`}
                               getResultConfirm={getConfirmResultToDelete}
