@@ -9,10 +9,10 @@ type Props = {
 
 const ShipmentItem = ({ shipment }: Props) => {
    const items: CollapseProps['items'] = shipment?.products.map((product) => ({
-      key: product.idProduct._id,
+      key: product?.idProduct?._id,
       label: (
          <p className='flex justify-start items-center gap-2 '>
-            {product.idProduct.productName}{' '}
+            {product?.idProduct?.productName}{' '}
             {product.weight === 0 && (
                <Tag color='red' className='w-[50%] text-center'>
                   Hết hàng
