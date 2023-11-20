@@ -15,18 +15,18 @@ const AddShipment = () => {
    const { data } = useGetAllWithoutExpandQuery({ limit: 3000 });
    const [handleSubmit, { isLoading, isError }] = useAddShipmentMutation();
    const navigate = useNavigate();
-   const { productData, dataSubmitFactory, removeProduct } = useFormProductInShipment({});
+   const { productDataSubmit, dataSubmitFactory, removeProduct } = useFormProductInShipment({});
    const handleSubmitForm = async () => {
-      if (productData.length === 0 || productData.find((item) => item.idProduct === '')) {
+      if (productDataSubmit.length === 0 || productDataSubmit.find((item) => item.idProduct === '')) {
          message.error('Hãy hoàn thành sản phẩm ');
          return;
       }
-      const totalMoney = productData.reduce((money, product) => {
+      const totalMoney = productDataSubmit.reduce((money, product) => {
          const originPrice: number = Number(product.originPrice);
          const weight: number = Number(product.weight);
          return (money += originPrice * weight);
       }, 0);
-      const dataForm: InputShipment = { totalMoney, products: productData };
+      const dataForm: InputShipment = { totalMoney, products: productDataSubmit };
       try {
          await handleSubmit(dataForm);
          if (isError) return;
@@ -49,15 +49,15 @@ const AddShipment = () => {
                />
                <BlockForm title='Sản phẩm lô hàng' className='mt-[50px] relative mb-[50px]'>
                   <div className='mt-[20px] min-h-[100px] relative '>
-                     {productData?.length > 0 &&
-                        productData.map((item) => (
+                     {productDataSubmit?.length > 0 &&
+                        productDataSubmit.map((item) => (
                            <FormProduct
                               key={item.idProduct}
                               products={data ? data.body.data! : []}
                               submitProduct={(data) => dataSubmitFactory(data)}
                               removeProduct={(idProduct) => removeProduct(idProduct)}
                               data={item}
-                              productData={productData}
+                              productData={productDataSubmit}
                            />
                         ))}
                      <button
@@ -66,8 +66,8 @@ const AddShipment = () => {
                               idProduct: '',
                               date: '',
                               originPrice: '',
-                              price: '',
-                              weight: ''
+                              weight: '',
+                              productName: ''
                            })
                         }
                         className=' flex justify-start py-2 rounded-md px-5 items-center gap-5 bg-greenbbf7d0 hover:bg-greenP500 duration-300 '
