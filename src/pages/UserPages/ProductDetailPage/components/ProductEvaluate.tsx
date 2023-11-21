@@ -1,5 +1,5 @@
-import React from 'react'
-import { ConfigProvider, Rate, Select, Space } from 'antd';
+
+import { ConfigProvider, Rate } from 'antd';
 
 
 const ProductEvaluate = () => {

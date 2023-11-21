@@ -3,13 +3,15 @@ import { Popconfirm, Tooltip } from 'antd';
 import { Link } from 'react-router-dom';
 import PencilIcon from '../Icons/PencilIcon';
 import EraserIcon from '../Icons/EraserIcon';
+import { MdOutlineDiscount } from 'react-icons/md';
 type Props = {
    idProduct: string;
    linkToUpdate: string;
    getResultConfirm: (result: boolean, idProduct: string) => void;
+   isSale: boolean;
 };
 
-const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct }: Props) => {
+const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale }: Props) => {
    const [open, setOpen] = useState(false);
    return (
       <div className='flex justify-start items-center gap-3'>
@@ -39,6 +41,13 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct }: Props) => {
                </button>
             </Popconfirm>
          </Tooltip>
+         {isSale && (
+            <Tooltip title='Thanh lý sản phẩm'>
+               <button className='p-2 rounded-full bg-white w-10 h-10 shadow-md hover:w-11 hover:h-11 duration-100 flex justify-center items-center'>
+                  <MdOutlineDiscount className='text-greenPrimary ' />
+               </button>
+            </Tooltip>
+         )}
       </div>
    );
 };

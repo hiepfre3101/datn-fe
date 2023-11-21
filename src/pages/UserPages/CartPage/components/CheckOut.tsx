@@ -29,7 +29,9 @@ const CheckOut = () => {
             </div>
             <div className='total flex justify-between pb-[17px] border-b-[1px] border-[#e2e2e2] mt-[17px]'>
                <span className='total-title font-bold items-center'>Tổng</span>
-               <span className='total font-bold  text-[20px] text-red-500'>70.000</span>
+               <span className='total font-bold  text-[20px] text-red-500'>
+                  {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+               </span>
             </div>
             <div className='discount-action mt-[30px] text-center'>
                <input

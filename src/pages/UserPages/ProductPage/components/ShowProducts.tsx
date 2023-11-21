@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigProvider, Rate } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
@@ -59,18 +60,21 @@ const ShowProducts = ({ data }: IProps) => {
                   <>
                      <div className=' product-item md:p-[10px]  max-xl:mb-[18px]'>
                         <div className='product-wrap overflow-hidden group/product-wrap rounded-[5px] relative flex flex-col justify-between max-xl:pb-[40px]'>
-                           <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
-                              {item.discount}%
-                           </span>
+                          {item.discount > 0 && <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
+                             {item.discount+"%"}    
+                           </span>} 
+                           {item.shipments.length <= 0 && <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
+                                 Hết hàng
+                           </span>}       
                            <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
                               <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
                                  <img
-                                    className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover object-left-bottom'
+                                    className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover'
                                     src={item?.images[0].url}
                                     alt=''
                                  />
                                  <img
-                                    className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover object-left-bottom'
+                                    className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-contain'
                                     src={item?.images[1].url}
                                     alt=''
                                  />
@@ -95,12 +99,17 @@ const ShowProducts = ({ data }: IProps) => {
                                     <AiOutlineHeart></AiOutlineHeart>
                                  </button>
                               </div>
-                           </div>
-                           <a href=''>
+                           </div>{' '}
+                           <Link
+                              to={'/products/' + item._id}
+                              onClick={() => {
+                                 window.scrollTo(0, 0);
+                              }}
+                           >
                               <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
-                                 <Link to={'/products/' + item._id}>{item?.productName}</Link>
+                                 {item?.productName}
                               </p>
-                           </a>
+                           </Link>
                            <div className='rate text-center'>
                               <ConfigProvider
                                  theme={{
@@ -117,9 +126,13 @@ const ShowProducts = ({ data }: IProps) => {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
-                              <span className='old-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                 {/* 300.000{' '} */}
-                              </span>
+                              {item.discount>0 && item.shipments.length > 0 && <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                {(item?.shipments[0]?.price * item.discount/100).toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
+                              </span>}
+                             
                            </p>
                         </div>
                      </div>

@@ -41,7 +41,7 @@ const shipmentApi = createApi({
          },
          invalidatesTags: ['shipment']
       }),
-      updateShipment: builder.mutation<IResponse<IShipmentFull>, InputShipment & { idShipment: string }>({
+      updateShipment: builder.mutation<IResponse<IShipmentFull>, { isDisable: boolean; idShipment: string }>({
          query: ({ idShipment, ...body }) => {
             return {
                url: '/shipments/' + idShipment,

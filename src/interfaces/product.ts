@@ -13,7 +13,7 @@ export interface IProduct {
    desc: string;
    discount: number;
    images: { url: string; public_id: string }[];
-   createAt: string;
+   createdAt: string;
    shipments: IShipmentOfProduct[];
    price: number;
    originId: string;
