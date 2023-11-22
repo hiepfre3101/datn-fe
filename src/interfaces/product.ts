@@ -16,7 +16,11 @@ export interface IProduct {
    createdAt: string;
    shipments: IShipmentOfProduct[];
    price: number;
-   originId: string;
+   originId: 
+      | string
+      |  {
+         _id: string;
+      };
 
 }
 
@@ -26,6 +30,9 @@ export interface IProductExpanded extends IProduct {
 
    categoryId: {
       cateName: string;
+      _id: string;
+   };
+   originId:{
       _id: string;
    };
 }
