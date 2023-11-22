@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchOutlined, PlusCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import Table from 'antd/es/table';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
-import { productData } from '../../../constants/configTableAntd';
+import { ProductDataType, productData } from '../../../constants/configTableAntd';
 import { useGetAllExpandQuery, useRemoveProductMutation } from '../../../services/product.service';
 import Column from 'antd/es/table/Column';
 import ActionTable from '../../../components/ActionTable/ActionTable';
@@ -11,6 +12,7 @@ import FilterIcon from '../../../components/Icons/FilterIcon';
 import { Layout, Tag, Tooltip, theme } from 'antd';
 import { adminSocket } from '../../../config/socket';
 import { IProduct } from '../../../interfaces/product';
+import { WILL_EXPIRE } from '../../../constants/statusExpireProduct';
 const ProductAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
@@ -34,10 +36,25 @@ const ProductAdmin = () => {
       token: { colorBgContainer }
    } = theme.useToken();
    useEffect(() => {
+      if (!data) return;
+      const expireProductInDB = data.body.data.map((product) => {
+         if (product.shipments[0].willExpire === WILL_EXPIRE) return product;
+      });
+      const newExpireProducts: any[] = [];
+      expireProductInDB.forEach((product) => {
+         if (!expiredProducts.includes(product!)) {
+            newExpireProducts.push({ ...product, productId: product?._id }!);
+         }
+      });
+      setExpiredProducts((prev: any) => [...prev, ...newExpireProducts]);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [data]);
+
+   useEffect(() => {
       adminSocket.open();
       adminSocket.on('expireProduct', (data) => {
          if (data.eventId !== lastEventId.current) {
-            setExpiredProducts(data);
+            setExpiredProducts((prev: IProduct[]) => [...prev, data.response]);
             lastEventId.current = data.eventId;
          } else {
             console.log('not run');
@@ -47,12 +64,16 @@ const ProductAdmin = () => {
          adminSocket.disconnect();
       };
    }, [data]);
-   const checkExpireProduct = (idProduct: string) => {
-      // return true;
-      //đợi sắp đến ngày hết hạn hoặc là cái socket lâu quá nên comment lại lúc khác mở
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return expiredProducts.find((product: any) => product.idProduct === idProduct);
-   };
+
+   const checkExpireProduct = useMemo(
+      () => (idProduct: string) => {
+         // return true;
+         //đợi sắp đến ngày hết hạn hoặc là cái socket lâu quá nên comment lại lúc khác mở
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         return !!expiredProducts.find((product: any) => product.productId === idProduct);
+      },
+      [expiredProducts]
+   );
    return (
       <>
          <Helmet>
@@ -114,8 +135,18 @@ const ProductAdmin = () => {
                         fixed='left'
                         dataIndex='image'
                         key='image'
-                        width={80}
+                        width={50}
                         render={(image) => <img src={image} className='w-[3rem] h-[3rem]' />}
+                     />
+                     <Column
+                        title='Trạng thái bán hàng'
+                        dataIndex='isSale'
+                        key='isSale'
+                        width={80}
+                        render={(isSale) => {
+                           if (isSale) return <Tag color='purple'>Thanh lý</Tag>;
+                           return <Tag color='green'>Bình thường</Tag>;
+                        }}
                      />
                      <Column
                         title='Tên'
@@ -125,7 +156,7 @@ const ProductAdmin = () => {
                         render={(name, product: IProduct) => (
                            <div className='flex justify-start items-center gap-2'>
                               <span>{name}</span>
-                              {checkExpireProduct(product?._id) && (
+                              {!product.isSale && checkExpireProduct(product?._id) && (
                                  <Tooltip title='Lô hàng sản phẩm hiện tại sắp hết hạn, bạn nên thanh lý sớm lô hàng này ->'>
                                     <Tag color='orange'>Sắp hết hạn</Tag>
                                  </Tooltip>
@@ -133,20 +164,20 @@ const ProductAdmin = () => {
                            </div>
                         )}
                      />
-                     <Column title='Giá' dataIndex='price' key='price' width={150} />
-                     <Column title='Danh mục ' dataIndex='category' key='category' width={150} />
+                     <Column title='Giá (VND)' dataIndex='price' key='price' width={90} />
+                     <Column title='Danh mục ' dataIndex='category' key='category' width={80} />
                      <Column
                         title='Số lượng kho hàng (kg)'
                         dataIndex='stock'
                         key='stock'
-                        width={150}
+                        width={80}
                         render={(stock) => <span className='w-[3rem] h-[3rem]'>{stock || 0}</span>}
                      />
                      <Column
                         title='Hạn sử dụng'
                         dataIndex='expDate'
                         key='expDate'
-                        width={150}
+                        width={80}
                         render={(date) => {
                            return <span className='w-[3rem] h-[3rem]'>{date.includes('NaN') ? 'Hết hàng' : date}</span>;
                         }}
@@ -157,8 +188,9 @@ const ProductAdmin = () => {
                         title='Chức năng '
                         key='_id'
                         dataIndex={'_id'}
-                        render={(id) => (
+                        render={(id, record: ProductDataType) => (
                            <ActionTable
+                              hasSale={record?.isSale as boolean}
                               isSale={checkExpireProduct(id)}
                               idProduct={id}
                               linkToUpdate={`/manage/products/${id}`}
