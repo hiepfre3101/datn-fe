@@ -22,6 +22,8 @@ export interface IProduct {
            name: string;
            _id: string;
         };
+   isSale: boolean;
+
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
@@ -32,8 +34,8 @@ export interface IProductExpanded extends IProduct {
       _id: string;
    };
    originId: {
-      name: string;
       _id: string;
+      name: string;
    };
 }
 export interface IDescProp {
@@ -47,3 +49,12 @@ export interface IObjIdForGetRelatedProducts {
    idCategory: string | undefined;
    idProduct: string | undefined;
 }
+
+
+export interface InputSaleProduct {
+   productId: string;
+   shipmentId: string;
+   productName: string;
+   discount: number;
+}
+
