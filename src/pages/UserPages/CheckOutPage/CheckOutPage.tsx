@@ -16,6 +16,8 @@ import {
 } from '../../../slices/cartSlice';
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
+import { clientSocket } from '../../../config/socket';
+import { IAuth } from '../../../slices/authSlice';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
@@ -26,6 +28,7 @@ const CheckOutPage = () => {
    const [handleAddOrder] = useAddOrderMutation();
    const [current, setCurrent] = useState(0);
    const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const dispatch = useDispatch();
    const onSubmit = async (data: IOrder) => {
@@ -40,6 +43,12 @@ const CheckOutPage = () => {
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
+            const value = JSON.stringify({
+               userId: auth?.user?._id,
+               orderId: '6556387b58173bfaa8227071'
+            });
+            clientSocket.emit('purchase', value);
+            return;
             await handleAddOrder(data)
                .then((res) => {
                   if ('error' in res && res.error && 'data' in res.error) {
@@ -72,6 +81,13 @@ const CheckOutPage = () => {
                      if ('data' in res && 'status' in res.data) {
                         message.success('Mua hàng thành công');
                         dispatch(removeAllProductFromCart());
+                        if (auth?.user?._id) {
+                           const value = JSON.stringify({
+                              userId: auth?.user?._id,
+                              orderId: res.data?.body?.data._id
+                           });
+                           clientSocket.emit('purchase', value);
+                        }
                         navigate('/ordercomplete');
                      }
                   }

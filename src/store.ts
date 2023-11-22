@@ -5,6 +5,7 @@ import productReducer from './services/product.service';
 import orderReducer from './services/order.service';
 import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
+import notificationReducer from './services/notification';
 import cartReducer from './slices/cartSlice';
 import whishListReducer from './slices/whishListSlice';
 import userReducer from './slices/authSlice';
@@ -16,6 +17,7 @@ export const store = configureStore({
       [productReducer.reducerPath]: productReducer.reducer,
       [orderReducer.reducerPath]: orderReducer.reducer,
       [userSlice.reducerPath]: userSlice.reducer,
+      [notificationReducer.reducerPath]: notificationReducer.reducer,
       cart: cartReducer.reducer,
       whishList: whishListReducer.reducer,
       userReducer: userReducer,
@@ -28,6 +30,7 @@ export const store = configureStore({
          categoryReducer.middleware,
          productReducer.middleware,
          orderReducer.middleware,
+         notificationReducer.middleware,
          userSlice.middleware,
          shipmentReducer.middleware
       ])

@@ -5,6 +5,7 @@ import { getDetailOrder } from '../../../api/order';
 import { ORDER_OF_STATUS } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
+import { adminSocket } from '../../../config/socket';
 
 type Props = {
    idOrder: string;
@@ -35,6 +36,15 @@ const DetailOrder = ({ idOrder }: Props) => {
          return Promise.reject();
       }
       try {
+         adminSocket.emit(
+            'changeStatus',
+            JSON.stringify({
+               userId: order.userId!,
+               orderId: idOrder,
+               status: value.toLowerCase(),
+               invoiceId: order.invoiceId
+            })
+         );
          await handleUpdateOrder({
             idOrder,
             customerName: order.customerName!,

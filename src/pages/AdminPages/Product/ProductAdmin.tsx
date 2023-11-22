@@ -34,7 +34,6 @@ const ProductAdmin = () => {
       token: { colorBgContainer }
    } = theme.useToken();
    useEffect(() => {
-      adminSocket.open();
       adminSocket.on('expireProduct', (data) => {
          if (data.eventId !== lastEventId.current) {
             setExpiredProducts(data);
@@ -43,9 +42,6 @@ const ProductAdmin = () => {
             console.log('not run');
          }
       });
-      return () => {
-         adminSocket.disconnect();
-      };
    }, [data]);
    const checkExpireProduct = (idProduct: string) => {
       // return true;
