@@ -22,7 +22,6 @@ import { saveTokenAndUser } from '../slices/authSlice';
 import { Socket, io } from 'socket.io-client';
 import NotificationSound from '../assets/notification-sound.mp3';
 import { useGetTokenQuery } from '../services/auth.service';
-import { setCartName } from '../slices/cartSlice';
 
 const { Content, Sider } = Layout;
 
@@ -74,7 +73,6 @@ const AdminLayout = () => {
       if (!isLoading && data?.body?.data && Object.keys(auth.user).length == 0) {
 if (Object.keys(data.body.data.data).length > 0) {
             dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-            dispatch(setCartName(data.body.data.data.email || 'cart'));
          } else {
             message.warning('You are not logged in')
             navigate('/');

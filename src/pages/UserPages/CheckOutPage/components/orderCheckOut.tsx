@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigProvider, Radio, RadioChangeEvent, Button } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ICartSlice } from '../../../../slices/cartSlice';
 import { useSelector } from 'react-redux';
 import { UseFormReturn } from 'react-hook-form';
 import { IOrder } from '../../../../interfaces/order';
 import { Link } from 'react-router-dom';
+import { useGetCartQuery } from '../../../../services/cart.service';
+import { IAuth } from '../../../../slices/authSlice';
 interface Iprops {
    onSubmit: (data: IOrder) => void;
    methods: UseFormReturn<IOrder, any, undefined>;
@@ -24,7 +26,24 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    const onChange = (e: RadioChangeEvent) => {
       setPayValue(e.target.value);
    };
-   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [showfetch,setShowFetch] = useState(false)  
+   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
+   useEffect(()=>{
+      if(auth.user._id){
+         setShowFetch(true)
+      }
+   },[auth.user._id])
+   const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
+   const TotalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
+   const [total,setTotal]=useState<number>()
+   useEffect(()=>{
+      const temp = auth.user._id?cart?.reduce(
+         (accumulator:number, product:any) => accumulator + product.productId.price * product.weight, 0
+      ):TotalPrice
+      setTotal(temp)  
+   },[cartdb,cart])
    return (
       <>
          <div className='order-checkout'>
@@ -32,27 +51,27 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                <div className='check-pro ml-[30px] md:w-[calc(50%-30px)] max-md:w-full '>
                   <span className='text-[26px] text-[#333333] font-bold'>Giỏ hàng của bạn (8)</span>
                   <ul className='list-check-pro mt-[20px] md:max-h-[650px] overflow-scroll'>
-                     {cart.items.map((item) => {
+                     {cart.map((item) => {
                         return (
                            <>
                               <li className='check-pro-item flex items-center mb-[20px] pb-[20px] border-b border-[#e2e2e2]'>
                                  <div className='check-pro-img w-[112px] h-[122px]  '>
                                     <img
                                        className='w-full h-full rounded-[5px] border border-[#e2e2e2]'
-                                       src={item.images}
+                                       src={item.productId.images[0].url}
                                        alt=''
                                     />
                                  </div>
                                  <div className='check-pro-content ml-[15px]'>
-                                    <Link to={'/products/' + item._id} className='block font-bold text-[#333333]'>
-                                       {item.name}
+                                    <Link to={'/products/' + item.productId._id} className='block font-bold text-[#333333]'>
+                                       {item.productId?.productName}
                                     </Link>
                                     <span className='block font-bold mt-[2px]'>
-                                       Xuất sứ: <span className='font-[500]'>Trung Quốc</span>
+                                       Xuất sứ: <span className='font-[500]'>{item.productId?.origin?.name}</span>
                                     </span>
                                     <span className='mt-[5px] font-bold'>{item.weight} X </span>
                                     <span className='mt-[5px] font-bold'>
-                                       {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                       {item.productId.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </span>
                                  </div>
                               </li>
@@ -68,13 +87,13 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='text-[18px] font-[500]'>Sản phẩm</span>
                         <span className='text-[18px] font-[500]'>Tổng</span>
                      </div>
-                     {cart.items.map((item) => {
+                     {cart.map((item) => {
                         return (
                            <>
                               <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
-                                 <span className='text-[18px] font-[500]'>{item.name}</span>
+                                 <span className='text-[18px] font-[500]'>{item.productId.productName}</span>
                                  <span className='text-[18px] font-[500]'>
-                                    {(item.price * item.weight).toLocaleString('vi-VN', {
+                                    {(item.productId?.price * item.weight).toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}
@@ -86,7 +105,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-[500]'>Tính tạm:</span>
                         <span className='text-[18px] font-[500]'>
-                           {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                         </span>
                      </div>
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
@@ -96,7 +115,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-extrabold'>Tổng:</span>
                         <span className='text-[18px] font-bold'>
-                           {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                         </span>
                      </div>
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>

@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { IProduct } from '../interfaces/product';
+import {  IProductExpanded } from '../interfaces/product';
 
 const initState = {
     products:[],
-} as {products:IProduct[]}
+} as {products:IProductExpanded[]}
 
 const productSlice = createSlice({
    name: 'products',

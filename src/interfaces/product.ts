@@ -16,16 +16,23 @@ export interface IProduct {
    createdAt: string;
    shipments: IShipmentOfProduct[];
    price: number;
-   originId: string;
-
+   originId:
+      | string
+      | {
+           name: string;
+           _id: string;
+        };
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
 
 export interface IProductExpanded extends IProduct {
-
    categoryId: {
       cateName: string;
+      _id: string;
+   };
+   originId: {
+      name: string;
       _id: string;
    };
 }
@@ -39,5 +46,3 @@ export interface IObjIdForGetRelatedProducts {
    idCategory: string | undefined;
    idProduct: string | undefined;
 }
-
-

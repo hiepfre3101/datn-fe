@@ -1,22 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { message } from 'antd';
 import ModalProductSlide from '../../pages/UserPages/ProductPage/components/ModalProductSlide';
 import { AiOutlineCloseCircle } from 'react-icons/ai';
 import { IShipmentOfProduct } from '../../interfaces/shipment';
-import { IProduct } from '../../interfaces/product';
+import {  IProductExpanded } from '../../interfaces/product';
 import { Link } from 'react-router-dom';
 import { addItem } from '../../slices/cartSlice';
 import { saveProduct } from '../../slices/productSlice';
+import { useAddCartMutation } from '../../services/cart.service';
+import { IAuth } from '../../slices/authSlice';
 export interface QuickViewProp {
-   product_info: IProduct[];
+   product_info: IProductExpanded[];
 }
 const QuickView = ({ product_info }: QuickViewProp) => {
    const dispatch = useDispatch();
    const [inputWeight, setinputWeight] = useState<any>(0.5);
    const [totalWeight, setTotalWeight] = useState<number>();
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [addCart] = useAddCartMutation();
    useEffect(() => {
       setTotalWeight(
          product_info[0]?.shipments?.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
@@ -42,17 +46,34 @@ const QuickView = ({ product_info }: QuickViewProp) => {
          setinputWeight('');
       }
    };
-   const add_to_cart = () => {
+   const add_to_cart =  async ()  => {
       if (inputWeight != '') {
-         const product = {
-            _id: product_info[0]._id,
-            name: product_info[0].productName,
-            images: product_info[0].images[0].url,
-            price: product_info[0].shipments[0]?.price,
-            weight: inputWeight,
-            totalWeight: totalWeight
-         };
-         dispatch(addItem(product));
+         if(auth.user._id){
+            const product = {
+               productId: product_info[0]?._id,
+               weight:inputWeight
+            }
+           await  addCart(product).unwrap()
+         }
+         else{
+            const product = {
+               productId:{
+                  _id: product_info[0]?._id,
+                  productName: product_info[0]?.productName,
+                  images: [
+                     {url: product_info[0]?.images[0].url}
+                  ],
+                  price: product_info[0]?.price,
+                  originId: {
+                     _id:product_info[0]?.originId._id,
+                     name: product_info[0]?.originId.name
+                  }
+               },  
+               weight: inputWeight,
+               totalWeight: totalWeight
+            };
+            dispatch(addItem(product));
+         }     
       } else {
          setinputWeight(0.5);
          message.error('Kg không hợp lệ');
@@ -112,7 +133,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                   {product_info[0]?.shipments.length>0&&     <div className='product-price flex w-full items-center'>
                      <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
                      <div className='product-price-content text-[22px] text-red-500 pr-[10px] font-bold'>
-                        {product_info[0]?.shipments[0]?.price.toLocaleString('vi-VN', {
+                        {product_info[0]?.price.toLocaleString('vi-VN', {
                            style: 'currency',
                            currency: 'VND'
                         })}

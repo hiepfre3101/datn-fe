@@ -2,7 +2,7 @@ import Header from '../components/layout/Header';
 import { Outlet } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
 import { useEffect } from 'react';
-import { setCartName, setItem } from '../slices/cartSlice';
+import { setItem } from '../slices/cartSlice';
 import { setwhishListName, setwhishList } from '../slices/whishListSlice';
 import { useDispatch } from 'react-redux';
 import { useGetTokenQuery } from '../services/auth.service';
@@ -14,7 +14,6 @@ const DefaultLayout = () => {
    useEffect(() => {
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         dispatch(setCartName(data.body.data.data.email || 'cart'));
          dispatch(setwhishListName(data.body.data.data.userName || 'wishList'));
       }
       dispatch(setItem());

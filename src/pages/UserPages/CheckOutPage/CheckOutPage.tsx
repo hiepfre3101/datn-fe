@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
 import OrderCheckOut from './components/orderCheckOut';
@@ -16,6 +16,8 @@ import {
 } from '../../../slices/cartSlice';
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
+import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
+import { IAuth } from '../../../slices/authSlice';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
@@ -24,8 +26,18 @@ const CheckOutPage = () => {
    // }
    const methods = useForm<IOrder>();
    const [handleAddOrder] = useAddOrderMutation();
+   const [checkCartdb] = useCheckCartMutation()
    const [current, setCurrent] = useState(0);
-   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [showfetch,setShowFetch] = useState(false)  
+   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
+   useEffect(()=>{
+      if(auth.user._id){
+         setShowFetch(true)
+      }
+   },[auth.user._id])
+   const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const dispatch = useDispatch();
    const onSubmit = async (data: IOrder) => {
@@ -33,20 +45,43 @@ const CheckOutPage = () => {
          next();
       }
       if (current == 2) {
-         setLoadingState(!loadingState);
+         // setLoadingState(!loadingState);
          if (data.note == '') {
             delete data.note;
          }
-         data.products = cart.items;
-         data.totalPayment = cart.totalPrice;
-         try {
+         // if(auth.user._id){
+         //    const { data: checkCartdb } = useGetCartQuery();
+         //    console.log(checkCartdb);
+         //    error=true
+         // }
+         // else{
+         //    checkCartdb(cart).then((res) => {
+         //       console.log(res);
+         //    })
+         //    console.log(cart);
+            
+         // }
+         data.products = cart?.products.map((product:ICartItems) => {
+            return {
+               productName: product.productId.productName,
+               price: product.productId.price,
+               productId:product.productId._id,
+               images:product.productId?.images[0].url,
+               weight: product.weight
+            };
+          });;
+         data.totalPayment =  auth.user._id?cart?.reduce(
+            (accumulator:number, product:any) => accumulator + product.productId.price * product.weight, 0
+         ):cart?.totalPrice;
+         console.log(data);
+         try {  
             await handleAddOrder(data)
                .then((res) => {
                   if ('error' in res && res.error && 'data' in res.error) {
                      const errorData = res.error.data as any;
                      if (errorData.message == 'Product not exist') {
                         errorData.body.data.map((item: ICartItems) => {
-                           dispatch(removeFromCart({ id: item._id }));
+                           dispatch(removeFromCart({ id: item.productId._id }));
                         });
                         notification.info({
                            message: 'Cập nhật sản phẩm trong giỏ hàng',

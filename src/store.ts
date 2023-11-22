@@ -3,9 +3,10 @@ import authReducer from './services/auth.service';
 import categoryReducer from './services/cate.service';
 import productReducer from './services/product.service';
 import orderReducer from './services/order.service';
+import cartReducer from './services/cart.service';
 import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
-import cartReducer from './slices/cartSlice';
+import cartSlice from './slices/cartSlice';
 import whishListReducer from './slices/whishListSlice';
 import userReducer from './slices/authSlice';
 import productSlice from './slices/productSlice';
@@ -15,8 +16,9 @@ export const store = configureStore({
       [categoryReducer.reducerPath]: categoryReducer.reducer,
       [productReducer.reducerPath]: productReducer.reducer,
       [orderReducer.reducerPath]: orderReducer.reducer,
+      [cartReducer.reducerPath]: cartReducer.reducer,
       [userSlice.reducerPath]: userSlice.reducer,
-      cart: cartReducer.reducer,
+      cart: cartSlice.reducer,
       whishList: whishListReducer.reducer,
       userReducer: userReducer,
       [shipmentReducer.reducerPath]: shipmentReducer.reducer,
@@ -28,6 +30,7 @@ export const store = configureStore({
          categoryReducer.middleware,
          productReducer.middleware,
          orderReducer.middleware,
+         cartReducer.middleware,
          userSlice.middleware,
          shipmentReducer.middleware
       ])
