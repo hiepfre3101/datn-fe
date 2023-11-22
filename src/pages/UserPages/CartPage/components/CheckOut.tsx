@@ -14,7 +14,7 @@ const CheckOut = () => {
          setShowFetch(true)
       }
    },[auth.user._id])
-   const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const [total,setTotal]=useState<number>()
    useEffect(()=>{
@@ -29,7 +29,7 @@ const CheckOut = () => {
             <div className='temporary items-center flex justify-between pb-[17px] border-b-[1px] border-[#e2e2e2]'>
                <span className='temporary-title font-bold'>Tính tạm</span>
                <span className='temporary font-bold text-[#333333] '>
-                  {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                  {auth.user._id?total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                </span>
             </div>
             <div className='discount flex justify-between items-center pb-[17px] border-b-[1px] border-[#e2e2e2] mt-[10px]'>
@@ -48,7 +48,9 @@ const CheckOut = () => {
             </div>
             <div className='total flex justify-between pb-[17px] border-b-[1px] border-[#e2e2e2] mt-[17px]'>
                <span className='total-title font-bold items-center'>Tổng</span>
-               <span className='total font-bold  text-[20px] text-red-500'>70.000</span>
+               <span className='total font-bold  text-[20px] text-red-500'>
+               {auth.user._id?total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+               </span>
             </div>
             <div className='discount-action mt-[30px] text-center'>
                <input

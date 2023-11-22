@@ -1,4 +1,5 @@
-export const paramTransformer = (raw: Record<string, boolean | string | number | undefined>) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const paramTransformer = (raw:any) => {
    if (typeof raw === 'object' && !Array.isArray(raw)) {
       const rawConverted = { ...raw };
       for (const key in raw) {
@@ -8,8 +9,6 @@ export const paramTransformer = (raw: Record<string, boolean | string | number |
             rawConverted[key] = undefined;
          }
       }
-
-      console.log(raw); 
       return rawConverted;
    }
 

@@ -14,9 +14,8 @@ export type ProductInShipmentExpand = {
    idProduct: IProduct;
    date: string;
    weight: number;
-   price: number;
+   productName: string;
    originPrice: number;
-   origin: string;
    originWeight: number;
 };
 export interface IShipmentFull {
@@ -32,7 +31,7 @@ export type ProductInput = {
    idProduct: string;
    date: string | Dayjs;
    weight: number | string;
-   price: number | string;
+   productName: string;
    originPrice: number | string;
 };
 

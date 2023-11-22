@@ -33,9 +33,7 @@ const ProductPage = () => {
    const location  = useLocation()
    const searchParams = new URLSearchParams(location.search);
    const cate_id = searchParams.get('cate_id')!=null?searchParams.get('cate_id'):"";
-  
-   
-   let [filter, setFilter] = useState<IFilterFieldProductPage>({
+   const [filter, setFilter] = useState<IFilterFieldProductPage>({
       field: { page: 1,category:cate_id },
       setfield: (value: IFilterFieldProductPage) => {
          setFilter(value);

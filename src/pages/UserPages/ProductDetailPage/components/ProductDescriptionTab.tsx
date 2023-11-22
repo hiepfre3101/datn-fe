@@ -3,7 +3,7 @@ import {  useState } from 'react';
 import { IDescProp } from '../../../../interfaces/product';
 
 
-const ProductDescriptionTab = ({desc}:IDescProp)=>{
+const ProductDescriptionTab = ({desc,originName}:IDescProp)=>{
     const [stateNav, setStateNav] = useState<string>('des');    
     return<>
          <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
@@ -68,24 +68,9 @@ const ProductDescriptionTab = ({desc}:IDescProp)=>{
                         <table className='border-collapse  border w-full'>
                            <tr>
                               <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
+                              <td className='p-[15px] border w-[80%]'>{originName}</td>
                            </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
-                           <tr>
-                              <th className='p-[15px] border text-[#333333] w-[20%] text-left'>Xuất xứ:</th>
-                              <td className='p-[15px] border w-[80%]'>Trung Quốc</td>
-                           </tr>
+                          
                         </table>
                      </div>
                   )}

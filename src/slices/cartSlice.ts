@@ -17,7 +17,7 @@ export interface ICartItems {
       productName: string;
       images: IImage[];
       price: number;
-      origin:{
+      originId:{
          _id:string,
          name: string
       }

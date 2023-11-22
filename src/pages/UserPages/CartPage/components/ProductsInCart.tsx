@@ -43,26 +43,26 @@ const ProductsInCart = () => {
          message.success('Cập nhật sản phẩm thành công');
       }, 1000);
     }
-   const updateCart = async (item:ICartDataBase|ICartItems,index:number) =>  { 
+   const updateCart = async (item:ICartDataBase|ICartItems,index:number,cal:boolean) =>  { 
       setClickCount(1)
  if (auth.user._id) {
     let updatedCartState = [...cartState];
     let updatedItem = { ...updatedCartState[index] }; 
-    updatedItem.weight = updatedItem.weight + 0.5; 
+    updatedItem.weight = cal?updatedItem.weight + 0.5:updatedItem.weight - 0.5; 
     updatedCartState[index] = updatedItem; 
     setCartState(updatedCartState);
     const temp = {
       productId: item.productId._id,
-      weight: cartState[index].weight+0.5,
+      weight: cal?cartState[index].weight+0.5:cartState[index].weight-0.5,
     };
-    setClickCount(clickCount + 1);
+    cal?setClickCount(clickCount + 1):setClickCount(clickCount - 1);
     debouncedUpdateCartDBRef.current(temp);
   }
      else{
       dispatch(
          updateItem({
             id: item.productId._id,
-            weight: item.weight == 0 && item.weight + 0.5 <= 0 ? item.weight : item.weight + 0.5
+            weight: item.weight == 0 && item.weight + 0.5 <= 0 ? item.weight : (cal?item.weight + 0.5:item.weight - 0.5)
          })
       );
      }
@@ -228,7 +228,7 @@ const ProductsInCart = () => {
                                                       ? true
                                                       : false
                                                 }
-                                                onClick={()=>updateCart(item,index)}
+                                                onClick={()=>updateCart(item,index,true)}
                                                 type='button'
                                                 className={`${
                                                    item.weight == item.totalWeight &&
@@ -242,7 +242,7 @@ const ProductsInCart = () => {
                                              <button
                                                 disabled={item.weight == 0 && item.weight - 0.5 <= 0 ? true : false}
                                                 type='button'
-                                      
+                                                onClick={()=>updateCart(item,index,false)}
                                                 className={`${
                                                    item.weight == 0 && item.weight - 0.5 <= 0 ? 'bg-gray-300' : ''
                                                 } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}

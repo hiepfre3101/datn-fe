@@ -1,7 +1,7 @@
 import { Badge, DescriptionsProps } from 'antd';
 import { IShipmentOfProduct } from '../interfaces/shipment';
 
-export const getShipmentData = (data: IShipmentOfProduct): DescriptionsProps['items'] => {
+export const getShipmentData = (data: IShipmentOfProduct, index: number): DescriptionsProps['items'] => {
    return [
       {
          key: '1',
@@ -26,8 +26,8 @@ export const getShipmentData = (data: IShipmentOfProduct): DescriptionsProps['it
          label: 'Trạng thái',
          children: (
             <Badge
-               status={data.isDisable ? 'error' : 'success'}
-               text={data.isDisable ? 'Vô hiệu hóa (Sản phẩm sẽ không được hiển thị tại trang bán hàng !)' : 'Sử dụng'}
+               status={index != 0 ? 'error' : 'success'}
+               text={index != 0 ? 'Trong kho ' : 'Sử dụng'}
             />
          ),
          span: 5

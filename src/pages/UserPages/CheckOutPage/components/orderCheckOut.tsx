@@ -51,7 +51,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                <div className='check-pro ml-[30px] md:w-[calc(50%-30px)] max-md:w-full '>
                   <span className='text-[26px] text-[#333333] font-bold'>Giỏ hàng của bạn (8)</span>
                   <ul className='list-check-pro mt-[20px] md:max-h-[650px] overflow-scroll'>
-                     {cart.map((item) => {
+                     {cart?.map((item) => {
                         return (
                            <>
                               <li className='check-pro-item flex items-center mb-[20px] pb-[20px] border-b border-[#e2e2e2]'>
@@ -87,7 +87,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='text-[18px] font-[500]'>Sản phẩm</span>
                         <span className='text-[18px] font-[500]'>Tổng</span>
                      </div>
-                     {cart.map((item) => {
+                     {cart?.map((item) => {
                         return (
                            <>
                               <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>

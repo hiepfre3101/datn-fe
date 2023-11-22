@@ -10,3 +10,15 @@ export const ORDER_OF_STATUS = [
    { status: SHIPPING_ORDER, color: '#e77e18' },
    { status: SUCCESS_ORDER, color: '#80b235' }
 ];
+
+export const ORDER_STATUS_FULL = [
+   ...ORDER_OF_STATUS,
+   {
+      status: FAIL_ORDER,
+      color: '#'
+   },
+   {
+      status: DONE_ORDER,
+      color: '#'
+   }
+];

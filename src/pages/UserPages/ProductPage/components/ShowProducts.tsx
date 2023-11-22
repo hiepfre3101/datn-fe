@@ -94,13 +94,13 @@ const ShowProducts = ({ data }: IProps) => {
                            <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
                               <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
                                  <img
-                                    className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover object-left-bottom'
-                                    src={item?.images[0]?.url}
+                                    className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover'
+                                    src={item?.images[0].url}
                                     alt=''
                                  />
                                  <img
-                                    className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover object-left-bottom'
-                                    src={item?.images[1]?.url}
+                                    className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-contain'
+                                    src={item?.images[1].url}
                                     alt=''
                                  />
                               </div>
@@ -124,12 +124,17 @@ const ShowProducts = ({ data }: IProps) => {
                                     <AiOutlineHeart></AiOutlineHeart>
                                  </button>
                               </div>
-                           </div>
-                           <a href=''>
+                           </div>{' '}
+                           <Link
+                              to={'/products/' + item._id}
+                              onClick={() => {
+                                 window.scrollTo(0, 0);
+                              }}
+                           >
                               <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
-                                 <Link to={'/products/' + item._id}>{item?.productName}</Link>
+                                 {item?.productName}
                               </p>
-                           </a>
+                           </Link>
                            <div className='rate text-center'>
                               <ConfigProvider
                                  theme={{

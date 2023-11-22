@@ -51,7 +51,7 @@ export const productData = (data: IResponseHasPaginate<IProductExpanded>): Produ
       productName: product.productName,
       category: product.categoryId.cateName,
       image: product.images[0].url,
-      price: product.shipments[0]?.price || 0,
+      price: product.price || 0,
       stock: product.shipments[0]?.weight,
       expDate: formatStringToDate(product.shipments[0]?.date)
    }));

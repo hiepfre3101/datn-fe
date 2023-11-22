@@ -19,6 +19,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
    const { Option } = Select;
    const [isSave, setIsSave] = useState<boolean>(false);
    const [formProduct] = useForm<ProductInput>();
+   const [productName, setProductName] = useState<string>('');
    const checkDuplicateItemInArray = (idProduct: string) => {
       return productData.filter((item) => item.idProduct === idProduct);
    };
@@ -30,7 +31,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
             return;
          }
       }
-      const newData = { ...data, date: data.date.toString() };
+      const newData = { ...data, date: data.date.toString(), productName };
       setIsSave(true);
       submitProduct(newData);
    };
@@ -65,17 +66,28 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
          onFinish={(value) => handleAddProduct(value, 'save')}
          className={` relative rounded-md border-[1px] ${
             isSave ? 'border-[rgba(0,0,0,0.1)]' : 'border-red-400'
-         } border-[rgba(0,0,0,0.1)] p-3 flex justify-start items-center gap-10 flex-wrap w-full mb-[50px]`}
+         } border-[rgba(0,0,0,0.1)] p-3  w-full mb-[50px]`}
+         layout='vertical'
       >
-         <Space size={'large'} direction='vertical'>
+         <div className='flex justify-stretch items-center gap-3'>
             <Form.Item
-               className='w-[100%]'
+               className='w-[50%]'
                label='Chọn sản phẩm'
                name='idProduct'
                hasFeedback
                rules={[{ required: true, message: 'Trường này là bắt buộc ' }]}
             >
-               <Select defaultValue={{ value: '', label: 'Sản phẩm' }} onChange={() => setIsSave(false)}>
+               <Select
+                  onChange={(value: string) => {
+                     const productSelected = products.find((product) => product._id == (value as string));
+                     if (!productSelected) {
+                        message.error('Lỗi khi chọn sản phẩm !');
+                        return;
+                     }
+                     setProductName(productSelected.productName!);
+                     setIsSave(false);
+                  }}
+               >
                   {products.map((product) => (
                      <Option key={product._id} value={product._id}>
                         {product.productName}
@@ -84,6 +96,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
                </Select>
             </Form.Item>
             <Form.Item
+               className='w-[50%]'
                label='Giá gốc'
                name='originPrice'
                hasFeedback
@@ -94,43 +107,36 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
             >
                <Input type='number' prefix='vnd' min={'1'} onChange={() => setIsSave(false)} />
             </Form.Item>
+         </div>
+         <div className='flex justify-stretch items-center gap-3'>
             <Form.Item
-               label='Giá bán'
-               name='price'
+               className='w-[50%]'
+               label='Cân nặng'
+               name='weight'
                hasFeedback
                rules={[
                   { required: true, message: 'Trường này là bắt buộc ' },
                   { min: 1, message: 'Nhập tối thiểu là 1 đơn vị' }
                ]}
             >
-               <Input type='number' prefix='vnd' min={'1'} onChange={() => setIsSave(false)} />
+               <Input type='number' prefix='kg' min={'1'} onChange={() => setIsSave(false)} />
             </Form.Item>
-         </Space>
-         <Form.Item
-            label='Hạn sử dụng'
-            name='date'
-            hasFeedback
-            rules={[{ required: true, message: 'Trường này là bắt buộc ' }]}
-         >
-            <DatePicker
-               showTime={false}
-               direction='ltr'
-               format={'DD/MM/YYYY'}
-               disabledDate={disabledDate}
-               onChange={() => setIsSave(false)}
-            />
-         </Form.Item>
-         <Form.Item
-            label='Cân nặng'
-            name='weight'
-            hasFeedback
-            rules={[
-               { required: true, message: 'Trường này là bắt buộc ' },
-               { min: 1, message: 'Nhập tối thiểu là 1 đơn vị' }
-            ]}
-         >
-            <Input type='number' prefix='kg' min={'1'} onChange={() => setIsSave(false)} />
-         </Form.Item>
+            <Form.Item
+               className='w-[50%]'
+               label='Hạn sử dụng'
+               name='date'
+               hasFeedback
+               rules={[{ required: true, message: 'Trường này là bắt buộc ' }]}
+            >
+               <DatePicker
+                  showTime={false}
+                  direction='ltr'
+                  format={'DD/MM/YYYY'}
+                  disabledDate={disabledDate}
+                  onChange={() => setIsSave(false)}
+               />
+            </Form.Item>
+         </div>
          <Space size={'large'} direction='horizontal' className='mb-[24px]'>
             <Popconfirm title='Bạn muốn xóa sản phẩm này ?' onConfirm={() => handleConfirm(data.idProduct)}>
                <Tooltip placement='top' title='Hủy'>

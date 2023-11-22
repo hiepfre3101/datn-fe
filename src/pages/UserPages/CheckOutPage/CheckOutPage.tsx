@@ -37,7 +37,7 @@ const CheckOutPage = () => {
       }
    },[auth.user._id])
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
-   const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
+   const cart = auth.user._id ? cartdb?.body.data : CartLocal;
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const dispatch = useDispatch();
    const onSubmit = async (data: IOrder) => {
@@ -45,7 +45,7 @@ const CheckOutPage = () => {
          next();
       }
       if (current == 2) {
-         // setLoadingState(!loadingState);
+         setLoadingState(!loadingState);
          if (data.note == '') {
             delete data.note;
          }
@@ -67,10 +67,11 @@ const CheckOutPage = () => {
                price: product.productId.price,
                productId:product.productId._id,
                images:product.productId?.images[0].url,
-               weight: product.weight
+               weight: product.weight,
+               originId: product.productId?.originId?._id
             };
           });;
-         data.totalPayment =  auth.user._id?cart?.reduce(
+         data.totalPayment =  auth.user._id?cart?.products.reduce(
             (accumulator:number, product:any) => accumulator + product.productId.price * product.weight, 0
          ):cart?.totalPrice;
          console.log(data);
