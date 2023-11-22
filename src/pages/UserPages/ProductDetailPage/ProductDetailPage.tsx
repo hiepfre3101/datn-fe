@@ -8,8 +8,9 @@ import ProductInfo from './components/Productinfo';
 const ProductDetail = () => {
    const { id } = useParams();
    const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
-   // console.log(oneProductData);
 
+
+   
    const objId = {
       idCategory: oneProductData?.body.data.categoryId._id,
       idProduct: id
@@ -32,7 +33,7 @@ const ProductDetail = () => {
                <ProductInfo product_info={oneProductData?.body.data}></ProductInfo>
             </section>
             <section className='section-description  lg:py-[100px] md:py-[80px] max-md:py-[60px]'>
-               <ProductDescriptionTab desc={oneProductData?.body.data.desc}></ProductDescriptionTab>
+               <ProductDescriptionTab desc={oneProductData?.body.data.desc} originName={oneProductData?.body.data.originId.name}></ProductDescriptionTab>
             </section>
             <section className='section-related-product bg-[#f8f8f8]  max-lg:py-[60px] border-b'>
                <div className='related-product-header text-center xl:mb-[70px] lg:mb-[40px] max-lg:mb-[30px]'>

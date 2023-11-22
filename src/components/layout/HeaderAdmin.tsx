@@ -10,7 +10,7 @@ import { useClearTokenMutation } from '../../services/auth.service';
 import { useNavigate } from 'react-router-dom';
 const { Header } = Layout;
 import { deleteTokenAndUser } from '../../slices/authSlice';
-import { setCartName, setItem } from '../../slices/cartSlice';
+import { setItem } from '../../slices/cartSlice';
 const HeaderAdmin = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [triggerDrop, setTriggerDrop] = useState(false);
@@ -19,7 +19,6 @@ const HeaderAdmin = () => {
    const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
-      dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
       navigate('/');

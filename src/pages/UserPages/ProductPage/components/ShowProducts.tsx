@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { ConfigProvider, Rate } from 'antd';
+import { ConfigProvider, Rate, message } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { Link } from 'react-router-dom';
@@ -12,6 +11,8 @@ import { RootState } from '../../../../store';
 import { saveProduct } from '../../../../slices/productSlice';
 import { addItem } from '../../../../slices/cartSlice';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
+import { IAuth } from '../../../../slices/authSlice';
+import { useAddCartMutation } from '../../../../services/cart.service';
 
 interface IProps {
    data: IResponseHasPaginate<IProductExpanded> | undefined;
@@ -19,6 +20,8 @@ interface IProps {
 const ShowProducts = ({ data }: IProps) => {
    const dispatch = useDispatch();
    const productSlice = useSelector((state: RootState) => state.productSlice.products);
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [addCart] = useAddCartMutation();
    const add_to_wishList = (product: any) => {
       dispatch(addToWhishList(product));
    };
@@ -38,19 +41,37 @@ const ShowProducts = ({ data }: IProps) => {
       }, 300);
       dispatch(saveProduct(data));
    };
-   const add_to_cart = (data: IProductExpanded) => {
-      const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
-         return accumulator + shipmentWeight.weight;
-      }, 0);
-      const product = {
-         _id: data?._id,
-         name: data?.productName,
-         images: data?.images[0].url,
-         price: data?.shipments[0]?.price,
-         weight: 1,
-         totalWeight: totalWeight
-      };
-      dispatch(addItem(product));
+   const add_to_cart = async (data: IProductExpanded) => {
+      if(auth.user._id){
+         const product = {
+            productId: data?._id,
+            weight:1
+         }
+        await  addCart(product).unwrap()
+        message.success("Thêm sản phẩm vào giỏ hàng thành công")
+      }
+      else{
+         const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
+            return accumulator + shipmentWeight.weight;
+         }, 0);
+         const product = {
+            productId:{
+               _id: data?._id,
+               productName: data?.productName,
+               images: [
+                  {url: data?.images[0].url}
+               ],
+               price: data?.price,
+               originId:{
+                  _id: data?.originId._id,
+                  name: data?.originId.name
+               }
+            },  
+            weight: 1,
+            totalWeight: totalWeight
+         };        
+         dispatch(addItem(product));
+      }     
    };
    return (
       <div>
@@ -60,12 +81,16 @@ const ShowProducts = ({ data }: IProps) => {
                   <>
                      <div className=' product-item md:p-[10px]  max-xl:mb-[18px]'>
                         <div className='product-wrap overflow-hidden group/product-wrap rounded-[5px] relative flex flex-col justify-between max-xl:pb-[40px]'>
-                          {item.discount > 0 && <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
-                             {item.discount+"%"}    
-                           </span>} 
-                           {item.shipments.length <= 0 && <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
+                           {item.discount > 0 && (
+                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
+                                 {item.discount + '%'}
+                              </span>
+                           )}
+                           {item.shipments.length <= 0 && (
+                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
                                  Hết hàng
-                           </span>}       
+                              </span>
+                           )}
                            <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
                               <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
                                  <img
@@ -122,17 +147,18 @@ const ShowProducts = ({ data }: IProps) => {
                               </ConfigProvider>
                            </div>
                            <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                              {item?.shipments[0]?.price.toLocaleString('vi-VN', {
+                              {item?.price.toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
-                              {item.discount>0 && item.shipments.length > 0 && <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                {(item?.shipments[0]?.price * item.discount/100).toLocaleString('vi-VN', {
-                                 style: 'currency',
-                                 currency: 'VND'
-                              })}
-                              </span>}
-                             
+                              {item.discount > 0 && item.shipments.length > 0 && (
+                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                    {((item?.price * item.discount) / 100).toLocaleString('vi-VN', {
+                                       style: 'currency',
+                                       currency: 'VND'
+                                    })}
+                                 </span>
+                              )}
                            </p>
                         </div>
                      </div>
