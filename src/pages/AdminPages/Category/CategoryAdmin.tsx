@@ -88,7 +88,7 @@ const CategoryAdmin = () => {
                                                         </Link>
                                                      </li>
                                                      <li>
-                                                        <Popconfirm
+                                                      {cate.type != 'default' && <Popconfirm
                                                            className={``}
                                                            description='Bạn chắc chắn muốn xóa danh mục chứ?'
                                                            okText='Đồng ý'
@@ -102,7 +102,8 @@ const CategoryAdmin = () => {
                                                            >
                                                               Xóa
                                                            </button>
-                                                        </Popconfirm>
+                                                        </Popconfirm> }
+                                                        
                                                      </li>
                                                   </ul>
                                                </div>

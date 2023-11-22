@@ -118,6 +118,20 @@ const AddProduct = () => {
                   </BlockForm>
                   <BlockForm title='Chính sách giá'>
                      <Space direction='vertical' className='w-full'>
+                     <Form.Item
+                           name={'price'}
+                           label={<p className='text-lg font-semibold'>Giá bán</p>}
+                           hasFeedback
+                        >
+                           <Input
+                              type='number'
+                              placeholder='Thêm giá bán sản phẩm'
+                              className='w-1/2 p-2'
+                              max={100000}
+                              min={0}
+                              
+                           />
+                        </Form.Item>
                         <Form.Item
                            name={'discount'}
                            label={<p className='text-lg font-semibold'>Khuyến mãi</p>}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Form, Space, Input, Radio, Divider, UploadFile, Descriptions, Select, message } from 'antd';
+import { Form, Space, Input, Radio, Divider, UploadFile, Descriptions, message } from 'antd';
 import HeadForm from '../../../components/HeadForm/HeadForm';
 import { InputProduct } from '../../../interfaces/product';
 import UploadButton from '../../../components/UploadButton/UploadButton';
@@ -13,7 +13,7 @@ import { getShipmentData } from '../../../constants/configDescriptionAntd';
 import { IShipmentOfProduct } from '../../../interfaces/shipment';
 import { uploadImages } from '../../../api/upload';
 import Loading from '../../../components/Loading/Loading';
-import { IImage } from '../../../interfaces/image';
+// import { IImage } from '../../../interfaces/image';
 import { IOrigin } from '../../../interfaces/origin';
 import { getOriginData } from '../../../api/origin';
 
@@ -28,7 +28,7 @@ const UpdateProduct = () => {
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
    const [shipments, setShipments] = useState<IShipmentOfProduct[]>([]);
-   const [currentShipment, setCurrentShipment] = useState<IShipmentOfProduct>();
+   // const [currentShipment, setCurrentShipment] = useState<IShipmentOfProduct>();
    const handleGetFiles = (files: File[], public_id: string | undefined) => {
       if (!public_id) {
          form.setFieldValue('images', files);
@@ -63,12 +63,13 @@ const UpdateProduct = () => {
       setCategoryId(formatedCategories);
       setProductName(data?.body.data.productName as string);
       setDefaultDesc(data?.body.data.desc as string);
-      setCurrentShipment(data?.body.data.shipments[0]);
+      // setCurrentShipment(data?.body.data.shipments[0]);
       setShipments(data ? data.body.data.shipments! : []);
       const newBody = {
          ...data?.body.data,
          _id: undefined,
          sold: undefined,
+         originId: data?.body.data.originId?._id,
          comments: undefined,
          createdAt: undefined,
          updatedAt: undefined,
@@ -83,17 +84,17 @@ const UpdateProduct = () => {
       });
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categories, data, form]);
-   const displayShipment = () => {
-      if (data?.body.data.shipments.length === 0 || !currentShipment) {
-         return <h2>Chưa có lô hàng sử dụng</h2>;
-      }
-      const dataShipment = getShipmentData(currentShipment);
-      return <Descriptions title='Thông tin lô hàng' items={dataShipment} bordered />;
+   const displayShipment = (currentShipment: IShipmentOfProduct, index: number) => {
+      // if (data?.body.data.shipments.length === 0 || !currentShipment) {
+      //    return <h2>Chưa có lô hàng sử dụng</h2>;
+      // }
+      const dataShipment = getShipmentData(currentShipment, index);
+      return <Descriptions title={'Thông tin lô hàng ' + (index+ 1) }  items={dataShipment} bordered key={index} />;
    };
-   const handleChangeShipment = (value: { value: string; label: string }) => {
-      const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
-      setCurrentShipment(selectedShipment);
-   };
+   // const handleChangeShipment = (value: { value: string; label: string }) => {
+   //    const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
+   //    setCurrentShipment(selectedShipment);
+   // };
    const handleSubmit = async () => {
       try {
          const filesToUpload: File[] = files.filter((file) => file !== undefined);
@@ -102,7 +103,7 @@ const UpdateProduct = () => {
                data: { body }
             } = await uploadImages(filesToUpload);
             const newImages = defaultImages.map((image) => ({ url: image.url, public_id: image.uid }));
-            form.setFieldValue('images', [...(body.data as IImage[]), ...newImages]);
+            form.setFieldValue('images', [...(body.data), ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
          newFormData.shipments = undefined;
@@ -181,6 +182,21 @@ const UpdateProduct = () => {
                   <BlockForm title='Chính sách giá'>
                      <Space direction='vertical' className='w-full'>
                         <Form.Item
+                           name={'price'}
+                           label={<p className='text-lg font-semibold'>Giá bán </p>}
+                           rules={[{ required: true, message: 'Hãy nhập giá bán sản phẩm !' }]}
+                           hasFeedback
+                        >
+                           <Input
+                              type='number'
+                              placeholder='Thêm giá sản phẩm'
+                              className='w-1/2 p-2'
+                              max={100000}
+                              min={0}
+
+                           />
+                        </Form.Item>
+                        <Form.Item
                            name={'discount'}
                            label={<p className='text-lg font-semibold'>Khuyến mãi</p>}
                            hasFeedback
@@ -242,24 +258,8 @@ const UpdateProduct = () => {
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Lô hàng' className='min-w-[500px]'>
-                     <div>
-                        <Select
-                           labelInValue
-                           value={{
-                              value: currentShipment?.idShipment as string,
-                              label: currentShipment?.date
-                                 ? 'Lô hàng ngày: ' + currentShipment?.date
-                                 : 'Chưa có lô hàng '
-                           }}
-                           style={{ width: '100%', marginBottom: '30px' }}
-                           onChange={handleChangeShipment}
-                           options={shipments.map((shipment) => ({
-                              value: shipment.idShipment,
-                              label: 'Lô hàng ngày: ' + shipment.date
-                           }))}
-                           disabled={currentShipment?.date === undefined}
-                        />
-                        {displayShipment()}
+                     <div className={shipments.length > 0 ? 'grid grid-cols-2 gap-5' : " "}>
+                        {shipments.length > 0 ? shipments.map((shipment, index: number) => displayShipment(shipment, index)): <h1 className='text-center py-5 '> Chưa có lô hàng </h1>}
                      </div>
                   </BlockForm>
                </div>
