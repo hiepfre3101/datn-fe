@@ -8,6 +8,7 @@ export interface IShipmentOfProduct {
    origin: string;
    isDisable: boolean;
    price: number;
+   willExpire: 0 | 1 | 2;
 }
 
 export type ProductInShipmentExpand = {

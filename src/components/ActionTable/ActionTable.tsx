@@ -1,18 +1,34 @@
 import { useState } from 'react';
-import { Popconfirm, Tooltip } from 'antd';
+import { Modal, Popconfirm, Tooltip, notification } from 'antd';
 import { Link } from 'react-router-dom';
 import PencilIcon from '../Icons/PencilIcon';
 import EraserIcon from '../Icons/EraserIcon';
 import { MdOutlineDiscount } from 'react-icons/md';
+import FormCreateSaleProduct from '../../pages/AdminPages/components/FormCreateSaleProduct';
+import { useCreateSaleProductMutation } from '../../services/product.service';
+import { InputSaleProduct } from '../../interfaces/product';
+import Loading from '../Loading/Loading';
 type Props = {
    idProduct: string;
    linkToUpdate: string;
    getResultConfirm: (result: boolean, idProduct: string) => void;
    isSale: boolean;
+   hasSale: boolean;
 };
 
-const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale }: Props) => {
+const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale, hasSale }: Props) => {
    const [open, setOpen] = useState(false);
+   const [openModal, setOpenModal] = useState(false);
+   const [handleCreateSaleProduct, { isLoading: loadingForm }] = useCreateSaleProductMutation();
+   const handleSubmit = async (value: InputSaleProduct) => {
+      try {
+         await handleCreateSaleProduct(value);
+      } catch (error) {
+         notification.error({ message: 'Lỗi hệ thống!' });
+         console.log(error);
+      }
+   };
+   if (loadingForm) return <Loading sreenSize='md' />;
    return (
       <div className='flex justify-start items-center gap-3'>
          <Tooltip title='Sửa sản phẩm' placement='bottom'>
@@ -41,12 +57,26 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale }: Prop
                </button>
             </Popconfirm>
          </Tooltip>
-         {isSale && (
-            <Tooltip title='Thanh lý sản phẩm'>
-               <button className='p-2 rounded-full bg-white w-10 h-10 shadow-md hover:w-11 hover:h-11 duration-100 flex justify-center items-center'>
-                  <MdOutlineDiscount className='text-greenPrimary ' />
-               </button>
-            </Tooltip>
+         {!hasSale && isSale && (
+            <>
+               <Tooltip title='Thanh lý sản phẩm'>
+                  <button
+                     onClick={() => setOpenModal(true)}
+                     className='p-2 rounded-full bg-white w-10 h-10 shadow-md hover:w-11 hover:h-11 duration-100 flex justify-center items-center'
+                  >
+                     <MdOutlineDiscount className='text-greenPrimary ' />
+                  </button>
+               </Tooltip>
+               <Modal
+                  title='Tạo sản phẩm thanh lý'
+                  open={openModal}
+                  width={1000}
+                  onCancel={() => setOpenModal(false)}
+                  footer={[]}
+               >
+                  <FormCreateSaleProduct productId={idProduct} onSubmitForm={(value) => handleSubmit(value)} />
+               </Modal>
+            </>
          )}
       </div>
    );

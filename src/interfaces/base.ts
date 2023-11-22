@@ -41,4 +41,6 @@ export interface IQueryParam {
    subCate: string;
    day: string;
    statusOrder: string;
+   productId: string;
+   shipmentId: string;
 }
