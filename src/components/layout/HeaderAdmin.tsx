@@ -149,14 +149,14 @@ const HeaderAdmin = () => {
                               </p>
                               <span className='text-gray-400'>{formatStringToDate(noti.createdAt)}</span>
                            </Link>
-                           <p className='text-right mt-2 absolute bottom-0 right-0'>
+                           <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
                               <button
                                  onClick={async () => {
                                     await deleteNotification(noti._id);
                                  }}
                                  className='text-black-300 hover:underline'
                               >
-                                 delete
+                                 Xóa
                               </button>
                            </p>
                         </div>

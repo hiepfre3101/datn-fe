@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button, Divider, Select, Space, Table, Tag, message, notification } from 'antd';
+import { Button, Divider, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
 import { useEffect, useState, useCallback } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
@@ -7,7 +7,8 @@ import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
-import { formatStringToDate, uppercaseFirstLetter } from '../../../helper';
+import { uppercaseFirstLetter } from '../../../helper';
+import { formatStringToDate } from '../../../helper';
 import {
    FAIL_ORDER,
    ORDER_STATUS_FULL,
@@ -15,6 +16,7 @@ import {
    SHIPPING_ORDER,
    SUCCESS_ORDER
 } from '../../../constants/orderStatus';
+import { CanceledOrder } from '../../../api/order';
 
 const { Column } = Table;
 
@@ -25,6 +27,11 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const canceledOrder = (id: any) => {
+      CanceledOrder(id);
+   };
    // const orderDatas = orders && orderData(orders)
    useEffect(() => {
       if (!auth.accessToken) return;
@@ -123,9 +130,19 @@ const OrderPage = () => {
                         key='action'
                         render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
-                              <Link to={''}>
-                                 <Button className='bg-amber-500'>Mua lại</Button>
-                              </Link>
+                              {record.status == 'chờ xác nhận' && (
+                                 <Popconfirm
+                                    className={``}
+                                    description='Bạn chắc chắn muốn huỷ đơn hàng chứ?'
+                                    okText='Đồng ý'
+                                    cancelText='Hủy bỏ'
+                                    title='Bạn có muốn xóa?'
+                                    onConfirm={() => canceledOrder(record?._id)}
+                                 >
+                                    <Button className='bg-red-500'>Huỷ đơn hàng</Button>
+                                 </Popconfirm>
+                              )}
+
                               <Link to={'/my-order/' + record?._id}>
                                  <Button className='bg-greenPrimary'>Chi tiết</Button>
                               </Link>
