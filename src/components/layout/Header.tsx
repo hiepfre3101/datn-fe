@@ -10,22 +10,31 @@ import { MdOutlineLockReset } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
-import { Popover, Tooltip } from 'antd';
+import { Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../constants/imageUrl';
 import { useEffect, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../services/cate.service';
+import { clientSocket } from '../../config/socket';
+import {
+   useDeleteNotificationMutation,
+   useGetClientNotificationQuery,
+   useUpdateNotificationMutation
+} from '../../services/notification';
+import { INotification } from '../../interfaces/notification';
+import { formatStringToDate } from '../../helper';
 import { useGetCartQuery } from '../../services/cart.service';
+
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch,setShowFetch] = useState(false)  
-   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
-   useEffect(()=>{
-      if(auth.user._id){
-         setShowFetch(true)
+   const [showfetch, setShowFetch] = useState(false);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   useEffect(() => {
+      if (auth.user._id) {
+         setShowFetch(true);
       }
-   },[auth.user._id])
+   }, [auth.user._id]);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
    const navigate = useNavigate();
@@ -35,10 +44,13 @@ const Header = () => {
       clearToken();
       navigate('/');
    };
-   const {data} = useGetAllCateQuery()
-   const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length)
-   
-   const totalProductInCart = auth.user._id?cartdb?.body.data.products.length:localCartLength
+   const { data: clientNotification, refetch } = useGetClientNotificationQuery(auth?.user?._id);
+   const [updateNotification] = useUpdateNotificationMutation();
+   const [deleteNotification] = useDeleteNotificationMutation();
+   const { data } = useGetAllCateQuery();
+   const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
+
+   const totalProductInCart = auth.user._id ? cartdb?.body.data.products.length : localCartLength;
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
       if (document.documentElement.scrollTop > 400) {
@@ -57,7 +69,27 @@ const Header = () => {
       window.addEventListener('scroll', () => handleScroll());
       return window.removeEventListener('scroll', () => handleScroll());
    });
+   useEffect(() => {
+      clientSocket.open();
+      const handlePurchaseNotification = (data: any) => {
+         refetch();
+         notification.info({
+            message: 'Bạn có thông báo mới',
+            description: data.data.message
+         });
+      };
+      if (auth?.user?._id) {
+         clientSocket.emit('joinClientRoom', JSON.stringify(auth?.user?._id));
+         clientSocket.on('purchaseNotification', handlePurchaseNotification);
+         clientSocket.on('statusNotification', handlePurchaseNotification);
+      }
 
+      return () => {
+         clientSocket.off('purchaseNotification', handlePurchaseNotification);
+         clientSocket.off('statusNotification', handlePurchaseNotification);
+         clientSocket.disconnect();
+      };
+   }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -118,8 +150,6 @@ const Header = () => {
       oldScrollY = window.scrollY;
    };
 
-   
-   
    return (
       <div className='main-header'>
          <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
@@ -174,18 +204,20 @@ const Header = () => {
                               </span>
                            </div>
                            <ul className='sub-menu xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 xl:group-hover/categories-menu:translate-y-[0%] xl:z-[-1] xl:group-hover/categories-menu:z-[3] xl:group-hover/categories-menu:visible xl:group-hover/categories-menu:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
-                             {data?.body.data.map(item=>{
-                              return<>
-                               <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
-                                 <Link
-                                    to={"/collections?cate_id="+item._id}
-                                    className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
-                                 >
-                                    {item.cateName}
-                                 </Link>
-                              </li>
-                              </>
-                             })}
+                              {data?.body.data.map((item) => {
+                                 return (
+                                    <>
+                                       <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
+                                          <Link
+                                             to={'/collections?cate_id=' + item._id}
+                                             className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
+                                          >
+                                             {item.cateName}
+                                          </Link>
+                                       </li>
+                                    </>
+                                 );
+                              })}
                            </ul>
                         </li>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
@@ -223,8 +255,8 @@ const Header = () => {
                               </Link>
                            </li>
                         )}
-                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
-                           {!auth?.accessToken ? (
+                        {!auth?.accessToken ? (
+                           <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
                               <Popover
                                  placement='bottom'
                                  content={
@@ -247,8 +279,10 @@ const Header = () => {
                                     <AiOutlineUser></AiOutlineUser>
                                  </span>
                               </Popover>
-                           ) : (
-                              <>
+                           </li>
+                        ) : (
+                           <>
+                              <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
                                  <Popover
                                     placement='bottom'
                                     content={
@@ -281,17 +315,77 @@ const Header = () => {
                                        className='w-7  aspect-square m-0 rounded-full cursor-pointer'
                                     />
                                  </Popover>
-                              </>
-                           )}
-                        </li>
+                              </li>
+                              <Popover
+                                 placement='bottom'
+                                 content={
+                                    <div className='max-h-[450px] overflow-scroll pr-3'>
+                                       {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
+                                          <div
+                                             key={index}
+                                             className='relative border-b-[1px] border-gray-400  p-2 hover:bg-gray-200 '
+                                          >
+                                             <Link
+                                                onClick={async () => {
+                                                   await updateNotification({ id: noti._id, isRead: true });
+                                                }}
+                                                to={noti.link}
+                                                className='w-[100%] pb-4 block'
+                                             >
+                                                {!noti.isRead && (
+                                                   <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
+                                                      !
+                                                   </span>
+                                                )}
+                                                <h1 className='font-bold break-words w-[270px]'>{noti.title}</h1>
+                                                <p
+                                                   className='text-gray-400 '
+                                                   style={{
+                                                      width: '280px',
+                                                      WebkitLineClamp: '1',
+                                                      wordBreak: 'break-word',
+                                                      overflowWrap: 'break-word',
+                                                      textOverflow: 'ellipsis',
+                                                      overflow: 'hidden',
+                                                      display: '-webkit-box',
+                                                      WebkitBoxOrient: 'vertical'
+                                                   }}
+                                                >
+                                                   {noti.message}
+                                                </p>
+                                                <span className='text-gray-400'>
+                                                   {formatStringToDate(noti.createdAt)}
+                                                </span>
+                                             </Link>
+                                             <p className='text-right mt-2 absolute bottom-0 right-0'>
+                                                <button
+                                                   onClick={async () => {
+                                                      await deleteNotification(noti._id);
+                                                   }}
+                                                   className='text-black-300 hover:underline'
+                                                >
+                                                   delete
+                                                </button>
+                                             </p>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 }
+                                 trigger='click'
+                              >
+                                 <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
+                                    <BsBell></BsBell>
+                                    <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
+                                       {
+                                          clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
+                                             .length
+                                       }
+                                    </span>
+                                 </li>
+                              </Popover>
+                           </>
+                        )}
 
-                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
-                           <BsBell></BsBell>
-
-                           <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                              10
-                           </span>
-                        </li>
                         <li
                            onClick={showMiniCart}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
