@@ -51,7 +51,6 @@ const ProductAdmin = () => {
    }, [data]);
 
    useEffect(() => {
-      adminSocket.open();
       adminSocket.on('expireProduct', (data) => {
          if (data.eventId !== lastEventId.current) {
             setExpiredProducts((prev: IProduct[]) => [...prev, data.response]);
@@ -60,9 +59,6 @@ const ProductAdmin = () => {
             console.log('not run');
          }
       });
-      return () => {
-         adminSocket.disconnect();
-      };
    }, [data]);
 
    const checkExpireProduct = useMemo(

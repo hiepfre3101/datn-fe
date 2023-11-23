@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchOutlined } from '@ant-design/icons';
 import { AiOutlineUser, AiOutlineMenu, AiOutlineUserAdd } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
@@ -10,13 +11,22 @@ import { MdOutlineLockReset } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
-import { Popover, Tooltip } from 'antd';
+import { Badge, Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../constants/imageUrl';
 import { useEffect, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../services/cate.service';
+import { clientSocket } from '../../config/socket';
+import {
+   useDeleteNotificationMutation,
+   useGetClientNotificationQuery,
+   useUpdateNotificationMutation
+} from '../../services/notification';
+import { INotification } from '../../interfaces/notification';
+import { formatStringToDate } from '../../helper';
 import { useGetCartQuery } from '../../services/cart.service';
+
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
@@ -35,6 +45,9 @@ const Header = () => {
       clearToken();
       navigate('/');
    };
+   const { data: clientNotification, refetch } = useGetClientNotificationQuery(auth?.user?._id);
+   const [updateNotification] = useUpdateNotificationMutation();
+   const [deleteNotification] = useDeleteNotificationMutation();
    const { data } = useGetAllCateQuery();
    const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
 
@@ -57,7 +70,27 @@ const Header = () => {
       window.addEventListener('scroll', () => handleScroll());
       return window.removeEventListener('scroll', () => handleScroll());
    });
+   useEffect(() => {
+      clientSocket.open();
+      const handlePurchaseNotification = (data: any) => {
+         refetch();
+         notification.info({
+            message: 'Bạn có thông báo mới',
+            description: data.data.message
+         });
+      };
+      if (auth?.user?._id) {
+         clientSocket.emit('joinClientRoom', JSON.stringify(auth?.user?._id));
+         clientSocket.on('purchaseNotification', handlePurchaseNotification);
+         clientSocket.on('statusNotification', handlePurchaseNotification);
+      }
 
+      return () => {
+         clientSocket.off('purchaseNotification', handlePurchaseNotification);
+         clientSocket.off('statusNotification', handlePurchaseNotification);
+         clientSocket.disconnect();
+      };
+   }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -206,7 +239,6 @@ const Header = () => {
                         >
                            <AiOutlineMenu></AiOutlineMenu>
                         </li>
-
                         <li
                            onClick={showModalSearch}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
@@ -223,8 +255,8 @@ const Header = () => {
                               </Link>
                            </li>
                         )}
-                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
-                           {!auth?.accessToken ? (
+                        {!auth?.accessToken ? (
+                           <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
                               <Popover
                                  placement='bottom'
                                  content={
@@ -247,8 +279,10 @@ const Header = () => {
                                     <AiOutlineUser></AiOutlineUser>
                                  </span>
                               </Popover>
-                           ) : (
-                              <>
+                           </li>
+                        ) : (
+                           <>
+                              <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'>
                                  <Popover
                                     placement='bottom'
                                     content={
@@ -281,27 +315,90 @@ const Header = () => {
                                        className='w-7  aspect-square m-0 rounded-full cursor-pointer'
                                     />
                                  </Popover>
-                              </>
-                           )}
-                        </li>
-
-                        {auth.accessToken && (
-                           <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
-                              <BsBell></BsBell>
-
-                              <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'></span>
-                           </li>
+                              </li>
+                              <Popover
+                                 placement='bottom'
+                                 content={
+                                    <div className='max-h-[450px] overflow-scroll '>
+                                       {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
+                                          <div
+                                             key={index}
+                                             className='relative border-b-[1px] border-gray-400  p-2 hover:bg-gray-200 '
+                                          >
+                                             <Link
+                                                onClick={async () => {
+                                                   await updateNotification({ id: noti._id, isRead: true });
+                                                }}
+                                                to={noti.link}
+                                                className='w-[100%] block'
+                                             >
+                                                {!noti.isRead && (
+                                                   <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
+                                                      !
+                                                   </span>
+                                                )}
+                                                <h1 className='font-bold break-words w-[270px]'>{noti.title}</h1>
+                                                <p
+                                                   className='text-gray-400 '
+                                                   style={{
+                                                      width: '280px',
+                                                      WebkitLineClamp: '1',
+                                                      wordBreak: 'break-word',
+                                                      overflowWrap: 'break-word',
+                                                      textOverflow: 'ellipsis',
+                                                      overflow: 'hidden',
+                                                      display: '-webkit-box',
+                                                      WebkitBoxOrient: 'vertical'
+                                                   }}
+                                                >
+                                                   {noti.message}
+                                                </p>
+                                                <span className='text-gray-400'>
+                                                   {formatStringToDate(noti.createdAt)}
+                                                </span>
+                                             </Link>
+                                             <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
+                                                <button
+                                                   onClick={async () => {
+                                                      await deleteNotification(noti._id);
+                                                   }}
+                                                   className='text-black-300 hover:underline'
+                                                >
+                                                   Xóa
+                                                </button>
+                                             </p>
+                                          </div>
+                                       ))}
+                                    </div>
+                                 }
+                                 trigger='click'
+                              >
+                                 {auth.accessToken && (
+                                    <Badge
+                                       color='red'
+                                       count={
+                                          clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
+                                             .length
+                                       }
+                                       showZero={false}
+                                    >
+                                       <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
+                                          <BsBell></BsBell>
+                                       </li>
+                                    </Badge>
+                                 )}
+                              </Popover>
+                           </>
                         )}
-                        <li
-                           onClick={showMiniCart}
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
-                        >
-                           <HiOutlineShoppingBag></HiOutlineShoppingBag>
-
-                           <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                              {totalProductInCart}
-                           </span>
-                        </li>
+                        <Badge count={totalProductInCart} showZero={false}>
+                           <li
+                              onClick={showMiniCart}
+                              className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
+                           >
+                              {' '}
+                              <HiOutlineShoppingBag></HiOutlineShoppingBag>
+                           </li>
+                        </Badge>{' '}
                      </ul>
                   </div>
                </div>

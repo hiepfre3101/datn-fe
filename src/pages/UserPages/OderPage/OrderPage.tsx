@@ -7,8 +7,14 @@ import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
-import { formatStringToDate } from '../../../helper';
-import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
+import { formatStringToDate, uppercaseFirstLetter } from '../../../helper';
+import {
+   FAIL_ORDER,
+   ORDER_STATUS_FULL,
+   PENDING_ORDER,
+   SHIPPING_ORDER,
+   SUCCESS_ORDER
+} from '../../../constants/orderStatus';
 
 const { Column } = Table;
 
@@ -97,16 +103,19 @@ const OrderPage = () => {
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => {
                            let color = 'white';
-                           if (record.status == 'chờ xác nhận') {
+                           if (record.status == PENDING_ORDER.toLowerCase()) {
                               color = 'yellow';
                            }
-                           if (record.status == 'đang giao hàng') {
+                           if (record.status == SHIPPING_ORDER.toLowerCase()) {
+                              color = 'orange';
+                           }
+                           if (record.status == SUCCESS_ORDER.toLowerCase()) {
                               color = 'green';
                            }
-                           if (record.status == 'giao hàng thành công') {
+                           if (record.status == FAIL_ORDER.toLowerCase()) {
                               color = 'red';
                            }
-                           return <Tag color={color}>{record.status}</Tag>;
+                           return <Tag color={color}>{uppercaseFirstLetter(record.status)}</Tag>;
                         }}
                      />
                      <Column
