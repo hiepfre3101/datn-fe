@@ -19,13 +19,13 @@ import { useGetAllCateQuery } from '../../services/cate.service';
 import { useGetCartQuery } from '../../services/cart.service';
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch,setShowFetch] = useState(false)  
-   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
-   useEffect(()=>{
-      if(auth.user._id){
-         setShowFetch(true)
+   const [showfetch, setShowFetch] = useState(false);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   useEffect(() => {
+      if (auth.user._id) {
+         setShowFetch(true);
       }
-   },[auth.user._id])
+   }, [auth.user._id]);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
    const navigate = useNavigate();
@@ -35,10 +35,10 @@ const Header = () => {
       clearToken();
       navigate('/');
    };
-   const {data} = useGetAllCateQuery()
-   const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length)
-   
-   const totalProductInCart = auth.user._id?cartdb?.body.data.products.length:localCartLength
+   const { data } = useGetAllCateQuery();
+   const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
+
+   const totalProductInCart = auth.user._id ? cartdb?.body.data.products.length : localCartLength;
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
       if (document.documentElement.scrollTop > 400) {
@@ -118,8 +118,6 @@ const Header = () => {
       oldScrollY = window.scrollY;
    };
 
-   
-   
    return (
       <div className='main-header'>
          <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
@@ -174,18 +172,20 @@ const Header = () => {
                               </span>
                            </div>
                            <ul className='sub-menu xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 xl:group-hover/categories-menu:translate-y-[0%] xl:z-[-1] xl:group-hover/categories-menu:z-[3] xl:group-hover/categories-menu:visible xl:group-hover/categories-menu:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
-                             {data?.body.data.map(item=>{
-                              return<>
-                               <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
-                                 <Link
-                                    to={"/collections?cate_id="+item._id}
-                                    className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
-                                 >
-                                    {item.cateName}
-                                 </Link>
-                              </li>
-                              </>
-                             })}
+                              {data?.body.data.map((item) => {
+                                 return (
+                                    <>
+                                       <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
+                                          <Link
+                                             to={'/collections?cate_id=' + item._id}
+                                             className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
+                                          >
+                                             {item.cateName}
+                                          </Link>
+                                       </li>
+                                    </>
+                                 );
+                              })}
                            </ul>
                         </li>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
@@ -285,13 +285,13 @@ const Header = () => {
                            )}
                         </li>
 
-                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
-                           <BsBell></BsBell>
+                        {auth.accessToken && (
+                           <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
+                              <BsBell></BsBell>
 
-                           <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                              10
-                           </span>
-                        </li>
+                              <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'></span>
+                           </li>
+                        )}
                         <li
                            onClick={showMiniCart}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
