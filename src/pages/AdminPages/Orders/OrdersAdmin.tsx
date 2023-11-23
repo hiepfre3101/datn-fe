@@ -74,13 +74,6 @@ const OrdersAdmin = () => {
                      <Column
                         align='center'
                         width={250}
-                        title='Khách hàng'
-                        dataIndex='customerName'
-                        key='customerName'
-                     />
-                     <Column
-                        align='center'
-                        width={250}
                         title='Số điện thoại'
                         dataIndex='phoneNumber'
                         key='phoneNumber'

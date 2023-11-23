@@ -8,7 +8,7 @@ import { FaArrowUp, FaPlus, FaWindowMinimize, FaInstagram } from 'react-icons/fa
 import { FiHeadphones, FiLogOut, FiLogIn } from 'react-icons/fi';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartSlice, removeFromCart } from '../../slices/cartSlice';
+import { ICartItems, ICartSlice, removeFromCart } from '../../slices/cartSlice';
 import { Link } from 'react-router-dom';
 
 import { PiUserListBold } from 'react-icons/pi';
@@ -16,10 +16,26 @@ import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { logoUrl } from '../../constants/imageUrl';
 import { useGetAllCateQuery } from '../../services/cate.service';
+import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
+import { IAuth } from '../../slices/authSlice';
+import { ICartDataBase } from '../../interfaces/cart';
+import { message } from 'antd';
+import { useState,useEffect } from 'react';
 
 const Footer = () => {
-   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
-   const cart = useSelector((state: { cart: ICartSlice }) => state?.cart);
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [showfetch,setShowFetch] = useState(false)  
+   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
+   useEffect(()=>{
+      if(auth.user._id){
+         setShowFetch(true)
+      }
+   },[auth.user._id])
+   const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
+   
+   const [deleteProductInCartDB]= useDeleteProductInCartMutation()
+
    const dispatch = useDispatch();
    const {data} = useGetAllCateQuery()
    const closeModalSearch = () => {
@@ -83,7 +99,16 @@ const Footer = () => {
       const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
       user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
    };
-
+   const handleRemoveProductInCart =  (item:ICartDataBase|ICartItems) => {
+      if(auth.user._id){
+       deleteProductInCartDB(item?.productId?._id).then(res=>{
+         res
+         message.success("Xoá sản phẩm khỏi giỏ hàng thành công")
+       })
+      }else{
+         dispatch(removeFromCart({ id: item.productId._id }))
+      }
+   }
    return (
       <>
          <footer className='bg-[#f8f8f8] '>
@@ -301,7 +326,7 @@ const Footer = () => {
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
 
                      <p className='custom-badge w-[16px] h-[16px] leading-[16px] rounded-[50%] text-[9px]  right-[-6px] top-[-1px] bg-[#d2401e] absolute text-white'>
-                        {totalProductInCart}
+                        {cart?.length}
                      </p>
                   </div>
                   <p className=' text-[10px] mt-[2px] sm:text-[12px]'>Giỏ hàng</p>
@@ -323,7 +348,7 @@ const Footer = () => {
             </div>
          </section>
          <section className='section-mini-cart '>
-            {cart?.items?.length === 0 ? (
+            {cart?.length === 0 ? (
                <div className='cart-emty'>
                   <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                      <div
@@ -333,11 +358,10 @@ const Footer = () => {
                   </div>
                   <div className='wrap-mini-cart transition-all duration-300 translate-x-[100%] w-[320px] flex h-full fixed  top-0 right-0 flex-col bg-white text-[#6f6f6f]  z-[8]'>
                      <div className='mini-cart-header flex border-b-[#e2e2e2] border-[1px]    '>
-                        {' '}
                         <p className='cart-header-text w-full gap-[10px] py-[10px] px-[15px] flex items-center  text-[14px]'>
                            <span className='cart-count px-[8px] text-[14px] py-[4px] text-white bg-[#d2401e]'>
-                              {totalProductInCart}
-                           </span>{' '}
+                              {cart?.length}
+                           </span>
                            sản phẩm trong giỏ hàng
                         </p>
                         <button
@@ -387,8 +411,8 @@ const Footer = () => {
                      <div className='mini-cart-header flex border-b-[#e2e2e2] border-[1px]    '>
                         <p className='cart-header-text w-full gap-[10px] py-[10px] px-[15px] flex items-center  text-[14px]'>
                            <span className='cart-count px-[8px] text-[14px] py-[4px] text-white bg-[#d2401e]'>
-                              {totalProductInCart}
-                           </span>{' '}
+                              {cart?.length}
+                           </span>
                            sản phẩm trong giỏ hàng
                         </p>
                         <button
@@ -401,7 +425,7 @@ const Footer = () => {
                      </div>
                      <div className='mini-cart-content overflow-auto m-h-[100%-269px]'>
                         <ul className='cart-item relative'>
-                           {cart?.items?.map((item: any, index: number) => (
+                           {cart?.map((item: any, index: number) => (
                               <li
                                  key={index}
                                  className='cart-product p-[15px] flex border-[#e2e2e2] border-t-[1px] relative first:border-none '
@@ -410,7 +434,7 @@ const Footer = () => {
                                     <a href=''>
                                        <img
                                           className='m-w-full h-[69px]  border-[#e2e2e2] border-[1px]'
-                                          src={item.images}
+                                          src={item.productId?.images[0]?.url}
                                           alt=''
                                        />
                                     </a>
@@ -420,17 +444,17 @@ const Footer = () => {
                                        href=''
                                        className='product-name font-bold text-[16px] text-[#6f6f6f] overflow-ellipsis whitespace-nowrap'
                                     >
-                                       {item.name}{' '}
+                                       {item.productId?.productName}
                                     </a>
                                     <div className='product-info mt-[9px] flex'>
-                                       <span className='product-qt text-[16px]'>{item.weight}kg ×</span>
+                                       <span className='product-qt text-[16px]'>{item?.weight}kg ×</span>
                                        <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
-                                          {item?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                          {item?.productId?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
                                        <button
-                                          onClick={() => dispatch(removeFromCart({ id: item._id }))}
+                                           onClick={() => handleRemoveProductInCart(item)}
                                           type='button'
                                           className='absolute right-[15px] bottom-[15px] text-[20px] opacity-[0.6] text-[#dc3545] hover:opacity-100'
                                        >
@@ -446,7 +470,7 @@ const Footer = () => {
                         <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                            <span className='subtotal-title text-[16px] '>Subtotal:</span>
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                              {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                              {/* {cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} */}
                            </span>
                         </div>
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>

@@ -3,7 +3,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
-import { ConfigProvider, Rate } from 'antd';
+import { ConfigProvider, Rate, message } from 'antd';
 import { AiOutlineHeart, AiOutlineEye } from 'react-icons/ai';
 import { IProduct, IProductExpanded } from '../../../../interfaces/product';
 import { Link } from 'react-router-dom';
@@ -15,6 +15,8 @@ import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import QuickView from '../../../../components/QuickView/QuickView';
 import { RootState } from '../../../../store';
 import { addToWhishList } from '../../../../slices/whishListSlice';
+import { IAuth } from '../../../../slices/authSlice';
+import { useAddCartMutation } from '../../../../services/cart.service';
 interface IRelatedProduct {
    products: IProductExpanded[] | undefined;
 }
@@ -22,6 +24,8 @@ interface IRelatedProduct {
 export default function SlideBestProduct({ products }: IRelatedProduct) {
    const dispatch = useDispatch();
    const productSlice = useSelector((state: RootState) => state.productSlice.products);
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [addCart] = useAddCartMutation();
    const add_to_wishList = (product: any) => {
       dispatch(addToWhishList(product));
    };
@@ -41,19 +45,37 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
       }, 300);
       dispatch(saveProduct(data));
    };
-   const add_to_cart = (data: IProductExpanded) => {
-      const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
-         return accumulator + shipmentWeight.weight;
-      }, 0);
-      const product = {
-         _id: data?._id,
-         name: data?.productName,
-         images: data?.images[0].url,
-         price: data?.shipments[0]?.price,
-         weight: 1,
-         totalWeight: totalWeight
-      };
-      dispatch(addItem(product));
+   const add_to_cart = async (data: IProductExpanded) => {
+      if(auth.user._id){
+         const product = {
+            productId: data?._id,
+            weight:1
+         }
+        await  addCart(product).unwrap()
+        message.success("Thêm sản phẩm vào giỏ hàng thành công")
+      }
+      else{
+         const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
+            return accumulator + shipmentWeight.weight;
+         }, 0);
+         const product = {
+            productId:{
+               _id: data?._id,
+               productName: data?.productName,
+               images: [
+                  {url: data?.images[0].url}
+               ],
+               price: data?.price,
+               originId:{
+                  _id: data?.originId._id,
+                  name: data?.originId.name
+               }
+            },  
+            weight: 1,
+            totalWeight: totalWeight
+         };        
+         dispatch(addItem(product));
+      }     
    };
    return (
       <>
@@ -142,9 +164,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                  </div>
                                  <a href=''>
                                     <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
-                                       <Link to={'/products/' + item._id} onClick={() => window.scrollTo(0, 0)}>
-                                          {item?.productName}
-                                       </Link>
+                                       <Link to={'/products/' + item._id}>{item?.productName}</Link>
                                     </p>
                                  </a>
                                  <div className='rate text-center'>
@@ -159,13 +179,13 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                     </ConfigProvider>
                                  </div>
                                  <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                                    {item?.shipments[0]?.price.toLocaleString('vi-VN', {
+                                    {item?.price.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}
                                     {item.discount > 0 && item.shipments.length > 0 && (
                                        <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                          {((item?.shipments[0]?.price * item.discount) / 100).toLocaleString('vi-VN', {
+                                          {((item?.price * item.discount) / 100).toLocaleString('vi-VN', {
                                              style: 'currency',
                                              currency: 'VND'
                                           })}

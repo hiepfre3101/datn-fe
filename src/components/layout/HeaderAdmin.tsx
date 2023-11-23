@@ -10,7 +10,6 @@ import { useClearTokenMutation } from '../../services/auth.service';
 import { Link, useNavigate } from 'react-router-dom';
 const { Header } = Layout;
 import { deleteTokenAndUser } from '../../slices/authSlice';
-import { setCartName, setItem } from '../../slices/cartSlice';
 import { adminSocket } from '../../config/socket';
 import {
    useDeleteNotificationMutation,
@@ -19,6 +18,7 @@ import {
 } from '../../services/notification';
 import { INotification } from '../../interfaces/notification';
 import { formatStringToDate } from '../../helper';
+import { setItem } from '../../slices/cartSlice';
 const HeaderAdmin = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [triggerDrop, setTriggerDrop] = useState(false);
@@ -30,7 +30,6 @@ const HeaderAdmin = () => {
    const [deleteNotification] = useDeleteNotificationMutation();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
-      dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
       navigate('/');

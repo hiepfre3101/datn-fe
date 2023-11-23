@@ -3,7 +3,7 @@ import { AiOutlineUser, AiOutlineMenu, AiOutlineUserAdd } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartSlice, setCartName, setItem } from '../../slices/cartSlice';
+import { ICartSlice, setItem } from '../../slices/cartSlice';
 import { RiBillLine } from 'react-icons/ri';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
 import { MdOutlineLockReset } from 'react-icons/md';
@@ -12,7 +12,7 @@ import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../constants/imageUrl';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../services/cate.service';
@@ -24,22 +24,33 @@ import {
 } from '../../services/notification';
 import { INotification } from '../../interfaces/notification';
 import { formatStringToDate } from '../../helper';
+import { useGetCartQuery } from '../../services/cart.service';
+
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [showfetch, setShowFetch] = useState(false);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   useEffect(() => {
+      if (auth.user._id) {
+         setShowFetch(true);
+      }
+   }, [auth.user._id]);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
    const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
-      dispatch(setCartName('cart'));
       dispatch(setItem());
       clearToken();
       navigate('/');
    };
-   const { data } = useGetAllCateQuery();
    const { data: clientNotification, refetch } = useGetClientNotificationQuery(auth?.user?._id);
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
+   const { data } = useGetAllCateQuery();
+   const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
+
+   const totalProductInCart = auth.user._id ? cartdb?.body.data.products.length : localCartLength;
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
       if (document.documentElement.scrollTop > 400) {
@@ -138,7 +149,7 @@ const Header = () => {
       }
       oldScrollY = window.scrollY;
    };
-   const totalProductInCart = useSelector((state: { cart: ICartSlice }) => state?.cart?.items.length);
+
    return (
       <div className='main-header'>
          <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>

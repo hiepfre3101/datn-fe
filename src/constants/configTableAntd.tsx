@@ -7,13 +7,14 @@ type DataType = {
    key: string;
    _id?: string;
 };
-type ProductDataType = DataType & {
+export type ProductDataType = DataType & {
    image: string;
    productName: string;
    category: string;
    price: number;
-   stock:number,
-   expDate:string
+   stock: number;
+   expDate: string;
+   isSale: boolean;
 };
 
 type UserDataType = DataType & {
@@ -51,9 +52,10 @@ export const productData = (data: IResponseHasPaginate<IProductExpanded>): Produ
       productName: product.productName,
       category: product.categoryId.cateName,
       image: product.images[0].url,
-      price: product.shipments[0]?.price || 0,
+      price: product.price || 0,
       stock: product.shipments[0]?.weight,
-      expDate: formatStringToDate(product.shipments[0]?.date)
+      expDate: formatStringToDate(product.shipments[0]?.date),
+      isSale: product.isSale
    }));
 };
 
