@@ -103,7 +103,7 @@ const DetailOrder = ({ idOrder }: Props) => {
          {order?.products.map((product) => (
             <Row key={product._id}>
                <Col span={6}>
-                  <span className='font-semibold'>{product.name}</span>
+                  <span className='font-semibold'>{product.productName}</span>
                </Col>
                <Col span={6}>
                   <span className='font-semibold'>{product.price}(vnd)</span>

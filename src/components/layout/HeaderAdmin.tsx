@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
-import { Dropdown, Input, Layout, MenuProps, Popover, notification } from 'antd';
+import { Badge, Dropdown, Input, Layout, MenuProps, Popover, notification } from 'antd';
 import BellIcon from '../Icons/BellIcon';
 import MoonIcon from '../Icons/MoonIcon';
 import { useEffect, useState } from 'react';
@@ -37,6 +38,7 @@ const HeaderAdmin = () => {
    useEffect(() => {
       adminSocket.open();
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handlePurchaseNotification = (data: any) => {
          refetch();
          notification.info({
@@ -147,14 +149,14 @@ const HeaderAdmin = () => {
                               </p>
                               <span className='text-gray-400'>{formatStringToDate(noti.createdAt)}</span>
                            </Link>
-                           <p className='text-right mt-2 absolute bottom-0 right-0'>
+                           <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
                               <button
                                  onClick={async () => {
                                     await deleteNotification(noti._id);
                                  }}
                                  className='text-black-300 hover:underline'
                               >
-                                 delete
+                                 Xóa
                               </button>
                            </p>
                         </div>
@@ -163,12 +165,15 @@ const HeaderAdmin = () => {
                }
                trigger='click'
             >
-               <div className='relative w-[3rem] h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#dfdede] cursor-pointer'>
-                  <BellIcon />
-                  <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                     {adminNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
-                  </span>
-               </div>
+               <Badge
+                  color='red'
+                  count={adminNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
+                  showZero={false}
+               >
+                  <div className='relative w-[3rem] h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#dfdede] cursor-pointer'>
+                     <BellIcon />
+                  </div>
+               </Badge>
             </Popover>
 
             <div className='w-[3rem] h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#2c2c2c] cursor-pointer'>

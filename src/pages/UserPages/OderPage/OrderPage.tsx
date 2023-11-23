@@ -7,9 +7,16 @@ import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
+import { uppercaseFirstLetter } from '../../../helper';
 import { formatStringToDate } from '../../../helper';
-import { FAIL_ORDER, ORDER_STATUS_FULL, PENDING_ORDER, SHIPPING_ORDER, SUCCESS_ORDER } from '../../../constants/orderStatus';
-import { CanceledOrder } from '../../../api/order'
+import {
+   FAIL_ORDER,
+   ORDER_STATUS_FULL,
+   PENDING_ORDER,
+   SHIPPING_ORDER,
+   SUCCESS_ORDER
+} from '../../../constants/orderStatus';
+import { CanceledOrder } from '../../../api/order';
 
 const { Column } = Table;
 
@@ -20,11 +27,11 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   
+
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = (id: any) => {
-      CanceledOrder(id)
-   }
+      CanceledOrder(id);
+   };
    // const orderDatas = orders && orderData(orders)
    useEffect(() => {
       if (!auth.accessToken) return;
@@ -112,10 +119,10 @@ const OrderPage = () => {
                            if (record.status == SUCCESS_ORDER.toLowerCase()) {
                               color = 'green';
                            }
-                           if (record.status == FAIL_ORDER.toLowerCase())  {
+                           if (record.status == FAIL_ORDER.toLowerCase()) {
                               color = 'red';
                            }
-                           return <Tag color={color}>{record.status}</Tag>;
+                           return <Tag color={color}>{uppercaseFirstLetter(record.status)}</Tag>;
                         }}
                      />
                      <Column
@@ -123,9 +130,7 @@ const OrderPage = () => {
                         key='action'
                         render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
-
-                              {
-                                 record.status == 'chờ xác nhận' &&
+                              {record.status == 'chờ xác nhận' && (
                                  <Popconfirm
                                     className={``}
                                     description='Bạn chắc chắn muốn huỷ đơn hàng chứ?'
@@ -136,12 +141,11 @@ const OrderPage = () => {
                                  >
                                     <Button className='bg-red-500'>Huỷ đơn hàng</Button>
                                  </Popconfirm>
-                              }
+                              )}
 
                               <Link to={'/my-order/' + record?._id}>
                                  <Button className='bg-greenPrimary'>Chi tiết</Button>
                               </Link>
-
                            </Space>
                         )}
                      />

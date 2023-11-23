@@ -66,7 +66,7 @@ const ProductAdmin = () => {
          // return true;
          //đợi sắp đến ngày hết hạn hoặc là cái socket lâu quá nên comment lại lúc khác mở
          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-         return !!expiredProducts.find((product: any) => product.productId === idProduct);
+         return !!expiredProducts.find((product: any) => product?.productId === idProduct);
       },
       [expiredProducts]
    );

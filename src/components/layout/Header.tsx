@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SearchOutlined } from '@ant-design/icons';
 import { AiOutlineUser, AiOutlineMenu, AiOutlineUserAdd } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
@@ -10,7 +11,7 @@ import { MdOutlineLockReset } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
-import { Popover, Tooltip, notification } from 'antd';
+import { Badge, Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../constants/imageUrl';
 import { useEffect, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
@@ -238,7 +239,6 @@ const Header = () => {
                         >
                            <AiOutlineMenu></AiOutlineMenu>
                         </li>
-
                         <li
                            onClick={showModalSearch}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
@@ -319,7 +319,7 @@ const Header = () => {
                               <Popover
                                  placement='bottom'
                                  content={
-                                    <div className='max-h-[450px] overflow-scroll pr-3'>
+                                    <div className='max-h-[450px] overflow-scroll '>
                                        {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
                                           <div
                                              key={index}
@@ -330,7 +330,7 @@ const Header = () => {
                                                    await updateNotification({ id: noti._id, isRead: true });
                                                 }}
                                                 to={noti.link}
-                                                className='w-[100%] pb-4 block'
+                                                className='w-[100%] block'
                                              >
                                                 {!noti.isRead && (
                                                    <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
@@ -357,14 +357,14 @@ const Header = () => {
                                                    {formatStringToDate(noti.createdAt)}
                                                 </span>
                                              </Link>
-                                             <p className='text-right mt-2 absolute bottom-0 right-0'>
+                                             <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
                                                 <button
                                                    onClick={async () => {
                                                       await deleteNotification(noti._id);
                                                    }}
                                                    className='text-black-300 hover:underline'
                                                 >
-                                                   delete
+                                                   Xóa
                                                 </button>
                                              </p>
                                           </div>
@@ -373,29 +373,32 @@ const Header = () => {
                                  }
                                  trigger='click'
                               >
-                                 <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
-                                    <BsBell></BsBell>
-                                    <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                                       {
+                                 {auth.accessToken && (
+                                    <Badge
+                                       color='red'
+                                       count={
                                           clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
                                              .length
                                        }
-                                    </span>
-                                 </li>
+                                       showZero={false}
+                                    >
+                                       <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
+                                          <BsBell></BsBell>
+                                       </li>
+                                    </Badge>
+                                 )}
                               </Popover>
                            </>
                         )}
-
-                        <li
-                           onClick={showMiniCart}
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
-                        >
-                           <HiOutlineShoppingBag></HiOutlineShoppingBag>
-
-                           <span className='absolute top-[-10px] right-[-10px] w-[20px] h-[20px] text-center leading-5 rounded-[50%] bg-[#d2401e] text-[14px] text-[white]'>
-                              {totalProductInCart}
-                           </span>
-                        </li>
+                        <Badge count={totalProductInCart} showZero={false}>
+                           <li
+                              onClick={showMiniCart}
+                              className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
+                           >
+                              {' '}
+                              <HiOutlineShoppingBag></HiOutlineShoppingBag>
+                           </li>
+                        </Badge>{' '}
                      </ul>
                   </div>
                </div>

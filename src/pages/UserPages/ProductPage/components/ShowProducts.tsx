@@ -147,7 +147,7 @@ const ShowProducts = ({ data }: IProps) => {
                               </ConfigProvider>
                            </div>
                            <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                              {item?.price.toLocaleString('vi-VN', {
+                              {item?.price?.toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
