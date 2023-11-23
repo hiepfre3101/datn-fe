@@ -6,6 +6,11 @@ import { IOrderFull } from '../interfaces/order';
 export const getDetailOrder = (id: string): Promise<AxiosResponse<IResponse<IOrderFull>>> => {
    return instance.get('orders/' + id);
 };
+
+export const CanceledOrder = (id: string): Promise<AxiosResponse<IResponse<IOrderFull>>> => {
+   return instance.put('orders/' + id);
+};
+
 export const getOrder = (): Promise<AxiosResponse<IResponse<IOrderFull[]>>> => {
    return instance.get('orders');
 };

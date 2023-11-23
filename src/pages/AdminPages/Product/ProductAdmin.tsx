@@ -38,7 +38,7 @@ const ProductAdmin = () => {
    useEffect(() => {
       if (!data) return;
       const expireProductInDB = data.body.data.map((product) => {
-         if (product.shipments[0].willExpire === WILL_EXPIRE) return product;
+         if (product?.shipments[0]?.willExpire === WILL_EXPIRE) return product;
       });
       const newExpireProducts: any[] = [];
       expireProductInDB.forEach((product) => {
