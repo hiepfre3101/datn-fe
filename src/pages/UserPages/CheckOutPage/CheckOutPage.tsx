@@ -114,13 +114,11 @@ const CheckOutPage = () => {
                      if ('data' in res && 'status' in res.data) {
                         message.success('Mua hàng thành công');
                         dispatch(removeAllProductFromCart());
-                        if (auth?.user?._id) {
-                           const value = JSON.stringify({
-                              userId: auth?.user?._id,
-                              orderId: res.data?.body?.data._id
-                           });
-                           clientSocket.emit('purchase', value);
-                        }
+                        const value = JSON.stringify({
+                           userId: auth?.user?._id,
+                           orderId: res.data?.body?.data._id
+                        });
+                        clientSocket.emit('purchase', value);
                         navigate('/ordercomplete');
                      }
                   }

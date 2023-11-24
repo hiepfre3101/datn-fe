@@ -52,7 +52,8 @@ const orderApi = createApi({
                url: `/orders-member-filter`,
                params: params
             };
-         }
+         },
+         providesTags: ['orders']
       }),
       filterAdminOrders: builder.query<IResponseHasPaginate<IOrderFull>, { status?: string; day?: string }>({
          query: (params) => {
@@ -60,7 +61,8 @@ const orderApi = createApi({
                url: `/orders-admin-filter`,
                params: params
             };
-         }
+         },
+         providesTags: ['orders']
       })
    })
 });

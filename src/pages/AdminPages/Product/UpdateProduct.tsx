@@ -85,16 +85,12 @@ const UpdateProduct = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categories, data, form]);
    const displayShipment = (currentShipment: IShipmentOfProduct, index: number) => {
-      // if (data?.body.data.shipments.length === 0 || !currentShipment) {
-      //    return <h2>Chưa có lô hàng sử dụng</h2>;
-      // }
+      if (data?.body.data.shipments.length === 0 || !currentShipment) {
+         return <h2>Chưa có lô hàng sử dụng</h2>;
+      }
       const dataShipment = getShipmentData(currentShipment, index);
       return <Descriptions title={'Thông tin lô hàng ' + (index+ 1) }  items={dataShipment} bordered key={index} />;
    };
-   // const handleChangeShipment = (value: { value: string; label: string }) => {
-   //    const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
-   //    setCurrentShipment(selectedShipment);
-   // };
    const handleSubmit = async () => {
       try {
          const filesToUpload: File[] = files.filter((file) => file !== undefined);
