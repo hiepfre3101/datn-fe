@@ -2,7 +2,6 @@
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Badge, Dropdown, Input, Layout, MenuProps, Popover, notification } from 'antd';
 import BellIcon from '../Icons/BellIcon';
-import MoonIcon from '../Icons/MoonIcon';
 import { useEffect, useState } from 'react';
 import { IAuth } from '../../slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
@@ -81,7 +80,7 @@ const HeaderAdmin = () => {
       <Header
          style={{
             paddingLeft: 10,
-            paddingRight: 10,
+            paddingRight: 30,
             background: 'white',
             display: 'flex',
             justifyContent: 'space-between',
@@ -94,8 +93,8 @@ const HeaderAdmin = () => {
             <SearchOutlined width={'1.5rem'} height={'1.5rem'} color='rgba(0,0,0,0.2)' />
             <Input className='outline-none border-none' placeholder='Tìm kiếm' />
          </div>
-         <div className='max-w-[25%] flex justify-end items-center gap-3'>
-            <div className='flex justify-start items-center gap-2 border-[1px] border-[rgba(0,0,0,0.1)] p-2 rounded-lg overflow-hidden h-[3rem] w-[50%]'>
+         <div className='3xl:max-w-[15%] max-w-[25%] flex justify-end items-center gap-3'>
+            <div className='flex justify-start items-center gap-2 border-[1px] border-[rgba(0,0,0,0.1)] p-2 rounded-lg overflow-hidden h-[3rem] w-[100%]'>
                <img src={auth.user.avatar} alt='avatar' className='rounded-md object-cover w-[20%] aspect-square' />
                <Dropdown
                   menu={{ items }}
@@ -169,16 +168,13 @@ const HeaderAdmin = () => {
                   color='red'
                   count={adminNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
                   showZero={false}
+                  offset={[2, 5]}
                >
                   <div className='relative w-[3rem] h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#dfdede] cursor-pointer'>
                      <BellIcon />
                   </div>
                </Badge>
             </Popover>
-
-            <div className='w-[3rem] h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#2c2c2c] cursor-pointer'>
-               <MoonIcon />
-            </div>
          </div>
       </Header>
    );

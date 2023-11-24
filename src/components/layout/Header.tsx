@@ -30,7 +30,7 @@ import { useGetCartQuery } from '../../services/cart.service';
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
-   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   const { data: cartdb, refetch: refetchCart } = useGetCartQuery(undefined, { skip: !showfetch });
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -73,6 +73,7 @@ const Header = () => {
    useEffect(() => {
       clientSocket.open();
       const handlePurchaseNotification = (data: any) => {
+         refetchCart();
          refetch();
          notification.info({
             message: 'Bạn có thông báo mới',
@@ -90,6 +91,7 @@ const Header = () => {
          clientSocket.off('statusNotification', handlePurchaseNotification);
          clientSocket.disconnect();
       };
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');

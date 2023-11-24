@@ -9,10 +9,17 @@ import { IOrderFull } from '../../../interfaces/order';
 import { formatStringToDate, transformCurrency, uppercaseFirstLetter } from '../../../helper';
 import { ORDER_OF_STATUS, PENDING_ORDER, SHIPPING_ORDER, SUCCESS_ORDER } from '../../../constants/orderStatus';
 import ProductInOrder from './Component/ProductInOrder';
+import { IAuth } from '../../../slices/authSlice';
+import { useSelector } from 'react-redux';
+import { clientSocket } from '../../../config/socket';
+import { useUpdateOrderMutation } from '../../../services/order.service';
 const OrderDetail = () => {
    const { id } = useParams();
    const [order, setOrder] = useState<IOrderFull>();
+   const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
    const [loading, setLoading] = useState<boolean>(false);
+   const [changeStatusOrder, { isLoading }] = useUpdateOrderMutation();
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    useEffect(() => {
       (async () => {
          try {
@@ -29,6 +36,13 @@ const OrderDetail = () => {
          }
       })();
    }, [id]);
+   useEffect(() => {
+      clientSocket.on('statusNotification', (data) => {
+         if (data.status === SUCCESS_ORDER.toLowerCase()) {
+            setIsShowConfirm(true);
+         }
+      });
+   }, [auth]);
    const getStatusOfOrder = () => {
       return ORDER_OF_STATUS.indexOf(
          ORDER_OF_STATUS.find(
@@ -43,11 +57,17 @@ const OrderDetail = () => {
             <BiChevronLeft className='text-[1.5rem]' />
             <span className='text-lg hover:font-semibold duration-200'>Tất cả đơn hàng</span>
          </Link>
-         <div className='bg-[rgba(182,180,180,0.1)] w-full min-h-[300px] rounded-2xl p-10'>
+         <div className='bg-[rgba(182,180,180,0.1)] w-full min-h-[300px] rounded-2xl p-10 relative'>
             <span className='text-xl font-semibold text-black'>
                Cảm ơn quý khách, <span className='text-greenPrimary'>{order?.customerName}!</span>
             </span>
             <p className='mt-2 text-black font-bold text-lg'>Đơn hàng (#) {order?.invoiceId}</p>
+            {isShowConfirm ||
+               (order?.status === SUCCESS_ORDER.toLowerCase() && (
+                  <button onClick={()=>changeStatusOrder()} className='py-2 px-3 absolute right-10 rounded-lg hover:bg-orange-400 duration-300 bg-orange-300 text-[#d2401e] top-10'>
+                     Đã nhận được hàng
+                  </button>
+               ))}
             <Divider />
             <div className='w-full flex justify-start gap-5 flex-wrap'>
                <div className='w-[40%]'>
