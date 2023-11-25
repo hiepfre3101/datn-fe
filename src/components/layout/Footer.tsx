@@ -20,24 +20,24 @@ import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/
 import { IAuth } from '../../slices/authSlice';
 import { ICartDataBase } from '../../interfaces/cart';
 import { message } from 'antd';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch,setShowFetch] = useState(false)  
-   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
-   useEffect(()=>{
-      if(auth.user._id){
-         setShowFetch(true)
+   const [showfetch, setShowFetch] = useState(false);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   useEffect(() => {
+      if (auth.user._id) {
+         setShowFetch(true);
       }
-   },[auth.user._id])
+   }, [auth.user._id]);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
-   
-   const [deleteProductInCartDB]= useDeleteProductInCartMutation()
+
+   const [deleteProductInCartDB] = useDeleteProductInCartMutation();
 
    const dispatch = useDispatch();
-   const {data} = useGetAllCateQuery()
+   const { data } = useGetAllCateQuery();
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -46,7 +46,6 @@ const Footer = () => {
       const section_overlay_search = document.querySelector('.section-overlay-search');
       setTimeout(() => {
          section_search_modal?.classList.toggle('!translate-y-[0%]');
-   
       }, 100);
       setTimeout(() => {
          section_search_modal?.classList.toggle('hidden');
@@ -99,16 +98,16 @@ const Footer = () => {
       const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
       user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
    };
-   const handleRemoveProductInCart =  (item:ICartDataBase|ICartItems) => {
-      if(auth.user._id){
-       deleteProductInCartDB(item?.productId?._id).then(res=>{
-         res
-         message.success("Xoá sản phẩm khỏi giỏ hàng thành công")
-       })
-      }else{
-         dispatch(removeFromCart({ id: item.productId._id }))
+   const handleRemoveProductInCart = (item: ICartDataBase | ICartItems) => {
+      if (auth.user._id) {
+         deleteProductInCartDB(item?.productId?._id).then((res) => {
+            res;
+            message.success('Xoá sản phẩm khỏi giỏ hàng thành công');
+         });
+      } else {
+         dispatch(removeFromCart({ id: item.productId._id }));
       }
-   }
+   };
    return (
       <>
          <footer className='bg-[#f8f8f8] '>
@@ -151,13 +150,15 @@ const Footer = () => {
                      </div>
 
                      <ul className='ft-sublist'>
-                       {data?.body.data.slice(0,5).map((item)=>{
-                        return<>
-                         <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                           <Link to="dfa">{item.cateName}</Link>
-                        </li>
-                        </>
-                       })} 
+                        {data?.body.data.slice(0, 5).map((item) => {
+                           return (
+                              <>
+                                 <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
+                                    <Link to='dfa'>{item.cateName}</Link>
+                                 </li>
+                              </>
+                           );
+                        })}
                      </ul>
                   </li>
                   <li className='footer-if list-link ft-policy ml-[30px] transition-all duration-500  lg:w-[calc(21%-30px)] w-full max-lg:mt-[15px] max-lg:h-[45px]  overflow-hidden max-lg:pb-[10px]'>
@@ -291,7 +292,7 @@ const Footer = () => {
                         <FaXmark></FaXmark>
                      </button>
                   </div>
-                  <form className='form-search relative' action=''>
+                  {/* <form className='form-search relative' action=''>
                      <input
                         className='w-full outline-none border-b-[1px] border-[#e2e2e2] py-[10px] text-[#6f6f6f]'
                         type='text'
@@ -300,7 +301,7 @@ const Footer = () => {
                      <button className='absolute right-0 translate-y-[50%] bottom-[50%]'>
                         <SearchOutlined className='text-[20px] text-[#6f6f6f]'></SearchOutlined>
                      </button>
-                  </form>
+                  </form> */}
                </div>
             </div>
          </section>
@@ -449,12 +450,15 @@ const Footer = () => {
                                     <div className='product-info mt-[9px] flex'>
                                        <span className='product-qt text-[16px]'>{item?.weight}kg ×</span>
                                        <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
-                                          {item?.productId?.price?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                          {item?.productId?.price?.toLocaleString('vi-VN', {
+                                             style: 'currency',
+                                             currency: 'VND'
+                                          })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
                                        <button
-                                           onClick={() => handleRemoveProductInCart(item)}
+                                          onClick={() => handleRemoveProductInCart(item)}
                                           type='button'
                                           className='absolute right-[15px] bottom-[15px] text-[20px] opacity-[0.6] text-[#dc3545] hover:opacity-100'
                                        >
