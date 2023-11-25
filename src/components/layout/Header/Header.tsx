@@ -4,28 +4,29 @@ import { AiOutlineUser, AiOutlineMenu, AiOutlineUserAdd } from 'react-icons/ai';
 import { FaChevronDown, FaXmark } from 'react-icons/fa6';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartSlice, setItem } from '../../slices/cartSlice';
+import { ICartSlice, setItem } from '../../../slices/cartSlice';
 import { RiBillLine } from 'react-icons/ri';
 import { FiLogIn, FiLogOut } from 'react-icons/fi';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { Link, useNavigate } from 'react-router-dom';
-import { useClearTokenMutation } from '../../services/auth.service';
-import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { IAuth, deleteTokenAndUser } from '../../../slices/authSlice';
 import { Badge, Popover, Tooltip, notification } from 'antd';
-import { logoUrl } from '../../constants/imageUrl';
+import { logoUrl } from '../../../constants/imageUrl';
 import { useEffect, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
-import { useGetAllCateQuery } from '../../services/cate.service';
-import { clientSocket } from '../../config/socket';
+import { useGetAllCateQuery } from '../../../services/cate.service';
+import { clientSocket } from '../../../config/socket';
+import SearchFilter from './components/SearchFilter';
 import {
    useDeleteNotificationMutation,
    useGetClientNotificationQuery,
    useUpdateNotificationMutation
-} from '../../services/notification';
-import { INotification } from '../../interfaces/notification';
-import { formatStringToDate } from '../../helper';
-import { useGetCartQuery } from '../../services/cart.service';
+} from '../../../services/notification';
+import { INotification } from '../../../interfaces/notification';
+import { formatStringToDate } from '../../../helper';
+import { useGetCartQuery } from '../../../services/cart.service';
 
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -91,7 +92,7 @@ const Header = () => {
          clientSocket.off('statusNotification', handlePurchaseNotification);
          clientSocket.disconnect();
       };
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
@@ -113,21 +114,21 @@ const Header = () => {
       const cate_menu = document.querySelector('.cate-menu');
       cate_menu?.classList.toggle('max-xl:max-h-[41px]');
    };
-   const showModalSearch = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
-      const section_search_modal = document.querySelector('.section-search-modal');
-      const section_overlay_search = document.querySelector('.section-overlay-search');
-      setTimeout(() => {
-         section_overlay_search?.classList.toggle('hidden');
-      }, 300);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('hidden');
-      }, 500);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('!translate-y-[0%]');
-      }, 600);
-   };
+   // const showModalSearch = () => {
+   //    const bodyElement = document.querySelector('body');
+   //    bodyElement?.classList.toggle('overflow-hidden');
+   //    const section_search_modal = document.querySelector('.section-search-modal');
+   //    const section_overlay_search = document.querySelector('.section-overlay-search');
+   //    setTimeout(() => {
+   //       section_overlay_search?.classList.toggle('hidden');
+   //    }, 300);
+   //    setTimeout(() => {
+   //       section_search_modal?.classList.toggle('hidden');
+   //    }, 500);
+   //    setTimeout(() => {
+   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
+   //    }, 600);
+   // };
    let oldScrollY = window.scrollY;
    const fixedMenu = () => {
       const header = document.querySelector('.header');
@@ -242,10 +243,12 @@ const Header = () => {
                            <AiOutlineMenu></AiOutlineMenu>
                         </li>
                         <li
-                           onClick={showModalSearch}
+                           // onClick={showModalSearch}
                            className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
                         >
-                           <SearchOutlined></SearchOutlined>
+                           <SearchFilter>
+                              <SearchOutlined />
+                           </SearchFilter>
                         </li>
                         {!auth?.accessToken && (
                            <li className='ml-[30px]'>
@@ -332,29 +335,15 @@ const Header = () => {
                                                    await updateNotification({ id: noti._id, isRead: true });
                                                 }}
                                                 to={noti.link}
-                                                className='w-[100%] block'
+                                                className='w-[90%] block'
                                              >
                                                 {!noti.isRead && (
                                                    <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
                                                       !
                                                    </span>
                                                 )}
-                                                <h1 className='font-bold break-words w-[270px]'>{noti.title}</h1>
-                                                <p
-                                                   className='text-gray-400 '
-                                                   style={{
-                                                      width: '280px',
-                                                      WebkitLineClamp: '1',
-                                                      wordBreak: 'break-word',
-                                                      overflowWrap: 'break-word',
-                                                      textOverflow: 'ellipsis',
-                                                      overflow: 'hidden',
-                                                      display: '-webkit-box',
-                                                      WebkitBoxOrient: 'vertical'
-                                                   }}
-                                                >
-                                                   {noti.message}
-                                                </p>
+                                                <h1 className='font-bold break-words'>{noti.title}</h1>
+                                                <p className='text-gray-400 '>{noti.message}</p>
                                                 <span className='text-gray-400'>
                                                    {formatStringToDate(noti.createdAt)}
                                                 </span>
