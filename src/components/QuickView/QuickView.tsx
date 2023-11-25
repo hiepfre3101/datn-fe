@@ -21,6 +21,8 @@ const QuickView = ({ product_info }: QuickViewProp) => {
    const [totalWeight, setTotalWeight] = useState<number>();
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
+
+   
    useEffect(() => {
       setTotalWeight(
          product_info[0]?.shipments?.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {

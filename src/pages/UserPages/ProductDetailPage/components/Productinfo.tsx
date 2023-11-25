@@ -51,6 +51,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
          if(auth.user._id){
             const product = {
                productId: product_info?._id,
+               productName: product_info?.productName,
                weight:inputWeight
             }
            await  addCart(product).unwrap()

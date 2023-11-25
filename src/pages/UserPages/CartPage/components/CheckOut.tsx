@@ -1,28 +1,96 @@
-import { useSelector } from 'react-redux';
-import { ICartSlice } from '../../../../slices/cartSlice';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { ICartSlice, removeFromCart, updateImgProductInCartLocal, updateItem, updateNameProductInCartLocal, updatePriceProductInCartLocal } from '../../../../slices/cartSlice';
 import { IAuth } from '../../../../slices/authSlice';
-import { useGetCartQuery } from '../../../../services/cart.service';
+import { useCheckCartMutation, useGetCartQuery } from '../../../../services/cart.service';
 import { useState,useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Modal, message } from 'antd';
 
 const CheckOut = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch,setShowFetch] = useState(false)  
-   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
+   const { data: cartdb,refetch } = useGetCartQuery(undefined,{skip:showfetch==false});
+   const [checkCartdb] = useCheckCartMutation()
+   const [checkCartLocal] = useCheckCartMutation()
+   const [isModalOpen, setIsModalOpen] = useState(false);
    useEffect(()=>{
       if(auth.user._id){
          setShowFetch(true)
       }
-   },[auth.user._id])
+      else{
+       setShowFetch(false)
+      }
+   },[auth])
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const [total,setTotal]=useState<number>()
+   const [error,setError] = useState<string[]>([])
    useEffect(()=>{
       const temp = auth.user._id?cart?.reduce(
          (accumulator:number, product:any) => accumulator + product.productId.price * product.weight, 0
       ):cart?.totalPrice
       setTotal(temp)  
    },[cartdb,cart])
+   const navigate = useNavigate()
+   const handleOk = () => {
+      setIsModalOpen(false);
+      setError([])
+    };
+    const dispatch = useDispatch()
+   const goCheckOut =  ()=>{
+      console.log(error.length);
+      if(auth.user._id){
+         refetch()
+         }
+         else{
+             const cartLocal={
+                  products: cart["products"].map(product => {
+                    const { totalWeight, productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {}, ...rest } = product;
+                    return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
+                  }),
+                totalPayment:total
+             }
+             checkCartLocal(cartLocal).then((res:any) => {
+             
+               if(res.error){
+                  setIsModalOpen(true)
+                  res.error.data.body?.error.map(item=>{ 
+                     if(item.message=="Product is not exsit!"){
+                        dispatch(removeFromCart({ id: item.productId }))
+                        setError((prevError: string[]) => [...prevError, "- Sản phẩm " + item.productName + " đã bị xoá khỏi hệ thống"]);
+                     }
+                     else if(item.message=="Invalid product origin!"){
+                        setError((prevError: string[]) => [...prevError, "- Xuất sứ của sản phẩm "+ item.productName + " đã được cập nhật"]);
+                     } 
+                     else if(item.message=="Invalid product name!"){
+                        dispatch(updateNameProductInCartLocal({ id: item.productId,name:item.productName }))
+                        setError((prevError: string[]) => [...prevError, "- Tên của sản phẩm "+ item.productName + " đã được cập nhật thành " + item.productName]);
+                     }
+                     else if(item.message=="Invalid price for product!"){
+                        dispatch(updatePriceProductInCartLocal({ id: item.productId,price:item.price }))
+                        setError((prevError: string[]) => [...prevError, "- Giá của sản phẩm "+ item.productName + " không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật"]);
+                     } 
+                     else if(item.message=="Invalid product image!"){
+                        dispatch(updateImgProductInCartLocal({ id: item.productId,img:item?.image[0]?.url }))
+                        setError((prevError: string[]) => [...prevError, "- Ảnh của sản phẩm "+ item.productName + " không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật"]);
+                     }           
+                     else if(item.message=="Insufficient quantity of the product in stock!"){
+                        dispatch(updateItem({ id: item.productId,weight: item.maxWeight}))
+                        setError((prevError: string[]) => [...prevError, "- Số lượng sản phẩm "+ item.productName + " trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về " + item.maxWeight]);
+                     }  
+                     else if(item.message=="The product is currently out of stock!"){
+                        dispatch(removeFromCart({ id: item.productId}))
+                        setError((prevError: string[]) => [...prevError, "- Sản phẩm "+ item.productName + " đã hết hàng và đã được xoá khỏi giỏ hàng"]);
+                     }     
+                  })   
+               }
+               else{
+                  navigate("/checkout")
+               }
+            })
+         }
+   }
+   
    return (
       <div>
          <div className='cart-total'>
@@ -66,16 +134,26 @@ const CheckOut = () => {
                </button>
             </div>
             <div className='btn-checkout'>
-               <Link to='/checkout'>
+               
                   <button
+                  onClick={goCheckOut}
                      type='button'
                      className=' bg-[#51A55C] w-full  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px] transition-color duration-300 hover:bg-black'
                   >
                      Thanh toán
                   </button>
-               </Link>
+          
             </div>
          </div>
+        <div>
+            <Modal title="Cập nhật lại giỏ hàng" open={isModalOpen} onOk={handleOk} closeIcon={false}   cancelButtonProps={{ style: { display: 'none' } }} >
+               {error?.map(item=>{
+                  return<>
+                     <div>{item}</div>
+                  </>
+               })}
+               </Modal>
+            </div>
       </div>
    );
 };
