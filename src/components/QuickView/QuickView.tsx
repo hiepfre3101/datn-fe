@@ -133,7 +133,10 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                      <div className='product-price flex w-full items-center'>
                         <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
                         <div className='product-price-content text-[18px] text-red-500 pr-[10px] font-bold'>
-                           {product_info[0]?.price.toLocaleString('vi-VN', {
+                           {(
+                              product_info[0]?.price -
+                              (product_info[0]?.price * product_info[0]?.discount) / 100
+                           ).toLocaleString('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                            })}{' '}
