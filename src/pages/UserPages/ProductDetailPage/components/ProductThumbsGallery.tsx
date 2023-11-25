@@ -24,7 +24,7 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
                {body?.map((item) => {
                return (
                   <>
-                     <SwiperSlide  className='border  sm:h-[527px] max-sm:h-[400px] border-[#e2e2e2] max-h-[350px]' >
+                     <SwiperSlide  className='border  sm:h-[527px] max-sm:h-[400px] border-[#e2e2e2] max-h-[400px]' >
                         <img className='w-full h-full rounded-[5px]' src={item.url} />
                      </SwiperSlide>
                   </>

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import { Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
-import { ORDER_OF_STATUS } from '../../../constants/orderStatus';
+import { DONE_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 import { adminSocket } from '../../../config/socket';
@@ -36,15 +36,6 @@ const DetailOrder = ({ idOrder }: Props) => {
          return Promise.reject();
       }
       try {
-         adminSocket.emit(
-            'changeStatus',
-            JSON.stringify({
-               userId: order.userId!,
-               orderId: idOrder,
-               status: value.toLowerCase(),
-               invoiceId: order.invoiceId
-            })
-         );
          await handleUpdateOrder({
             idOrder,
             customerName: order.customerName!,
@@ -58,6 +49,16 @@ const DetailOrder = ({ idOrder }: Props) => {
             totalPayment: order.totalPayment!,
             status: value.toLowerCase()
          });
+         // phai https thanh cong thi moi emot socket
+         adminSocket.emit(
+            'changeStatus',
+            JSON.stringify({
+               userId: order.userId!,
+               orderId: idOrder,
+               status: value.toLowerCase(),
+               invoiceId: order.invoiceId
+            })
+         );
       } catch (error) {
          message.error('Lỗi hệ thống !');
          return Promise.reject();
@@ -139,7 +140,7 @@ const DetailOrder = ({ idOrder }: Props) => {
                      disable={
                         ORDER_OF_STATUS.indexOf(
                            ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
-                        ) >= index
+                        ) >= index || statusOrder === DONE_ORDER.toLowerCase()
                      }
                      onClick={(value) => handleChangeStatus(value)}
                   />

@@ -8,6 +8,7 @@ type Props = {
 };
 
 const ButtonCheck = ({ onClick, disable, colorPrimary, value }: Props) => {
+   console.log(disable);
    const [isClicked, setIsClicked] = useState<boolean>(disable);
    useEffect(() => {
       setIsClicked(disable);

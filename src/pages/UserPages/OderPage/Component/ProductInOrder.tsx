@@ -2,11 +2,13 @@ import { useState } from 'react';
 import { Button, ConfigProvider, Form, Input, Modal, Rate, Space } from 'antd';
 import TextQuill from '../../../../components/TextQuill/TextQuill';
 import { IProductOrder } from '../../../../interfaces/order';
+import { DONE_ORDER } from '../../../../constants/orderStatus';
 type Props = {
    product: IProductOrder;
+   statusOrder: string;
 };
 
-const ProductInOrder = ({ product }: Props) => {
+const ProductInOrder = ({ product, statusOrder }: Props) => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    return (
       <div className='one-product flex justify-between items-center w-full'>
@@ -17,12 +19,14 @@ const ProductInOrder = ({ product }: Props) => {
          <div className='flex justify-start gap-2 items-center'>
             <span>{product.weight}x</span>
             <span className='text-lg text-black'>{product.price}</span>
-            <button
-               onClick={() => setIsOpen(true)}
-               className='rounded-sm ml-3 hover:bg-[#5ac471] py-2 px-5 text-white bg-greenP500 duration-300'
-            >
-               Đánh giá
-            </button>
+            {statusOrder === DONE_ORDER.toLowerCase() && (
+               <button
+                  onClick={() => setIsOpen(true)}
+                  className='rounded-sm ml-3 hover:bg-[#5ac471] py-2 px-5 text-white bg-greenP500 duration-300'
+               >
+                  Đánh giá
+               </button>
+            )}
          </div>
          <ConfigProvider
             theme={{

@@ -81,9 +81,10 @@ const HeaderAdmin = () => {
 
       adminSocket.on('purchaseNotification', handlePurchaseNotification);
       adminSocket.on('expireProduct', handlePurchaseNotification);
-
+      adminSocket.on('adminStatusNotification', handlePurchaseNotification);
       return () => {
          adminSocket.off('purchaseNotification', handlePurchaseNotification);
+         adminSocket.off('adminStatusNotification', handlePurchaseNotification);
          adminSocket.off('expireProduct', handlePurchaseNotification);
          adminSocket.disconnect();
       };
