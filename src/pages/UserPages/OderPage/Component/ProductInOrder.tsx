@@ -12,7 +12,7 @@ const ProductInOrder = ({ product }: Props) => {
       <div className='one-product flex justify-between items-center w-full'>
          <div className='flex justify-start gap-2 items-center'>
             <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-            <span className='text-black font-semibold'>{product.name}</span>
+            <span className='text-black font-semibold'>{product.productName}</span>
          </div>
          <div className='flex justify-start gap-2 items-center'>
             <span>{product.weight}x</span>
@@ -55,7 +55,7 @@ const ProductInOrder = ({ product }: Props) => {
                <div className='one-product w-full'>
                   <div className='flex justify-start gap-2 items-center'>
                      <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-                     <span className='text-black font-semibold'>{product.name}</span>
+                     <span className='text-black font-semibold'>{product.productName}</span>
                   </div>
                   <Form layout='vertical' className='w-full'>
                      <Space className='w-full' size={'large'}>
