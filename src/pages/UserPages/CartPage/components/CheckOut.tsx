@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartSlice, removeFromCart, updateImgProductInCartLocal, updateItem, updateNameProductInCartLocal, updatePriceProductInCartLocal } from '../../../../slices/cartSlice';
+import { ICartSlice, removeFromCart, updateImgProductInCartLocal, updateItem, updateNameProductInCartLocal, updatePriceProductInCartLocal, updateTotalPrice } from '../../../../slices/cartSlice';
 import { IAuth } from '../../../../slices/authSlice';
 import { useCheckCartMutation, useGetCartQuery } from '../../../../services/cart.service';
 import { useState,useEffect } from 'react';
@@ -48,7 +48,7 @@ const CheckOut = () => {
                     const { totalWeight, productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {}, ...rest } = product;
                     return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
                   }),
-                totalPayment:total
+                totalPayment:2
              }
              checkCartLocal(cartLocal).then((res:any) => {
              
@@ -81,12 +81,16 @@ const CheckOut = () => {
                      else if(item.message=="The product is currently out of stock!"){
                         dispatch(removeFromCart({ id: item.productId}))
                         setError((prevError: string[]) => [...prevError, "- Sản phẩm "+ item.productName + " đã hết hàng và đã được xoá khỏi giỏ hàng"]);
+                     } 
+                     else if(item.message=="Invalid totalPayment!"){
+                        dispatch(updateTotalPrice({ total: item.true}))
+                        setError((prevError: string[]) => [...prevError, "- Tổng tiền của bạn đang bị sai và đã được cập nhật lại"]);
                      }     
                   })   
                }
-               else{
-                  navigate("/checkout")
-               }
+               // else{
+               //    navigate("/checkout")
+               // }
             })
          }
    }

@@ -195,9 +195,13 @@ const cartSlice = createSlice({
          });
          state.products = nextCartproducts;
          localStorage.setItem("cart", JSON.stringify(nextCartproducts));
-      }
+      },
+      updateTotalPrice: (state, action) => {
+        
+         state.totalPrice= action.payload.totalPrice
+      },
    }
 });
-export const { addItem,updateImgProductInCartLocal,updatePriceProductInCartLocal,updateNameProductInCartLocal, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem } =
+export const { addItem,updateTotalPrice,updateImgProductInCartLocal,updatePriceProductInCartLocal,updateNameProductInCartLocal, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem } =
    cartSlice.actions;
 export default cartSlice;
