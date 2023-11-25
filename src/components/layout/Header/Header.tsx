@@ -52,7 +52,7 @@ const Header = () => {
    const { data } = useGetAllCateQuery();
    const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
 
-   const totalProductInCart = auth.user._id ? cartdb?.body.data.products.length : localCartLength;
+   const totalProductInCart = auth.user._id ? cartdb?.body?.data?.products.length : localCartLength;
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
       if (document.documentElement.scrollTop > 400) {

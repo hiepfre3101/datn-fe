@@ -105,7 +105,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
                   { min: 1, message: 'Nhập tối thiểu là 1 đơn vị' }
                ]}
             >
-               <Input type='number' prefix='vnd' min={'1'} onChange={() => setIsSave(false)} />
+               <Input type='number' prefix='vnd/kg|' min={'1'} onChange={() => setIsSave(false)} />
             </Form.Item>
          </div>
          <div className='flex justify-stretch items-center gap-3'>
@@ -119,7 +119,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
                   { min: 1, message: 'Nhập tối thiểu là 1 đơn vị' }
                ]}
             >
-               <Input type='number' prefix='kg' min={'1'} onChange={() => setIsSave(false)} />
+               <Input type='number' prefix='kg|' min={'1'} onChange={() => setIsSave(false)} />
             </Form.Item>
             <Form.Item
                className='w-[50%]'

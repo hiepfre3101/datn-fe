@@ -55,7 +55,8 @@ export const productData = (data: IResponseHasPaginate<IProductExpanded>): Produ
       price: product.price || 0,
       stock: product.shipments[0]?.weight,
       expDate: formatStringToDate(product.shipments[0]?.date),
-      isSale: product.isSale
+      isSale: product.isSale,
+      shipments: product.shipments
    }));
 };
 

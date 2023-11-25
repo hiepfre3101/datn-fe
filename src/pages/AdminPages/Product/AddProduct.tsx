@@ -20,6 +20,8 @@ const AddProduct = () => {
    const [categoryId, setCategoryId] = useState<string>();
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
+   const [productPrice, setProductPrice] = useState<number>();
+   const [productDiscount, setProductDiscount] = useState<number>(0);
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [form] = Form.useForm<InputProduct>();
    const navigate = useNavigate();
@@ -118,20 +120,39 @@ const AddProduct = () => {
                   </BlockForm>
                   <BlockForm title='Chính sách giá'>
                      <Space direction='vertical' className='w-full'>
-                     <Form.Item
-                           name={'price'}
-                           label={<p className='text-lg font-semibold'>Giá bán</p>}
-                           hasFeedback
-                        >
-                           <Input
-                              type='number'
-                              placeholder='Thêm giá bán sản phẩm'
-                              className='w-1/2 p-2'
-                              max={100000}
-                              min={0}
-                              prefix={"/kg"}
-                           />
-                        </Form.Item>
+                        <div className='w-full flex justify-start items-center gap-2'>
+                           <Form.Item
+                              className='w-full'
+                              name={'price'}
+                              label={<p className='text-lg font-semibold'>Giá bán</p>}
+                              hasFeedback
+                           >
+                              <Input
+                                 type='number'
+                                 placeholder='Thêm giá bán sản phẩm'
+                                 className=' p-2'
+                                 min={0}
+                                 prefix={
+                                    <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
+                                 }
+                                 value={productPrice}
+                                 onChange={(e) => setProductPrice(Number(e.target.value))}
+                              />
+                           </Form.Item>
+
+                           <div className='w-full mb-[10px]'>
+                              <p>Giá bán thực tế:</p>
+                              <Input
+                                 type='number'
+                                 className=' p-2'
+                                 value={productPrice}
+                                 disabled
+                                 prefix={
+                                    <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
+                                 }
+                              />
+                           </div>
+                        </div>
                         <Form.Item
                            name={'discount'}
                            label={<p className='text-lg font-semibold'>Khuyến mãi</p>}
@@ -144,6 +165,14 @@ const AddProduct = () => {
                               max={100}
                               min={0}
                               prefix={<span className='decoration-black underline absolute right-10 z-10'>%</span>}
+                              value={productDiscount}
+                              onChange={(e) => {
+                                 setProductDiscount(Number(e.target.value));
+                                 setProductPrice((prev) => {
+                                    if (!prev) return;
+                                    return prev - (prev * Number(e.target.value)) / 100;
+                                 });
+                              }}
                            />
                         </Form.Item>
                      </Space>

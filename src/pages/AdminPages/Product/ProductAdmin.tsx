@@ -139,7 +139,8 @@ const ProductAdmin = () => {
                         dataIndex='isSale'
                         key='isSale'
                         width={80}
-                        render={(isSale) => {
+                        render={(isSale, record: IProduct) => {
+                           if (record?.shipments?.length === 0) return <Tag color='red'>Hết hàng</Tag>;
                            if (isSale) return <Tag color='purple'>Thanh lý</Tag>;
                            return <Tag color='green'>Bình thường</Tag>;
                         }}
