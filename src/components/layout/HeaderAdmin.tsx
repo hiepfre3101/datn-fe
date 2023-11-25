@@ -19,12 +19,45 @@ import {
 import { INotification } from '../../interfaces/notification';
 import { formatStringToDate } from '../../helper';
 import { setItem } from '../../slices/cartSlice';
+const pagePaths = [
+   {
+      title: 'Sản phẩm',
+      link: 'products'
+   },
+   {
+      title: 'Danh mục',
+      link: 'categories'
+   },
+   {
+      title: 'Lô hàng',
+      link: 'shipments'
+   },
+   {
+      title: 'Đơn hàng',
+      link: 'orders'
+   },
+   {
+      title: 'Thêm sản phẩm',
+      link: 'add-product'
+   },
+   {
+      title: 'Thêm danh mục',
+      link: 'add-category'
+   },
+   {
+      title: 'Thêm lô hàng',
+      link: 'add-shipment'
+   }
+];
 const HeaderAdmin = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [triggerDrop, setTriggerDrop] = useState(false);
    const [clearToken] = useClearTokenMutation();
    const dispatch = useDispatch();
    const navigate = useNavigate();
+   const [keyword, setKeyword] = useState('');
+   const [path, setPath] = useState<any[]>([]);
+
    const { data: adminNotification, refetch } = useGetAdminNotificationQuery(auth?.user?._id);
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
@@ -55,6 +88,19 @@ const HeaderAdmin = () => {
          adminSocket.disconnect();
       };
    }, [auth]);
+   useEffect(() => {
+      if (keyword != '') {
+         const array: any[] = [];
+         pagePaths.map((data: any) => {
+            if (data.title.toLowerCase().match(keyword.toLowerCase())) {
+               array.push(data);
+            }
+         });
+         setPath(array);
+      } else {
+         setPath([]);
+      }
+   }, [keyword]);
    const items: MenuProps['items'] = [
       {
          label: <a href='https://www.antgroup.com'>1st menu item</a>,
@@ -91,7 +137,25 @@ const HeaderAdmin = () => {
       >
          <div className='w-[40%] flex justify-start items-center gap-2 rounded-lg border-[1px] border-[rgba(0,0,0,0.1)] px-3 py-2'>
             <SearchOutlined width={'1.5rem'} height={'1.5rem'} color='rgba(0,0,0,0.2)' />
-            <Input className='outline-none border-none' placeholder='Tìm kiếm' />
+            <Popover
+               placement='bottomLeft'
+               arrow={false}
+               open={path.length > 0 ? true : false}
+               content={() =>
+                  path.map((data, index) => (
+                     <Link to={'/manage/' + data.link} key={index} className='p-1 w-[995px] block'>
+                        <h1 className='text-lg font-bold'>{data.title}</h1>
+                     </Link>
+                  ))
+               }
+            >
+               <Input
+                  value={keyword}
+                  onChange={(e) => setKeyword(e.target.value)}
+                  className='outline-none border-none'
+                  placeholder='Tìm kiếm'
+               />
+            </Popover>
          </div>
          <div className='3xl:max-w-[15%] max-w-[25%] flex justify-end items-center gap-3'>
             <div className='flex justify-start items-center gap-2 border-[1px] border-[rgba(0,0,0,0.1)] p-2 rounded-lg overflow-hidden h-[3rem] w-[100%]'>
@@ -119,7 +183,7 @@ const HeaderAdmin = () => {
                      {adminNotification?.body?.data?.map((noti: INotification, index: number) => (
                         <div key={index} className='relative border-b-[1px] border-gray-400  p-2 hover:bg-gray-200'>
                            <Link
-                              className='w-[100%] pb-4 block'
+                              className='w-[90%] pb-4 block'
                               onClick={async () => {
                                  await updateNotification({ id: noti._id, isRead: true });
                               }}
@@ -130,22 +194,8 @@ const HeaderAdmin = () => {
                                     !
                                  </span>
                               )}
-                              <h1 className='font-bold break-words w-[270px]'>{noti.title}</h1>
-                              <p
-                                 className='text-gray-400 '
-                                 style={{
-                                    width: '280px',
-                                    WebkitLineClamp: '1',
-                                    wordBreak: 'break-word',
-                                    overflowWrap: 'break-word',
-                                    textOverflow: 'ellipsis',
-                                    overflow: 'hidden',
-                                    display: '-webkit-box',
-                                    WebkitBoxOrient: 'vertical'
-                                 }}
-                              >
-                                 {noti.message}
-                              </p>
+                              <h1 className='font-bold break-words'>{noti.title}</h1>
+                              <p className='text-gray-400 '>{noti.message}</p>
                               <span className='text-gray-400'>{formatStringToDate(noti.createdAt)}</span>
                            </Link>
                            <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>

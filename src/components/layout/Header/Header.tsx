@@ -92,7 +92,7 @@ const Header = () => {
          clientSocket.off('statusNotification', handlePurchaseNotification);
          clientSocket.disconnect();
       };
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
@@ -335,29 +335,15 @@ const Header = () => {
                                                    await updateNotification({ id: noti._id, isRead: true });
                                                 }}
                                                 to={noti.link}
-                                                className='w-[100%] block'
+                                                className='w-[90%] block'
                                              >
                                                 {!noti.isRead && (
                                                    <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
                                                       !
                                                    </span>
                                                 )}
-                                                <h1 className='font-bold break-words w-[270px]'>{noti.title}</h1>
-                                                <p
-                                                   className='text-gray-400 '
-                                                   style={{
-                                                      width: '280px',
-                                                      WebkitLineClamp: '1',
-                                                      wordBreak: 'break-word',
-                                                      overflowWrap: 'break-word',
-                                                      textOverflow: 'ellipsis',
-                                                      overflow: 'hidden',
-                                                      display: '-webkit-box',
-                                                      WebkitBoxOrient: 'vertical'
-                                                   }}
-                                                >
-                                                   {noti.message}
-                                                </p>
+                                                <h1 className='font-bold break-words'>{noti.title}</h1>
+                                                <p className='text-gray-400 '>{noti.message}</p>
                                                 <span className='text-gray-400'>
                                                    {formatStringToDate(noti.createdAt)}
                                                 </span>
