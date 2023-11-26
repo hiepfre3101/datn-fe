@@ -50,6 +50,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
            )
          : TotalPrice;
       setTotal(temp);
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [cartdb, cart]);
    return (
       <>

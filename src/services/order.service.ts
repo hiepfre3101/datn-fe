@@ -27,7 +27,7 @@ const orderApi = createApi({
          },
          providesTags: ['orders']
       }),
-      addOrder: builder.mutation<IResponse<IOrder & { _id: string }>, object>({
+      addOrder: builder.mutation<IResponse<IOrder & { _id: string; url: string }>, object>({
          query: (body) => {
             return {
                url: '/orders',

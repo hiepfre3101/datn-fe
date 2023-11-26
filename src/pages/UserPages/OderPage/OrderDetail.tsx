@@ -145,7 +145,13 @@ const OrderDetail = () => {
                      </div>
                      <div className='flex flex-col items-start'>
                         <span className='text-md'>Phương thức thanh toán</span>
-                        <strong className='text-md text-black'>Khi nhận hàng</strong>
+                        <strong className='text-md text-black'>
+                           {data?.body.data
+                              ? data?.body.data?.pay
+                                 ? 'Đã thanh toán online'
+                                 : 'Khi nhận hàng'
+                              : 'Chưa thanh toán'}
+                        </strong>
                      </div>
                   </div>
                   <div className='flex flex-col items-start mt-5'>

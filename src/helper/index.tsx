@@ -25,3 +25,12 @@ export const transformStatusOrder = (status: string) => {
    });
    return returnValue;
 };
+
+export const formatCharacterWithoutUTF8 = (string: string) => {
+   const dau = 'àảãáạăằẳẵắặâầẩẫấậèẻẽéẹêềểễếệìỉĩíịòỏõóọôồổỗốộơờởỡớợùủũúụưừửữứựỳỷỹýỵđ';
+   const khongDau = 'aaaaaaaaaaaaaaaaaeeeeeeeeeeeiiiiiooooooooooooooouuuuuuuuuuuyyyyyd';
+   return string.replace(/[\u00C0-\u1EEF]/g, function (match) {
+      const index = dau.indexOf(match);
+      return khongDau.charAt(index) || match;
+   });
+};
