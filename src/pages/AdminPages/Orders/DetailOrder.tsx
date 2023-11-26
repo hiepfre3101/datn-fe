@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import { Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
-import { ORDER_OF_STATUS } from '../../../constants/orderStatus';
+import { DONE_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
+import { adminSocket } from '../../../config/socket';
 
 type Props = {
    idOrder: string;
@@ -48,6 +49,16 @@ const DetailOrder = ({ idOrder }: Props) => {
             totalPayment: order.totalPayment!,
             status: value.toLowerCase()
          });
+         // phai https thanh cong thi moi emot socket
+         adminSocket.emit(
+            'changeStatus',
+            JSON.stringify({
+               userId: order.userId!,
+               orderId: idOrder,
+               status: value.toLowerCase(),
+               invoiceId: order.invoiceId
+            })
+         );
       } catch (error) {
          message.error('Lỗi hệ thống !');
          return Promise.reject();
@@ -93,7 +104,7 @@ const DetailOrder = ({ idOrder }: Props) => {
          {order?.products.map((product) => (
             <Row key={product._id}>
                <Col span={6}>
-                  <span className='font-semibold'>{product.name}</span>
+                  <span className='font-semibold'>{product.productName}</span>
                </Col>
                <Col span={6}>
                   <span className='font-semibold'>{product.price}(vnd)</span>
@@ -129,7 +140,7 @@ const DetailOrder = ({ idOrder }: Props) => {
                      disable={
                         ORDER_OF_STATUS.indexOf(
                            ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
-                        ) >= index
+                        ) >= index || statusOrder === DONE_ORDER.toLowerCase()
                      }
                      onClick={(value) => handleChangeStatus(value)}
                   />

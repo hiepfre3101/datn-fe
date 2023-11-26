@@ -7,9 +7,18 @@ import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
+import { uppercaseFirstLetter } from '../../../helper';
 import { formatStringToDate } from '../../../helper';
-import { FAIL_ORDER, ORDER_STATUS_FULL, PENDING_ORDER, SHIPPING_ORDER, SUCCESS_ORDER } from '../../../constants/orderStatus';
-import { CanceledOrder } from '../../../api/order'
+import {
+   DONE_ORDER,
+   FAIL_ORDER,
+   ORDER_STATUS_FULL,
+   PENDING_ORDER,
+   SHIPPING_ORDER,
+   SUCCESS_ORDER
+} from '../../../constants/orderStatus';
+import { CanceledOrder } from '../../../api/order';
+import { clientSocket } from '../../../config/socket';
 
 const { Column } = Table;
 
@@ -20,11 +29,14 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-
+   const [recall, setRecall] = useState<boolean>(false);
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   const canceledOrder = (id: any) => {
-      CanceledOrder(id)
-   }
+   const canceledOrder = async (id: any) => {
+      const { data } = await CanceledOrder(id);
+      clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
+      message.success('Hủy đơn hàng thành công !');
+      setRecall((prev) => !prev);
+   };
    // const orderDatas = orders && orderData(orders)
    useEffect(() => {
       if (!auth.accessToken) return;
@@ -42,7 +54,7 @@ const OrderPage = () => {
             console.log(error);
          }
       })();
-   }, [auth.accessToken, day, status]);
+   }, [auth.accessToken, day, status, recall]);
    const handleSubmit = async (invoiceId: string) => {
       try {
          setLoading(true);
@@ -85,15 +97,17 @@ const OrderPage = () => {
                         value={status}
                      >
                         <Option value=''>Trạng thái đơn hàng</Option>
-                        {ORDER_STATUS_FULL.map((statusOrder) => (
-                           <Option value={statusOrder.status.toLowerCase()}>{statusOrder.status}</Option>
+                        {ORDER_STATUS_FULL.map((statusOrder, idx) => (
+                           <Option key={idx} value={statusOrder.status.toLowerCase()}>
+                              {statusOrder.status}
+                           </Option>
                         ))}
                      </Select>
                   </div>
                )}
                <Divider></Divider>
                <div className='bg-slate-50'>
-                  <Table dataSource={orders} pagination={{ pageSize: 10 }} scroll={{ y: 800 }}>
+                  <Table dataSource={orders} pagination={{ pageSize: 7 }} scroll={{ y: 800 }}>
                      <Column title='Ngày mua' dataIndex='createdAt' key='createdAt' />
                      <Column title='Tên' dataIndex='customerName' key='customerName' />
                      <Column title='Số điện thoại' dataIndex='phoneNumber' key='phoneNumber' />
@@ -102,7 +116,7 @@ const OrderPage = () => {
                         dataIndex='status'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => {
-                           let color = 'white';
+                           let color = '';
                            if (record.status == PENDING_ORDER.toLowerCase()) {
                               color = 'yellow';
                            }
@@ -115,7 +129,10 @@ const OrderPage = () => {
                            if (record.status == FAIL_ORDER.toLowerCase()) {
                               color = 'red';
                            }
-                           return <Tag color={color}>{record.status}</Tag>;
+                           if (record.status == DONE_ORDER.toLowerCase()) {
+                              color = 'purple';
+                           }
+                           return <Tag color={color}>{uppercaseFirstLetter(record.status)}</Tag>;
                         }}
                      />
                      <Column
@@ -123,12 +140,7 @@ const OrderPage = () => {
                         key='action'
                         render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
-
-                              <Link to={'/my-order/' + record?._id}>
-                                 <Button className='bg-greenPrimary'>Chi tiết</Button>
-                              </Link>
-                              {
-                                 record.status == 'chờ xác nhận' &&
+                              {record.status == 'chờ xác nhận' && record.status !== FAIL_ORDER.toLowerCase() && (
                                  <Popconfirm
                                     className={``}
                                     description='Bạn chắc chắn muốn huỷ đơn hàng chứ?'
@@ -137,15 +149,17 @@ const OrderPage = () => {
                                     title='Bạn có muốn xóa?'
                                     onConfirm={() => canceledOrder(record?._id)}
                                  >
-                                    <Button className='bg-red-500'>Huỷ đơn hàng</Button>
+                                    <Button className='bg-red-500 text-white hover:!text-white hover:!border-none'>
+                                       Huỷ đơn hàng
+                                    </Button>
                                  </Popconfirm>
-                              }
-                              {
-                                 record.status != 'chờ xác nhận' &&
-                                 <Button className='bg-greenPrimary'>Mua lại</Button>
-                              }
+                              )}
 
-
+                              <Link to={'/my-order/' + record?._id}>
+                                 <Button className='bg-greenPrimary text-white hover:!text-white hover:!border-none'>
+                                    Chi tiết
+                                 </Button>
+                              </Link>
                            </Space>
                         )}
                      />

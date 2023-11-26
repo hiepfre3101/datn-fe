@@ -53,7 +53,7 @@ const AddShipment = () => {
                         productDataSubmit.map((item) => (
                            <FormProduct
                               key={item.idProduct}
-                              products={data ? data.body.data! : []}
+                              products={data ? data.body.data.filter((product) => product.isSale !== true)! : []}
                               submitProduct={(data) => dataSubmitFactory(data)}
                               removeProduct={(idProduct) => removeProduct(idProduct)}
                               data={item}

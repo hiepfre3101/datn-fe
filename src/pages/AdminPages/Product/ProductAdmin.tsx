@@ -51,7 +51,6 @@ const ProductAdmin = () => {
    }, [data]);
 
    useEffect(() => {
-      adminSocket.open();
       adminSocket.on('expireProduct', (data) => {
          if (data.eventId !== lastEventId.current) {
             setExpiredProducts((prev: IProduct[]) => [...prev, data.response]);
@@ -60,9 +59,6 @@ const ProductAdmin = () => {
             console.log('not run');
          }
       });
-      return () => {
-         adminSocket.disconnect();
-      };
    }, [data]);
 
    const checkExpireProduct = useMemo(
@@ -143,7 +139,8 @@ const ProductAdmin = () => {
                         dataIndex='isSale'
                         key='isSale'
                         width={80}
-                        render={(isSale) => {
+                        render={(isSale, record: IProduct) => {
+                           if (record?.shipments?.length === 0) return <Tag color='red'>Hết hàng</Tag>;
                            if (isSale) return <Tag color='purple'>Thanh lý</Tag>;
                            return <Tag color='green'>Bình thường</Tag>;
                         }}

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigProvider, Rate, message } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
@@ -42,36 +43,33 @@ const ShowProducts = ({ data }: IProps) => {
       dispatch(saveProduct(data));
    };
    const add_to_cart = async (data: IProductExpanded) => {
-      if(auth.user._id){
+      if (auth.user._id) {
          const product = {
             productId: data?._id,
-            weight:1
-         }
-        await  addCart(product).unwrap()
-        message.success("Thêm sản phẩm vào giỏ hàng thành công")
-      }
-      else{
+            weight: 1
+         };
+         await addCart(product).unwrap();
+         message.success('Thêm sản phẩm vào giỏ hàng thành công');
+      } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
          }, 0);
          const product = {
-            productId:{
+            productId: {
                _id: data?._id,
                productName: data?.productName,
-               images: [
-                  {url: data?.images[0].url}
-               ],
+               images: [{ url: data?.images[0].url }],
                price: data?.price,
-               originId:{
+               originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
                }
-            },  
+            },
             weight: 1,
             totalWeight: totalWeight
-         };        
+         };
          dispatch(addItem(product));
-      }     
+      }
    };
    return (
       <div>
@@ -147,13 +145,13 @@ const ShowProducts = ({ data }: IProps) => {
                               </ConfigProvider>
                            </div>
                            <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                              {item?.price.toLocaleString('vi-VN', {
+                              {(item?.price - (item.price * item?.discount) / 100).toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
                               {item.discount > 0 && item.shipments.length > 0 && (
                                  <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                    {((item?.price * item.discount) / 100).toLocaleString('vi-VN', {
+                                    {item?.price.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}

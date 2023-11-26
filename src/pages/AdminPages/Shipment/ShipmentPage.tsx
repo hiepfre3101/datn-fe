@@ -1,4 +1,4 @@
-import { Card, ConfigProvider, Dropdown, Modal } from 'antd';
+import { Card, ConfigProvider, Dropdown, Modal, Pagination } from 'antd';
 import { useGetAllShipmentExpandQuery, useUpdateShipmentMutation } from '../../../services/shipment.service';
 import { formatStringToDate } from '../../../helper';
 import ShipmentItem from './components/ShipmentItem';
@@ -7,8 +7,11 @@ import EraserIcon from '../../../components/Icons/EraserIcon';
 import { Helmet } from 'react-helmet';
 import HeadPage from '../../../components/HeadPage/HeadPage';
 import '../../../css/config-antd.css';
+import { useState } from 'react';
 const ShipmentPage = () => {
-   const { data } = useGetAllShipmentExpandQuery({});
+   const [page, setPage] = useState<number>(1);
+   const { data } = useGetAllShipmentExpandQuery({ page, limit: 6 });
+   console.log(data?.body.pagination.totalItems);
    const [handleUpdateShipment] = useUpdateShipmentMutation();
    return (
       <>
@@ -79,6 +82,7 @@ const ShipmentPage = () => {
                   </ConfigProvider>
                ))}
             </div>
+            <Pagination onChange={(page) => setPage(page)} total={data?.body.pagination.totalItems} pageSize={6} className='absolute right-12'/>
          </div>
       </>
    );

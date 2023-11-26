@@ -105,6 +105,13 @@ const productApi = createApi({
             };
          },
          invalidatesTags: ['product']
+      }),
+      searchProduct: builder.mutation<{ product: IProduct[] }, string>({
+         query: (search) => ({
+            url: '/products?_q=' + search,
+            method: 'GET'
+         }),
+         invalidatesTags: ['product']
       })
    })
 });
@@ -118,7 +125,8 @@ export const {
    useAddProductMutation,
    useGetOneProductQuery,
    useRemoveProductMutation,
-   useCreateSaleProductMutation
+   useCreateSaleProductMutation,
+   useSearchProductMutation
 } = productApi;
 
 export default productApi;

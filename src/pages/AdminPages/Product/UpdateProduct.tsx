@@ -27,6 +27,8 @@ const UpdateProduct = () => {
    const [categoryId, setCategoryId] = useState<string>();
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
+   const [productPrice, setProductPrice] = useState<number>();
+   const [productDiscount, setProductDiscount] = useState<number>(0);
    const [shipments, setShipments] = useState<IShipmentOfProduct[]>([]);
    // const [currentShipment, setCurrentShipment] = useState<IShipmentOfProduct>();
    const handleGetFiles = (files: File[], public_id: string | undefined) => {
@@ -63,6 +65,7 @@ const UpdateProduct = () => {
       setCategoryId(formatedCategories);
       setProductName(data?.body.data.productName as string);
       setDefaultDesc(data?.body.data.desc as string);
+      setProductPrice(data?.body.data.price);
       // setCurrentShipment(data?.body.data.shipments[0]);
       setShipments(data ? data.body.data.shipments! : []);
       const newBody = {
@@ -85,16 +88,12 @@ const UpdateProduct = () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [categories, data, form]);
    const displayShipment = (currentShipment: IShipmentOfProduct, index: number) => {
-      // if (data?.body.data.shipments.length === 0 || !currentShipment) {
-      //    return <h2>Chưa có lô hàng sử dụng</h2>;
-      // }
+      if (data?.body.data.shipments.length === 0 || !currentShipment) {
+         return <h2>Chưa có lô hàng sử dụng</h2>;
+      }
       const dataShipment = getShipmentData(currentShipment, index);
-      return <Descriptions title={'Thông tin lô hàng ' + (index+ 1) }  items={dataShipment} bordered key={index} />;
+      return <Descriptions title={'Thông tin lô hàng ' + (index + 1)} items={dataShipment} bordered key={index} />;
    };
-   // const handleChangeShipment = (value: { value: string; label: string }) => {
-   //    const selectedShipment = shipments.find((shipment) => shipment.idShipment === value.value);
-   //    setCurrentShipment(selectedShipment);
-   // };
    const handleSubmit = async () => {
       try {
          const filesToUpload: File[] = files.filter((file) => file !== undefined);
@@ -103,7 +102,7 @@ const UpdateProduct = () => {
                data: { body }
             } = await uploadImages(filesToUpload);
             const newImages = defaultImages.map((image) => ({ url: image.url, public_id: image.uid }));
-            form.setFieldValue('images', [...(body.data), ...newImages]);
+            form.setFieldValue('images', [...body.data, ...newImages]);
          }
          const newFormData = form.getFieldsValue(true);
          newFormData.shipments = undefined;
@@ -181,21 +180,40 @@ const UpdateProduct = () => {
                   </BlockForm>
                   <BlockForm title='Chính sách giá'>
                      <Space direction='vertical' className='w-full'>
-                        <Form.Item
-                           name={'price'}
-                           label={<p className='text-lg font-semibold'>Giá bán </p>}
-                           rules={[{ required: true, message: 'Hãy nhập giá bán sản phẩm !' }]}
-                           hasFeedback
-                        >
-                           <Input
-                              type='number'
-                              placeholder='Thêm giá sản phẩm'
-                              className='w-1/2 p-2'
-                              max={100000}
-                              min={0}
+                        <div className='w-full flex justify-start items-center gap-2'>
+                           <Form.Item
+                              className='w-full'
+                              name={'price'}
+                              label={<p className='text-lg font-semibold'>Giá bán</p>}
+                              hasFeedback
+                           >
+                              <Input
+                                 type='number'
+                                 placeholder='Thêm giá bán sản phẩm'
+                                 className='w-1/2 p-2'
+                                 max={100000}
+                                 min={0}
+                                 prefix={
+                                    <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
+                                 }
+                                 value={productPrice}
+                                 onChange={(e) => setProductPrice(Number(e.target.value))}
+                              />
+                           </Form.Item>
 
-                           />
-                        </Form.Item>
+                           <div className='w-full'>
+                              <p className=''>Giá bán thực tế:</p>
+                              <Input
+                                 type='number'
+                                 className='w-1/2 p-2'
+                                 value={productPrice}
+                                 disabled
+                                 prefix={
+                                    <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
+                                 }
+                              />
+                           </div>
+                        </div>
                         <Form.Item
                            name={'discount'}
                            label={<p className='text-lg font-semibold'>Khuyến mãi</p>}
@@ -208,6 +226,14 @@ const UpdateProduct = () => {
                               max={100}
                               min={0}
                               prefix={<span className='decoration-black underline absolute right-10 z-10'>%</span>}
+                              value={productDiscount}
+                              onChange={(e) => {
+                                 setProductDiscount(Number(e.target.value));
+                                 setProductPrice((prev) => {
+                                    if (!prev) return;
+                                    return prev - (prev * Number(e.target.value)) / 100;
+                                 });
+                              }}
                            />
                         </Form.Item>
                      </Space>
@@ -258,8 +284,12 @@ const UpdateProduct = () => {
                      </Form.Item>
                   </BlockForm>
                   <BlockForm title='Lô hàng' className='min-w-[500px]'>
-                     <div className={shipments.length > 0 ? 'grid grid-cols-2 gap-5' : " "}>
-                        {shipments.length > 0 ? shipments.map((shipment, index: number) => displayShipment(shipment, index)): <h1 className='text-center py-5 '> Chưa có lô hàng </h1>}
+                     <div className={shipments.length > 0 ? 'grid grid-cols-2 gap-5' : ' '}>
+                        {shipments.length > 0 ? (
+                           shipments.map((shipment, index: number) => displayShipment(shipment, index))
+                        ) : (
+                           <h1 className='text-center py-5 '> Chưa có lô hàng </h1>
+                        )}
                      </div>
                   </BlockForm>
                </div>

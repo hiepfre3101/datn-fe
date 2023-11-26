@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
 import { IShipmentFull, InputShipment } from '../interfaces/shipment';
+import { paramTransformer } from '../utils/transformParams';
 
 const shipmentApi = createApi({
    baseQuery: fetchBaseQuery({
@@ -19,7 +20,7 @@ const shipmentApi = createApi({
          query: (params) => {
             return {
                url: '/shipments',
-               params: params
+               params: paramTransformer(params)
             };
          },
          providesTags: ['shipment']
