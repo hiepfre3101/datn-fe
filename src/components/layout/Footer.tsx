@@ -292,7 +292,7 @@ const Footer = () => {
                         <FaXmark></FaXmark>
                      </button>
                   </div>
-                  {/* <form className='form-search relative' action=''>
+                  <form className='form-search relative' action=''>
                      <input
                         className='w-full outline-none border-b-[1px] border-[#e2e2e2] py-[10px] text-[#6f6f6f]'
                         type='text'
@@ -301,7 +301,7 @@ const Footer = () => {
                      <button className='absolute right-0 translate-y-[50%] bottom-[50%]'>
                         <SearchOutlined className='text-[20px] text-[#6f6f6f]'></SearchOutlined>
                      </button>
-                  </form> */}
+                  </form>
                </div>
             </div>
          </section>
