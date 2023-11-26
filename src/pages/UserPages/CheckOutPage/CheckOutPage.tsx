@@ -68,7 +68,10 @@ const CheckOutPage = () => {
             data.products = cart?.products.map((product: ICartItems) => {
                return {
                   productName: product.productId.productName,
-                  price: product.productId.price,
+                  price:
+                     product.productId.discount && product.productId.discount > 0
+                        ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+                        : product.productId.price,
                   productId: product.productId._id,
                   images: product.productId?.images[0].url,
                   weight: product.weight,
@@ -77,11 +80,13 @@ const CheckOutPage = () => {
             });
             data.totalPayment = auth.user._id
                ? cart?.products.reduce(
-                    (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+                    (accumulator: number, product: any) =>
+                       accumulator +
+                       (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                          product.weight,
                     0
                  )
                : cart?.totalPrice;
-            
             await handleAddOrder(data)
                .then((res) => {
                   if ('error' in res && res.error && 'data' in res.error) {

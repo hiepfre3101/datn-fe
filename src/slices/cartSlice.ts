@@ -111,7 +111,7 @@ const cartSlice = createSlice({
             0
          );
          state.products = nextCartproducts;
-         message.success('Xóa sản phẩm khỏi giỏ hàng thành công');
+        
          localStorage.setItem("cart", JSON.stringify(state.products));
 
       },
@@ -121,8 +121,6 @@ const cartSlice = createSlice({
          localStorage.setItem("cart", JSON.stringify(state.products));
       },
       updateItem: (state, action) => {
-         console.log(action.payload);
-
          const nextCartproducts = state.products.map((cartItem: any) => {
             if (cartItem.productId._id === action.payload.id) {
                if (action.payload.weight >= 0) {
@@ -141,9 +139,69 @@ const cartSlice = createSlice({
          );
          state.products = nextCartproducts;
          message.success('Cập nhật sản phẩm thành công');
-      }
+      },
+      updateNameProductInCartLocal:(state,action)=>{
+         console.log(action.payload.name);
+         
+         const nextCartproducts = state.products.map((cartItem: any) => {
+            if (cartItem.productId._id === action.payload.id) {
+                  return {
+                     ...cartItem,
+                     productId: {
+                        ...cartItem.productId,
+                        productName: action.payload.name
+                      }
+                  };
+            }
+            return cartItem;
+         });
+         console.log(nextCartproducts);
+         
+         state.products = nextCartproducts;
+         localStorage.setItem("cart", JSON.stringify(nextCartproducts));
+      },
+      updatePriceProductInCartLocal:(state,action)=>{
+         console.log("action.payload.name");
+         
+         const nextCartproducts = state.products.map((cartItem: any) => {
+            if (cartItem.productId._id === action.payload.id) {
+                  return {
+                     ...cartItem,
+                     productId: {
+                        ...cartItem.productId,
+                        price: action.payload.price
+                      }
+                  };
+            }
+            return cartItem;
+         });
+         state.products = nextCartproducts;
+         localStorage.setItem("cart", JSON.stringify(nextCartproducts));
+      },
+      updateImgProductInCartLocal:(state,action)=>{
+         console.log(action.payload.img);
+         
+         const nextCartproducts = state.products.map((cartItem: any) => {
+            if (cartItem.productId._id === action.payload.id) {
+                  return {
+                     ...cartItem,
+                     productId: {
+                        ...cartItem.productId,
+                        images: [{url:action.payload.img}]
+                      }
+                  };
+            }
+            return cartItem;
+         });
+         state.products = nextCartproducts;
+         localStorage.setItem("cart", JSON.stringify(nextCartproducts));
+      },
+      updateTotalPrice: (state, action) => {
+        
+         state.totalPrice= action.payload.totalPrice
+      },
    }
 });
-export const { addItem, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem } =
+export const { addItem,updateTotalPrice,updateImgProductInCartLocal,updatePriceProductInCartLocal,updateNameProductInCartLocal, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem } =
    cartSlice.actions;
 export default cartSlice;

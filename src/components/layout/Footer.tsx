@@ -18,7 +18,7 @@ import { logoUrl } from '../../constants/imageUrl';
 import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
 import { IAuth } from '../../slices/authSlice';
-import { ICartDataBase } from '../../interfaces/cart';
+import { ICartDataBaseItem } from '../../interfaces/cart';
 import { message } from 'antd';
 import { useState, useEffect } from 'react';
 
@@ -98,7 +98,7 @@ const Footer = () => {
       const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
       user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
    };
-   const handleRemoveProductInCart = (item: ICartDataBase | ICartItems) => {
+   const handleRemoveProductInCart = (item: ICartDataBaseItem | ICartItems) => {
       if (auth.user._id) {
          deleteProductInCartDB(item?.productId?._id).then((res) => {
             res;
