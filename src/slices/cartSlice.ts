@@ -13,6 +13,7 @@ export type ICartSlice = {
 };
 export interface ICartItems {
    productId:{
+      discount: number;
       _id: string;
       productName: string;
       images: IImage[];

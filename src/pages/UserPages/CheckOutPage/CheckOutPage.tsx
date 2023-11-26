@@ -19,6 +19,7 @@ import { IOrder } from '../../../interfaces/order';
 import { clientSocket } from '../../../config/socket';
 import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
 import { IAuth } from '../../../slices/authSlice';
+import { formatCharacterWithoutUTF8 } from '../../../helper';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
@@ -50,6 +51,7 @@ const CheckOutPage = () => {
          if (data.note == '') {
             delete data.note;
          }
+         data.note = formatCharacterWithoutUTF8(data.note || '');
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
@@ -124,7 +126,11 @@ const CheckOutPage = () => {
                            orderId: res.data?.body?.data._id
                         });
                         clientSocket.emit('purchase', value);
-                        navigate('/ordercomplete');
+                        if (res.data.body.data.url === '') {
+                           navigate('/ordercomplete');
+                        } else {
+                           window.location.href = res.data.body.data.url;
+                        }
                      }
                   }
                })
