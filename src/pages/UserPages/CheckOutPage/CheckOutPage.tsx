@@ -81,7 +81,7 @@ const CheckOutPage = () => {
                     0
                  )
                : cart?.totalPrice;
-            console.log(data);
+            
             await handleAddOrder(data)
                .then((res) => {
                   if ('error' in res && res.error && 'data' in res.error) {

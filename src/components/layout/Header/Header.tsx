@@ -300,11 +300,22 @@ const Header = () => {
                                     placement='bottom'
                                     content={
                                        <>
-                                          <div>
-                                             <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                                                <PiUserListBold></PiUserListBold> Hồ sơ của bạn
-                                             </Link>
-                                          </div>
+                                          {auth.user.role === 'member' ? (
+                                             <div>
+                                                <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                                   <PiUserListBold></PiUserListBold> Hồ sơ của bạn
+                                                </Link>
+                                             </div>
+                                          ) : (
+                                             <div>
+                                                <Link
+                                                   to='/manage/dashboard'
+                                                   className='flex items-center gap-[5px] py-[5px]'
+                                                >
+                                                   <PiUserListBold></PiUserListBold> Quản lý cửa hàng
+                                                </Link>
+                                             </div>
+                                          )}
 
                                           <div>
                                              <Link to='/orders' className='flex items-center gap-[5px] py-[5px]'>

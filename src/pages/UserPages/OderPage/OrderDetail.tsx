@@ -20,7 +20,7 @@ import { adminSocket, clientSocket } from '../../../config/socket';
 import { useConfirmOrderMemberMutation, useGetOneOrderForMemberQuery } from '../../../services/order.service';
 const OrderDetail = () => {
    const { id } = useParams();
-   const { data, isLoading } = useGetOneOrderForMemberQuery(id!);
+   const { data, isLoading, refetch } = useGetOneOrderForMemberQuery(id!);
    const [handleConfirmOrder, { isLoading: loadingConfirm }] = useConfirmOrderMemberMutation();
    const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -30,7 +30,16 @@ const OrderDetail = () => {
          if (data.status === SUCCESS_ORDER.toLowerCase()) {
             setIsShowConfirm(true);
          }
+         refetch();
       });
+      return () => {
+         clientSocket.off('statusNotification', (data) => {
+            if (data.status === SUCCESS_ORDER.toLowerCase()) {
+               setIsShowConfirm(true);
+            }
+            refetch();
+         });
+      };
    }, [auth]);
    const getStatusOfOrder = () => {
       return ORDER_STATUS_FULL.indexOf(
@@ -58,6 +67,7 @@ const OrderDetail = () => {
       };
       try {
          adminSocket.emit('confirmOrder', JSON.stringify(dataSubmit));
+         refetch();
          message.success('Xác nhận đơn hàng thành công!');
       } catch (error) {
          message.error('Lỗi hệ thống!');
