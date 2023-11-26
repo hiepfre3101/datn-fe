@@ -13,7 +13,7 @@ import { useClearTokenMutation } from '../../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../../slices/authSlice';
 import { Badge, Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../../constants/imageUrl';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../../services/cate.service';
@@ -52,7 +52,15 @@ const Header = () => {
    const { data } = useGetAllCateQuery();
    const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
 
-   const totalProductInCart = auth.user._id ? cartdb?.body?.data?.products.length : localCartLength;
+   const totalProductInCart = useMemo(() => {
+      if (auth.user._id) {
+         return cartdb?.body?.data?.products ? cartdb?.body?.data?.products.length : 0;
+      } else {
+         return localCartLength;
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth.user._id, cartdb?.body.data]);
+
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
       if (document.documentElement.scrollTop > 400) {
@@ -159,9 +167,9 @@ const Header = () => {
          <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
             <section className='mx-auto px-[30px] w-full relative max-w-[1520px] m-auto'>
                <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
-                  <div className='header-logo xl:w-[15%] max-xl:[w-auto]'>
+                  <div className='header-logo xl:w-[10%] max-xl:[w-auto] '>
                      <Link to='/'>
-                        <img className='logo-img max-w-[120px]' src={logoUrl} alt='' />
+                        <img className='logo-img max-w-[100px] aspect-square' src={logoUrl} alt='' />
                      </Link>
                   </div>
                   <div
@@ -184,12 +192,12 @@ const Header = () => {
                            </Link>
                         </li>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
-                           <a
-                              href=''
+                           <Link
+                              to='/introduct'
                               className='group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
                            >
                               Giới thiệu
-                           </a>
+                           </Link>
                         </li>
                         <li className='cursor-pointer  main-menu-item   group/categories-menu cate-menu max-xl:overflow-hidden max-xl:max-h-[41px] text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
                            <div onClick={showCategoriesMenu} className='w-full h-full xl:hidden absolute'></div>
@@ -225,12 +233,12 @@ const Header = () => {
                            </ul>
                         </li>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
-                           <a
-                              href=''
+                           <Link
+                              to='/contact'
                               className='group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
                            >
                               Liên hệ
-                           </a>
+                           </Link>
                         </li>
                      </ul>
                   </div>

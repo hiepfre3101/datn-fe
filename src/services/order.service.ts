@@ -15,7 +15,7 @@ const orderApi = createApi({
          return headers;
       }
    }),
-   tagTypes: ['orders'],
+   tagTypes: ['orders', 'orders-member', 'detail-order'],
    reducerPath: 'orders',
    endpoints: (builder) => ({
       getAllOrder: builder.query<IResponseHasPaginate<IOrderFull>, Partial<Omit<IQueryParam, ' '>>>({
@@ -59,10 +59,47 @@ const orderApi = createApi({
          query: (params) => {
             return {
                url: `/orders-admin-filter`,
-               params: params
+               params: paramTransformer(params)
             };
          },
          providesTags: ['orders']
+      }),
+      getOrderForMember: builder.query<IResponse<IOrderFull[]>, Partial<IQueryParam>>({
+         query: (params) => {
+            return {
+               url: '/orders-member',
+               method: 'get',
+               params: paramTransformer(params)
+            };
+         },
+         providesTags: ['orders-member']
+      }),
+      confirmOrderMember: builder.mutation<IResponse<IOrderFull>, string>({
+         query: (idOrder) => {
+            return {
+               url: '/orders-cofirm/' + idOrder,
+               method: 'put'
+            };
+         },
+         invalidatesTags: ['orders-member', 'detail-order']
+      }),
+      getOneOrderForMember: builder.query<IResponse<IOrderFull>, string>({
+         query: (idOrder) => {
+            return {
+               url: 'orders/' + idOrder,
+               method: 'get'
+            };
+         },
+         providesTags: ['detail-order']
+      }),
+      cancelOrderMember: builder.mutation<IResponse<IOrderFull>, string>({
+         query: (idOrder) => {
+            return {
+               url: 'orders/' + idOrder,
+               method: 'put'
+            };
+         },
+         invalidatesTags: ['orders-member']
       })
    })
 });
@@ -72,7 +109,11 @@ export const {
    useUpdateOrderMutation,
    useGetAllOrderQuery,
    useFilterOrdersQuery,
-   useFilterAdminOrdersQuery
+   useFilterAdminOrdersQuery,
+   useCancelOrderMemberMutation,
+   useConfirmOrderMemberMutation,
+   useGetOneOrderForMemberQuery,
+   useGetOrderForMemberQuery
 } = orderApi;
 
 export default orderApi;
