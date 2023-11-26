@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Button, Divider, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
-import { useEffect, useState, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
-import { getOrderForGuest, getOrderForMember } from '../../../api/order';
+import { getOrderForGuest } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
@@ -19,47 +19,30 @@ import {
 } from '../../../constants/orderStatus';
 import { CanceledOrder } from '../../../api/order';
 import { clientSocket } from '../../../config/socket';
+import { useGetOrderForMemberQuery } from '../../../services/order.service';
 
 const { Column } = Table;
 
 const OrderPage = () => {
-   const [orders, setOrders] = useState<IOrderFull[]>([]);
    const { Option } = Select;
    const [loading, setLoading] = useState<boolean>(false);
+   const [orders, setOrders] = useState<IOrderFull[]>([]);
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [recall, setRecall] = useState<boolean>(false);
+   const { data, isLoading } = useGetOrderForMemberQuery({ statusOrder: status, day });
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
       const { data } = await CanceledOrder(id);
       clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
       message.success('Hủy đơn hàng thành công !');
-      setRecall((prev) => !prev);
    };
-   // const orderDatas = orders && orderData(orders)
-   useEffect(() => {
-      if (!auth.accessToken) return;
-      (async () => {
-         try {
-            setLoading(true);
-            const {
-               data: { body }
-            } = await getOrderForMember(status, day);
-            setOrders([...body.data.map((order) => ({ ...order, createdAt: formatStringToDate(order.createdAt) }))]);
-            setLoading(false);
-         } catch (error) {
-            setLoading(false);
-            message.error('Lỗi hệ thống !');
-            console.log(error);
-         }
-      })();
-   }, [auth.accessToken, day, status, recall]);
+
    const handleSubmit = async (invoiceId: string) => {
       try {
          setLoading(true);
          const { data } = await getOrderForGuest(invoiceId);
-         setOrders([...data.body.data.map((order) => ({ ...order, createdAt: formatStringToDate(order.createdAt) }))]);
+         setOrders((prev) => [...prev, ...data.body.data]);
          setLoading(false);
       } catch (error) {
          setLoading(false);
@@ -69,7 +52,7 @@ const OrderPage = () => {
       }
    };
    const handleFindOrder = useCallback((invoiceId: string) => handleSubmit(invoiceId), []);
-   if (loading) return <Loading sreenSize='lg' />;
+   if (loading || isLoading) return <Loading sreenSize='lg' />;
    return (
       <div className='main'>
          <section className='section-breadcrumb py-[15px] border-b-[1px] border-[#e2e2e2]'>
@@ -107,8 +90,17 @@ const OrderPage = () => {
                )}
                <Divider></Divider>
                <div className='bg-slate-50'>
-                  <Table dataSource={orders} pagination={{ pageSize: 7 }} scroll={{ y: 800 }}>
-                     <Column title='Ngày mua' dataIndex='createdAt' key='createdAt' />
+                  <Table
+                     dataSource={orders.length > 0 ? orders : data ? data.body.data! : []}
+                     pagination={{ pageSize: 7 }}
+                     scroll={{ y: 800 }}
+                  >
+                     <Column
+                        title='Ngày mua'
+                        dataIndex='createdAt'
+                        key='createdAt'
+                        render={(date) => <p>{formatStringToDate(date)}</p>}
+                     />
                      <Column title='Tên' dataIndex='customerName' key='customerName' />
                      <Column title='Số điện thoại' dataIndex='phoneNumber' key='phoneNumber' />
                      <Column
