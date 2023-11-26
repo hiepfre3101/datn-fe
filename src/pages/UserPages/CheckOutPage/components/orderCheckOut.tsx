@@ -8,6 +8,7 @@ import { IOrder } from '../../../../interfaces/order';
 import { Link } from 'react-router-dom';
 import { useGetCartQuery } from '../../../../services/cart.service';
 import { IAuth } from '../../../../slices/authSlice';
+import { momoUrl, vnpayUrl } from '../../../../constants/imageUrl';
 interface Iprops {
    onSubmit: (data: IOrder) => void;
    methods: UseFormReturn<IOrder, any, undefined>;
@@ -15,11 +16,14 @@ interface Iprops {
 }
 export type paymentMethod = {
    name: string;
-   value: 'cod' | 'momo';
+   value: 'cod' | 'momo' | 'vnpay';
+   type: 'text' | 'logo';
+   srcLogo?: string;
 };
 const PAYMENT_METHODS: paymentMethod[] = [
-   { name: 'Thanh toán khi nhận hàng', value: 'cod' },
-   { name: 'MoMo', value: 'momo' }
+   { name: 'Thanh toán khi nhận hàng', value: 'cod', type: 'text' },
+   { name: 'MoMo', value: 'momo', type: 'logo', srcLogo: momoUrl },
+   { name: 'VNpay', value: 'vnpay', type: 'logo', srcLogo: vnpayUrl }
 ];
 const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    const [PayValue, setPayValue] = useState<'cod' | 'momo'>('cod');
@@ -27,23 +31,26 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
       setPayValue(e.target.value);
    };
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch,setShowFetch] = useState(false)  
-   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
-   useEffect(()=>{
-      if(auth.user._id){
-         setShowFetch(true)
+   const [showfetch, setShowFetch] = useState(false);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   useEffect(() => {
+      if (auth.user._id) {
+         setShowFetch(true);
       }
-   },[auth.user._id])
+   }, [auth.user._id]);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const TotalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
-   const [total,setTotal]=useState<number>()
-   useEffect(()=>{
-      const temp = auth.user._id?cart?.reduce(
-         (accumulator:number, product:any) => accumulator + product.productId.price * product.weight, 0
-      ):TotalPrice
-      setTotal(temp)  
-   },[cartdb,cart])
+   const [total, setTotal] = useState<number>();
+   useEffect(() => {
+      const temp = auth.user._id
+         ? cart?.reduce(
+              (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+              0
+           )
+         : TotalPrice;
+      setTotal(temp);
+   }, [cartdb, cart]);
    return (
       <>
          <div className='order-checkout'>
@@ -51,7 +58,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                <div className='check-pro ml-[30px] md:w-[calc(50%-30px)] max-md:w-full '>
                   <span className='text-[26px] text-[#333333] font-bold'>Giỏ hàng của bạn (8)</span>
                   <ul className='list-check-pro mt-[20px] md:max-h-[650px] overflow-scroll'>
-                     {cart?.map((item) => {
+                     {cart?.map((item: any) => {
                         return (
                            <>
                               <li className='check-pro-item flex items-center mb-[20px] pb-[20px] border-b border-[#e2e2e2]'>
@@ -63,7 +70,10 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                     />
                                  </div>
                                  <div className='check-pro-content ml-[15px]'>
-                                    <Link to={'/products/' + item.productId._id} className='block font-bold text-[#333333]'>
+                                    <Link
+                                       to={'/products/' + item.productId._id}
+                                       className='block font-bold text-[#333333]'
+                                    >
                                        {item.productId?.productName}
                                     </Link>
                                     <span className='block font-bold mt-[2px]'>
@@ -71,7 +81,10 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                     </span>
                                     <span className='mt-[5px] font-bold'>{item.weight} X </span>
                                     <span className='mt-[5px] font-bold'>
-                                       {item.productId.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                       {item.productId.price.toLocaleString('vi-VN', {
+                                          style: 'currency',
+                                          currency: 'VND'
+                                       })}
                                     </span>
                                  </div>
                               </li>
@@ -87,7 +100,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='text-[18px] font-[500]'>Sản phẩm</span>
                         <span className='text-[18px] font-[500]'>Tổng</span>
                      </div>
-                     {cart?.map((item) => {
+                     {cart?.map((item: any) => {
                         return (
                            <>
                               <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
@@ -134,12 +147,8 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                               >
                                  {PAYMENT_METHODS.map((method) => (
                                     <Radio value={method.value}>
-                                       {method.value === 'momo' ? (
-                                          <img
-                                             className='w-[60px]'
-                                             src='https://cdn2.cellphones.com.vn/x/media/wysiwyg/momo_1.png'
-                                             alt=''
-                                          />
+                                       {method.type === 'logo' ? (
+                                          <img className='w-[60px]' src={method?.srcLogo} alt='' />
                                        ) : (
                                           <span className='text-greenPrimary font-semibold'>{method.name}</span>
                                        )}

@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from 'react-router-dom';
 import { Button, Divider, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
 import { getOrderForGuest } from '../../../api/order';
@@ -17,9 +18,8 @@ import {
    SHIPPING_ORDER,
    SUCCESS_ORDER
 } from '../../../constants/orderStatus';
-import { CanceledOrder } from '../../../api/order';
 import { clientSocket } from '../../../config/socket';
-import { useGetOrderForMemberQuery } from '../../../services/order.service';
+import { useCancelOrderMemberMutation, useGetOrderForMemberQuery } from '../../../services/order.service';
 
 const { Column } = Table;
 
@@ -30,11 +30,13 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, isLoading } = useGetOrderForMemberQuery({ statusOrder: status, day });
+   const { data, isLoading, refetch } = useGetOrderForMemberQuery({ statusOrder: status, day });
+   const [handleCancelOrder, { isLoading: loadingCancel }] = useCancelOrderMemberMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
-      const { data } = await CanceledOrder(id);
-      clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
+      const data = await handleCancelOrder(id);
+      console.log(data);
+      clientSocket.emit('confirmOrder', JSON.stringify(data));
       message.success('Hủy đơn hàng thành công !');
    };
 
@@ -51,6 +53,7 @@ const OrderPage = () => {
          });
       }
    };
+
    const handleFindOrder = useCallback((invoiceId: string) => handleSubmit(invoiceId), []);
    if (loading || isLoading) return <Loading sreenSize='lg' />;
    return (
@@ -141,7 +144,10 @@ const OrderPage = () => {
                                     title='Bạn có muốn xóa?'
                                     onConfirm={() => canceledOrder(record?._id)}
                                  >
-                                    <Button className='bg-red-500 text-white hover:!text-white hover:!border-none'>
+                                    <Button
+                                       disabled={loadingCancel}
+                                       className='bg-red-500 text-white hover:!text-white hover:!border-none'
+                                    >
                                        Huỷ đơn hàng
                                     </Button>
                                  </Popconfirm>
