@@ -50,17 +50,19 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
             const product = {
                productId: product_info?._id,
                productName: product_info?.productName,
-               weight:inputWeight
-            }
-           await  addCart(product).unwrap()
-         }
-         else{
+               weight: inputWeight
+            };
+            await addCart(product).unwrap();
+         } else {
             const product = {
                productId: {
                   _id: product_info?._id,
                   productName: product_info?.productName,
                   images: [{ url: product_info?.images[0].url }],
-                  price: product_info?.price,
+                  price:
+                     product_info?.discount && product_info?.discount > 0
+                        ? product_info?.price - (product_info?.price * product_info?.discount) / 100
+                        : product_info?.price,
                   originId: {
                      _id: product_info?.originId._id,
                      name: product_info?.originId.name

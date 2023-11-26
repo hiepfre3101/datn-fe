@@ -47,12 +47,11 @@ const ShowProducts = ({ data }: IProps) => {
          const product = {
             productId: data?._id,
             productName: data?.productName,
-            weight:1
-         }
-        await  addCart(product).unwrap()
-        message.success("Thêm sản phẩm vào giỏ hàng thành công")
-      }
-      else{
+            weight: 1
+         };
+         await addCart(product).unwrap();
+         message.success('Thêm sản phẩm vào giỏ hàng thành công');
+      } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
          }, 0);
@@ -60,11 +59,12 @@ const ShowProducts = ({ data }: IProps) => {
             productId: {
                _id: data?._id,
                productName: data?.productName,
-               images: [
-                  {url: data?.images[0].url}
-               ],
-               price: data?.price-(data?.price*data?.discount)/100,
-               originId:{
+               images: [{ url: data?.images[0].url }],
+               price:
+                  data?.discount && data?.discount > 0
+                     ? data?.price - (data?.price * data?.discount) / 100
+                     : data?.price,
+               originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
                }
@@ -149,17 +149,16 @@ const ShowProducts = ({ data }: IProps) => {
                               </ConfigProvider>
                            </div>
                            <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                             
-                               {(item?.price-(item?.price * item.discount) / 100).toLocaleString('vi-VN', {
-                                       style: 'currency',
-                                       currency: 'VND'
-                                    })}
-                              {item.discount >0&& (
-                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                    {item?.price?.toLocaleString('vi-VN', {
+                              {(item?.price - (item?.price * item.discount) / 100).toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
+                              {item.discount > 0 && (
+                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                    {item?.price?.toLocaleString('vi-VN', {
+                                       style: 'currency',
+                                       currency: 'VND'
+                                    })}
                                  </span>
                               )}
                            </p>

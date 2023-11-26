@@ -63,8 +63,7 @@ const CheckOut = () => {
                   products: cart["products"].map((product:any) => {
                     const { totalWeight, productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {}, ...rest } = product;
                     return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
-                  }),
-                totalPayment:2
+                  })
              }
              checkCartLocal(cartLocal).then((res:any) => {
              
