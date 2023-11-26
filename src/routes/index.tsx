@@ -22,6 +22,12 @@ import OrderCompletePage from '../pages/UserPages/OrderCompletePage/OrderComplet
 import OrderPage from '../pages/UserPages/OderPage/OrderPage';
 import OrderDetail from '../pages/UserPages/OderPage/OrderDetail';
 import OrdersAdmin from '../pages/AdminPages/Orders/OrdersAdmin';
+import VNPayIpn from '../pages/UserPages/VNPay/VNPayIpn';
+import ContactPage from '../pages/UserPages/ContactPage/ContactPage';
+import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
+import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
+import AddVoucher from '../pages/AdminPages/Voucher/AddVoucher';
+import UpdateVoucher from '../pages/AdminPages/Voucher/UpdateVoucher';
 
 const router = createBrowserRouter([
    {
@@ -73,6 +79,20 @@ const router = createBrowserRouter([
          {
             path: 'my-order/:id',
             element: <OrderDetail />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'vnpay_return',
+            element: <VNPayIpn/>
+         },
+         {
+            path: 'contact',
+            element: <ContactPage />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'introduct',
+            element: <IntroducePage />,
             errorElement: <NotFoundPage />
          }
       ]
@@ -136,7 +156,23 @@ const router = createBrowserRouter([
             path: 'orders',
             element: <OrdersAdmin />,
             errorElement: <NotFoundPage />
+         },
+         {
+            path: 'vouchers',
+            element: <VoucherAdmin />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'add-voucher',
+            element: <AddVoucher />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'update-voucher',
+            element: <UpdateVoucher />,
+            errorElement: <NotFoundPage />
          }
+
 
          // {
          //    path: 'accounts',

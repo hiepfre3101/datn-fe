@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import {  setItem } from '../../../slices/cartSlice';
+import { setItem } from '../../../slices/cartSlice';
 import { message } from 'antd';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
 import Loading from '../../../components/Loading/Loading';
+import { GoogleOutlined } from '@ant-design/icons';
 
 const LoginPage = () => {
    const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ const LoginPage = () => {
          } else {
             navigate('/manage/dashboard');
          }
-      } catch (error:any) {
+      } catch (error: any) {
          message.error(error.data.message);
       }
    };
@@ -80,21 +81,29 @@ const LoginPage = () => {
                               }}
                            />
                         </div>
-                        <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
+                        <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] gap-2 gap-y-[20px]'>
                            <button
                               type='button'
                               onClick={onFinish}
-                              className=' text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
+                              className='w-[100%] text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
                            >
                               Đăng nhập
                            </button>
-                           <a
-                              href='#'
-                              className='link-to-forget-password underline max=sm:text-[16px] sm:text-[18px] hover:text-[#333333] '
-                           >
-                              Quên mật khẩu ?
-                           </a>
+                           <Link className='w-[100%]' to={'http://localhost:8080/api/auth/google/login'}>
+                              <button
+                                 type='button'
+                                 className='w-full btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
+                              >
+                                 <GoogleOutlined /> google
+                              </button>
+                           </Link>
                         </div>
+                        <a
+                           href='#'
+                           className='link-to-forget-password underline max=sm:text-[16px] sm:text-[18px] hover:text-[#333333] '
+                        >
+                           Quên mật khẩu ?
+                        </a>
                         <div className='link-to-sign-up mt-[30px] py-[30px] px-[15px] bg-[#333333] text-white text-[18px] text-center rounded-[5px]'>
                            Bạn không có tài khoản?{' '}
                            <a

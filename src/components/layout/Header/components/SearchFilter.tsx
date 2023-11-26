@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Drawer, Input, Button, Spin, Image, Tag } from 'antd';
+import { Drawer, Input, Spin, Image, Tag } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { IProduct } from '../../../../interfaces/product';
 import { AiOutlineClose } from 'react-icons/ai';
@@ -12,7 +12,7 @@ const SearchFilter = ({ children }: any) => {
    const [search, { data, isLoading }] = useSearchProductMutation();
    const [items, setItems] = useState<IProduct[]>([]);
    const [searchHistory, setSearchHistory] = useState<string[]>([]);
-   console.log(data?.body?.data);
+   // console.log(data?.body?.data);
 
    useEffect(() => {
       const savedSearchHistory = localStorage.getItem('searchHistory');
@@ -27,11 +27,6 @@ const SearchFilter = ({ children }: any) => {
       }
    }, [data, isLoading]);
 
-   // useEffect(() => {
-   //    setSearchHistory()
-   //    localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-   // }, [searchHistory]);
-
    const showDrawer = () => {
       setIsDrawerOpen(true);
    };
@@ -41,16 +36,20 @@ const SearchFilter = ({ children }: any) => {
       setSearchValue('');
       setIsDrawerOpen(false);
    };
-
-   const handleSearch = () => {
-      if (searchValue === '') {
+   useEffect(() => {
+      handleSearch(undefined);
+   }, [searchValue]);
+   const handleSearch = (e: any | undefined) => {
+      if (!searchValue || searchValue.trim() === '') {
          setItems([]);
-         search('');
       } else {
-         const newSearchHistory = [searchValue, ...searchHistory];
-         const histories = newSearchHistory.filter((_, index) => index < 5);
-         setSearchHistory(histories);
-         localStorage.setItem('searchHistory', JSON.stringify(histories));
+         if (e && e.key === 'Enter') {
+            const newSearchHistory = [searchValue, ...searchHistory];
+            const histories = newSearchHistory.filter((_, index) => index < 5);
+            setSearchHistory(histories);
+            localStorage.setItem('searchHistory', JSON.stringify(histories));
+         }
+
          search(`${searchValue}`);
       }
    };
@@ -70,16 +69,15 @@ const SearchFilter = ({ children }: any) => {
          <Drawer title='Search Products' placement='top' closable={true} onClose={onClose} visible={isDrawerOpen}>
             <div className='form-search relative'>
                <Input
+                  onKeyDown={handleSearch}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
                   placeholder='Tìm kiếm sản phẩm...'
                   className='w-full outline-none border-b-[1px] border-[#e2e2e2] py-[10px] text-[#6f6f6f]'
                />
-               <Button className='border-none absolute right-0 translate-y-[50%] bottom-[50%]' onClick={handleSearch}>
-                  <SearchOutlined className='text-[20px] text-black'></SearchOutlined>
-               </Button>
+               <SearchOutlined className='border-none absolute right-10 translate-y-[50%] bottom-[50%] text-[20px] text-black'></SearchOutlined>
             </div>
-            <div className='items-center flex justify-center my-5 gap-5'>
+            <div className='items-center flex justify-start my-5 gap-5'>
                <h2 className='text-xl text-black font-bold '>Search History:</h2>
                <div className='flex justify-center gap-5'>
                   {searchHistory.map((keyword, index) => (
@@ -105,14 +103,14 @@ const SearchFilter = ({ children }: any) => {
                   ))}
                </div>
             </div>
-            <div className='grid grid-cols-2 w-[50%] mx-auto items-center '>
+            <div className=' flex-wrap flex mx-auto items-center '>
                {isLoading ? (
-                  <div className='flex justify-center'>
+                  <div className='flex justify-center w-full'>
                      <Spin />
                   </div>
                ) : (
                   items.map((item: IProduct, index: number) => (
-                     <div className='items-center flex justify-center gap-2 mx-auto' key={index}>
+                     <div className='items-center flex-wrap justify-center gap-2 mx-auto' key={index}>
                         <Image src={item.images[0].url} width={120} />
                         <div className='flex-1 '>
                            <Link to={`/products/${item._id}`}>

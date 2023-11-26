@@ -44,7 +44,7 @@ const CategoryAdmin = () => {
                      </div>
                   </header>
 
-                  <div className='flex gap-7 flex-wrap' style={{ margin: 30 }}>
+                  <div className='flex gap-7 flex-wrap justify-center' style={{ margin: 30 }}>
                      {isLoading
                         ? 'loading'
                         : data?.body.data.map((cate, index) => {

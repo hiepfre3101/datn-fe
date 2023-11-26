@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ConfigProvider, Rate, message } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
@@ -42,7 +43,7 @@ const ShowProducts = ({ data }: IProps) => {
       dispatch(saveProduct(data));
    };
    const add_to_cart = async (data: IProductExpanded) => {
-      if(auth.user._id){
+      if (auth.user._id) {
          const product = {
             productId: data?._id,
             productName: data?.productName,
@@ -56,7 +57,7 @@ const ShowProducts = ({ data }: IProps) => {
             return accumulator + shipmentWeight.weight;
          }, 0);
          const product = {
-            productId:{
+            productId: {
                _id: data?._id,
                productName: data?.productName,
                images: [
@@ -67,12 +68,12 @@ const ShowProducts = ({ data }: IProps) => {
                   _id: data?.originId._id,
                   name: data?.originId.name
                }
-            },  
+            },
             weight: 1,
             totalWeight: totalWeight
-         };        
+         };
          dispatch(addItem(product));
-      }     
+      }
    };
    return (
       <div>
