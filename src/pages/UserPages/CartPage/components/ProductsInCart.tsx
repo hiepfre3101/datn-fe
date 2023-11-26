@@ -5,7 +5,7 @@ import { removeFromCart, updateItem, removeAllProductFromCart } from '../../../.
 import { message } from 'antd';
 import { IAuth } from '../../../../slices/authSlice';
 import { useDeleteAllProductInCartMutation, useDeleteProductInCartMutation, useGetCartQuery, useUpdateCartMutation } from '../../../../services/cart.service';
-import { ICartDataBase } from '../../../../interfaces/cart';
+import { ICartDataBaseItem } from '../../../../interfaces/cart';
 import { useEffect, useRef, useState } from 'react';
 const debounce = (func: Function, delay: number) => {
    let timeoutId: NodeJS.Timeout;
@@ -43,7 +43,7 @@ const ProductsInCart = () => {
          message.success('Cập nhật sản phẩm thành công');
       }, 1000);
     }
-   const updateCart = async (item:ICartDataBase|ICartItems,index:number,cal:boolean) =>  { 
+   const updateCart = async (item:ICartDataBaseItem|ICartItems,index:number,cal:boolean) =>  { 
       setClickCount(1)
  if (auth.user._id) {
     let updatedCartState = [...cartState];
@@ -126,7 +126,7 @@ const ProductsInCart = () => {
       }
      }
    };
-   const handleRemoveProductInCart =  (item:ICartDataBase|ICartItems) => {
+   const handleRemoveProductInCart =  (item:ICartDataBaseItem|ICartItems) => {
       if(auth.user._id){
        deleteProductInCartDB(item?.productId?._id).then(res=>{
          res

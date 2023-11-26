@@ -1,6 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
-import { IObjIdForGetRelatedProducts, IProduct, IProductExpanded, InputProduct } from '../interfaces/product';
+import {
+   IObjIdForGetRelatedProducts,
+   IProduct,
+   IProductExpanded,
+   InputProduct,
+   InputSaleProduct
+} from '../interfaces/product';
 import { paramTransformer } from '../utils/transformParams';
 
 const productApi = createApi({
@@ -89,6 +95,23 @@ const productApi = createApi({
             };
          },
          invalidatesTags: ['product']
+      }),
+      createSaleProduct: builder.mutation<IResponse<IProductExpanded>, InputSaleProduct>({
+         query: (body) => {
+            return {
+               url: '/products-process',
+               method: 'post',
+               body
+            };
+         },
+         invalidatesTags: ['product']
+      }),
+      searchProduct: builder.mutation<{ product: IProduct[] }, string>({
+         query: (search) => ({
+            url: '/products?_q=' + search,
+            method: 'GET'
+         }),
+         invalidatesTags: ['product']
       })
    })
 });
@@ -101,7 +124,9 @@ export const {
    useGetRelatedProductsQuery,
    useAddProductMutation,
    useGetOneProductQuery,
-   useRemoveProductMutation
+   useRemoveProductMutation,
+   useCreateSaleProductMutation,
+   useSearchProductMutation
 } = productApi;
 
 export default productApi;

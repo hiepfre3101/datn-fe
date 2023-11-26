@@ -45,6 +45,7 @@ const ShowProducts = ({ data }: IProps) => {
       if(auth.user._id){
          const product = {
             productId: data?._id,
+            productName: data?.productName,
             weight:1
          }
         await  addCart(product).unwrap()
@@ -61,7 +62,7 @@ const ShowProducts = ({ data }: IProps) => {
                images: [
                   {url: data?.images[0].url}
                ],
-               price: data?.price,
+               price: data?.price-(data?.price*data?.discount)/100,
                originId:{
                   _id: data?.originId._id,
                   name: data?.originId.name
@@ -95,12 +96,12 @@ const ShowProducts = ({ data }: IProps) => {
                               <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
                                  <img
                                     className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover'
-                                    src={item?.images[0].url}
+                                    src={item?.images[0]?.url}
                                     alt=''
                                  />
                                  <img
                                     className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-contain'
-                                    src={item?.images[1].url}
+                                    src={item?.images[1]?.url}
                                     alt=''
                                  />
                               </div>
@@ -147,16 +148,17 @@ const ShowProducts = ({ data }: IProps) => {
                               </ConfigProvider>
                            </div>
                            <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                              {item?.price.toLocaleString('vi-VN', {
-                                 style: 'currency',
-                                 currency: 'VND'
-                              })}
-                              {item.discount > 0 && item.shipments.length > 0 && (
-                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                    {((item?.price * item.discount) / 100).toLocaleString('vi-VN', {
+                             
+                               {(item?.price-(item?.price * item.discount) / 100).toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}
+                              {item.discount >0&& (
+                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                    {item?.price?.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
                                  </span>
                               )}
                            </p>

@@ -4,13 +4,12 @@ import { IAuth } from '../../../../slices/authSlice';
 import { useCheckCartMutation, useGetCartQuery } from '../../../../services/cart.service';
 import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Modal, message } from 'antd';
+import { Modal} from 'antd';
 
 const CheckOut = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch,setShowFetch] = useState(false)  
    const { data: cartdb,refetch } = useGetCartQuery(undefined,{skip:showfetch==false});
-   const [checkCartdb] = useCheckCartMutation()
    const [checkCartLocal] = useCheckCartMutation()
    const [isModalOpen, setIsModalOpen] = useState(false);
    useEffect(()=>{
@@ -38,13 +37,30 @@ const CheckOut = () => {
     };
     const dispatch = useDispatch()
    const goCheckOut =  ()=>{
-      console.log(error.length);
       if(auth.user._id){
-         refetch()
+         refetch().then((res)=>{
+            if(res.data.body.errors){
+               setIsModalOpen(true)
+               res.data.body.errors.map(item=>{
+                  if(item.message=="The remaining quantity is not enough!"){
+                     setError((prevError: string[]) => [...prevError, "- Số lượng trong kho của sản phẩm" + item.productName + " không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng"]);
+                  }
+                  else if(item.message=="Product is currently out of stock!"){
+                     setError((prevError: string[]) => [...prevError, "- Sản phẩm" + item.productName + " đã hết hàng"]);
+                  }
+                  else if(item.message=="Product is no longer available!"){
+                     setError((prevError: string[]) => [...prevError, "- Sản phẩm" + item.productName + " đã  bị xoá khỏi hệ thống"]);
+                  }
+               })
+            }
+            else{
+               navigate("/checkout")
+            }
+         })
          }
          else{
              const cartLocal={
-                  products: cart["products"].map(product => {
+                  products: cart["products"].map((product:any) => {
                     const { totalWeight, productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {}, ...rest } = product;
                     return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
                   }),
@@ -88,9 +104,9 @@ const CheckOut = () => {
                      }     
                   })   
                }
-               // else{
-               //    navigate("/checkout")
-               // }
+               else{
+                  navigate("/checkout")
+               }
             })
          }
    }

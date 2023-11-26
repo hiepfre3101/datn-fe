@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Button, Divider, Select, Space, Table, Tag, message, notification } from 'antd';
+import { Button, Divider, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
 import { useEffect, useState, useCallback } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
@@ -7,8 +7,18 @@ import { getOrderForGuest, getOrderForMember } from '../../../api/order';
 import { useSelector } from 'react-redux';
 import { IAuth } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
+import { uppercaseFirstLetter } from '../../../helper';
 import { formatStringToDate } from '../../../helper';
-import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
+import {
+   DONE_ORDER,
+   FAIL_ORDER,
+   ORDER_STATUS_FULL,
+   PENDING_ORDER,
+   SHIPPING_ORDER,
+   SUCCESS_ORDER
+} from '../../../constants/orderStatus';
+import { CanceledOrder } from '../../../api/order';
+import { clientSocket } from '../../../config/socket';
 
 const { Column } = Table;
 
@@ -19,6 +29,14 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
+   const [recall, setRecall] = useState<boolean>(false);
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const canceledOrder = async (id: any) => {
+      const { data } = await CanceledOrder(id);
+      clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
+      message.success('Hủy đơn hàng thành công !');
+      setRecall((prev) => !prev);
+   };
    // const orderDatas = orders && orderData(orders)
    useEffect(() => {
       if (!auth.accessToken) return;
@@ -36,7 +54,7 @@ const OrderPage = () => {
             console.log(error);
          }
       })();
-   }, [auth.accessToken, day, status]);
+   }, [auth.accessToken, day, status, recall]);
    const handleSubmit = async (invoiceId: string) => {
       try {
          setLoading(true);
@@ -79,15 +97,17 @@ const OrderPage = () => {
                         value={status}
                      >
                         <Option value=''>Trạng thái đơn hàng</Option>
-                        {ORDER_STATUS_FULL.map((statusOrder) => (
-                           <Option value={statusOrder.status.toLowerCase()}>{statusOrder.status}</Option>
+                        {ORDER_STATUS_FULL.map((statusOrder, idx) => (
+                           <Option key={idx} value={statusOrder.status.toLowerCase()}>
+                              {statusOrder.status}
+                           </Option>
                         ))}
                      </Select>
                   </div>
                )}
                <Divider></Divider>
                <div className='bg-slate-50'>
-                  <Table dataSource={orders} pagination={{ pageSize: 10 }} scroll={{ y: 800 }}>
+                  <Table dataSource={orders} pagination={{ pageSize: 7 }} scroll={{ y: 800 }}>
                      <Column title='Ngày mua' dataIndex='createdAt' key='createdAt' />
                      <Column title='Tên' dataIndex='customerName' key='customerName' />
                      <Column title='Số điện thoại' dataIndex='phoneNumber' key='phoneNumber' />
@@ -96,17 +116,23 @@ const OrderPage = () => {
                         dataIndex='status'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => {
-                           let color = 'white';
-                           if (record.status == 'chờ xác nhận') {
+                           let color = '';
+                           if (record.status == PENDING_ORDER.toLowerCase()) {
                               color = 'yellow';
                            }
-                           if (record.status == 'đang giao hàng') {
+                           if (record.status == SHIPPING_ORDER.toLowerCase()) {
+                              color = 'orange';
+                           }
+                           if (record.status == SUCCESS_ORDER.toLowerCase()) {
                               color = 'green';
                            }
-                           if (record.status == 'giao hàng thành công') {
+                           if (record.status == FAIL_ORDER.toLowerCase()) {
                               color = 'red';
                            }
-                           return <Tag color={color}>{record.status}</Tag>;
+                           if (record.status == DONE_ORDER.toLowerCase()) {
+                              color = 'purple';
+                           }
+                           return <Tag color={color}>{uppercaseFirstLetter(record.status)}</Tag>;
                         }}
                      />
                      <Column
@@ -114,11 +140,25 @@ const OrderPage = () => {
                         key='action'
                         render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
-                              <Link to={''}>
-                                 <Button className='bg-amber-500'>Mua lại</Button>
-                              </Link>
+                              {record.status == 'chờ xác nhận' && record.status !== FAIL_ORDER.toLowerCase() && (
+                                 <Popconfirm
+                                    className={``}
+                                    description='Bạn chắc chắn muốn huỷ đơn hàng chứ?'
+                                    okText='Đồng ý'
+                                    cancelText='Hủy bỏ'
+                                    title='Bạn có muốn xóa?'
+                                    onConfirm={() => canceledOrder(record?._id)}
+                                 >
+                                    <Button className='bg-red-500 text-white hover:!text-white hover:!border-none'>
+                                       Huỷ đơn hàng
+                                    </Button>
+                                 </Popconfirm>
+                              )}
+
                               <Link to={'/my-order/' + record?._id}>
-                                 <Button className='bg-greenPrimary'>Chi tiết</Button>
+                                 <Button className='bg-greenPrimary text-white hover:!text-white hover:!border-none'>
+                                    Chi tiết
+                                 </Button>
                               </Link>
                            </Space>
                         )}

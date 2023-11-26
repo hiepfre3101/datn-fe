@@ -26,6 +26,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const productSlice = useSelector((state: RootState) => state.productSlice.products);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const add_to_wishList = (product: any) => {
       dispatch(addToWhishList(product));
    };
@@ -46,36 +47,33 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
       dispatch(saveProduct(data));
    };
    const add_to_cart = async (data: IProductExpanded) => {
-      if(auth.user._id){
+      if (auth.user._id) {
          const product = {
             productId: data?._id,
-            weight:1
-         }
-        await  addCart(product).unwrap()
-        message.success("Thêm sản phẩm vào giỏ hàng thành công")
-      }
-      else{
+            weight: 1
+         };
+         await addCart(product).unwrap();
+         message.success('Thêm sản phẩm vào giỏ hàng thành công');
+      } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
          }, 0);
          const product = {
-            productId:{
+            productId: {
                _id: data?._id,
                productName: data?.productName,
-               images: [
-                  {url: data?.images[0].url}
-               ],
-               price: data?.price,
-               originId:{
+               images: [{ url: data?.images[0].url }],
+               price: data?.price-(data?.price*data?.discount)/100,
+               originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
                }
-            },  
+            },
             weight: 1,
             totalWeight: totalWeight
-         };        
+         };
          dispatch(addItem(product));
-      }     
+      }
    };
    return (
       <>
@@ -179,7 +177,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                     </ConfigProvider>
                                  </div>
                                  <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                                    {item?.price.toLocaleString('vi-VN', {
+                                    {(item?.price-(item?.price*item?.discount)/100)?.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}

@@ -1,3 +1,4 @@
+import { IResponse } from './../interfaces/base';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 
 import { IOrder, IOrderFull } from '../interfaces/order';
@@ -26,7 +27,7 @@ const orderApi = createApi({
          },
          providesTags: ['orders']
       }),
-      addOrder: builder.mutation<IOrder, object>({
+      addOrder: builder.mutation<IResponse<IOrder & { _id: string }>, object>({
          query: (body) => {
             return {
                url: '/orders',
@@ -51,7 +52,8 @@ const orderApi = createApi({
                url: `/orders-member-filter`,
                params: params
             };
-         }
+         },
+         providesTags: ['orders']
       }),
       filterAdminOrders: builder.query<IResponseHasPaginate<IOrderFull>, { status?: string; day?: string }>({
          query: (params) => {
@@ -59,7 +61,8 @@ const orderApi = createApi({
                url: `/orders-admin-filter`,
                params: params
             };
-         }
+         },
+         providesTags: ['orders']
       })
    })
 });

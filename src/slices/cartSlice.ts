@@ -45,7 +45,7 @@ const cartSlice = createSlice({
          const products =  JSON.parse(localStorage.getItem("cart")!);
          state.products = products;
          state.totalPrice = products.reduce(
-            (accumulator: any, product: any) => accumulator + product.productId.price * product.weight,
+            (accumulator: any, product: any) => accumulator + product.productId?.price * product.weight,
             0
          );
       },
@@ -59,7 +59,7 @@ const cartSlice = createSlice({
          });
          localStorage.setItem("cart", JSON.stringify(state.products));
          state.totalPrice = state.products.reduce(
-            (accumulator: any, product: any) => accumulator + product.price * product.weight,
+            (accumulator: any, product: any) => accumulator + product?.price * product.weight,
             0
          );
       },
@@ -85,7 +85,7 @@ const cartSlice = createSlice({
          });
          if (isItemExist && !error) {
             state.totalPrice = products.reduce(
-               (accumulator: any, product: any) => accumulator + product.productId.price * product.weight,
+               (accumulator: any, product: any) => accumulator + product?.productId?.price * product.weight,
                0
             );
                
@@ -94,7 +94,7 @@ const cartSlice = createSlice({
             message.success('Thêm sản phẩm vào giỏ hàng thành công');
          } else if (!isItemExist && !error) {
             state.totalPrice = [...state.products, value].reduce(
-               (accumulator: any, product: any) => accumulator + product.productId.price * product.weight,
+               (accumulator: any, product: any) => accumulator + product.productId?.price * product.weight,
                0
             );
            
@@ -107,7 +107,7 @@ const cartSlice = createSlice({
       removeFromCart: (state, action) => {
          const nextCartproducts = state.products.filter((cartItem: any) => cartItem.productId._id !== action.payload.id);
          state.totalPrice = nextCartproducts.reduce(
-            (accumulator, product) => accumulator + product.productId.price * product.weight,
+            (accumulator, product) => accumulator + product.productId?.price * product.weight,
             0
          );
          state.products = nextCartproducts;
@@ -134,7 +134,7 @@ const cartSlice = createSlice({
          });
          localStorage.setItem("cart", JSON.stringify(nextCartproducts));
          state.totalPrice = nextCartproducts.reduce(
-            (accumulator, product) => accumulator + product.productId.price * product.weight,
+            (accumulator, product) => accumulator + product.productId?.price * product.weight,
             0
          );
          state.products = nextCartproducts;

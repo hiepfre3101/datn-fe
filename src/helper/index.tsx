@@ -1,4 +1,4 @@
-import { ORDER_OF_STATUS } from '../constants/orderStatus';
+import { ORDER_STATUS_FULL } from '../constants/orderStatus';
 
 export const formatStringToDate = (isoString: string) => {
    const date = new Date(isoString);
@@ -17,8 +17,8 @@ export const transformCurrency = (value: string | number) => {
 };
 
 export const transformStatusOrder = (status: string) => {
-   let returnValue={status:"",color:""};
-   ORDER_OF_STATUS.forEach((rawStatus) => {
+   let returnValue = { status: '', color: '' };
+   ORDER_STATUS_FULL.forEach((rawStatus) => {
       if (rawStatus.status.toLowerCase() === status) {
          returnValue = rawStatus;
       }
