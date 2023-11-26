@@ -20,7 +20,7 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   
+
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = (id: any) => {
       CanceledOrder(id)
@@ -112,7 +112,7 @@ const OrderPage = () => {
                            if (record.status == SUCCESS_ORDER.toLowerCase()) {
                               color = 'green';
                            }
-                           if (record.status == FAIL_ORDER.toLowerCase())  {
+                           if (record.status == FAIL_ORDER.toLowerCase()) {
                               color = 'red';
                            }
                            return <Tag color={color}>{record.status}</Tag>;
@@ -124,6 +124,9 @@ const OrderPage = () => {
                         render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
 
+                              <Link to={'/my-order/' + record?._id}>
+                                 <Button className='bg-greenPrimary'>Chi tiết</Button>
+                              </Link>
                               {
                                  record.status == 'chờ xác nhận' &&
                                  <Popconfirm
@@ -137,10 +140,11 @@ const OrderPage = () => {
                                     <Button className='bg-red-500'>Huỷ đơn hàng</Button>
                                  </Popconfirm>
                               }
+                              {
+                                 record.status != 'chờ xác nhận' &&
+                                 <Button className='bg-greenPrimary'>Mua lại</Button>
+                              }
 
-                              <Link to={'/my-order/' + record?._id}>
-                                 <Button className='bg-greenPrimary'>Chi tiết</Button>
-                              </Link>
 
                            </Space>
                         )}
