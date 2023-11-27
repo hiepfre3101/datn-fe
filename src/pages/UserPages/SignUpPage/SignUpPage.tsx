@@ -1,10 +1,11 @@
 import { message } from 'antd';
 import  { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSignupMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
 import {  setItem } from '../../../slices/cartSlice';
+import { GoogleOutlined } from '@ant-design/icons';
 
 const SignUpPage = () => {
 
@@ -151,15 +152,24 @@ const SignUpPage = () => {
                               onChange={(e)=>setconfirmPassword(e.target.value.trim())}
                            />
                         </div>
-                        <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] flex-wrap gap-y-[20px]'>
+                        <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] gap-2 gap-y-[20px]'>
                            <button
                               type='button'
                               onClick={signHandle}
-                              className='btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
+                              className='w-full btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
                            >
                               Đăng ký
                            </button>
+                           <Link className='w-[100%]' to={'http://localhost:8080/api/auth/google/login'}>
+                              <button
+                                 type='button'
+                                 className='w-full btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
+                              >
+                                 <GoogleOutlined /> google
+                              </button>
+                           </Link>
                         </div>
+                     </form>
                         <div className='link-to-log-in mt-[30px] py-[30px] px-[15px] bg-[#333333] text-white text-[18px] text-center rounded-[5px]'>
                            Bạn đã có tài khoản?{' '}
                            <a
@@ -169,7 +179,6 @@ const SignUpPage = () => {
                               Đăng nhập
                            </a>
                         </div>
-                     </form>
                   </div>
                </div>
             </section>

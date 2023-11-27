@@ -54,7 +54,6 @@ const cartDB = createApi({
             method: 'POST',
             body: item
          }),
-         invalidatesTags: ['cart']
       }),
    })
 });

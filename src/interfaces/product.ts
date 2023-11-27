@@ -41,6 +41,7 @@ export interface IProductExpanded extends IProduct {
 export interface IDescProp {
    desc: string | undefined;
    originName: string;
+   productId: string
 }
 export interface IProductInfoProp {
    product_info: IProductExpanded | undefined;

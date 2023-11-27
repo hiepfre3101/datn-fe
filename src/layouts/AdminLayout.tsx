@@ -107,7 +107,7 @@ const AdminLayout = () => {
             trigger={ButtonTrigger}
          >
             <div className='max-h-[150px] flex justify-center items-center'>
-               <img src={logoUrl} alt='logo' className='object-cover' />
+               <img src={logoUrl} alt='logo' className='object-cover max-w-[140px]' />
             </div>
             <Menu theme='light' defaultSelectedKeys={['1']} mode='inline' items={items} />
             <Button

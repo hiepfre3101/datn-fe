@@ -63,7 +63,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                _id: data?._id,
                productName: data?.productName,
                images: [{ url: data?.images[0].url }],
-               price: data?.price,
+               price: data?.price-(data?.price*data?.discount)/100,
                originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
@@ -177,7 +177,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                     </ConfigProvider>
                                  </div>
                                  <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                                    {item?.price?.toLocaleString('vi-VN', {
+                                    {(item?.price-(item?.price*item?.discount)/100)?.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}
