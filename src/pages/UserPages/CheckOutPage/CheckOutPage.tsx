@@ -21,17 +21,14 @@ import {
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
 // import { clientSocket } from '../../../config/socket';
-import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
+import { useCheckCartMutation, useDeleteAllProductInCartMutation, useGetCartQuery } from '../../../services/cart.service';
 import { IAuth } from '../../../slices/authSlice';
 import { formatCharacterWithoutUTF8 } from '../../../helper';
 const CheckOutPage = () => {
-   // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
-   // const handleChangeCheckOutState = (state:string) => {
-   //    setCheckOutState(state)
-   // }
    const methods = useForm<IOrder>();
    const [handleAddOrder] = useAddOrderMutation();
+   const [deleteAllProductInCartDB]= useDeleteAllProductInCartMutation()
    const [current, setCurrent] = useState(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
@@ -50,7 +47,7 @@ const CheckOutPage = () => {
    const dispatch = useDispatch();
    const handleOk = () => {
       setIsModalOpen(false);
-      setError([]);
+
    };
    const onSubmit = async (data: IOrder) => {
       if (current < 2) {
@@ -63,6 +60,7 @@ const CheckOutPage = () => {
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
+         setError([]);
          try {
             if(auth.user._id){
                refetch().then((res)=>{
@@ -130,37 +128,44 @@ const CheckOutPage = () => {
               })
            }
            if(error.length==0){
-                       
-            data.products = cart?.products.map((product: ICartItems) => {
-               return {
-                  productName: product.productId.productName,
-                  price:
-                     product.productId.discount && product.productId.discount > 0
-                        ? product.productId.price - (product.productId.price * product.productId.discount) / 100
-                        : product.productId.price,
-                  productId: product.productId._id,
-                  images: product.productId?.images[0].url,
-                  weight: product.weight,
-                  originId: product.productId?.originId?._id
-               };
-            });
-            data.totalPayment = auth.user._id
-               ? cart?.products.reduce(
-                    (accumulator: number, product: any) =>
-                       accumulator +
-                       (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
-                          product.weight,
-                    0
-                 )
-               : cart?.totalPrice;
-            await handleAddOrder(data)
-               .then((res) => {
-                  dispatch(removeAllProductFromCart())
-                  navigate("/orderComplete")
-               })
-               .finally(() => {
+            console.log(error.length);
+                            
+            // data.products = cart?.products.map((product: ICartItems) => {
+            //    return {
+            //       productName: product.productId.productName,
+            //       price:
+            //          product.productId.discount && product.productId.discount > 0
+            //             ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+            //             : product.productId.price,
+            //       productId: product.productId._id,
+            //       images: product.productId?.images[0].url,
+            //       weight: product.weight,
+            //       originId: product.productId?.originId?._id
+            //    };
+            // });
+            // data.totalPayment = auth.user._id
+            //    ? cart?.products.reduce(
+            //         (accumulator: number, product: any) =>
+            //            accumulator +
+            //            (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+            //               product.weight,
+            //         0
+            //      )
+            //    : cart?.totalPrice;
+            // await handleAddOrder(data)
+            //    .then( async (res) => {
+            //       res
+            //       if(auth.user._id){
+            //         await deleteAllProductInCartDB(auth.user._id)
+            //       }
+            //       else{
+            //          dispatch(removeAllProductFromCart())
+            //       }   
+            //       navigate("/orderComplete")
+            //    })
+            //    .finally(() => {
                   setLoadingState(false);
-               });
+               // });
            }
 
          } catch (error) {
