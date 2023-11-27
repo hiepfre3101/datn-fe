@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
 import OrderCheckOut from './components/orderCheckOut';
-import { Button, ConfigProvider, Modal, Steps } from 'antd';
+import { Button, ConfigProvider, Modal, Steps, message, notification } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -20,34 +20,145 @@ import {
 } from '../../../slices/cartSlice';
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
-// import { clientSocket } from '../../../config/socket';
-import { useCheckCartMutation, useDeleteAllProductInCartMutation, useGetCartQuery } from '../../../services/cart.service';
+import { clientSocket } from '../../../config/socket';
+import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
 import { IAuth } from '../../../slices/authSlice';
 import { formatCharacterWithoutUTF8 } from '../../../helper';
 const CheckOutPage = () => {
+   // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
+   // const handleChangeCheckOutState = (state:string) => {
+   //    setCheckOutState(state)
+   // }
    const methods = useForm<IOrder>();
    const [handleAddOrder] = useAddOrderMutation();
-   const [deleteAllProductInCartDB]= useDeleteAllProductInCartMutation()
+   const [checkCartLocal] = useCheckCartMutation();
    const [current, setCurrent] = useState(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
-   const { data: cartdb,refetch } = useGetCartQuery(undefined, { skip: showfetch==false });
-   const [isModalOpen, setIsModalOpen] = useState(false);
-   const [error,setError] = useState<string[]>([])
+   const { data: cartdb, refetch } = useGetCartQuery(undefined, { skip: showfetch == false });
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
       }
    }, [auth.user._id]);
-   const [checkCartLocal] = useCheckCartMutation()
+   const handleOk = () => {
+      setIsModalOpen(false);
+      setError([]);
+   };
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const cart = auth.user._id ? cartdb?.body.data : CartLocal;
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const dispatch = useDispatch();
-   const handleOk = () => {
-      setIsModalOpen(false);
-
+   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [error, setError] = useState<string[]>([]);
+   const CheckCart = async () => {
+      let temp =false
+      if (auth.user._id) {
+       await  refetch().then((res) => {
+            if (res.data.body.errors) {
+               setIsModalOpen(true);
+               res.data.body.errors.map((item) => {
+                  if (item.message == 'The remaining quantity is not enough!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Số lượng trong kho của sản phẩm' +
+                           item.productName +
+                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                     ]);
+                  } else if (item.message == 'Product is currently out of stock!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm' + item.productName + ' đã hết hàng'
+                     ]);
+                  } else if (item.message == 'Product is no longer available!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
+                     ]);
+                  }
+               });
+            } else {
+                temp = true
+            }
+         });
+      } else {
+         const cartLocal = {
+            products: cart['products'].map((product: any) => {
+               const {
+                  totalWeight,
+                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  ...rest
+               } = product;
+               return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
+            })
+         };
+        await checkCartLocal(cartLocal).then((res: any) => {
+            if (res.error) {
+               setIsModalOpen(true);
+               res.error.data.body?.error.map((item) => {
+                  if (item.message == 'Product is not exsit!') {
+                     dispatch(removeFromCart({ id: item.productId }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm ' + item.productName + ' đã bị xoá khỏi hệ thống'
+                     ]);
+                  } else if (item.message == 'Invalid product origin!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Xuất sứ của sản phẩm ' + item.productName + ' đã được cập nhật'
+                     ]);
+                  } else if (item.message == 'Invalid product name!') {
+                     dispatch(updateNameProductInCartLocal({ id: item.productId, name: item.productName }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Tên của sản phẩm ' + item.productName + ' đã được cập nhật thành ' + item.productName
+                     ]);
+                  } else if (item.message == 'Invalid price for product!') {
+                     dispatch(updatePriceProductInCartLocal({ id: item.productId, price: item.price }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Giá của sản phẩm ' +
+                           item.productName +
+                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                     ]);
+                  } else if (item.message == 'Invalid product image!') {
+                     dispatch(updateImgProductInCartLocal({ id: item.productId, img: item?.image }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Ảnh của sản phẩm ' +
+                           item.productName +
+                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                     ]);
+                  } else if (item.message == 'Insufficient quantity of the product in stock!') {
+                     dispatch(updateItem({ id: item.productId, weight: item.maxWeight }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Số lượng sản phẩm ' +
+                           item.productName +
+                           ' trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về ' +
+                           item.maxWeight
+                     ]);
+                  } else if (item.message == 'The product is currently out of stock!') {
+                     dispatch(removeFromCart({ id: item.productId }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm ' + item.productName + ' đã hết hàng và đã được xoá khỏi giỏ hàng'
+                     ]);
+                  } else if (item.message == 'Invalid totalPayment!') {
+                     dispatch(updateTotalPrice({ total: item.true }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Tổng tiền của bạn đang bị sai và đã được cập nhật lại'
+                     ]);
+                  }
+               });
+            } else {
+               temp = true
+            }
+         });
+      }
+      return temp
    };
    const onSubmit = async (data: IOrder) => {
       if (current < 2) {
@@ -62,116 +173,59 @@ const CheckOutPage = () => {
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
-         setError([]);
          try {
-            if(auth.user._id){
-               refetch().then((res)=>{
-                  if(res.data.body.errors){
-                     setIsModalOpen(true)
-                     res.data.body.errors.map(item=>{
-                        if(item.message=="The remaining quantity is not enough!"){
-                           setError((prevError: string[]) => [...prevError, "- Số lượng trong kho của sản phẩm" + item.productName + " không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng"]);
+               const status = await CheckCart()
+               if(status){
+                  data.products = cart?.products.map((product: ICartItems) => {
+                     return {
+                        productName: product.productId.productName,
+                        price:
+                           product.productId.discount && product.productId.discount > 0
+                              ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+                              : product.productId.price,
+                        productId: product.productId._id,
+                        images: product.productId?.images[0].url,
+                        weight: product.weight,
+                        originId: product.productId?.originId?._id
+                     };
+                  });
+                  data.totalPayment = auth.user._id
+                     ? cart?.products.reduce(
+                          (accumulator: number, product: any) =>
+                             accumulator +
+                             (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                                product.weight,
+                          0
+                       )
+                     : cart?.totalPrice;
+                  await handleAddOrder(data).then((res) => {
+                    
+                        if ('data' in res && 'status' in res.data) {
+                           message.success('Mua hàng thành công');
+                           dispatch(removeAllProductFromCart());
+                           const value = JSON.stringify({
+                              userId: auth?.user?._id,
+                              orderId: res.data?.body?.data._id
+                           });
+                           clientSocket.emit('purchase', value);
+                           if (res.data.body.data.url === '') {
+                              navigate('/ordercomplete');
+                           } else {
+                              window.location.href = res.data.body.data.url;
+                           }
                         }
-                        else if(item.message=="Product is currently out of stock!"){
-                           setError((prevError: string[]) => [...prevError, "- Sản phẩm" + item.productName + " đã hết hàng"]);
-                        }
-                        else if(item.message=="Product is no longer available!"){
-                           setError((prevError: string[]) => [...prevError, "- Sản phẩm" + item.productName + " đã  bị xoá khỏi hệ thống"]);
-                        }
-                     })
-                  }
-              
-               })
-            }    else{
-               const cartLocal={
-                    products: cart["products"].map((product:any) => {
-                      const { totalWeight, productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {}, ...rest } = product;
-                      return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
-                    })
+                     
+                  })
+                  .finally(() => {
+                     setLoadingState(false);
+                  });
                }
-               checkCartLocal(cartLocal).then((res:any) => {
-               
-                 if(res.error){
-                    setIsModalOpen(true)
-                    res.error.data.body?.error.map(item=>{ 
-                       if(item.message=="Product is not exsit!"){
-                          dispatch(removeFromCart({ id: item.productId }))
-                          setError((prevError: string[]) => [...prevError, "- Sản phẩm " + item.productName + " đã bị xoá khỏi hệ thống"]);
-                       }
-                       else if(item.message=="Invalid product origin!"){
-                          setError((prevError: string[]) => [...prevError, "- Xuất sứ của sản phẩm "+ item.productName + " đã được cập nhật"]);
-                       } 
-                       else if(item.message=="Invalid product name!"){
-                          dispatch(updateNameProductInCartLocal({ id: item.productId,name:item.productName }))
-                          setError((prevError: string[]) => [...prevError, "- Tên của sản phẩm "+ item.productName + " đã được cập nhật thành " + item.productName]);
-                       }
-                       else if(item.message=="Invalid price for product!"){
-                          dispatch(updatePriceProductInCartLocal({ id: item.productId,price:item.price }))
-                          setError((prevError: string[]) => [...prevError, "- Giá của sản phẩm "+ item.productName + " không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật"]);
-                       } 
-                       else if(item.message=="Invalid product image!"){
-                          dispatch(updateImgProductInCartLocal({ id: item.productId,img:item?.image[0]?.url }))
-                          setError((prevError: string[]) => [...prevError, "- Ảnh của sản phẩm "+ item.productName + " không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật"]);
-                       }           
-                       else if(item.message=="Insufficient quantity of the product in stock!"){
-                          dispatch(updateItem({ id: item.productId,weight: item.maxWeight}))
-                          setError((prevError: string[]) => [...prevError, "- Số lượng sản phẩm "+ item.productName + " trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về " + item.maxWeight]);
-                       }  
-                       else if(item.message=="The product is currently out of stock!"){
-                          dispatch(removeFromCart({ id: item.productId}))
-                          setError((prevError: string[]) => [...prevError, "- Sản phẩm "+ item.productName + " đã hết hàng và đã được xoá khỏi giỏ hàng"]);
-                       } 
-                       else if(item.message=="Invalid totalPayment!"){
-                          dispatch(updateTotalPrice({ total: item.true}))
-                          setError((prevError: string[]) => [...prevError, "- Tổng tiền của bạn đang bị sai và đã được cập nhật lại"]);
-                       }     
-                    })   
-                 }
-              })
-           }
-           if(error.length==0){
-            console.log(error.length);
-                            
-            // data.products = cart?.products.map((product: ICartItems) => {
-            //    return {
-            //       productName: product.productId.productName,
-            //       price:
-            //          product.productId.discount && product.productId.discount > 0
-            //             ? product.productId.price - (product.productId.price * product.productId.discount) / 100
-            //             : product.productId.price,
-            //       productId: product.productId._id,
-            //       images: product.productId?.images[0].url,
-            //       weight: product.weight,
-            //       originId: product.productId?.originId?._id
-            //    };
-            // });
-            // data.totalPayment = auth.user._id
-            //    ? cart?.products.reduce(
-            //         (accumulator: number, product: any) =>
-            //            accumulator +
-            //            (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
-            //               product.weight,
-            //         0
-            //      )
-            //    : cart?.totalPrice;
-            // await handleAddOrder(data)
-            //    .then( async (res) => {
-            //       res
-            //       if(auth.user._id){
-            //         await deleteAllProductInCartDB(auth.user._id)
-            //       }
-            //       else{
-            //          dispatch(removeAllProductFromCart())
-            //       }   
-            //       navigate("/orderComplete")
-            //    })
-            //    .finally(() => {
-                  setLoadingState(false);
-               // });
-           }
-
+               setLoadingState(false);
          } catch (error) {
-            console.log(error);
+            notification.error({
+               message: 'Mua hàng thất bại',
+               description: 'Lỗi hệ thống'
+            });
          }
       }
    };

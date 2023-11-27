@@ -46,9 +46,9 @@ const CheckOut = () => {
       setError([]);
    };
    const dispatch = useDispatch();
-   const goCheckOut = () => {
+   const goCheckOut = async () => {
       if (auth.user._id) {
-         refetch().then((res) => {
+       await  refetch().then((res) => {
             if (res.data.body.errors) {
                setIsModalOpen(true);
                res.data.body.errors.map((item) => {
@@ -72,7 +72,7 @@ const CheckOut = () => {
                   }
                });
             } else {
-               navigate('/checkout');
+               navigate('/checkout')
             }
          });
       } else {
@@ -86,7 +86,7 @@ const CheckOut = () => {
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
-         checkCartLocal(cartLocal).then((res: any) => {
+        await checkCartLocal(cartLocal).then((res: any) => {
             if (res.error) {
                setIsModalOpen(true);
                res.error.data.body?.error.map((item) => {
@@ -116,7 +116,7 @@ const CheckOut = () => {
                            ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
                      ]);
                   } else if (item.message == 'Invalid product image!') {
-                     dispatch(updateImgProductInCartLocal({ id: item.productId, img: item?.image[0]?.url }));
+                     dispatch(updateImgProductInCartLocal({ id: item.productId, img: item?.image}));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Ảnh của sản phẩm ' +
@@ -147,7 +147,7 @@ const CheckOut = () => {
                   }
                });
             } else {
-               navigate('/checkout');
+               navigate('/checkout')
             }
          });
       }
