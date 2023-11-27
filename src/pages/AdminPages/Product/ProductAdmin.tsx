@@ -18,7 +18,7 @@ const ProductAdmin = () => {
    const [collapsed, setCollapsed] = useState(true);
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [expiredProducts, setExpiredProducts] = useState<any>([]);
-   const { data, isLoading } = useGetAllExpandQuery({ expand: true });
+   const { data, isLoading } = useGetAllExpandQuery({ expand: true, q: valueSearch });
    const [handleRemoveProduct] = useRemoveProductMutation();
    const products = data && productData(data);
    const lastEventId = useRef<null | string>(null);

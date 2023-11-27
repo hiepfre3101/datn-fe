@@ -4,8 +4,10 @@ import { Link } from 'react-router-dom';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service';
+import { useState } from 'react';
 // import { itemsClientMenu } from "./ItemDropdown";
 const CategoryAdmin = () => {
+   const [valueSearch, setValueSearch] = useState<string>('');
    const { data, isLoading } = useGetAllCateQuery();
    const [removeCategory] = useRemoveCategoryByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -13,6 +15,11 @@ const CategoryAdmin = () => {
       removeCategory(id);
    };
    // const [openModal, setOpenModal] = useState<boolean>(false)
+   const filteredCate = data?.body.data?.filter((cate) => {
+      const cateName = cate?.cateName?.toLowerCase();
+      const searchTerm = valueSearch.toLowerCase();
+      return cateName.includes(searchTerm);
+   });
    return (
       <>
          <Helmet>
@@ -38,16 +45,26 @@ const CategoryAdmin = () => {
                         <SearchOutlined style={{ fontSize: '1rem', color: '#80b235' }} />
                         <input
                            type='text'
+                           value={valueSearch}
+                           onChange={(e) => setValueSearch(e.target.value)}
                            className='text-sm outline-none border-none w-full flex-1'
                            placeholder='Tìm kiếm danh mục'
                         />
+                        {valueSearch !== '' && (
+                           <button
+                              className='flex justify-center items-center rounded-full text-greenPrimary bg-[#80b23552] w-4 h-4  pb-1'
+                              onClick={() => setValueSearch('')}
+                           >
+                              x
+                           </button>
+                        )}
                      </div>
                   </header>
 
                   <div className='flex gap-7 flex-wrap justify-center' style={{ margin: 30 }}>
                      {isLoading
                         ? 'loading'
-                        : data?.body.data.map((cate, index) => {
+                        : filteredCate?.map((cate, index) => {
                              return (
                                 <Card
                                    style={{ backgroundImage: `url(${cate.image?.url})` }}
@@ -88,22 +105,23 @@ const CategoryAdmin = () => {
                                                         </Link>
                                                      </li>
                                                      <li>
-                                                      {cate.type != 'default' && <Popconfirm
-                                                           className={``}
-                                                           description='Bạn chắc chắn muốn xóa danh mục chứ?'
-                                                           okText='Đồng ý'
-                                                           cancelText='Hủy bỏ'
-                                                           title='Bạn có muốn xóa?'
-                                                           onConfirm={() => handleDelete(cate._id)}
-                                                        >
-                                                           <button
-                                                              type='button'
-                                                              className='focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+                                                        {cate.type != 'default' && (
+                                                           <Popconfirm
+                                                              className={``}
+                                                              description='Bạn chắc chắn muốn xóa danh mục chứ?'
+                                                              okText='Đồng ý'
+                                                              cancelText='Hủy bỏ'
+                                                              title='Bạn có muốn xóa?'
+                                                              onConfirm={() => handleDelete(cate._id)}
                                                            >
-                                                              Xóa
-                                                           </button>
-                                                        </Popconfirm> }
-                                                        
+                                                              <button
+                                                                 type='button'
+                                                                 className='focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+                                                              >
+                                                                 Xóa
+                                                              </button>
+                                                           </Popconfirm>
+                                                        )}
                                                      </li>
                                                   </ul>
                                                </div>

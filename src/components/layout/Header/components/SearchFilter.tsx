@@ -103,15 +103,15 @@ const SearchFilter = ({ children }: any) => {
                   ))}
                </div>
             </div>
-            <div className=' flex-wrap flex mx-auto items-center '>
+            <div className=' flex-wrap grid grid-cols-6 mx-auto items-center '>
                {isLoading ? (
                   <div className='flex justify-center w-full'>
                      <Spin />
                   </div>
                ) : (
                   items.map((item: IProduct, index: number) => (
-                     <div className='items-center flex-wrap justify-center gap-2 mx-auto' key={index}>
-                        <Image src={item.images[0].url} width={120} />
+                     <div className=' items-center flex-wrap justify-center gap-2 mx-auto py-4' key={index}>
+                        <Image height={120} src={item.images[0].url} width={120} />
                         <div className='flex-1 '>
                            <Link to={`/products/${item._id}`}>
                               <h2 className='text-base font-bold text-black'>{item.productName}</h2>
