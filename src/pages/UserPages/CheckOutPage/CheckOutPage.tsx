@@ -55,8 +55,10 @@ const CheckOutPage = () => {
       }
       if (current == 2) {
          setLoadingState(!loadingState);
-         if (data.note == '') {
-            delete data.note;
+         if(data.note !== '') {
+            data.note = formatCharacterWithoutUTF8(data.note || '');
+         } else {
+            data.note = undefined
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
