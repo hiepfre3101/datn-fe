@@ -111,7 +111,7 @@ const ContactPage = () => {
 
                                                 </TextArea>
                                             </Form.Item>
-                                            <Button className='bg-lime-600'>Gửi thông tin</Button>
+                                            <Button className='bg-lime-600 text-white'>Gửi thông tin</Button>
                                         </Form>
                                     </div>
                                 </div>

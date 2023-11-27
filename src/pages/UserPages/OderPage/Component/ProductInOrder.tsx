@@ -73,7 +73,7 @@ const ProductInOrder = ({ product, statusOrder }: Props) => {
                         <Form.Item
                            label='Số điện thoại'
                            rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
-                           name='customerName'
+                           name='phoneNumber'
                         >
                            <Input type='text' />
                         </Form.Item>
