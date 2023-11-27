@@ -32,7 +32,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    };
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
-   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: showfetch == false });
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -52,6 +52,8 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
       setTotal(temp);
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [cartdb, cart]);
+
+   
    return (
       <>
          <div className='order-checkout'>
@@ -162,6 +164,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                   </div>
                   <div className='wrap-btn-order-detail  mt-[28px] text-center text-[18px]  transition-colors duration-300 hover:bg-black  bg-[#d2401e] rounded-[50px] '>
                      <Button
+                        disabled={cart==undefined?true:false}
                         onClick={methods.handleSubmit((data) => onSubmit({ ...data, paymentMethod: PayValue }))}
                         className='w-full h-full py-[12px] border-none hover:!text-white px-[30px] font-bold text-white'
                         loading={loadingState}
