@@ -168,7 +168,7 @@ const OrderDetail = () => {
                   <div className=' flex flex-col items-start gap-4 max-h-[350px] overflow-auto px-10'>
                      {data?.body.data &&
                         data?.body.data.products.map((product) => (
-                           <ProductInOrder product={product} statusOrder={data?.body.data.status} />
+                           <ProductInOrder product={product} oderId={data?.body.data._id} statusOrder={data?.body.data.status} />
                         ))}
                   </div>
                   <Divider />
