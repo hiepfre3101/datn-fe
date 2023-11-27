@@ -19,6 +19,7 @@ import { IOrder } from '../../../interfaces/order';
 import { clientSocket } from '../../../config/socket';
 import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
 import { IAuth } from '../../../slices/authSlice';
+import { formatCharacterWithoutUTF8 } from '../../../helper';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
@@ -50,6 +51,7 @@ const CheckOutPage = () => {
          if (data.note == '') {
             delete data.note;
          }
+         data.note = formatCharacterWithoutUTF8(data.note || '');
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
@@ -68,7 +70,10 @@ const CheckOutPage = () => {
             data.products = cart?.products.map((product: ICartItems) => {
                return {
                   productName: product.productId.productName,
-                  price: product.productId.price,
+                  price:
+                     product.productId.discount && product.productId.discount > 0
+                        ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+                        : product.productId.price,
                   productId: product.productId._id,
                   images: product.productId?.images[0].url,
                   weight: product.weight,
@@ -77,11 +82,13 @@ const CheckOutPage = () => {
             });
             data.totalPayment = auth.user._id
                ? cart?.products.reduce(
-                    (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+                    (accumulator: number, product: any) =>
+                       accumulator +
+                       (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                          product.weight,
                     0
                  )
                : cart?.totalPrice;
-            console.log(data);
             await handleAddOrder(data)
                .then((res) => {
                   if ('error' in res && res.error && 'data' in res.error) {
@@ -119,7 +126,11 @@ const CheckOutPage = () => {
                            orderId: res.data?.body?.data._id
                         });
                         clientSocket.emit('purchase', value);
-                        navigate('/ordercomplete');
+                        if (res.data.body.data.url === '') {
+                           navigate('/ordercomplete');
+                        } else {
+                           window.location.href = res.data.body.data.url;
+                        }
                      }
                   }
                })

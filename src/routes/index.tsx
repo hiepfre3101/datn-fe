@@ -22,6 +22,7 @@ import OrderCompletePage from '../pages/UserPages/OrderCompletePage/OrderComplet
 import OrderPage from '../pages/UserPages/OderPage/OrderPage';
 import OrderDetail from '../pages/UserPages/OderPage/OrderDetail';
 import OrdersAdmin from '../pages/AdminPages/Orders/OrdersAdmin';
+import VNPayIpn from '../pages/UserPages/VNPay/VNPayIpn';
 import ContactPage from '../pages/UserPages/ContactPage/ContactPage';
 import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
 import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
@@ -79,6 +80,10 @@ const router = createBrowserRouter([
             path: 'my-order/:id',
             element: <OrderDetail />,
             errorElement: <NotFoundPage />
+         },
+         {
+            path: 'vnpay_return',
+            element: <VNPayIpn/>
          },
          {
             path: 'contact',
