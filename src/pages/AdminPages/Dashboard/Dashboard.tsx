@@ -9,9 +9,10 @@ import { Formatter } from 'antd/es/statistic/utils';
 import { CiUser } from 'react-icons/ci';
 import ChartColumn from './components/ChartColumn';
 import ChartLine from './components/ChartLine';
+import ChartArea from './components/ChartArea';
 const Dashboard = () => {
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-   const [statisticData, setStatisticData] = useState<any>();
+   const [statisticData, setStatisticData] = useState<any>({});
    console.log(statisticData);
    const [loading, setLoading] = useState<boolean>(false);
    useEffect(() => {
@@ -111,6 +112,12 @@ const Dashboard = () => {
          ]
       };
    }, [statisticData]);
+   const revenueByDay = useMemo(() => {
+      return {
+         title: 'Doanh thu theo ngày',
+         series: statisticData?.salesRevenueByDay
+      };
+   }, [statisticData]);
    const formatter = (value: number) => <CountUp end={value} separator=',' />;
    if (loading) return <Loading sreenSize='lg' />;
    return (
@@ -147,6 +154,7 @@ const Dashboard = () => {
                <span className='text-[#666666] font-extrabold text-2xl'>Trung bình giá một đơn hàng</span>
             </div>
          </div>
+         <div>{Object.keys(statisticData).length > 0 && <ChartArea options={revenueByDay} />}</div>
          <div className='w-full flex justify-start gap-4 items-center'>
             <div className='top-product bg-white p-4 w-[30%] mt-4'>
                <ChartColumn options={top5ProductOptions} />

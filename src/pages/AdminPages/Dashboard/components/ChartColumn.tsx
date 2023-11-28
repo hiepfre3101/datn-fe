@@ -7,7 +7,6 @@ type Props = {
 };
 
 const ChartColumn = (props: Props) => {
-   console.log(props.options);
    const barOptions: Highcharts.Options = useMemo(
       () => ({
          chart: {
