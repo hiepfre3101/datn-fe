@@ -40,7 +40,7 @@ export interface IQueryParam {
    brand: string;
    subCate: string;
    day: string;
-   statusOrder: string;
+   status: string;
    productId: string;
    shipmentId: string;
 }
