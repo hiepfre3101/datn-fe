@@ -1,0 +1,178 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Helmet } from 'react-helmet';
+import { useState, useEffect, useMemo } from 'react';
+import { MOCK_DATA } from '../../../constants/statistics';
+import Loading from '../../../components/Loading/Loading';
+import { Statistic } from 'antd';
+import CountUp from 'react-countup';
+import { Formatter } from 'antd/es/statistic/utils';
+import { CiUser } from 'react-icons/ci';
+import ChartColumn from './components/ChartColumn';
+import ChartLine from './components/ChartLine';
+import ChartArea from './components/ChartArea';
+const Dashboard = () => {
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const [statisticData, setStatisticData] = useState<any>({});
+   console.log(statisticData);
+   const [loading, setLoading] = useState<boolean>(false);
+   useEffect(() => {
+      const fetchData = async () => {
+         return new Promise((res) => {
+            setTimeout(() => {
+               res(MOCK_DATA);
+            }, 2000);
+         });
+      };
+      (async () => {
+         try {
+            setLoading(true);
+            const newData = await fetchData();
+            setStatisticData(newData);
+         } catch (error) {
+            console.log(error);
+         } finally {
+            setLoading(false);
+         }
+      })();
+   }, []);
+   const top5ProductOptions = useMemo(() => {
+      const rawData = statisticData?.topFiveProductsSold || [];
+      return {
+         title: '5 sản phẩm có số lượng bán cao nhất',
+         categories: rawData.map((product: any) => product.productName),
+         yTitle: 'kg',
+         suffix: 'kg',
+         series: [
+            {
+               name: 'Số lượng',
+               data: rawData.map((product: any) => [product.productName, product.totalWeight]),
+               color: '#6a8d92'
+            }
+         ]
+      };
+   }, [statisticData]);
+
+   const top5CategoryRevenue = useMemo(() => {
+      const rawData = statisticData?.topFiveCategoryByRevenue || [];
+      return {
+         title: '5 danh mục có doanh thu cao nhất',
+         categories: rawData.map((cateogory: any) => cateogory.categoryName),
+         yTitle: 'VND',
+         suffix: 'VND',
+         series: [
+            {
+               name: 'Doanh thu',
+               data: rawData.map((cateogory: any) => [cateogory.categoryName, cateogory.totalPrice]),
+               color: '#6a8d92'
+            }
+         ]
+      };
+   }, [statisticData]);
+
+   const avgCustomerAndOrders = useMemo(() => {
+      const rawData = statisticData?.totalCustomerAndTransactions || [];
+      return {
+         title: 'Tổng khách hàng & đơn hàng theo tháng',
+         yTitle1: 'Người',
+         yTitle2: 'Đơn hàng',
+         year: rawData[0]?.year || 2023,
+         series: [
+            {
+               name: 'Khách hàng',
+               data: rawData.map((data: any) => data.customers),
+               color: '#6a8d92'
+            },
+            {
+               name: 'Đơn hàng',
+               data: rawData.map((data: any) => data.transactions),
+               color: '#57d6e7'
+            }
+         ]
+      };
+   }, [statisticData]);
+
+   const avgPriceAndUnitPerOrders = useMemo(() => {
+      const rawData = statisticData?.averagePriceAndUnitsPerTransaction || [];
+      return {
+         title: 'Trung bình giá và số sản phẩm mỗi đơn hàng',
+         yTitle1: 'VND',
+         yTitle2: 'Số lượng',
+         year: rawData[0]?.year || 2023,
+         series: [
+            {
+               name: 'Tổng tiền',
+               data: rawData.map((data: any) => data.pricePerTransaction),
+               color: '#6a8d92'
+            },
+            {
+               name: 'Sản phẩm',
+               data: rawData.map((data: any) => data.unitsPerTransaction),
+               color: '#57d6e7'
+            }
+         ]
+      };
+   }, [statisticData]);
+   const revenueByDay = useMemo(() => {
+      return {
+         title: 'Doanh thu theo ngày',
+         series: statisticData?.salesRevenueByDay
+      };
+   }, [statisticData]);
+   const formatter = (value: number) => <CountUp end={value} separator=',' />;
+   if (loading) return <Loading sreenSize='lg' />;
+   return (
+      <div className='w-full'>
+         <Helmet>
+            <title>Quản lý</title>
+         </Helmet>
+         <div className='single-statistic grid grid-cols-4 py-4 px-5 bg-white '>
+            <div className='item  flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
+               <Statistic
+                  valueStyle={{ color: '#6a8d92', fontSize: '40px' }}
+                  value={statisticData?.salesRevenue}
+                  formatter={formatter as Formatter}
+                  prefix={<span className='text-greenDashboard text-xl'>VND</span>}
+               />
+               <span className='text-[#666666] font-extrabold text-2xl'>Tổng doanh thu</span>
+            </div>
+            <div className='item  flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
+               <Statistic
+                  valueStyle={{ color: '#6a8d92', fontSize: '40px' }}
+                  value={statisticData?.customers}
+                  formatter={formatter as Formatter}
+                  prefix={<CiUser className='text-greenDashboard text-xl font-extrabold' />}
+               />
+               <span className='text-[#666666] font-extrabold text-2xl'>Khách hàng</span>
+            </div>
+            <div className='item  flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9] ]'>
+               <Statistic
+                  valueStyle={{ color: '#6a8d92', fontSize: '40px' }}
+                  value={statisticData?.averageTransactionPrice}
+                  formatter={formatter as Formatter}
+                  prefix={<span className='text-greenDashboard text-xl'>VND</span>}
+               />
+               <span className='text-[#666666] font-extrabold text-2xl'>Trung bình giá một đơn hàng</span>
+            </div>
+         </div>
+         <div>{Object.keys(statisticData).length > 0 && <ChartArea options={revenueByDay} />}</div>
+         <div className='w-full flex justify-start gap-4 items-center'>
+            <div className='top-product bg-white p-4 w-[30%] mt-4'>
+               <ChartColumn options={top5ProductOptions} />
+            </div>
+            <div className='top-product bg-white p-4 w-full mt-4'>
+               <ChartLine options={avgCustomerAndOrders} />
+            </div>
+         </div>
+         <div className='w-full flex justify-start gap-4 items-center'>
+            <div className='top-product bg-white p-4 w-[30%] mt-4'>
+               <ChartColumn options={top5CategoryRevenue} />
+            </div>
+            <div className='top-product bg-white p-4 w-full  mt-4'>
+               <ChartLine options={avgPriceAndUnitPerOrders} />
+            </div>
+         </div>
+      </div>
+   );
+};
+
+export default Dashboard;
