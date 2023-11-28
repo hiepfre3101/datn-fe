@@ -20,7 +20,7 @@ const Dashboard = () => {
          return new Promise((res) => {
             setTimeout(() => {
                res(MOCK_DATA);
-            }, 2000);
+            }, 1000);
          });
       };
       (async () => {
@@ -113,9 +113,12 @@ const Dashboard = () => {
       };
    }, [statisticData]);
    const revenueByDay = useMemo(() => {
+      const rawData = statisticData?.salesRevenueByDay || [];
+      console.log(rawData);
+      
       return {
          title: 'Doanh thu theo ngày',
-         series: statisticData?.salesRevenueByDay
+         data: [...rawData]
       };
    }, [statisticData]);
    const formatter = (value: number) => <CountUp end={value} separator=',' />;
@@ -125,36 +128,38 @@ const Dashboard = () => {
          <Helmet>
             <title>Quản lý</title>
          </Helmet>
-         <div className='single-statistic grid grid-cols-4 py-4 px-5 bg-white '>
-            <div className='item  flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
+         <div className='single-statistic grid grid-cols-4 py-4 px-5 bg-white text-center'>
+            <div className='item p-2 flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
                <Statistic
-                  valueStyle={{ color: '#6a8d92', fontSize: '40px' }}
+                  valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.salesRevenue}
                   formatter={formatter as Formatter}
                   prefix={<span className='text-greenDashboard text-xl'>VND</span>}
                />
-               <span className='text-[#666666] font-extrabold text-2xl'>Tổng doanh thu</span>
+               <span className='text-[#666666] font-bold text-xl'>Tổng doanh thu</span>
             </div>
-            <div className='item  flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
+            <div className='item p-2 flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
                <Statistic
-                  valueStyle={{ color: '#6a8d92', fontSize: '40px' }}
+                  valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.customers}
                   formatter={formatter as Formatter}
                   prefix={<CiUser className='text-greenDashboard text-xl font-extrabold' />}
                />
-               <span className='text-[#666666] font-extrabold text-2xl'>Khách hàng</span>
+               <span className='text-[#666666] font-bold text-xl'>Khách hàng</span>
             </div>
-            <div className='item  flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9] ]'>
+            <div className='item p-2 flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9] ]'>
                <Statistic
-                  valueStyle={{ color: '#6a8d92', fontSize: '40px' }}
+                  valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.averageTransactionPrice}
                   formatter={formatter as Formatter}
                   prefix={<span className='text-greenDashboard text-xl'>VND</span>}
                />
-               <span className='text-[#666666] font-extrabold text-2xl'>Trung bình giá một đơn hàng</span>
+               <span className='text-[#666666] font-bold text-xl'>Trung bình giá một đơn hàng</span>
             </div>
          </div>
-         <div>{Object.keys(statisticData).length > 0 && <ChartArea options={revenueByDay} />}</div>
+         <div className='mt-4'>
+            <ChartArea options={revenueByDay} />
+         </div>
          <div className='w-full flex justify-start gap-4 items-center'>
             <div className='top-product bg-white p-4 w-[30%] mt-4'>
                <ChartColumn options={top5ProductOptions} />
