@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ICategories, InputCategories } from '../interfaces/category';
-import { IResponse } from '../interfaces/base';
-
+import { IQueryParam, IResponse } from '../interfaces/base';
+import { paramTransformer } from '../utils/transformParams';
 const category = createApi({
    reducerPath: 'category',
    baseQuery: fetchBaseQuery({
@@ -10,15 +10,16 @@ const category = createApi({
    }),
    tagTypes: ['category'],
    endpoints: (builder) => ({
-      getAllCate: builder.query<IResponse<ICategories[]>, void>({
-         query: () => ({
+      getAllCate: builder.query<IResponse<ICategories[]>, Partial<Omit<IQueryParam, '  '>>>({
+         query: (params) => ({
             url: '/categories',
             method: 'GET',
-            credentials: 'include'
+            credentials: 'include',
+            params: paramTransformer(params)
          }),
          providesTags: ['category']
       }),
-      getOneCateById: builder.query<IResponse<ICategories>,string>({
+      getOneCateById: builder.query<IResponse<ICategories>, string>({
          query: (id) => ({
             url: '/categories/' + id,
             method: 'GET',
@@ -31,26 +32,32 @@ const category = createApi({
             url: '/categories/' + id,
             method: 'DELETE'
          }),
-         invalidatesTags: ['category'],
+         invalidatesTags: ['category']
       }),
       addCategory: builder.mutation({
          query: (item) => ({
             url: '/categories/',
             method: 'POST',
-            body: item,
+            body: item
          }),
-         invalidatesTags: ['category'],
+         invalidatesTags: ['category']
       }),
-      updateCategory: builder.mutation<IResponse<ICategories>,InputCategories&{id:string}>({
+      updateCategory: builder.mutation<IResponse<ICategories>, InputCategories & { id: string }>({
          query: ({ id, ...body }) => ({
             url: '/categories/' + id,
             method: 'PATCH',
-            body: body,
+            body: body
          }),
-         invalidatesTags: ['category'],
+         invalidatesTags: ['category']
       })
    })
 });
 
-export const { useGetOneCateByIdQuery, useGetAllCateQuery, useAddCategoryMutation, useUpdateCategoryMutation, useRemoveCategoryByIdMutation } = category;
+export const {
+   useGetOneCateByIdQuery,
+   useGetAllCateQuery,
+   useAddCategoryMutation,
+   useUpdateCategoryMutation,
+   useRemoveCategoryByIdMutation
+} = category;
 export default category;

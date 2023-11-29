@@ -1,0 +1,74 @@
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+const voucher = createApi({
+   reducerPath: 'voucher',
+   baseQuery: fetchBaseQuery({
+      baseUrl: 'http://localhost:8080/api',
+      credentials: 'include'
+   }),
+   tagTypes: ['voucher'],
+   endpoints: (builder) => ({
+      getAllVoucher: builder.query<any, void>({
+         query: () => ({
+            url: '/vouchers',
+            method: 'GET',
+            credentials: 'include'
+         }),
+         providesTags: ['voucher']
+      }),
+      getOneVoucherById: builder.query({
+         query: (id) => ({
+            url: '/vouchers/' + id,
+            method: 'GET',
+            credentials: 'include'
+         }),
+         providesTags: ['voucher']
+      }),
+      addVoucher: builder.mutation({
+         query: (body) => {
+            return {
+               url: '/vouchers',
+               method: 'post',
+               body: body
+            };
+         },
+         invalidatesTags: ['voucher']
+      }),
+      removeVoucher: builder.mutation<any, string>({
+         query: (id) => {
+            return {
+               url: '/vouchers/' + id,
+               method: 'delete'
+            };
+         },
+         invalidatesTags: ['voucher']
+      }),
+      getOneVoucher: builder.query<any, string>({
+         query: (idVoucher) => {
+            return {
+               url: '/vouchers/' + idVoucher
+            };
+         },
+         providesTags: ['voucher']
+      }),
+      updateVoucher: builder.mutation<any, any>({
+         query: ({ idVoucher, ...body }) => {
+            return {
+               url: '/vouchers/' + idVoucher,
+               method: 'PATCH',
+               body: body
+            };
+         },
+         invalidatesTags: ['voucher']
+      })
+   })
+});
+
+export const {
+   useGetAllVoucherQuery,
+   useGetOneVoucherByIdQuery,
+   useAddVoucherMutation,
+   useRemoveVoucherMutation,
+   useGetOneVoucherQuery,
+   useUpdateVoucherMutation
+} = voucher;
+export default voucher;

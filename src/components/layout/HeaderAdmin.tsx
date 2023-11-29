@@ -180,11 +180,11 @@ const HeaderAdmin = () => {
             <Popover
                placement='bottom'
                content={
-                  <div className='max-h-[450px] overflow-scroll pr-3'>
+                  <div className='max-h-[400px] min-w-[450px] overflow-scroll pr-3'>
                      {adminNotification?.body?.data?.map((noti: INotification, index: number) => (
                         <div key={index} className='relative border-b-[1px] border-gray-400  p-2 hover:bg-gray-200'>
                            <Link
-                              className='w-[90%] pb-4 block'
+                              className='w-[400px] pb-4 block'
                               onClick={async () => {
                                  await updateNotification({ id: noti._id, isRead: true });
                               }}

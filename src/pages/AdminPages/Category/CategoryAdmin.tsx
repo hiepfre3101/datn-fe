@@ -8,18 +8,13 @@ import { useState } from 'react';
 // import { itemsClientMenu } from "./ItemDropdown";
 const CategoryAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
-   const { data, isLoading } = useGetAllCateQuery();
+   const { data, isLoading } = useGetAllCateQuery({ q: valueSearch });
    const [removeCategory] = useRemoveCategoryByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const handleDelete = (id: any) => {
       removeCategory(id);
    };
    // const [openModal, setOpenModal] = useState<boolean>(false)
-   const filteredCate = data?.body.data?.filter((cate) => {
-      const cateName = cate?.cateName?.toLowerCase();
-      const searchTerm = valueSearch.toLowerCase();
-      return cateName.includes(searchTerm);
-   });
    return (
       <>
          <Helmet>
@@ -44,9 +39,9 @@ const CategoryAdmin = () => {
                      <div className='flex justify-between items-center max-w-[50%] gap-2 rounded-[100px] border-[1px] border-[#80b235] p-2'>
                         <SearchOutlined style={{ fontSize: '1rem', color: '#80b235' }} />
                         <input
-                           type='text'
                            value={valueSearch}
                            onChange={(e) => setValueSearch(e.target.value)}
+                           type='text'
                            className='text-sm outline-none border-none w-full flex-1'
                            placeholder='Tìm kiếm danh mục'
                         />
@@ -64,7 +59,7 @@ const CategoryAdmin = () => {
                   <div className='flex gap-7 flex-wrap justify-center' style={{ margin: 30 }}>
                      {isLoading
                         ? 'loading'
-                        : filteredCate?.map((cate, index) => {
+                        : data?.body.data.map((cate, index) => {
                              return (
                                 <Card
                                    style={{ backgroundImage: `url(${cate.image?.url})` }}

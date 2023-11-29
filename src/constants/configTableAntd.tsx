@@ -16,6 +16,15 @@ export type ProductDataType = DataType & {
    expDate: string;
    isSale: boolean;
 };
+export type voucherDataType = DataType & {
+   title: string;
+   code: string;
+   miniMumOrder: number;
+   quantity: number;
+   dateStart: any;
+   dateEnd: any;
+   percent: number;
+};
 
 type UserDataType = DataType & {
    avatar?: string;
@@ -59,7 +68,20 @@ export const productData = (data: IResponseHasPaginate<IProductExpanded>): Produ
       shipments: product.shipments
    }));
 };
-
+export const voucherData = (data: IResponseHasPaginate<any>): voucherDataType[] => {
+   return data.body.data.map((voucher, index) => ({
+      key: index.toString(),
+      _id: voucher._id,
+      title: voucher.title,
+      code: voucher.code,
+      miniMumOrder: voucher.miniMumOrder,
+      quantity: voucher.quantity,
+      dateStart: voucher.dateStart,
+      dateEnd: voucher.dateEnd,
+      status: voucher.status,
+      percent: voucher.percent
+   }));
+};
 export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {
    return data.body.data.map((user, index) => ({
       key: index.toString(),
