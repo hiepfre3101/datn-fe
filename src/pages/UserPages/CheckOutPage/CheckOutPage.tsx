@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
@@ -58,7 +59,7 @@ const CheckOutPage = () => {
    const [error, setError] = useState<string[]>([]);
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
    const CheckCart = async () => {
-      let temp =false
+      let temp = false;
       if (auth.user._id) {
          let status = true
          if(voucher._id){
@@ -142,10 +143,10 @@ const CheckOutPage = () => {
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
-        await checkCartLocal(cartLocal).then((res: any) => {
+         await checkCartLocal(cartLocal).then((res: any) => {
             if (res.error) {
                setIsModalOpen(true);
-               res.error.data.body?.error.map((item) => {
+               res.error.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -203,11 +204,11 @@ const CheckOutPage = () => {
                   }
                });
             } else {
-               temp = true
+               temp = true;
             }
          });
       }
-      return temp
+      return temp;
    };
    const onSubmit = async (data: IOrder) => {
       if (current < 2) {
@@ -215,10 +216,10 @@ const CheckOutPage = () => {
       }
       if (current == 2) {
          setLoadingState(!loadingState);
-         if(data.note !== '') {
+         if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
-            data.note = undefined
+            data.note = undefined;
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
@@ -263,10 +264,8 @@ const CheckOutPage = () => {
                      } 
                   if(voucher._id){
                      data.code = voucher.code
-                  }
-                  console.log(data);
-                  
-                  await handleAddOrder(data).then((res) => {  
+                  }                  
+                  await handleAddOrder(data).unwrap().then(res => {  
                         if ('data' in res && 'status' in res.data) {
                            message.success('Mua hàng thành công');
                            dispatch(removeAllProductFromCart());
@@ -282,13 +281,13 @@ const CheckOutPage = () => {
                               window.location.href = res.data.body.data.url;
                            }
                         }
-                     
-                  })
+                     }
+                  )
                   .finally(() => {
                      setLoadingState(false);
                   });
-               }
-               setLoadingState(false);
+            }
+            setLoadingState(false);
          } catch (error) {
             setLoadingState(false);
             notification.error({

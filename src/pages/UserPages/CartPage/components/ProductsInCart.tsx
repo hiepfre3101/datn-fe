@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ICartItems, ICartSlice } from '../../../../slices/cartSlice';
@@ -12,6 +13,7 @@ import {
 } from '../../../../services/cart.service';
 import { ICartDataBaseItem } from '../../../../interfaces/cart';
 import { useEffect, useRef, useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-types
 const debounce = (func: Function, delay: number) => {
    let timeoutId: NodeJS.Timeout;
    return (...args: any[]) => {

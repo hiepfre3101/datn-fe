@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import DefaultLayout from '../layouts/DefaultLayout';
 import AdminLayout from '../layouts/AdminLayout';
-import Dashboard from '../pages/AdminPages/Dashboard';
+import Dashboard from '../pages/AdminPages/Dashboard/Dashboard';
 import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
 import AddProduct from '../pages/AdminPages/Product/AddProduct';
 import CategoryAdmin from '../pages/AdminPages/Category/CategoryAdmin';
