@@ -83,7 +83,7 @@ const router = createBrowserRouter([
          },
          {
             path: 'vnpay_return',
-            element: <VNPayIpn/>
+            element: <VNPayIpn />
          },
          {
             path: 'contact',
@@ -168,11 +168,10 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
-            path: 'update-voucher',
+            path: 'update-voucher/:id',
             element: <UpdateVoucher />,
             errorElement: <NotFoundPage />
          }
-
 
          // {
          //    path: 'accounts',

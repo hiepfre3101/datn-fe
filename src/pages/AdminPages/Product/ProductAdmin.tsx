@@ -9,16 +9,19 @@ import { useGetAllExpandQuery, useRemoveProductMutation } from '../../../service
 import Column from 'antd/es/table/Column';
 import ActionTable from '../../../components/ActionTable/ActionTable';
 import FilterIcon from '../../../components/Icons/FilterIcon';
-import { Layout, Tag, Tooltip, theme } from 'antd';
+import { Button, Layout, Radio, Tag, Tooltip, theme } from 'antd';
 import { adminSocket } from '../../../config/socket';
 import { IProduct } from '../../../interfaces/product';
 import { WILL_EXPIRE } from '../../../constants/statusExpireProduct';
 const ProductAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
+   const [filterProducts, setFilterProducts] = useState<any>({});
+   // console.log(filterProducts);
+
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [expiredProducts, setExpiredProducts] = useState<any>([]);
-   const { data, isLoading } = useGetAllExpandQuery({ expand: true });
+   const { data, isLoading } = useGetAllExpandQuery({ ...filterProducts, expand: true, q: valueSearch });
    const [handleRemoveProduct] = useRemoveProductMutation();
    const products = data && productData(data);
    const lastEventId = useRef<null | string>(null);
@@ -215,12 +218,35 @@ const ProductAdmin = () => {
                trigger={null}
                collapsedWidth={0}
             >
-               <div className='flex justify-between items-center p-3'>
-                  <p className='text-lg font-semibold text-[rgba(0,0,0,0.5)]'>Lọc sản phẩm</p>
-                  <button onClick={() => setCollapsed(true)}>
-                     <CloseOutlined className='text-greenPrimary' />
-                  </button>
+               <div className=' relative px-4'>
+                  <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
+                     <CloseOutlined className='text-red-500 ' />
+                  </Button>
+                  <p className='text-center items-center text-2xl py-10 font-semibold text-[rgba(0,0,0,0.5)]'>
+                     Lọc sản phẩm
+                  </p>
+
+                  <h1 className='pb-3'>Trạng thái:</h1>
+                  <Radio.Group
+                     value={filterProducts?.willExpire == 0 ? 0 : filterProducts?.willExpire || ''}
+                     onChange={(e) => setFilterProducts((prev: any) => ({ ...prev, willExpire: e.target.value }))}
+                  >
+                     <Radio value={0}>Còn hạn</Radio>
+                     <Radio value={1}>Sắp hết hạn</Radio>
+                     <Radio value={2}>Hết hạn</Radio>
+                  </Radio.Group>
+                  <h1 className='pt-5 pb-3'>Sale:</h1>
+                  <Radio.Group
+                     value={filterProducts?.isSale == false ? false : filterProducts?.isSale || ''}
+                     onChange={(e) => setFilterProducts((prev: any) => ({ ...prev, isSale: e.target.value }))}
+                  >
+                     <Radio value={true}>Sale</Radio>
+                     <Radio value={false}>Không sale</Radio>
+                  </Radio.Group>
                </div>
+               <Button className='text-center items-center mt-4 ml-4' onClick={() => setFilterProducts({})}>
+                  Đặt lại
+               </Button>
             </Layout.Sider>
          </Layout>
       </>

@@ -29,7 +29,7 @@ const AddProduct = () => {
       form.setFieldValue('images', files);
       setFiles(files);
    };
-   const { data: categories } = useGetAllCateQuery();
+   const { data: categories } = useGetAllCateQuery({});
    const [handleAddProduct, { error }] = useAddProductMutation();
 
    useEffect(() => {
