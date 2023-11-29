@@ -49,14 +49,21 @@ const QuickView = ({ product_info }: QuickViewProp) => {
       }
    };
    const add_to_cart = async () => {
-      if (inputWeight != '') {
+      if (inputWeight != '' && !inputWeight.endsWith('.')) {
          if (auth.user._id) {
             const product = {
                productId: product_info[0]?._id,
+               productName: product_info[0]?.productName,
                weight: inputWeight
             };
-            await addCart(product).unwrap();
-            message.success('Đã thêm sản phẩm vào giỏ hàng');
+            await addCart(product).unwrap().then(res => {
+               res
+              message.success('Cập nhật sản phẩm thành công');
+            })
+            .catch(error => {
+               error 
+            message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
+            });
          } else {
             const product = {
                productId: {

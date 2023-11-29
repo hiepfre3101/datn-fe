@@ -127,12 +127,13 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                         </div>
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                        <div className='product-price text-[20px] font-bold'>
-                           {product_info?.price.toLocaleString('vi-VN', {
+                        {product_info?.price && product_info?.discount ? <div className='product-price text-[20px] font-bold'>
+                           {(product_info?.price-(product_info?.price*product_info?.discount/100)).toLocaleString('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                            })}
-                        </div>
+                        </div>:"" }
+                       
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                         <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng còn lại:</div>

@@ -49,8 +49,14 @@ const ShowProducts = ({ data }: IProps) => {
             productName: data?.productName,
             weight: 1
          };
-         await addCart(product).unwrap();
-         message.success('Thêm sản phẩm vào giỏ hàng thành công');
+         await addCart(product).unwrap().then(res => {
+            res
+           message.success('Cập nhật sản phẩm thành công');
+         })
+         .catch(error => {
+            error
+         message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
+         });
       } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
