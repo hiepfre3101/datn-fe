@@ -1,12 +1,19 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ICartItems, ICartSlice } from '../../../../slices/cartSlice';
 import { removeFromCart, updateItem, removeAllProductFromCart } from '../../../../slices/cartSlice';
 import { message } from 'antd';
 import { IAuth } from '../../../../slices/authSlice';
-import { useDeleteAllProductInCartMutation, useDeleteProductInCartMutation, useGetCartQuery, useUpdateCartMutation } from '../../../../services/cart.service';
+import {
+   useDeleteAllProductInCartMutation,
+   useDeleteProductInCartMutation,
+   useGetCartQuery,
+   useUpdateCartMutation
+} from '../../../../services/cart.service';
 import { ICartDataBaseItem } from '../../../../interfaces/cart';
 import { useEffect, useRef, useState } from 'react';
+// eslint-disable-next-line @typescript-eslint/ban-types
 const debounce = (func: Function, delay: number) => {
    let timeoutId: NodeJS.Timeout;
    return (...args: any[]) => {
@@ -18,146 +25,151 @@ const debounce = (func: Function, delay: number) => {
 };
 const ProductsInCart = () => {
    const dispatch = useDispatch();
-   const [updateCartDB]= useUpdateCartMutation()
-   const [deleteProductInCartDB]= useDeleteProductInCartMutation()
-   const [deleteAllProductInCartDB]= useDeleteAllProductInCartMutation()
+   const [updateCartDB] = useUpdateCartMutation();
+   const [deleteProductInCartDB] = useDeleteProductInCartMutation();
+   const [deleteAllProductInCartDB] = useDeleteAllProductInCartMutation();
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch,setShowFetch] = useState(false)  
-   const { data: cartdb } = useGetCartQuery(undefined,{skip:!showfetch});
-   useEffect(()=>{
-      if(auth.user._id){
-         setShowFetch(true)
+   const [showfetch, setShowFetch] = useState(false);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   useEffect(() => {
+      if (auth.user._id) {
+         setShowFetch(true);
       }
-   },[auth.user._id])
+   }, [auth.user._id]);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const [clickCount, setClickCount] = useState(1);
    const debouncedUpdateCartDBRef = useRef<any>(null);
-   const [cartState,setCartState] = useState(cart)
+   const [cartState, setCartState] = useState(cart);
    useEffect(() => {
       setCartState(cart);
-    }, [cart]);
+   }, [cart]);
    if (!debouncedUpdateCartDBRef.current) {
       debouncedUpdateCartDBRef.current = debounce(async (temp: any) => {
-         await updateCartDB(temp).unwrap();
-         message.success('Cập nhật sản phẩm thành công');
-      }, 1000);
-    }
-   const updateCart = async (item:ICartDataBaseItem|ICartItems,index:number,cal:boolean) =>  { 
-      setClickCount(1)
- if (auth.user._id) {
-    let updatedCartState = [...cartState];
-    let updatedItem = { ...updatedCartState[index] }; 
-    updatedItem.weight = cal?updatedItem.weight + 0.5:updatedItem.weight - 0.5; 
-    updatedCartState[index] = updatedItem; 
-    setCartState(updatedCartState);
-    const temp = {
-      productId: item.productId._id,
-      weight: cal?cartState[index].weight+0.5:cartState[index].weight-0.5,
-    };
-    cal?setClickCount(clickCount + 1):setClickCount(clickCount - 1);
-    debouncedUpdateCartDBRef.current(temp);
-  }
-     else{
-      dispatch(
-         updateItem({
-            id: item.productId._id,
-            weight: item.weight == 0 && item.weight + 0.5 <= 0 ? item.weight : (cal?item.weight + 0.5:item.weight - 0.5)
+         await updateCartDB(temp).unwrap().then(res => {
+            res
+           message.success('Cập nhật sản phẩm thành công');
          })
-      );
-     }
-   };
-   const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number,index:number) => {
-     if(auth.user._id){   
-      let updatedCartState = [...cartState];
-      let updatedItem = { ...updatedCartState[index] }; 
-      updatedItem.weight = e.target.value; 
-      if(e.target.value==""){
-         updatedCartState[index] = updatedItem; 
+         .catch(error => {
+         message.error('Số lượng vượt quá sản phẩm đang có trong kho');
+         setCartState(error.data.body.data.products)
+         
+         });
+      }, 1000);
+   }
+   const updateCart = async (item: ICartDataBaseItem | ICartItems, index: number, cal: boolean) => {
+      setClickCount(1);
+      if (auth.user._id) {
+         let updatedCartState = [...cartState];
+         let updatedItem = { ...updatedCartState[index] };
+         updatedItem.weight = cal ? updatedItem.weight + 0.5 : updatedItem.weight - 0.5;
+         updatedCartState[index] = updatedItem;
          setCartState(updatedCartState);
+         const temp = {
+            productId: item.productId._id,
+            weight: cal ? cartState[index].weight + 0.5 : cartState[index].weight - 0.5
+         };
+         cal ? setClickCount(clickCount + 1) : setClickCount(clickCount - 1);
+         debouncedUpdateCartDBRef.current(temp);
+      } else {
+         dispatch(
+            updateItem({
+               id: item.productId._id,
+               weight:
+                  item.weight == 0 && item.weight + 0.5 <= 0 ? item.weight : cal ? item.weight + 0.5 : item.weight - 0.5
+            })
+         );
       }
-      else if(/^(\d*\.?\d*)$/.test(e.target.value)){
-            if ( e.target.value.endsWith('.') && !/\.\d+$/.test( e.target.value)) {
-               updatedCartState[index] = updatedItem; 
-               setCartState(updatedCartState);       
+   };
+   const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number, index: number) => {
+      if (auth.user._id) {
+         let updatedCartState = [...cartState];
+         let updatedItem = { ...updatedCartState[index] };
+         updatedItem.weight = e.target.value;
+         if (e.target.value == '') {
+            updatedCartState[index] = updatedItem;
+            setCartState(updatedCartState);
+         } else if (/^(\d*\.?\d*)$/.test(e.target.value)) {
+            if (e.target.value.endsWith('.') && !/\.\d+$/.test(e.target.value)) {
+               updatedCartState[index] = updatedItem;
+               setCartState(updatedCartState);
             } else {
                const rounded = Math.floor(Number(e.target.value));
                const result = Number(e.target.value) - rounded;
                if (result >= 0.5) {
-                  updatedItem.weight = rounded+0.5; 
-                  updatedCartState[index] = updatedItem; 
+                  updatedItem.weight = rounded + 0.5;
+                  updatedCartState[index] = updatedItem;
                } else {
-                  updatedItem.weight = rounded; 
-                  updatedCartState[index] = updatedItem; 
+                  updatedItem.weight = rounded;
+                  updatedCartState[index] = updatedItem;
                }
             }
-            setCartState(updatedCartState);        
-         }  
-         
-          if (updatedItem.weight!="" && !e.target.value.endsWith('.')) {
+            setCartState(updatedCartState);
+         }
+
+         if (updatedItem.weight != '' && !e.target.value.endsWith('.')) {
             const temp = {
                productId: id,
-               weight: updatedItem.weight,
-             };
+               weight: updatedItem.weight
+            };
             debouncedUpdateCartDBRef.current(temp);
-          }    
-     }
-     else{
-      if (e.target.value === '') {
-         return dispatch(updateItem({ id: id, weight: '' }));
-      }
-      if (/^[\d.]+$/.test(e.target.value)) {
-         const value = e.target.value;
-         if (Number(value) <= maxWeight) {
-            if (value.endsWith('.') && !/\.\d+$/.test(value)) {
-               dispatch(updateItem({ id: id, weight: value }));
-            } else {
-               const rounded = Math.floor(Number(e.target.value));
-               const result = Number(e.target.value) - rounded;
-               if (result >= 0.5) {
-                  dispatch(updateItem({ id: id, weight: rounded + 0.5 }));
-               } else {
-                  dispatch(updateItem({ id: id, weight: rounded }));
-               }
-            }
          }
       } else {
-         dispatch(updateItem({ id: id, weight: Number(e.target.value.replace(/\./g, ',')) }));
+         if (e.target.value === '') {
+            return dispatch(updateItem({ id: id, weight: '' }));
+         }
+         if (/^[\d.]+$/.test(e.target.value)) {
+            const value = e.target.value;
+            if (Number(value) <= maxWeight) {
+               if (value.endsWith('.') && !/\.\d+$/.test(value)) {
+                  dispatch(updateItem({ id: id, weight: value }));
+               } else {
+                  const rounded = Math.floor(Number(e.target.value));
+                  const result = Number(e.target.value) - rounded;
+                  if (result >= 0.5) {
+                     dispatch(updateItem({ id: id, weight: rounded + 0.5 }));
+                  } else {
+                     dispatch(updateItem({ id: id, weight: rounded }));
+                  }
+               }
+            }
+         } else {
+            dispatch(updateItem({ id: id, weight: Number(e.target.value.replace(/\./g, ',')) }));
+         }
       }
-     }
    };
-   const handleRemoveProductInCart =  (item:ICartDataBaseItem|ICartItems) => {
-      if(auth.user._id){
-       deleteProductInCartDB(item?.productId?._id).then(res=>{
-         res
-         message.success("Xoá sản phẩm khỏi giỏ hàng thành công")
-       })
-      }else{
-         dispatch(removeFromCart({ id: item.productId._id }))
+   const handleRemoveProductInCart = (item: ICartDataBaseItem | ICartItems) => {
+      if (auth.user._id) {
+         deleteProductInCartDB(item?.productId?._id).then((res) => {
+            res;
+            message.success('Xoá sản phẩm khỏi giỏ hàng thành công');
+         });
+      } else {
+         dispatch(removeFromCart({ id: item.productId._id }));
       }
-   }
-   const handleRemoveAllCart = ()=>{
-      if(auth.user._id){
-         deleteAllProductInCartDB(auth.user._id).then(res=>{
-         res
-           message.success("Xoá giỏ hàng thành công")
-         })
-        }else{
+   };
+   const handleRemoveAllCart = () => {
+      if (auth.user._id) {
+         deleteAllProductInCartDB(auth.user._id).then((res) => {
+            res;
+            message.success('Xoá giỏ hàng thành công');
+         });
+      } else {
          dispatch(removeAllProductFromCart());
-         message.success("Xoá giỏ hàng thành công")
-        }
-
-   }
+         message.success('Xoá giỏ hàng thành công');
+      }
+   };
+   console.log(cart?.length);
+   
    return (
       <div>
-   
-         {cart?.length === 0 ? (
+         {cart?.length === 0 || cart?.length === undefined ? (
             <div className='art-item-wrap md:px-[20px] md:pt-[20px] md:pb-[7px] max-md:px-[12px] max-md:py-[30px] border-[#e2e2e2] border-[1px] '>
                <p className='cart-title xl:text-[30px]  border-[#e2e2e2] max-xl:text-[18px] text-[red] font-bold items-center text-center pb-[12px]'>
                   Không có sản phẩm trong giỏ hàng
                </p>
                <div className='start-shopping cart-title xl:text-[17px]  border-[#e2e2e2] max-xl:text-[18px] text-[#51A55C] font-bold flex justify-center items-center text-center pb-[12px]'>
-                  <Link to={'/products'}>
+                  <Link to={'/collections'}>
                      <button
                         type='button'
                         className=' bg-[#51A55C]  text-white py-[10px] px-[15px] rounded-[5px] mt-[25px]'
@@ -171,7 +183,7 @@ const ProductsInCart = () => {
             <div className='cart-item-wrap md:px-[20px] md:pt-[20px] md:pb-[7px] max-md:px-[12px] max-md:py-[30px] border-[#e2e2e2] border-[1px] '>
                <div className='cart-title xl:text-[20px] border-b-[1px] border-[#e2e2e2] max-xl:text-[18px] text-[#333333] font-bold flex justify-between pb-[12px]'>
                   <span>Giỏ hàng:</span>
-        
+
                   <span className='cart-count font-bold border-b-[2px] border-[#6f6f6f] text-[#6f6f6f]'>
                      {cart?.length} sản phẩm
                   </span>
@@ -200,7 +212,7 @@ const ProductsInCart = () => {
                                  <span className='origin-name ml-[5px]'>{item.productId.originId.name}</span>
                               </div>
                               <span className='price'>
-                                 {item.productId?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 {item.productId.discount?(item.productId?.price-(item.productId?.price*item.productId?.discount/100)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):item.productId.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
                         </div>
@@ -214,8 +226,10 @@ const ProductsInCart = () => {
                                        <div className='product-quantity flex  '>
                                           <input
                                              type='text'
-                                             value={cartState?.length > 0 && index >= 0 ? cartState[index]?.weight : ""}
-                                             onChange={(e) => handleInputSize(e, item.productId._id, item.totalWeight,index)}
+                                             value={cartState?.length > 0 && index >= 0 ? cartState[index]?.weight : ''}
+                                             onChange={(e) =>
+                                                handleInputSize(e, item.productId._id, item.totalWeight, index)
+                                             }
                                              className={`outline-none border ${
                                                 item.weight == '' ? 'border-red-500' : ''
                                              } border-[#e2e2e2] rounded-[5px]  ml-[10px] input-quantity text-center text-[#6f6f6f] w-[calc(100%-25px)] outline-none max-w-[50px] h-[50px]  border-[1px] `}
@@ -228,7 +242,7 @@ const ProductsInCart = () => {
                                                       ? true
                                                       : false
                                                 }
-                                                onClick={()=>updateCart(item,index,true)}
+                                                onClick={() => updateCart(item, index, true)}
                                                 type='button'
                                                 className={`${
                                                    item.weight == item.totalWeight &&
@@ -242,7 +256,7 @@ const ProductsInCart = () => {
                                              <button
                                                 disabled={item.weight == 0 && item.weight - 0.5 <= 0 ? true : false}
                                                 type='button'
-                                                onClick={()=>updateCart(item,index,false)}
+                                                onClick={() => updateCart(item, index, false)}
                                                 className={`${
                                                    item.weight == 0 && item.weight - 0.5 <= 0 ? 'bg-gray-300' : ''
                                                 } inc qty-btn text-[15px] text-[#232323] flex items-center justify-center cursor-pointer border-[1px] border-[#e2e2e2] rounded-[5px] w-[25px] h-[25px]`}
@@ -270,7 +284,10 @@ const ProductsInCart = () => {
                         </div>
                         <div className='cart-item-price sm:text-right max-sm:mt-[10px] w-[20%] max-lg:w-[50%]'>
                            <span className='full-price font-bold'>
-                              {(item.productId?.price * item.weight).toLocaleString('vi-VN', {
+                              {item.productId.discount?((item.productId?.price-(item.productId?.price*item.productId?.discount/100)) * item.weight).toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              }):(item.productId.price*item.weight).toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
@@ -288,7 +305,7 @@ const ProductsInCart = () => {
                   </Link>
                   <button
                      onClick={() => {
-                        handleRemoveAllCart()
+                        handleRemoveAllCart();
                      }}
                      className='link-to-homepage px-[30px] py-[10px] bg-[#51A55C] text-white rounded-[5px] transition-colors duration-300 hover:bg-[#333333]'
                   >

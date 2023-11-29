@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
 import OrderCheckOut from './components/orderCheckOut';
-import { Button, ConfigProvider, Steps, message, notification } from 'antd';
+import { Button, ConfigProvider, Modal, Steps, message, notification } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { FormProvider, useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +13,11 @@ import {
    ICartSlice,
    removeAllProductFromCart,
    removeFromCart,
-   updatePrice
+   updateImgProductInCartLocal,
+   updateItem,
+   updateNameProductInCartLocal,
+   updatePriceProductInCartLocal,
+   updateTotalPrice
 } from '../../../slices/cartSlice';
 import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
@@ -20,6 +25,8 @@ import { clientSocket } from '../../../config/socket';
 import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
 import { IAuth } from '../../../slices/authSlice';
 import { formatCharacterWithoutUTF8 } from '../../../helper';
+import { IVoucher, remoteVoucher } from '../../../slices/voucherSlice';
+import { useCheckVoucherMutation } from '../../../services/voucher.service';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
@@ -28,118 +35,265 @@ const CheckOutPage = () => {
    // }
    const methods = useForm<IOrder>();
    const [handleAddOrder] = useAddOrderMutation();
-   const [checkCartdb] = useCheckCartMutation();
+   const [checkCartLocal] = useCheckCartMutation();
    const [current, setCurrent] = useState(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
-   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
+   const { data: cartdb, refetch } = useGetCartQuery(undefined, { skip: showfetch == false });
+
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
       }
    }, [auth.user._id]);
+   const handleOk = () => {
+      setIsModalOpen(false);
+      setError([]);
+   };
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const cart = auth.user._id ? cartdb?.body.data : CartLocal;
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const dispatch = useDispatch();
+   const [addVoucher] = useCheckVoucherMutation();
+   const [isModalOpen, setIsModalOpen] = useState(false);
+   const [error, setError] = useState<string[]>([]);
+   const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
+   const CheckCart = async () => {
+      let temp = false;
+      if (auth.user._id) {
+         let status = true
+         if(voucher._id){
+            const total = cartdb?.body.data.products?.reduce(
+               (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+               0
+            )
+            const object={
+               code: voucher.code,
+               userId: auth.user._id,
+               miniMumOrder:total,
+            }
+            await addVoucher(object).unwrap().catch(error=>{
+               status=false
+               setIsModalOpen(true);
+               if(error.data.message=="Voucher does not exist!"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Mã giảm giá không tồn tại"
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+               else if(error.data.message=="Voucher is out of quantity!"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Mã giảm giá đã hết"
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+               else if(error.data.message=="Voucher is out of date"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Mã giảm giá đã hết hạn"
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+               else if(error.data.message=="Orders are not satisfactory!"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Đơn hàng của bạn phải có tổng giá trị trên "+ error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+            })
+         }
+       await  refetch().then((res) => {
+            if (res.data.body.errors) {
+               setIsModalOpen(true);
+               res.data.body.errors.map((item) => {
+                  if (item.message == 'The remaining quantity is not enough!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Số lượng trong kho của sản phẩm' +
+                           item.productName +
+                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                     ]);
+                  } else if (item.message == 'Product is currently out of stock!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm' + item.productName + ' đã hết hàng'
+                     ]);
+                  } else if (item.message == 'Product is no longer available!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
+                     ]);
+                  }
+               });
+            } else {
+                temp = status?true:false
+            }
+         });
+      } else {
+         const cartLocal = {
+            products: cart['products'].map((product: any) => {
+               const {
+                  totalWeight,
+                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  ...rest
+               } = product;
+               return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
+            })
+         };
+         await checkCartLocal(cartLocal).then((res: any) => {
+            if (res.error) {
+               setIsModalOpen(true);
+               res.error.data.body?.error.map((item: any) => {
+                  if (item.message == 'Product is not exsit!') {
+                     dispatch(removeFromCart({ id: item.productId }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm ' + item.productName + ' đã bị xoá khỏi hệ thống'
+                     ]);
+                  } else if (item.message == 'Invalid product origin!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Xuất sứ của sản phẩm ' + item.productName + ' đã được cập nhật'
+                     ]);
+                  } else if (item.message == 'Invalid product name!') {
+                     dispatch(updateNameProductInCartLocal({ id: item.productId, name: item.productName }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Tên của sản phẩm ' + item.productName + ' đã được cập nhật thành ' + item.productName
+                     ]);
+                  } else if (item.message == 'Invalid price for product!') {
+                     dispatch(updatePriceProductInCartLocal({ id: item.productId, price: item.price }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Giá của sản phẩm ' +
+                           item.productName +
+                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                     ]);
+                  } else if (item.message == 'Invalid product image!') {
+                     dispatch(updateImgProductInCartLocal({ id: item.productId, img: item?.image }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Ảnh của sản phẩm ' +
+                           item.productName +
+                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                     ]);
+                  } else if (item.message == 'Insufficient quantity of the product in stock!') {
+                     dispatch(updateItem({ id: item.productId, weight: item.maxWeight }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Số lượng sản phẩm ' +
+                           item.productName +
+                           ' trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về ' +
+                           item.maxWeight
+                     ]);
+                  } else if (item.message == 'The product is currently out of stock!') {
+                     dispatch(removeFromCart({ id: item.productId }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm ' + item.productName + ' đã hết hàng và đã được xoá khỏi giỏ hàng'
+                     ]);
+                  } else if (item.message == 'Invalid totalPayment!') {
+                     dispatch(updateTotalPrice({ total: item.true }));
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Tổng tiền của bạn đang bị sai và đã được cập nhật lại'
+                     ]);
+                  }
+               });
+            } else {
+               temp = true;
+            }
+         });
+      }
+      return temp;
+   };
    const onSubmit = async (data: IOrder) => {
       if (current < 2) {
          next();
       }
       if (current == 2) {
          setLoadingState(!loadingState);
-         if(data.note !== '') {
+         if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
-            data.note = undefined
+            data.note = undefined;
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
-            // if(auth.user._id){
-            //    const { data: checkCartdb } = useGetCartQuery();
-            //    console.log(checkCartdb);
-            //    error=true
-            // }
-            // else{
-            //    checkCartdb(cart).then((res) => {
-            //       console.log(res);
-            //    })
-            //    console.log(cart);
-
-            // }
-            data.products = cart?.products.map((product: ICartItems) => {
-               return {
-                  productName: product.productId.productName,
-                  price:
-                     product.productId.discount && product.productId.discount > 0
-                        ? product.productId.price - (product.productId.price * product.productId.discount) / 100
-                        : product.productId.price,
-                  productId: product.productId._id,
-                  images: product.productId?.images[0].url,
-                  weight: product.weight,
-                  originId: product.productId?.originId?._id
-               };
-            });
-            data.totalPayment = auth.user._id
-               ? cart?.products.reduce(
-                    (accumulator: number, product: any) =>
-                       accumulator +
-                       (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
-                          product.weight,
-                    0
-                 )
-               : cart?.totalPrice;
-            await handleAddOrder(data)
-               .then((res) => {
-                  if ('error' in res && res.error && 'data' in res.error) {
-                     const errorData = res.error.data as any;
-                     if (errorData.message == 'Product not exist') {
-                        errorData.body.data.map((item: ICartItems) => {
-                           dispatch(removeFromCart({ id: item.productId._id }));
-                        });
-                        notification.info({
-                           message: 'Cập nhật sản phẩm trong giỏ hàng',
-                           description:
-                              'Trong giỏ hàng của bạn có tồn tại sản phẩm không có trên hệ thống và đã được cập nhật lại.'
-                        });
-                     } else if (errorData.message == 'Price is not valid') {
-                        errorData.body.data.map((item: ICartItems) => {
-                           dispatch(updatePrice(item));
-                        });
-                        notification.info({
-                           message: 'Cập nhật sản phẩm trong giỏ hàng',
-                           description:
-                              'Thông tin sản phẩm trong giỏ hàng của bạn không thống nhất với hệ thống và đã được cập nhật lại.'
-                        });
-                     } else {
-                        notification.error({
-                           message: 'Mua hàng thất bại',
-                           description: 'Lỗi hệ thống'
-                        });
-                     }
-                  } else {
-                     if ('data' in res && 'status' in res.data) {
-                        message.success('Mua hàng thành công');
-                        dispatch(removeAllProductFromCart());
-                        const value = JSON.stringify({
-                           userId: auth?.user?._id,
-                           orderId: res.data?.body?.data._id
-                        });
-                        clientSocket.emit('purchase', value);
-                        if (res.data.body.data.url === '') {
-                           navigate('/ordercomplete');
+               const status = await CheckCart()
+               if(status){
+                  data.products = cart?.products.map((product: ICartItems) => {
+                     return {
+                        productName: product.productId.productName,
+                        price:
+                           product.productId.discount && product.productId.discount > 0
+                              ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+                              : product.productId.price,
+                        productId: product.productId._id,
+                        images: product.productId?.images[0].url,
+                        weight: product.weight,
+                        originId: product.productId?.originId?._id
+                     };
+                  });
+                  data.totalPayment = auth.user._id?cart?.products.reduce(
+                     (accumulator: number, product: any) =>
+                        accumulator +
+                        (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                           product.weight,
+                     0
+                  ):cart.totalPrice;
+ 
+                     if (voucher._id) {
+                        if (voucher.maxReduce) { 
+                           data.totalPayment = data.totalPayment > voucher.maxReduce
+                                 ? data.totalPayment - voucher.maxReduce
+                                 : data.totalPayment - (data.totalPayment * voucher.percent) / 100;
+                                 console.log(
+                                     data.totalPayment - voucher.maxReduce
+                                    );
+                                 
+                          
                         } else {
-                           window.location.href = res.data.body.data.url;
+                           data.totalPayment = data.totalPayment - (data.totalPayment * voucher.percent) / 100;
+                    
+                        }
+                     } 
+                  if(voucher._id){
+                     data.code = voucher.code
+                  }                  
+                  await handleAddOrder(data).unwrap().then(res => {  
+                        if ('data' in res && 'status' in res.data) {
+                           message.success('Mua hàng thành công');
+                           dispatch(removeAllProductFromCart());
+                           dispatch(remoteVoucher())
+                           const value = JSON.stringify({
+                              userId: auth?.user?._id,
+                              orderId: res.data?.body?.data._id
+                           });
+                           clientSocket.emit('purchase', value);
+                           if (res.data.body.data.url === '') {
+                              navigate('/ordercomplete');
+                           } else {
+                              window.location.href = res.data.body.data.url;
+                           }
                         }
                      }
-                  }
-               })
-               .finally(() => {
-                  setLoadingState(false);
-               });
+                  )
+                  .finally(() => {
+                     setLoadingState(false);
+                  });
+            }
+            setLoadingState(false);
          } catch (error) {
-            console.log(error);
+            setLoadingState(false);
+            notification.error({
+               message: 'Mua hàng thất bại',
+               description: 'Lỗi hệ thống'
+            });
          }
       }
    };
@@ -221,6 +375,23 @@ const CheckOutPage = () => {
                   </div>
                </section>
             </FormProvider>
+         </div>
+         <div>
+            <Modal
+               title='Cập nhật lại giỏ hàng'
+               open={isModalOpen}
+               onOk={handleOk}
+               closeIcon={false}
+               cancelButtonProps={{ style: { display: 'none' } }}
+            >
+               {error?.map((item) => {
+                  return (
+                     <>
+                        <div>{item}</div>
+                     </>
+                  );
+               })}
+            </Modal>
          </div>
       </>
    );

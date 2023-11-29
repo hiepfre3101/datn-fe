@@ -13,7 +13,8 @@
             greenP500: '#6ada92',
             greenP300: '#d8fae4',
             redP300: '#f7b5b3',
-            redP500: '#ea3933'
+            redP500: '#ea3933',
+            greenDashboard: '#6a8d92'
          }
       },
       screens: {

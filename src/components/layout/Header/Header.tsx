@@ -59,7 +59,7 @@ const Header = () => {
          return localCartLength;
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.user._id, cartdb?.body.data]);
+   }, [auth.user._id, cartdb?.body.data, localCartLength]);
 
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');

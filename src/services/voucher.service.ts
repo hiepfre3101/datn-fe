@@ -59,6 +59,20 @@ const voucher = createApi({
             };
          },
          invalidatesTags: ['voucher']
+      }),
+      checkVoucher: builder.mutation({
+         query: (item) => ({
+            url: '/vouchers/',
+            method: 'PUT',
+            body: item
+         })
+      }),
+      getVoucherUseful: builder.mutation({
+         query: (item) => ({
+            url: '/vouchers-user',
+            method: 'POST',
+            body: item
+         })
       })
    })
 });
@@ -69,6 +83,8 @@ export const {
    useAddVoucherMutation,
    useRemoveVoucherMutation,
    useGetOneVoucherQuery,
-   useUpdateVoucherMutation
+   useUpdateVoucherMutation,
+   useCheckVoucherMutation,
+   useGetVoucherUsefulMutation
 } = voucher;
 export default voucher;

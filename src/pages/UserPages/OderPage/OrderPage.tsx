@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from 'react-router-dom';
 import { Button, Divider, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
 import { getOrderForGuest } from '../../../api/order';
@@ -30,7 +30,7 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, isLoading, refetch } = useGetOrderForMemberQuery({ statusOrder: status, day });
+   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day });
    const [handleCancelOrder, { isLoading: loadingCancel }] = useCancelOrderMemberMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
