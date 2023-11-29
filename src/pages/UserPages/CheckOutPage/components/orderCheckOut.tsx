@@ -73,8 +73,6 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
               0
            )
          : cart?.totalPrice;
-         console.log(cart?.totalPrice);
-         
       setTotal(temp);
       }
    }, [cart,voucher,subtotal]);

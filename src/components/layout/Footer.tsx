@@ -450,11 +450,15 @@ const Footer = () => {
                                     <div className='product-info mt-[9px] flex'>
                                        <span className='product-qt text-[16px]'>{item?.weight}kg ×</span>
                                        <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
-                                          {item.productId?.discount?(item?.productId?.price-(item?.productId?.price*item?.productId?.discount/100)).toLocaleString('vi-VN', {
-                                             style: 'currency',
-                                             currency: 'VND'
-                                          }):item.productId?.price}
-                                
+                                          {item.productId?.discount
+                                             ? (
+                                                  item?.productId?.price -
+                                                  (item?.productId?.price * item?.productId?.discount) / 100
+                                               ).toLocaleString('vi-VN', {
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })
+                                             : item.productId?.price}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
@@ -475,11 +479,18 @@ const Footer = () => {
                         <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                            <span className='subtotal-title text-[16px] '>Subtotal:</span>
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                              {auth.user._id?cart?.reduce(
-                                  (accumulator: number, product: any) => accumulator + (product.productId.price -(product.productId.price*product.productId.discount/100))* product.weight,
-                                                                        0
-                                                    ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                            
+                              {auth.user._id
+                                 ? cart
+                                      ?.reduce(
+                                         (accumulator: number, product: any) =>
+                                            accumulator +
+                                            (product.productId.price -
+                                               (product.productId.price * product.productId.discount) / 100) *
+                                               product.weight,
+                                         0
+                                      )
+                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                 : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
