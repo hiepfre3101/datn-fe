@@ -46,15 +46,22 @@ const ProductsInCart = () => {
    }, [cart]);
    if (!debouncedUpdateCartDBRef.current) {
       debouncedUpdateCartDBRef.current = debounce(async (temp: any) => {
-         await updateCartDB(temp).unwrap();
-         message.success('Cập nhật sản phẩm thành công');
+         await updateCartDB(temp).unwrap().then(res => {
+            res
+           message.success('Cập nhật sản phẩm thành công');
+         })
+         .catch(error => {
+         message.error('Số lượng vượt quá sản phẩm đang có trong kho');
+         setCartState(error.data.body.data.products)
+         
+         });
       }, 1000);
    }
    const updateCart = async (item: ICartDataBaseItem | ICartItems, index: number, cal: boolean) => {
       setClickCount(1);
       if (auth.user._id) {
-         const updatedCartState = [...cartState];
-         const updatedItem = { ...updatedCartState[index] };
+         let updatedCartState = [...cartState];
+         let updatedItem = { ...updatedCartState[index] };
          updatedItem.weight = cal ? updatedItem.weight + 0.5 : updatedItem.weight - 0.5;
          updatedCartState[index] = updatedItem;
          setCartState(updatedCartState);
@@ -76,8 +83,8 @@ const ProductsInCart = () => {
    };
    const handleInputSize = (e: React.ChangeEvent<HTMLInputElement>, id: string, maxWeight: number, index: number) => {
       if (auth.user._id) {
-         const updatedCartState = [...cartState];
-         const updatedItem = { ...updatedCartState[index] };
+         let updatedCartState = [...cartState];
+         let updatedItem = { ...updatedCartState[index] };
          updatedItem.weight = e.target.value;
          if (e.target.value == '') {
             updatedCartState[index] = updatedItem;
@@ -152,9 +159,11 @@ const ProductsInCart = () => {
          message.success('Xoá giỏ hàng thành công');
       }
    };
+   console.log(cart?.length);
+   
    return (
       <div>
-         {cart?.length === 0 ? (
+         {cart?.length === 0 || cart?.length === undefined ? (
             <div className='art-item-wrap md:px-[20px] md:pt-[20px] md:pb-[7px] max-md:px-[12px] max-md:py-[30px] border-[#e2e2e2] border-[1px] '>
                <p className='cart-title xl:text-[30px]  border-[#e2e2e2] max-xl:text-[18px] text-[red] font-bold items-center text-center pb-[12px]'>
                   Không có sản phẩm trong giỏ hàng
@@ -203,7 +212,7 @@ const ProductsInCart = () => {
                                  <span className='origin-name ml-[5px]'>{item.productId.originId.name}</span>
                               </div>
                               <span className='price'>
-                                 {item.productId?.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 {item.productId.discount?(item.productId?.price-(item.productId?.price*item.productId?.discount/100)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):item.productId.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
                         </div>
@@ -275,7 +284,10 @@ const ProductsInCart = () => {
                         </div>
                         <div className='cart-item-price sm:text-right max-sm:mt-[10px] w-[20%] max-lg:w-[50%]'>
                            <span className='full-price font-bold'>
-                              {(item.productId?.price * item.weight).toLocaleString('vi-VN', {
+                              {item.productId.discount?((item.productId?.price-(item.productId?.price*item.productId?.discount/100)) * item.weight).toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              }):(item.productId.price*item.weight).toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}

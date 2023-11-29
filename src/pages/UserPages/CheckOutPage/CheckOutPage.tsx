@@ -25,6 +25,8 @@ import { clientSocket } from '../../../config/socket';
 import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
 import { IAuth } from '../../../slices/authSlice';
 import { formatCharacterWithoutUTF8 } from '../../../helper';
+import { IVoucher, remoteVoucher } from '../../../slices/voucherSlice';
+import { useCheckVoucherMutation } from '../../../services/voucher.service';
 const CheckOutPage = () => {
    // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
@@ -38,6 +40,7 @@ const CheckOutPage = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
    const { data: cartdb, refetch } = useGetCartQuery(undefined, { skip: showfetch == false });
+
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -51,13 +54,59 @@ const CheckOutPage = () => {
    const cart = auth.user._id ? cartdb?.body.data : CartLocal;
    const [loadingState, setLoadingState] = useState<boolean>(false);
    const dispatch = useDispatch();
+   const [addVoucher] = useCheckVoucherMutation();
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [error, setError] = useState<string[]>([]);
+   const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
    const CheckCart = async () => {
       let temp = false;
       if (auth.user._id) {
-         await refetch().then((res) => {
-            if (res?.data?.body.errors) {
+         let status = true
+         if(voucher._id){
+            const total = cartdb?.body.data.products?.reduce(
+               (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+               0
+            )
+            const object={
+               code: voucher.code,
+               userId: auth.user._id,
+               miniMumOrder:total,
+            }
+            await addVoucher(object).unwrap().catch(error=>{
+               status=false
+               setIsModalOpen(true);
+               if(error.data.message=="Voucher does not exist!"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Mã giảm giá không tồn tại"
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+               else if(error.data.message=="Voucher is out of quantity!"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Mã giảm giá đã hết"
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+               else if(error.data.message=="Voucher is out of date"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Mã giảm giá đã hết hạn"
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+               else if(error.data.message=="Orders are not satisfactory!"){
+                  setError((prevError: string[]) => [
+                     ...prevError,
+                     "Đơn hàng của bạn phải có tổng giá trị trên "+ error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                  ]);
+                  dispatch(remoteVoucher())
+               }
+            })
+         }
+       await  refetch().then((res) => {
+            if (res.data.body.errors) {
                setIsModalOpen(true);
                res.data.body.errors.map((item) => {
                   if (item.message == 'The remaining quantity is not enough!') {
@@ -80,7 +129,7 @@ const CheckOutPage = () => {
                   }
                });
             } else {
-               temp = true;
+                temp = status?true:false
             }
          });
       } else {
@@ -175,53 +224,72 @@ const CheckOutPage = () => {
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
-            const status = await CheckCart();
-            if (status) {
-               data.products = cart?.products.map((product: ICartItems) => {
-                  return {
-                     productName: product.productId.productName,
-                     price:
-                        product.productId.discount && product.productId.discount > 0
-                           ? product.productId.price - (product.productId.price * product.productId.discount) / 100
-                           : product.productId.price,
-                     productId: product.productId._id,
-                     images: product.productId?.images[0].url,
-                     weight: product.weight,
-                     originId: product.productId?.originId?._id
-                  };
-               });
-               data.totalPayment = auth.user._id
-                  ? cart?.products.reduce(
-                       (accumulator: number, product: any) =>
-                          accumulator +
-                          (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
-                             product.weight,
-                       0
-                    )
-                  : cart?.totalPrice;
-               await handleAddOrder(data)
-                  .then((res) => {
-                     if ('data' in res && 'status' in res.data) {
-                        message.success('Mua hàng thành công');
-                        dispatch(removeAllProductFromCart());
-                        const value = JSON.stringify({
-                           userId: auth?.user?._id,
-                           orderId: res.data?.body?.data._id
-                        });
-                        clientSocket.emit('purchase', value);
-                        if (res.data.body.data.url === '') {
-                           navigate('/ordercomplete');
+               const status = await CheckCart()
+               if(status){
+                  data.products = cart?.products.map((product: ICartItems) => {
+                     return {
+                        productName: product.productId.productName,
+                        price:
+                           product.productId.discount && product.productId.discount > 0
+                              ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+                              : product.productId.price,
+                        productId: product.productId._id,
+                        images: product.productId?.images[0].url,
+                        weight: product.weight,
+                        originId: product.productId?.originId?._id
+                     };
+                  });
+                  data.totalPayment = auth.user._id?cart?.products.reduce(
+                     (accumulator: number, product: any) =>
+                        accumulator +
+                        (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                           product.weight,
+                     0
+                  ):cart.totalPrice;
+ 
+                     if (voucher._id) {
+                        if (voucher.maxReduce) { 
+                           data.totalPayment = data.totalPayment > voucher.maxReduce
+                                 ? data.totalPayment - voucher.maxReduce
+                                 : data.totalPayment - (data.totalPayment * voucher.percent) / 100;
+                                 console.log(
+                                     data.totalPayment - voucher.maxReduce
+                                    );
+                                 
+                          
                         } else {
-                           window.location.href = res.data.body.data.url;
+                           data.totalPayment = data.totalPayment - (data.totalPayment * voucher.percent) / 100;
+                    
+                        }
+                     } 
+                  if(voucher._id){
+                     data.code = voucher.code
+                  }                  
+                  await handleAddOrder(data).unwrap().then(res => {  
+                        if ('data' in res && 'status' in res.data) {
+                           message.success('Mua hàng thành công');
+                           dispatch(removeAllProductFromCart());
+                           dispatch(remoteVoucher())
+                           const value = JSON.stringify({
+                              userId: auth?.user?._id,
+                              orderId: res.data?.body?.data._id
+                           });
+                           clientSocket.emit('purchase', value);
+                           if (res.data.body.data.url === '') {
+                              navigate('/ordercomplete');
+                           } else {
+                              window.location.href = res.data.body.data.url;
+                           }
                         }
                      }
-                  })
+                  )
                   .finally(() => {
                      setLoadingState(false);
                   });
             }
             setLoadingState(false);
          } catch (error) {
+            setLoadingState(false);
             notification.error({
                message: 'Mua hàng thất bại',
                description: 'Lỗi hệ thống'
