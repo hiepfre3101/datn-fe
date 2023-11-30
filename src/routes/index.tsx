@@ -28,6 +28,10 @@ import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
 import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
 import AddVoucher from '../pages/AdminPages/Voucher/AddVoucher';
 import UpdateVoucher from '../pages/AdminPages/Voucher/UpdateVoucher';
+import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
+import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
+import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
+import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
 
 const router = createBrowserRouter([
    {
@@ -170,6 +174,26 @@ const router = createBrowserRouter([
          {
             path: 'update-voucher',
             element: <UpdateVoucher />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'evaluation',
+            element: <Evaluation />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'origin',
+            element: <OriginAdmin />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'add-origin',
+            element: <AddOrigin />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'update-origin/:id',
+            element: <UpdateOrigin />,
             errorElement: <NotFoundPage />
          }
 

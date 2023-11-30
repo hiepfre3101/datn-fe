@@ -7,7 +7,8 @@ export interface IProductOrder {
    productName: string;
    weight: number;
    price: number;
-   productId: string
+   productId: string;
+   evaluation: boolean
 }
 export interface IOrder {
    customerName: string;

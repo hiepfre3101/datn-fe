@@ -5,7 +5,8 @@ import {
    NotificationOutlined,
    UserOutlined,
    MenuFoldOutlined,
-   MenuUnfoldOutlined
+   MenuUnfoldOutlined,
+   MessageOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Layout, Menu, Spin, message, theme } from 'antd';
@@ -41,12 +42,14 @@ const items: MenuItem[] = [
    getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
       getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
-      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5')
+      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '5'),
+      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '6'),
    ]),
-   getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
-   getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
-   getItem(<Link to='/manage/accounts'>Tài khoản</Link>, 'sub3', <UserOutlined />),
-   getItem(<Link to='/manage/notifications'>Thông báo người dùng</Link>, 'sub4', <NotificationOutlined />)
+   getItem(<Link to='/manage/evaluation'>Đánh giá của người dùng</Link>, 'sub1', <MessageOutlined />),
+   getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub2', <OrderIcon />),
+   getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub3', <TicketIcon />),
+   getItem(<Link to='/manage/accounts'>Tài khoản</Link>, 'sub4', <UserOutlined />),
+   getItem(<Link to='/manage/notifications'>Thông báo người dùng</Link>, 'sub5', <NotificationOutlined />)
 ];
 
 const AdminLayout = () => {

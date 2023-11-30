@@ -12,6 +12,7 @@ import whishListReducer from './slices/whishListSlice';
 import userReducer from './slices/authSlice';
 import productSlice from './slices/productSlice';
 import evaluationReducer from './services/evaluation.service';
+import originReducer from './services/origin.service';
 export const store = configureStore({
    reducer: {
       [authReducer.reducerPath]: authReducer.reducer,
@@ -22,6 +23,7 @@ export const store = configureStore({
       [userSlice.reducerPath]: userSlice.reducer,
       [notificationReducer.reducerPath]: notificationReducer.reducer,
       [evaluationReducer.reducerPath]: evaluationReducer.reducer,
+      [originReducer.reducerPath]: originReducer.reducer,
       cart: cartSlice.reducer,
       whishList: whishListReducer.reducer,
       userReducer: userReducer,
@@ -38,7 +40,8 @@ export const store = configureStore({
          cartReducer.middleware,
          userSlice.middleware,
          shipmentReducer.middleware,
-         evaluationReducer.middleware
+         evaluationReducer.middleware,
+         originReducer.middleware,
       ])
 });
 
