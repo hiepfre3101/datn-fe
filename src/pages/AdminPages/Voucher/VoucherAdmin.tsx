@@ -70,7 +70,7 @@ const VoucherAdmin = () => {
                         <Column title='Ngày bắt đầu' dataIndex='dateStart' key='dateStart' width={80} />
                         <Column title='Ngày hết hạn' dataIndex='dateEnd' key='dateEnd' width={80} />
                         <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
-                        <Column title='Giảm tối đa (VNĐ)' dataIndex='miniMumOrder' key='miniMumOrder' width={80} />
+                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
                         <Column
                            fixed='right'
                            width={80}

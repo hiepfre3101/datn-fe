@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet';
 import HeadForm from '../../../components/HeadForm/HeadForm';
 import BlockForm from '../Product/BlockForm';
-import { DatePicker, Radio } from 'antd';
+import { DatePicker, InputNumber, Radio } from 'antd';
 import { Divider, Form, Input, Layout } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -16,7 +16,7 @@ const UpdateVoucher = () => {
    const navigate = useNavigate();
    const [handleUpdateProduct, { error }] = useUpdateVoucherMutation();
    const { data, isLoading } = useGetOneVoucherByIdQuery(id);
-   console.log(data);
+   // console.log(data);
    useEffect(() => {
       if (!isLoading && data) {
          console.log(dayjs(data.body.data.dateEnd));
@@ -28,6 +28,7 @@ const UpdateVoucher = () => {
             percent: data.body.data.percent,
             status: data.body.data.status,
             miniMumOrder: data.body.data.miniMumOrder,
+            maxReduce: data.body.data.maxReduce,
             dateStart: dayjs(data.body.data.dateStart),
             dateEnd: dayjs(data.body.data.dateEnd)
          });
@@ -113,9 +114,12 @@ const UpdateVoucher = () => {
                         <Form.Item
                            name={'quantity'}
                            label={'Số lượng'}
-                           rules={[{ required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' }]}
+                           rules={[
+                              { required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' },
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
+                           ]}
                         >
-                           <Input placeholder='Thêm mã khuyến mãi' type='number' />
+                           <InputNumber className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
                         </Form.Item>
                         <Form.Item
                            name={'status'}
@@ -156,6 +160,13 @@ const UpdateVoucher = () => {
                         </Form.Item>
                         <Form.Item
                            name={'miniMumOrder'}
+                           label={' Giảm tối đa (VNĐ)'}
+                           rules={[{ required: true, message: 'Vui lòng điền số tiền giảm tối đa !' }]}
+                        >
+                           <Input placeholder='Thêm khuyến mãi' type='number' disabled />
+                        </Form.Item>
+                        <Form.Item
+                           name={'maxReduce'}
                            label={' Giảm tối đa (VNĐ)'}
                            rules={[{ required: true, message: 'Vui lòng điền số tiền giảm tối đa !' }]}
                         >
