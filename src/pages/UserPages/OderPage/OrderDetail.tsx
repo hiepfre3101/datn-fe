@@ -40,6 +40,7 @@ const OrderDetail = () => {
             refetch();
          });
       };
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const getStatusOfOrder = () => {
       return ORDER_STATUS_FULL.indexOf(
@@ -168,7 +169,7 @@ const OrderDetail = () => {
                   <div className=' flex flex-col items-start gap-4 max-h-[350px] overflow-auto px-10'>
                      {data?.body.data &&
                         data?.body.data.products.map((product) => (
-                           <ProductInOrder product={product} oderId={data?.body.data._id} statusOrder={data?.body.data.status} />
+                           <ProductInOrder refetch={refetch} product={product} oderId={data?.body.data._id} statusOrder={data?.body.data.status} />
                         ))}
                   </div>
                   <Divider />
