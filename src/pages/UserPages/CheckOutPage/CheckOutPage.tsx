@@ -61,60 +61,51 @@ const CheckOutPage = () => {
    const CheckCart = async () => {
       let temp = false;
       if (auth.user._id) {
-         let status = true
-         if(voucher._id){
+         let status = true;
+         if (voucher._id) {
             const total = cartdb?.body.data.products?.reduce(
                (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
                0
-            )
-            const object={
+            );
+            const object = {
                code: voucher.code,
                userId: auth.user._id,
-               miniMumOrder:total,
-            }
-            await addVoucher(object).unwrap().catch(error=>{
-               status=false
-               setIsModalOpen(true);
-               if(error.data.message=="Voucher does not exist!"){
-                  setError((prevError: string[]) => [
-                     ...prevError,
-                     "Mã giảm giá không tồn tại"
-                  ]);
-                  dispatch(remoteVoucher())
-               }
-               else if(error.data.message=="Voucher is out of quantity!"){
-                  setError((prevError: string[]) => [
-                     ...prevError,
-                     "Mã giảm giá đã hết"
-                  ]);
-                  dispatch(remoteVoucher())
-               }
-               else if(error.data.message=="Voucher is out of date"){
-                  setError((prevError: string[]) => [
-                     ...prevError,
-                     "Mã giảm giá đã hết hạn"
-                  ]);
-                  dispatch(remoteVoucher())
-               }
-               else if(error.data.message=="Orders are not satisfactory!"){
-                  setError((prevError: string[]) => [
-                     ...prevError,
-                     "Đơn hàng của bạn phải có tổng giá trị trên "+ error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                  ]);
-                  dispatch(remoteVoucher())
-               }
-            })
+               miniMumOrder: total
+            };
+            await addVoucher(object)
+               .unwrap()
+               .catch((error) => {
+                  status = false;
+                  setIsModalOpen(true);
+                  if (error.data.message == 'Voucher does not exist!') {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá không tồn tại']);
+                     dispatch(remoteVoucher());
+                  } else if (error.data.message == 'Voucher is out of quantity!') {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết']);
+                     dispatch(remoteVoucher());
+                  } else if (error.data.message == 'Voucher is out of date') {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết hạn']);
+                     dispatch(remoteVoucher());
+                  } else if (error.data.message == 'Orders are not satisfactory!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        'Đơn hàng của bạn phải có tổng giá trị trên ' +
+                        error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                     ]);
+                     dispatch(remoteVoucher());
+                  }
+               });
          }
-       await  refetch().then((res) => {
-            if (res.data.body.errors) {
+         await refetch().then((res) => {
+            if (res?.data?.body?.errors as any) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item) => {
+               res.data.body.errors.map((item: any) => {
                   if (item.message == 'The remaining quantity is not enough!') {
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Số lượng trong kho của sản phẩm' +
-                           item.productName +
-                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                        item.productName +
+                        ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
                      ]);
                   } else if (item.message == 'Product is currently out of stock!') {
                      setError((prevError: string[]) => [
@@ -129,7 +120,7 @@ const CheckOutPage = () => {
                   }
                });
             } else {
-                temp = status?true:false
+               temp = status ? true : false;
             }
          });
       } else {
@@ -169,25 +160,25 @@ const CheckOutPage = () => {
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Giá của sản phẩm ' +
-                           item.productName +
-                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                        item.productName +
+                        ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
                      ]);
                   } else if (item.message == 'Invalid product image!') {
                      dispatch(updateImgProductInCartLocal({ id: item.productId, img: item?.image }));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Ảnh của sản phẩm ' +
-                           item.productName +
-                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                        item.productName +
+                        ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
                      ]);
                   } else if (item.message == 'Insufficient quantity of the product in stock!') {
                      dispatch(updateItem({ id: item.productId, weight: item.maxWeight }));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Số lượng sản phẩm ' +
-                           item.productName +
-                           ' trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về ' +
-                           item.maxWeight
+                        item.productName +
+                        ' trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về ' +
+                        item.maxWeight
                      ]);
                   } else if (item.message == 'The product is currently out of stock!') {
                      dispatch(removeFromCart({ id: item.productId }));
@@ -224,65 +215,64 @@ const CheckOutPage = () => {
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
-               const status = await CheckCart()
-               if(status){
-                  data.products = cart?.products.map((product: ICartItems) => {
-                     return {
-                        productName: product.productId.productName,
-                        price:
-                           product.productId.discount && product.productId.discount > 0
-                              ? product.productId.price - (product.productId.price * product.productId.discount) / 100
-                              : product.productId.price,
-                        productId: product.productId._id,
-                        images: product.productId?.images[0].url,
-                        weight: product.weight,
-                        originId: product.productId?.originId?._id
-                     };
-                  });
-                  data.totalPayment = auth.user._id?cart?.products.reduce(
+            const status = await CheckCart();
+            if (status) {
+               data.products = cart?.products.map((product: ICartItems) => {
+                  return {
+                     productName: product.productId.productName,
+                     price:
+                        product.productId.discount && product.productId.discount > 0
+                           ? product.productId.price - (product.productId.price * product.productId.discount) / 100
+                           : product.productId.price,
+                     productId: product.productId._id,
+                     images: product.productId?.images[0].url,
+                     weight: product.weight,
+                     originId: product.productId?.originId?._id
+                  };
+               });
+               data.totalPayment = auth.user._id
+                  ? cart?.products.reduce(
                      (accumulator: number, product: any) =>
                         accumulator +
                         (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
-                           product.weight,
+                        product.weight,
                      0
-                  ):cart.totalPrice;
- 
-                     if (voucher._id) {
-                        if (voucher.maxReduce) { 
-                           data.totalPayment = data.totalPayment > voucher.maxReduce
-                                 ? data.totalPayment - voucher.maxReduce
-                                 : data.totalPayment - (data.totalPayment * voucher.percent) / 100;
-                                 console.log(
-                                     data.totalPayment - voucher.maxReduce
-                                    );
-                                 
-                          
-                        } else {
-                           data.totalPayment = data.totalPayment - (data.totalPayment * voucher.percent) / 100;
-                    
-                        }
-                     } 
-                  if(voucher._id){
-                     data.code = voucher.code
-                  }                  
-                  await handleAddOrder(data).unwrap().then(res => {  
-                        if ('data' in res && 'status' in res.data) {
-                           message.success('Mua hàng thành công');
-                           dispatch(removeAllProductFromCart());
-                           dispatch(remoteVoucher())
-                           const value = JSON.stringify({
-                              userId: auth?.user?._id,
-                              orderId: res.data?.body?.data._id
-                           });
-                           clientSocket.emit('purchase', value);
-                           if (res.data.body.data.url === '') {
-                              navigate('/ordercomplete');
-                           } else {
-                              window.location.href = res.data.body.data.url;
-                           }
-                        }
-                     }
                   )
+                  : cart.totalPrice;
+
+               if (voucher._id) {
+                  if (voucher.maxReduce) {
+                     data.totalPayment =
+                        data.totalPayment > voucher.maxReduce
+                           ? data.totalPayment - voucher.maxReduce
+                           : data.totalPayment - (data.totalPayment * voucher.percent) / 100;
+                     console.log(data.totalPayment - voucher.maxReduce);
+                  } else {
+                     data.totalPayment = data.totalPayment - (data.totalPayment * voucher.percent) / 100;
+                  }
+               }
+               if (voucher._id) {
+                  data.code = voucher.code;
+               }
+               await handleAddOrder(data)
+                  .unwrap()
+                  .then((res) => {
+                     message.success('Mua hàng thành công');
+                     dispatch(removeAllProductFromCart());
+                     dispatch(remoteVoucher());
+                     const value = JSON.stringify({
+                        userId: auth?.user?._id,
+                        orderId: res?.body?.data._id
+                     });
+                     clientSocket.emit('purchase', value);
+                     if (res.body.data.url === '') {
+                        console.log('success');
+                        navigate('/ordercomplete');
+                     } else {
+                        window.location.href = res.body.data.url;
+                     }
+
+                  })
                   .finally(() => {
                      setLoadingState(false);
                   });
