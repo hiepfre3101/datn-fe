@@ -196,3 +196,35 @@ export const MONTHS = [
       text: 'THÁNG 12'
    }
 ];
+
+export const DAYS = [
+   {
+      key: 2,
+      text: 'Monday'
+   },
+   {
+      key: 3,
+      text: 'Tuesday'
+   },
+   {
+      key: 4,
+      text: 'Wednesday'
+   },
+   {
+      key: 5,
+      text: 'Thursday'
+   },
+   {
+      key: 6,
+      text: 'Friday'
+   },
+   {
+      key: 7,
+      text: 'Sartuday'
+   },
+
+   {
+      key: 8,
+      text: 'Sunday'
+   }
+];

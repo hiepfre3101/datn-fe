@@ -43,84 +43,98 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const cart = auth.user._id ? cartdb?.body.data : CartLocal;
    const [total, setTotal] = useState<number>();
-   const [subtotal, setSubtotal] = useState<number>(0)
+   const [subtotal, setSubtotal] = useState<number>(0);
    useEffect(() => {
-      const temp = auth.user._id
-      ? cart?.products.reduce(
-           (accumulator: number, product: any) => accumulator + (product.productId.price-(product.productId.price*product.productId.discount/100)) * product.weight,
-           0
-        )
-      : cart?.totalPrice;
-   setSubtotal(temp);
-   },[cart])
+      const temp =
+         auth.user._id && cart?.products
+            ? cart?.products.reduce(
+                 (accumulator: number, product: any) =>
+                    accumulator +
+                    (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                       product.weight,
+                 0
+              )
+            : cart?.totalPrice;
+      setSubtotal(temp);
+   }, [cart]);
    useEffect(() => {
-
-      if(voucher._id){
-         if(voucher.maxReduce){
-          const temp = subtotal > voucher.maxReduce?subtotal-voucher.maxReduce:subtotal-(subtotal*voucher.percent)/100
-          setTotal(temp);
-          
-         }
-         else{
-            const temp = subtotal-(subtotal*voucher.percent)/100
+      if (voucher._id) {
+         if (voucher.maxReduce) {
+            const temp =
+               subtotal > voucher.maxReduce
+                  ? subtotal - voucher.maxReduce
+                  : subtotal - (subtotal * voucher.percent) / 100;
+            setTotal(temp);
+         } else {
+            const temp = subtotal - (subtotal * voucher.percent) / 100;
             setTotal(temp);
          }
+      } else {
+         const temp =
+            auth.user._id && cart?.products
+               ? cart?.products.reduce(
+                    (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+                    0
+                 )
+               : cart?.totalPrice;
+         setTotal(temp);
       }
-      else{
-         const temp = auth.user._id
-         ? cart?.products.reduce(
-              (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
-              0
-           )
-         : cart?.totalPrice;
-      setTotal(temp);
-      }
-   }, [cart,voucher,subtotal]);
+   }, [cart, voucher, subtotal]);
 
-   
    return (
       <>
          <div className='order-checkout'>
             <div className='order-checkout-content  flex max-md:flex-wrap  ml-[-30px]'>
                <div className='check-pro ml-[30px] md:w-[calc(50%-30px)] max-md:w-full '>
-                  <span className='text-[26px] text-[#333333] font-bold'>Giỏ hàng của bạn (8)</span>
+                  <span className='text-[26px] text-[#333333] font-bold'>
+                     Giỏ hàng của bạn ({cart?.products ? cart?.products.length : 0})
+                  </span>
                   <ul className='list-check-pro mt-[20px] md:max-h-[650px] overflow-scroll'>
-                     {cart?.products.map((item: any) => {
-                        return (
-                           <>
-                              <li className='check-pro-item flex items-center mb-[20px] pb-[20px] border-b border-[#e2e2e2]'>
-                                 <div className='check-pro-img w-[112px] h-[122px]  '>
-                                    <img
-                                       className='w-full h-full rounded-[5px] border border-[#e2e2e2]'
-                                       src={item.productId.images[0].url}
-                                       alt=''
-                                    />
-                                 </div>
-                                 <div className='check-pro-content ml-[15px]'>
-                                    <Link
-                                       to={'/products/' + item.productId._id}
-                                       className='block font-bold text-[#333333]'
-                                    >
-                                       {item.productId?.productName}
-                                    </Link>
-                                    <span className='block font-bold mt-[2px]'>
-                                       Xuất sứ: <span className='font-[500]'>{item.productId?.origin?.name}</span>
-                                    </span>
-                                    <span className='mt-[5px] font-bold'>{item.weight} X </span>
-                                    <span className='mt-[5px] font-bold'>
-                                       {item.productId.discount?(item.productId.price-(item.productId.price*item.productId.discount/100)).toLocaleString('vi-VN', {
-                                          style: 'currency',
-                                          currency: 'VND'
-                                       }):item.productId.price.toLocaleString('vi-VN', {
-                                          style: 'currency',
-                                          currency: 'VND'
-                                       })}
-                                    </span>
-                                 </div>
-                              </li>
-                           </>
-                        );
-                     })}
+                     {cart?.products ? (
+                        cart?.products?.map((item: any) => {
+                           return (
+                              <>
+                                 <li className='check-pro-item flex items-center mb-[20px] pb-[20px] border-b border-[#e2e2e2]'>
+                                    <div className='check-pro-img w-[112px] h-[122px]  '>
+                                       <img
+                                          className='w-full h-full rounded-[5px] border border-[#e2e2e2]'
+                                          src={item.productId.images[0].url}
+                                          alt=''
+                                       />
+                                    </div>
+                                    <div className='check-pro-content ml-[15px]'>
+                                       <Link
+                                          to={'/products/' + item.productId._id}
+                                          className='block font-bold text-[#333333]'
+                                       >
+                                          {item.productId?.productName}
+                                       </Link>
+                                       <span className='block font-bold mt-[2px]'>
+                                          Xuất sứ: <span className='font-[500]'>{item.productId?.origin?.name}</span>
+                                       </span>
+                                       <span className='mt-[5px] font-bold'>{item.weight} X </span>
+                                       <span className='mt-[5px] font-bold'>
+                                          {item.productId.discount
+                                             ? (
+                                                  item.productId.price -
+                                                  (item.productId.price * item.productId.discount) / 100
+                                               ).toLocaleString('vi-VN', {
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })
+                                             : item.productId.price.toLocaleString('vi-VN', {
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })}
+                                       </span>
+                                    </div>
+                                 </li>
+                              </>
+                           );
+                        })
+                     ) : (
+                        <p>Giỏ hàng trống</p>
+                     )}
                   </ul>
                </div>
                <div className='order-detail md:w-[calc(50%-30px)] max-md:w-full  ml-[30px]'>
@@ -130,21 +144,31 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='text-[18px] font-[500]'>Sản phẩm</span>
                         <span className='text-[18px] font-[500]'>Tổng</span>
                      </div>
-                     {cart?.products.map((item: any) => {
-                        return (
-                           <>
-                              <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
-                                 <span className='text-[18px] font-[500]'>{item.productId.productName}</span>
-                                 <span className='text-[18px] font-[500]'>
-                                    {item.productId.discount?((item.productId?.price - (item.productId?.price*item.productId?.discount/100)) * item.weight).toLocaleString('vi-VN', {
-                                       style: 'currency',
-                                       currency: 'VND'
-                                    }):(item?.weight*item.productId?.price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                                 </span>
-                              </div>
-                           </>
-                        );
-                     })}
+                     {cart?.products &&
+                        cart?.products.map((item: any) => {
+                           return (
+                              <>
+                                 <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
+                                    <span className='text-[18px] font-[500]'>{item.productId.productName}</span>
+                                    <span className='text-[18px] font-[500]'>
+                                       {item.productId.discount
+                                          ? (
+                                               (item.productId?.price -
+                                                  (item.productId?.price * item.productId?.discount) / 100) *
+                                               item.weight
+                                            ).toLocaleString('vi-VN', {
+                                               style: 'currency',
+                                               currency: 'VND'
+                                            })
+                                          : (item?.weight * item.productId?.price).toLocaleString('vi-VN', {
+                                               style: 'currency',
+                                               currency: 'VND'
+                                            })}
+                                    </span>
+                                 </div>
+                              </>
+                           );
+                        })}
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-[500]'>Tính tạm:</span>
                         <span className='text-[18px] font-[500]'>
@@ -152,10 +176,29 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         </span>
                      </div>
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
-                        <span className='text-[18px] font-[500]'>Mã giảm giá: {voucher._id?voucher.code:""}</span>
-                       
-                        <span className='temporary font-bold  text-[14px] '>{!voucher.maxReduce?"- "+Math.ceil(subtotal*voucher.percent/100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):""}</span>
-                 {voucher.maxReduce&& <span className='text-[18px] font-[500]'>{voucher.maxReduce  && subtotal > voucher?.maxReduce  ?"- "+voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):"- "+Math.ceil(subtotal-(subtotal*voucher.percent)/100).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</span>}
+                        <span className='text-[18px] font-[500]'>Mã giảm giá: {voucher._id ? voucher.code : ''}</span>
+
+                        <span className='temporary font-bold  text-[14px] '>
+                           {!voucher.maxReduce
+                              ? '- ' +
+                                Math.ceil((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                   style: 'currency',
+                                   currency: 'VND'
+                                })
+                              : ''}
+                        </span>
+                        {voucher.maxReduce && (
+                           <span className='text-[18px] font-[500]'>
+                              {voucher.maxReduce && subtotal > voucher?.maxReduce
+                                 ? '- ' +
+                                   voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                 : '- ' +
+                                   Math.ceil(subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                      style: 'currency',
+                                      currency: 'VND'
+                                   })}
+                           </span>
+                        )}
                      </div>
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-extrabold'>Tổng:</span>
@@ -193,8 +236,11 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                   </div>
                   <div className='wrap-btn-order-detail  mt-[28px] text-center text-[18px]  transition-colors duration-300 hover:bg-black  bg-[#d2401e] rounded-[50px] '>
                      <Button
-                        disabled={cart==undefined?true:false}
-                        onClick={methods.handleSubmit((data) => onSubmit({ ...data, paymentMethod: PayValue }))}
+                        disabled={cart == undefined ? true : false}
+                        onClick={methods.handleSubmit((data) => {
+                           console.log(data);
+                           onSubmit({ ...data, paymentMethod: PayValue, note: data.note ? data.note : '' });
+                        })}
                         className='w-full h-full py-[12px] border-none hover:!text-white px-[30px] font-bold text-white'
                         loading={loadingState}
                      >
