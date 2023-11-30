@@ -1,7 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom';
 import DefaultLayout from '../layouts/DefaultLayout';
 import AdminLayout from '../layouts/AdminLayout';
-import Dashboard from '../pages/AdminPages/Dashboard';
+import Dashboard from '../pages/AdminPages/Dashboard/Dashboard';
 import ProductAdmin from '../pages/AdminPages/Product/ProductAdmin';
 import AddProduct from '../pages/AdminPages/Product/AddProduct';
 import CategoryAdmin from '../pages/AdminPages/Category/CategoryAdmin';
@@ -87,7 +87,7 @@ const router = createBrowserRouter([
          },
          {
             path: 'vnpay_return',
-            element: <VNPayIpn/>
+            element: <VNPayIpn />
          },
          {
             path: 'contact',
@@ -111,6 +111,11 @@ const router = createBrowserRouter([
       element: <AdminLayout />,
       errorElement: <NotFoundPage />,
       children: [
+         {
+            path: '',
+            element: <Dashboard />,
+            errorElement: <NotFoundPage />
+         },
          {
             path: 'dashboard',
             element: <Dashboard />,
@@ -172,7 +177,7 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
-            path: 'update-voucher',
+            path: 'update-voucher/:id',
             element: <UpdateVoucher />,
             errorElement: <NotFoundPage />
          },
@@ -196,7 +201,6 @@ const router = createBrowserRouter([
             element: <UpdateOrigin />,
             errorElement: <NotFoundPage />
          }
-
 
          // {
          //    path: 'accounts',

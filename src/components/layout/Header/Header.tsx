@@ -49,7 +49,7 @@ const Header = () => {
    const { data: clientNotification, refetch } = useGetClientNotificationQuery(auth?.user?._id);
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
-   const { data } = useGetAllCateQuery();
+   const { data } = useGetAllCateQuery({});
    const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
 
    const totalProductInCart = useMemo(() => {
@@ -59,7 +59,7 @@ const Header = () => {
          return localCartLength;
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [auth.user._id, cartdb?.body.data]);
+   }, [auth.user._id, cartdb?.body.data, localCartLength]);
 
    function scrollFunction() {
       const btn_totop = document.querySelector('.section-icon-to-top');
@@ -343,7 +343,7 @@ const Header = () => {
                               <Popover
                                  placement='bottom'
                                  content={
-                                    <div className='max-h-[450px] overflow-scroll '>
+                                    <div className='max-h-[450px] min-w-[400px] overflow-scroll '>
                                        {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
                                           <div
                                              key={index}
@@ -354,7 +354,7 @@ const Header = () => {
                                                    await updateNotification({ id: noti._id, isRead: true });
                                                 }}
                                                 to={noti.link}
-                                                className='w-[90%] block'
+                                                className='w-[400px] block'
                                              >
                                                 {!noti.isRead && (
                                                    <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>

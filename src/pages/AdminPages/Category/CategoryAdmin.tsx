@@ -4,9 +4,11 @@ import { Link } from 'react-router-dom';
 import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service';
+import { useState } from 'react';
 // import { itemsClientMenu } from "./ItemDropdown";
 const CategoryAdmin = () => {
-   const { data, isLoading } = useGetAllCateQuery();
+   const [valueSearch, setValueSearch] = useState<string>('');
+   const { data, isLoading } = useGetAllCateQuery({ q: valueSearch });
    const [removeCategory] = useRemoveCategoryByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const handleDelete = (id: any) => {
@@ -37,10 +39,20 @@ const CategoryAdmin = () => {
                      <div className='flex justify-between items-center max-w-[50%] gap-2 rounded-[100px] border-[1px] border-[#80b235] p-2'>
                         <SearchOutlined style={{ fontSize: '1rem', color: '#80b235' }} />
                         <input
+                           value={valueSearch}
+                           onChange={(e) => setValueSearch(e.target.value)}
                            type='text'
                            className='text-sm outline-none border-none w-full flex-1'
                            placeholder='Tìm kiếm danh mục'
                         />
+                        {valueSearch !== '' && (
+                           <button
+                              className='flex justify-center items-center rounded-full text-greenPrimary bg-[#80b23552] w-4 h-4  pb-1'
+                              onClick={() => setValueSearch('')}
+                           >
+                              x
+                           </button>
+                        )}
                      </div>
                   </header>
 
@@ -88,22 +100,23 @@ const CategoryAdmin = () => {
                                                         </Link>
                                                      </li>
                                                      <li>
-                                                      {cate.type != 'default' && <Popconfirm
-                                                           className={``}
-                                                           description='Bạn chắc chắn muốn xóa danh mục chứ?'
-                                                           okText='Đồng ý'
-                                                           cancelText='Hủy bỏ'
-                                                           title='Bạn có muốn xóa?'
-                                                           onConfirm={() => handleDelete(cate._id)}
-                                                        >
-                                                           <button
-                                                              type='button'
-                                                              className='focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+                                                        {cate.type != 'default' && (
+                                                           <Popconfirm
+                                                              className={``}
+                                                              description='Bạn chắc chắn muốn xóa danh mục chứ?'
+                                                              okText='Đồng ý'
+                                                              cancelText='Hủy bỏ'
+                                                              title='Bạn có muốn xóa?'
+                                                              onConfirm={() => handleDelete(cate._id)}
                                                            >
-                                                              Xóa
-                                                           </button>
-                                                        </Popconfirm> }
-                                                        
+                                                              <button
+                                                                 type='button'
+                                                                 className='focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'
+                                                              >
+                                                                 Xóa
+                                                              </button>
+                                                           </Popconfirm>
+                                                        )}
                                                      </li>
                                                   </ul>
                                                </div>

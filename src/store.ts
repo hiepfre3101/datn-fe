@@ -6,13 +6,16 @@ import orderReducer from './services/order.service';
 import cartReducer from './services/cart.service';
 import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
+import voucherReducer from './services/voucher.service';
 import notificationReducer from './services/notification';
 import cartSlice from './slices/cartSlice';
 import whishListReducer from './slices/whishListSlice';
 import userReducer from './slices/authSlice';
 import productSlice from './slices/productSlice';
+import vouchersReducer from './slices/voucherSlice';
 import evaluationReducer from './services/evaluation.service';
 import originReducer from './services/origin.service';
+import voucherReducer from './services/voucher.service';
 export const store = configureStore({
    reducer: {
       [authReducer.reducerPath]: authReducer.reducer,
@@ -21,11 +24,14 @@ export const store = configureStore({
       [orderReducer.reducerPath]: orderReducer.reducer,
       [cartReducer.reducerPath]: cartReducer.reducer,
       [userSlice.reducerPath]: userSlice.reducer,
+      [voucherReducer.reducerPath]: voucherReducer.reducer,
       [notificationReducer.reducerPath]: notificationReducer.reducer,
       [evaluationReducer.reducerPath]: evaluationReducer.reducer,
       [originReducer.reducerPath]: originReducer.reducer,
+      [voucherReducer.reducerPath]: voucherReducer.reducer,
       cart: cartSlice.reducer,
       whishList: whishListReducer.reducer,
+      vouchersReducer: vouchersReducer,
       userReducer: userReducer,
       [shipmentReducer.reducerPath]: shipmentReducer.reducer,
       productSlice: productSlice
@@ -38,7 +44,9 @@ export const store = configureStore({
          orderReducer.middleware,
          notificationReducer.middleware,
          cartReducer.middleware,
+         voucherReducer.middleware,
          userSlice.middleware,
+         voucherReducer.middleware,
          shipmentReducer.middleware,
          evaluationReducer.middleware,
          originReducer.middleware,

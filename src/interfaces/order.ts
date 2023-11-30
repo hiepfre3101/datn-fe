@@ -21,6 +21,7 @@ export interface IOrder {
    userId: string | undefined;
    paymentMethod: 'cod' | 'momo';
    status?: string;
+   voucherCode?:string;
 }
 
 export type IOrderFull = {
