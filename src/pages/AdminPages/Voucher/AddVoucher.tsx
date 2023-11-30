@@ -96,7 +96,7 @@ const AddVoucher = () => {
                            label={'Số lượng'}
                            rules={[
                               { required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' },
-                              { type: 'number', min: 1, message: 'Vui lòng nhập số > 0' }
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
                            <InputNumber className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
@@ -126,7 +126,7 @@ const AddVoucher = () => {
                            label={'Giảm bớt (%)'}
                            rules={[
                               { required: true, message: 'Vui lòng điền % giảm bớt !' },
-                              { type: 'number', min: 1, message: 'Vui lòng nhập số > 0' }
+                              { type: 'number', min: 1, message: 'Vui lòng nhập số lớn hơn 0' }
                            ]}
                         >
                            <InputNumber className='w-full' placeholder='Thêm % giảm bớt' />
@@ -136,7 +136,7 @@ const AddVoucher = () => {
                            label={'Số tiền tối thiểu để sử dụng mã (VNĐ)'}
                            rules={[
                               { required: true, message: 'Vui lòng điền số tiền tối thiểu để sử dụng mã !' },
-                              { type: 'number', min: 1, message: 'Vui lòng nhập số > 0' }
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
                            <InputNumber className='w-full' placeholder='Thêm số tiền tối thiểu' />
@@ -146,7 +146,7 @@ const AddVoucher = () => {
                            label={' Giảm tối đa (VNĐ)'}
                            rules={[
                               // { required: true, message: 'Vui lòng điền số tiền giảm tối đa !' },
-                              { type: 'number', min: 1, message: 'Vui lòng nhập số > 0' }
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
                            <InputNumber className='w-full' defaultValue={0} placeholder='Thêm số tiền giảm tối đa' />

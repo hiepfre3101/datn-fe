@@ -116,7 +116,7 @@ const UpdateVoucher = () => {
                            label={'Số lượng'}
                            rules={[
                               { required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' },
-                              { type: 'number', min: 1, message: 'Vui lòng nhập số > 0' }
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
                            <InputNumber className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
