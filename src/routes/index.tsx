@@ -28,7 +28,14 @@ import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
 import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
 import AddVoucher from '../pages/AdminPages/Voucher/AddVoucher';
 import UpdateVoucher from '../pages/AdminPages/Voucher/UpdateVoucher';
+
 import ChatAdmin from '../pages/AdminPages/Chat/ChatAdmin';
+
+import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
+import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
+import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
+import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
+
 
 const router = createBrowserRouter([
    {
@@ -109,6 +116,11 @@ const router = createBrowserRouter([
       errorElement: <NotFoundPage />,
       children: [
          {
+            path: '',
+            element: <Dashboard />,
+            errorElement: <NotFoundPage />
+         },
+         {
             path: 'dashboard',
             element: <Dashboard />,
             errorElement: <NotFoundPage />
@@ -174,8 +186,28 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
+
             path: 'chat',
             element: <ChatAdmin />,
+
+            path: 'evaluation',
+            element: <Evaluation />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'origin',
+            element: <OriginAdmin />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'add-origin',
+            element: <AddOrigin />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'update-origin/:id',
+            element: <UpdateOrigin />,
+
             errorElement: <NotFoundPage />
          }
 

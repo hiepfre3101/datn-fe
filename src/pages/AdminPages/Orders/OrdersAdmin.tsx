@@ -74,6 +74,13 @@ const OrdersAdmin = () => {
                      <Column
                         align='center'
                         width={250}
+                        title='Tên khách hàng'
+                        dataIndex='customerName'
+                        key='customerName'
+                     />
+                     <Column
+                        align='center'
+                        width={250}
                         title='Số điện thoại'
                         dataIndex='phoneNumber'
                         key='phoneNumber'
@@ -124,7 +131,6 @@ const OrdersAdmin = () => {
                onCollapse={(value) => setCollapsed(value)}
                trigger={null}
                collapsedWidth={0}
-               
             >
                <div className=' relative px-4'>
                   <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
@@ -140,7 +146,9 @@ const OrdersAdmin = () => {
                      onChange={(e) => setOrders((prev: any) => ({ ...prev, status: e.target.value }))}
                   >
                      {ORDER_STATUS_FULL.map((statusOrder) => (
-                        <Radio className='mt-5' value={statusOrder.status.toLowerCase()}>{statusOrder.status}</Radio>
+                        <Radio className='mt-5' value={statusOrder.status.toLowerCase()}>
+                           {statusOrder.status}
+                        </Radio>
                      ))}
                   </Radio.Group>
                   <h1 className='pt-5 pb-3'>Ngày:</h1>

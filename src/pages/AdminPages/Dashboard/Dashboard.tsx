@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Helmet } from 'react-helmet';
 import { useState, useEffect, useMemo } from 'react';
-import { MOCK_DATA } from '../../../constants/statistics';
 import Loading from '../../../components/Loading/Loading';
-import { Statistic } from 'antd';
+import { Statistic, message } from 'antd';
 import CountUp from 'react-countup';
 import { Formatter } from 'antd/es/statistic/utils';
 import { CiUser } from 'react-icons/ci';
 import ChartColumn from './components/ChartColumn';
 import ChartLine from './components/ChartLine';
 import ChartArea from './components/ChartArea';
+import { getAllStatistics } from '../../../api/statistic';
 const Dashboard = () => {
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [statisticData, setStatisticData] = useState<any>({});
@@ -17,17 +17,18 @@ const Dashboard = () => {
    const [loading, setLoading] = useState<boolean>(false);
    useEffect(() => {
       const fetchData = async () => {
-         return new Promise((res) => {
-            setTimeout(() => {
-               res(MOCK_DATA);
-            }, 1000);
-         });
+         try {
+            const { data } = await getAllStatistics();
+            setStatisticData(data?.body.data[data?.body.data.length - 1]);
+         } catch (error) {
+            message.error('Lỗi hệ thống!');
+            console.log(error);
+         }
       };
       (async () => {
          try {
             setLoading(true);
-            const newData = await fetchData();
-            setStatisticData(newData);
+            await fetchData();
          } catch (error) {
             console.log(error);
          } finally {
@@ -115,7 +116,7 @@ const Dashboard = () => {
    const revenueByDay = useMemo(() => {
       const rawData = statisticData?.salesRevenueByDay || [];
       console.log(rawData);
-      
+
       return {
          title: 'Doanh thu theo ngày',
          data: [...rawData]

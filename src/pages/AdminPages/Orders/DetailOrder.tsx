@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import { Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
-import { DONE_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
+import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 import { adminSocket } from '../../../config/socket';
@@ -132,20 +132,21 @@ const DetailOrder = ({ idOrder }: Props) => {
             </Col>
          </Row>
          <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-5' align={'middle'}>
-            {ORDER_OF_STATUS.map((status, index) => (
-               <Col span={6} key={index}>
-                  <ButtonCheck
-                     colorPrimary={status.color}
-                     value={status.status}
-                     disable={
-                        ORDER_OF_STATUS.indexOf(
-                           ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
-                        ) >= index || statusOrder === DONE_ORDER.toLowerCase()
-                     }
-                     onClick={(value) => handleChangeStatus(value)}
-                  />
-               </Col>
-            ))}
+            {statusOrder !== FAIL_ORDER.toLowerCase() &&
+               ORDER_OF_STATUS.map((status, index) => (
+                  <Col span={6} key={index}>
+                     <ButtonCheck
+                        colorPrimary={status.color}
+                        value={status.status}
+                        disable={
+                           ORDER_OF_STATUS.indexOf(
+                              ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
+                           ) >= index || statusOrder === DONE_ORDER.toLowerCase()
+                        }
+                        onClick={(value) => handleChangeStatus(value)}
+                     />
+                  </Col>
+               ))}
          </Row>
       </div>
    );

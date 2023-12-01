@@ -610,13 +610,20 @@ const Footer = () => {
                      <div className='mini-cart-footer'>
                         <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                            <span className='subtotal-title text-[16px] '>Subtotal:</span>
-                           {/* <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                              {auth.user._id?cart?.reduce(
-                                  (accumulator: number, product: any) => accumulator + (product.productId.price -(product.productId.price*product.productId.discount/100))* product.weight,
-                                                                        0
-                                                    )?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):cart.totalPrice.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                            
-                           </span> */}
+                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                              {auth.user._id
+                                 ? cart
+                                      ?.reduce(
+                                         (accumulator: number, product: any) =>
+                                            accumulator +
+                                            (product.productId.price -
+                                               (product.productId.price * product.productId.discount) / 100) *
+                                               product.weight,
+                                         0
+                                      )
+                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                 : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           </span>
                         </div>
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                            <Link

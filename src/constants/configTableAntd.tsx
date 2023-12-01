@@ -79,7 +79,8 @@ export const voucherData = (data: IResponseHasPaginate<any>): voucherDataType[] 
       dateStart: voucher.dateStart,
       dateEnd: voucher.dateEnd,
       status: voucher.status,
-      percent: voucher.percent
+      percent: voucher.percent,
+      maxReduce: voucher.maxReduce
    }));
 };
 export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {

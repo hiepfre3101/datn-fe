@@ -26,6 +26,10 @@ const ShipmentItem = ({ shipment }: Props) => {
                <strong className='underline mr-3'>Ngày hết hạn: </strong> {formatStringToDate(product.date)}
             </p>
             <p>
+               <strong className='underline mr-3'>Giá nhập: </strong>
+               {product.originPrice}/kg
+            </p>
+            <p>
                <strong className='underline mr-3'>Số lượng còn lại: </strong>
                {product.weight} kg
             </p>
@@ -38,13 +42,13 @@ const ShipmentItem = ({ shipment }: Props) => {
    }));
    return (
       <div className='w-full max-h-[300px] overflow-auto '>
-         <Collapse items={items} bordered={false} className='mb-14'/>
-        <div className=' absolute bottom-2 '>
+         <Collapse items={items} bordered={false} className='mb-14' />
+         <div className=' absolute bottom-2 '>
             <DescTicket
                type={shipment.isDisable ? 'error' : 'success'}
                label={shipment.isDisable ? 'Dừng sử dụng' : 'Đang sử dụng'}
             />
-        </div>
+         </div>
       </div>
    );
 };

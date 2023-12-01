@@ -1,4 +1,4 @@
-import { Divider, Form, Input, Layout } from 'antd';
+import { Divider, Form, Input, InputNumber, Layout } from 'antd';
 import { DatePicker } from 'antd';
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -32,6 +32,8 @@ const AddVoucher = () => {
       }
    };
    const handleSubmit = async (values: any) => {
+      console.log(values);
+
       try {
          setLoading(true);
          await handleAddVoucher(values);
@@ -66,6 +68,7 @@ const AddVoucher = () => {
                      linkBack='/manage/vouchers'
                      changeValue={(value) => setVoucherTitle(value)}
                      initValue={voucherTitle}
+                     disabled={true}
                   />
                </div>
                <div className='w-full flex justify-center mt-10'>
@@ -92,9 +95,12 @@ const AddVoucher = () => {
                         <Form.Item
                            name={'quantity'}
                            label={'Số lượng'}
-                           rules={[{ required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' }]}
+                           rules={[
+                              { required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' },
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
+                           ]}
                         >
-                           <Input placeholder='Thêm mã khuyến mãi' type='number' />
+                           <InputNumber className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
                         </Form.Item>
                         <Form.Item
                            name={'dateStart'}
@@ -119,16 +125,32 @@ const AddVoucher = () => {
                         <Form.Item
                            name={'percent'}
                            label={'Giảm bớt (%)'}
-                           rules={[{ required: true, message: 'Vui lòng điền % giảm bớt !' }]}
+                           rules={[
+                              { required: true, message: 'Vui lòng điền % giảm bớt !' },
+                              { type: 'number', min: 1, message: 'Vui lòng nhập số lớn hơn 0' }
+                           ]}
                         >
-                           <Input placeholder='Thêm khuyến mãi' type='number' />
+                           <InputNumber className='w-full' placeholder='Thêm % giảm bớt' />
                         </Form.Item>
                         <Form.Item
                            name={'miniMumOrder'}
-                           label={' Giảm tối đa (VNĐ)'}
-                           rules={[{ required: true, message: 'Vui lòng điền số tiền giảm tối đa !' }]}
+                           label={'Số tiền tối thiểu để sử dụng mã (VNĐ)'}
+                           rules={[
+                              { required: true, message: 'Vui lòng điền số tiền tối thiểu để sử dụng mã !' },
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
+                           ]}
                         >
-                           <Input placeholder='Thêm khuyến mãi' type='number' />
+                           <InputNumber className='w-full' placeholder='Thêm số tiền tối thiểu' />
+                        </Form.Item>
+                        <Form.Item
+                           name={'maxReduce'}
+                           label={' Giảm tối đa (VNĐ)'}
+                           rules={[
+                              // { required: true, message: 'Vui lòng điền số tiền giảm tối đa !' },
+                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
+                           ]}
+                        >
+                           <InputNumber className='w-full' defaultValue={0} placeholder='Thêm số tiền giảm tối đa' />
                         </Form.Item>
                      </>
                   </BlockForm>
