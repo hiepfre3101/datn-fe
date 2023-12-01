@@ -127,7 +127,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                         </div>
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                        {product_info?.price && product_info?.discount ? <div className='product-price text-[20px] font-bold'>
+                        {product_info?.price ? <div className='product-price text-[20px] font-bold'>
                            {(product_info?.price-(product_info?.price*product_info?.discount/100)).toLocaleString('vi-VN', {
                               style: 'currency',
                               currency: 'VND'

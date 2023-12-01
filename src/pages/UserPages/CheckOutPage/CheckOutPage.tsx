@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
@@ -28,11 +27,7 @@ import { formatCharacterWithoutUTF8 } from '../../../helper';
 import { IVoucher, remoteVoucher } from '../../../slices/voucherSlice';
 import { useCheckVoucherMutation } from '../../../services/voucher.service';
 const CheckOutPage = () => {
-   // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
-   // const handleChangeCheckOutState = (state:string) => {
-   //    setCheckOutState(state)
-   // }
    const methods = useForm<IOrder>();
    const [handleAddOrder] = useAddOrderMutation();
    const [checkCartLocal] = useCheckCartMutation();

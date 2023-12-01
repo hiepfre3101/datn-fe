@@ -46,7 +46,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    const [subtotal, setSubtotal] = useState<number>(0)
    useEffect(() => {
       const temp = auth.user._id
-      ? cart?.products.reduce(
+      ? cart?.products?.reduce(
            (accumulator: number, product: any) => accumulator + (product.productId.price-(product.productId.price*product.productId.discount/100)) * product.weight,
            0
         )
@@ -87,7 +87,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                <div className='check-pro ml-[30px] md:w-[calc(50%-30px)] max-md:w-full '>
                   <span className='text-[26px] text-[#333333] font-bold'>Giỏ hàng của bạn (8)</span>
                   <ul className='list-check-pro mt-[20px] md:max-h-[650px] overflow-scroll'>
-                     {cart?.products.map((item: any) => {
+                     {cart?.products?.map((item: any) => {
                         return (
                            <>
                               <li className='check-pro-item flex items-center mb-[20px] pb-[20px] border-b border-[#e2e2e2]'>
@@ -132,7 +132,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='text-[18px] font-[500]'>Sản phẩm</span>
                         <span className='text-[18px] font-[500]'>Tổng</span>
                      </div>
-                     {cart?.products.map((item: any) => {
+                     {cart?.products?.map((item: any) => {
                         return (
                            <>
                               <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>

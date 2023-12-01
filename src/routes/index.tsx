@@ -28,6 +28,7 @@ import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
 import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
 import AddVoucher from '../pages/AdminPages/Voucher/AddVoucher';
 import UpdateVoucher from '../pages/AdminPages/Voucher/UpdateVoucher';
+import ChatAdmin from '../pages/AdminPages/Chat/ChatAdmin';
 
 const router = createBrowserRouter([
    {
@@ -170,6 +171,11 @@ const router = createBrowserRouter([
          {
             path: 'update-voucher/:id',
             element: <UpdateVoucher />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'chat',
+            element: <ChatAdmin />,
             errorElement: <NotFoundPage />
          }
 
