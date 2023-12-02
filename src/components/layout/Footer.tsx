@@ -19,23 +19,22 @@ import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
 import { IAuth } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
-import { message } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { clientSocket } from '../../config/socket';
+import { useGetOneChatUserQuery, useSendMessageMutation } from '../../services/chat.service';
+import { Badge, message } from 'antd';
+import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
+import { MdOutlineCancel } from 'react-icons/md';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch, setShowFetch] = useState(false);
-   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
-   useEffect(() => {
-      if (auth.user._id) {
-         setShowFetch(true);
-      }
-   }, [auth.user._id]);
+   const { data: cartdb } = useGetCartQuery(undefined, { skip: !auth.user._id });
+   const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
-
+   const [sendMessage] = useSendMessageMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
-
+   const [openChat, setOpenChat] = useState(false);
    const dispatch = useDispatch();
    const { data } = useGetAllCateQuery();
    const closeModalSearch = () => {
@@ -108,8 +107,141 @@ const Footer = () => {
          dispatch(removeFromCart({ id: item.productId._id }));
       }
    };
+   const [messages, setMesssages] = useState<string>();
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, { skip: !auth.user._id });
+   useEffect(() => {
+      const handleUpdateChat = () => {
+         console.log(openChat);
+         
+         refetch();
+         
+      };
+      if (auth.user._id && clientSocket) {
+         clientSocket.on('updatemess', handleUpdateChat);
+      }
+      return () => {
+         clientSocket.off('updatemess', handleUpdateChat);
+         clientSocket.disconnect();
+      };
+   }, [auth]);
+   useEffect(() => {
+      if (scrollRef.current) {
+         scrollRef.current.scrollIntoView({ block: 'end' });
+      }
+   }, [chat,openChat]);
+   const handleChangeMessage = (e: React.FormEvent) => {
+      setMesssages(e.target.value);
+   };
+   const handleSubmitChat =  async (e: React.FormEvent) => {
+      e.preventDefault();
+      const data = {
+         roomChatId: auth.user?._id,
+         content: messages,
+         sender: 'client'
+      };
+      console.log(data);
+
+      await sendMessage(data);
+      const jsonData = JSON.stringify(data);
+      clientSocket.emit('ClientSendMessage', jsonData);
+      setMesssages('');
+   };
    return (
       <>
+         <section
+            onClick={() => {
+               setOpenChat(!openChat);
+               if (scrollRef.current) {
+                  scrollRef.current.scrollIntoView({ block: 'end' });
+               }
+            }}
+            className=' section-icon-contact fixed bottom-[105px] right-[24px] cursor-pointer z-[4]'
+         >
+            <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
+               <IoChatbubblesOutline className='text-white w-[30px] text-center m-auto h-[45px] animate-skew_icon_contact transition-all duration-300 ease-in-out' />
+               <Badge
+               color='red'
+               count={
+                  chat?.body?.data.messages.filter((item) => {
+                     if (item.isRead == false && item.sender == 'admin') {
+                        return item;
+                     }
+                  }).length
+               }
+               showZero={false}
+               offset={[-24, -50]}
+            >
+               <></>
+            </Badge>
+            </div>
+           
+         </section>
+         <section
+            style={{
+               display: openChat == true ? 'block' : 'none'
+            }}
+            className='chat max-sm:max-w-[316px] max-sm:bottom-[71px] max-md:right-[3px] max-w-[350px] rounded-t-md fixed bottom-[0px] right-[100px] shadow-[0_12px_28px_0_rgba(0,0,0,0.1)] z-[8] bg-white h-[455px]'
+         >
+            <div className='header-right justify-between rounded-t-md mb-[10px] bg-white  sticky top-[0] pl-[10px] flex items-center  shadow-[0_0_4px_rgba(0,0,0,0.2)] py-[5px]'>
+               <div className='user ifo flex items-center gap-x-[10px]'>
+                  <img
+                     className='avatar w-[48px] h-[48px] rounded-[100%]'
+                     src={"https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png"}
+                     alt=''
+                  />
+                  <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
+               </div>
+               <button type='button' onClick={() => setOpenChat(!openChat)}>
+                  <MdOutlineCancel className='text-[#0A7CFF] text-[30px] mr-[10px]' />
+               </button>
+            </div>
+            <div className='list-chat w-full overflow-scroll px-[5px] h-[350px] '>
+               {chat?.body?.data?.messages?.map((item) => {
+                  return (
+                     <>
+                        {item.sender == 'client' ? (
+                           <div className='admin-message flex justify-end items-center mb-[6px]  '>
+                              <div className='content-admin ml-[10px] bg-[#0A7CFF] max-w-[60%] break-words text-left rounded-[15px] px-[12px] py-[8px]'>
+                                 <span className='admin-name text-white  font-[400]'>{item.content}</span>
+                              </div>
+                           </div>
+                        ) : (
+                           <div className='use-message flex items-center mb-[6px]'>
+                              <img
+                                 className='avatar w-[38px] h-[38px] rounded-[100%]'
+                                 src='data:image/jpeg;base64,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'
+                                 alt=''
+                              />
+                              <div className='content-user ml-[10px] bg-[#E5E5E5] break-words max-w-[60%] rounded-[15px] px-[12px] py-[8px] text-left'>
+                                 <span className='user-name text-black  font-[400]  '>{item.content}</span>
+                              </div>
+                           </div>
+                        )}
+                     </>
+                  );
+               })}
+               <div ref={scrollRef!}></div>
+            </div>
+            <form
+               action=''
+               className='flex  w-full px-[5px] items-center py-[5px]  sticky bottom-0 bg-white   '
+               onSubmit={handleSubmitChat}
+            >
+               <input
+                  onChange={handleChangeMessage}
+                  value={messages}
+                  placeholder='Aa'
+                  className=' pl-[15px] text-black outline-none bg-[#E5E5E5] w-[90%] h-[30px] rounded-[20px]'
+                  type='text'
+               />
+               <div className='p-[8px] hover:bg-[E5E5E5] w-[7%] rounded-[50%]  flex items-center'>
+                  <button className='text-[#0A7CFF] ml-[3px]'>
+                     <IoSend className='text-[20px]'></IoSend>
+                  </button>
+               </div>
+            </form>
+         </section>
+
          <footer className='bg-[#f8f8f8] '>
             <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                <ul className='footer-list flex py-[60px] flex-wrap ml-[-30px]'>
@@ -514,22 +646,7 @@ const Footer = () => {
                </div>
             )}
          </section>
-         <section className=' section-icon-contact fixed bottom-[105px] right-[24px] cursor-pointer z-[4]'>
-            <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
-               <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='text-white w-[30px] text-center m-auto h-[45px] animate-skew_icon_contact transition-all duration-300 ease-in-out'
-                  viewBox='0 0 1249 439'
-               >
-                  <style></style>
-                  <path
-                     className='shp0 fill-white'
-                     d='m649.69 129.68v-23.37h70.02v328.67h-40.06c-16.49 0-29.87-13.32-29.96-29.78-0.01 0.01-0.02 0.01-0.03 0.02-28.2 20.62-63.06 32.87-100.71 32.87-94.3 0-170.76-76.41-170.76-170.65s76.46-170.64 170.76-170.64c37.65 0 72.51 12.24 100.71 32.86 0.01 0.01 0.02 0.01 0.03 0.02zm-289.64-129.06v10.65c0 19.88-2.66 36.1-15.57 55.14l-1.56 1.78c-2.82 3.2-9.44 10.71-12.59 14.78l-224.76 282.11h254.48v39.94c0 16.55-13.43 29.96-29.98 29.96h-329.73v-18.83c0-23.07 5.73-33.35 12.97-44.07l239.61-296.57h-242.59v-74.89h349.72zm444.58 434.36c-13.77 0-24.97-11.19-24.97-24.94v-409.42h74.94v434.36h-49.97zm271.56-340.24c94.95 0 171.91 76.98 171.91 171.79 0 94.9-76.96 171.88-171.91 171.88-94.96 0-171.91-76.98-171.91-171.88 0-94.81 76.95-171.79 171.91-171.79zm-527.24 273.1c55.49 0 100.46-44.94 100.46-100.4 0-55.37-44.97-100.32-100.46-100.32s-100.47 44.95-100.47 100.32c0 55.46 44.98 100.4 100.47 100.4zm527.24-0.17c55.82 0 101.12-45.27 101.12-101.14 0-55.78-45.3-101.05-101.12-101.05-55.91 0-101.13 45.27-101.13 101.05 0 55.87 45.22 101.14 101.13 101.14z'
-                     fill-rule='evenodd'
-                  />
-               </svg>
-            </div>
-         </section>
+
          <section className=' section-icon-to-top transition-all duration-300 fixed bottom-[180px] right-[30px] cursor-pointer z-[4] invisible opacity-0'>
             <div
                onClick={toTop}

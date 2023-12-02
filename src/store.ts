@@ -6,7 +6,6 @@ import orderReducer from './services/order.service';
 import cartReducer from './services/cart.service';
 import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
-import voucherReducer from './services/voucher.service';
 import notificationReducer from './services/notification';
 import cartSlice from './slices/cartSlice';
 import whishListReducer from './slices/whishListSlice';
@@ -16,6 +15,7 @@ import vouchersReducer from './slices/voucherSlice';
 import evaluationReducer from './services/evaluation.service';
 import originReducer from './services/origin.service';
 import voucherReducer from './services/voucher.service';
+import chatReducer from './services/chat.service';
 export const store = configureStore({
    reducer: {
       [authReducer.reducerPath]: authReducer.reducer,
@@ -29,6 +29,7 @@ export const store = configureStore({
       [evaluationReducer.reducerPath]: evaluationReducer.reducer,
       [originReducer.reducerPath]: originReducer.reducer,
       [voucherReducer.reducerPath]: voucherReducer.reducer,
+      [chatReducer.reducerPath]: chatReducer.reducer,
       cart: cartSlice.reducer,
       whishList: whishListReducer.reducer,
       vouchersReducer: vouchersReducer,
@@ -39,6 +40,7 @@ export const store = configureStore({
    middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([
          authReducer.middleware,
+         chatReducer.middleware,
          categoryReducer.middleware,
          productReducer.middleware,
          orderReducer.middleware,
