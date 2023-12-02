@@ -52,6 +52,27 @@ const productApi = createApi({
             };
          }
       }),
+      getAllLiquidationProduct: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
+            return {
+               url: '/products/?_isSale=true'
+            };
+         }
+      }),
+      getProductSoldDescLimit: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
+            return {
+               url: '/products/?_sort=sold&_order=desc?_limit=9'
+            };
+         }
+      }),
+      getNewProductInStorage: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
+            return {
+               url: '/products/?_sort=createdAt&_order=desc?_limit=9'
+            };
+         }
+      }),
       getOneProduct: builder.query<IResponse<IProductExpanded>, string>({
          query: (idProduct) => {
             return {
@@ -117,6 +138,9 @@ const productApi = createApi({
 });
 
 export const {
+   useGetAllLiquidationProductQuery,
+   useGetNewProductInStorageQuery,
+   useGetProductSoldDescLimitQuery,
    useGetProductSoldDescQuery,
    useUpdateProductMutation,
    useGetAllWithoutExpandQuery,

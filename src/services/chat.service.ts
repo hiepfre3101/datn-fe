@@ -31,6 +31,14 @@ const chat = createApi({
       }),
       invalidatesTags:['chat']
    }),
+   updateIsRead: builder.mutation<IResponse<any>, string>({
+      query: (item) => ({
+         url: '/chat/'+item,
+         method: 'PATCH',
+         body:item
+      }),
+      invalidatesTags:['chat']
+   }),
    getOneChatUser: builder.query<IResponse<any>, string>({
       query: (item) => ({
          url: '/chat-user/'+item,
@@ -40,5 +48,5 @@ const chat = createApi({
    })
 });
 
-export const { useGetAllChatQuery,useGetOneChatUserQuery,useGetOneChatQuery,useSendMessageMutation} = chat;
+export const { useGetAllChatQuery,useUpdateIsReadMutation,useGetOneChatUserQuery,useGetOneChatQuery,useSendMessageMutation} = chat;
 export default chat;
