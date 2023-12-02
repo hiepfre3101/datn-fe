@@ -44,8 +44,7 @@ const items: MenuItem[] = [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
       getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
       getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
-      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6'),
-      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6'),
+      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6')
    ]),
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
    getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),

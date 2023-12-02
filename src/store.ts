@@ -14,6 +14,7 @@ import productSlice from './slices/productSlice';
 import vouchersReducer from './slices/voucherSlice';
 import evaluationReducer from './services/evaluation.service';
 import originReducer from './services/origin.service';
+import unsoldproductReducer from './services/unsoldproduct.service';
 import voucherReducer from './services/voucher.service';
 import chatReducer from './services/chat.service';
 export const store = configureStore({
@@ -29,6 +30,7 @@ export const store = configureStore({
       [evaluationReducer.reducerPath]: evaluationReducer.reducer,
       [originReducer.reducerPath]: originReducer.reducer,
       [voucherReducer.reducerPath]: voucherReducer.reducer,
+      [unsoldproductReducer.reducerPath]: unsoldproductReducer.reducer,
       [chatReducer.reducerPath]: chatReducer.reducer,
       cart: cartSlice.reducer,
       whishList: whishListReducer.reducer,
@@ -52,6 +54,7 @@ export const store = configureStore({
          shipmentReducer.middleware,
          evaluationReducer.middleware,
          originReducer.middleware,
+         unsoldproductReducer.middleware,
       ])
 });
 

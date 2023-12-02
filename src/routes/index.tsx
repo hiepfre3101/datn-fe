@@ -36,6 +36,7 @@ import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
 import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
+import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
 
 const router = createBrowserRouter([
    {
@@ -213,6 +214,11 @@ const router = createBrowserRouter([
             path: 'update-origin/:id',
             element: <UpdateOrigin />,
 
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'unsoldproduct',
+            element: <UnSoldProduct />,
             errorElement: <NotFoundPage />
          }
 

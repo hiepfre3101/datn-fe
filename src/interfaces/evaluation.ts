@@ -15,8 +15,16 @@ export interface IEvaluationFull {
     userId : {
         userName: string
         phoneNumber: string
-    } | null;
-    productId: string;
+        rate: number
+    }  | null;
+    
+    productId:{
+        images: {
+            url : string
+        }[];
+        productName: string
+        
+    }  | null
     content: string;
     imgUrl: string;
     rate: number;
