@@ -24,6 +24,7 @@ export interface IResponse<T> {
    };
    message: string;
    status: number;
+   errors: string;
 }
 
 export interface IQueryParam {
