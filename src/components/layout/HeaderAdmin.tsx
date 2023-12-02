@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
-import { Badge, Dropdown, Input, Layout, MenuProps, Popover, notification } from 'antd';
+import { Badge, Dropdown, Layout, MenuProps, Popover, notification } from 'antd';
 import BellIcon from '../Icons/BellIcon';
 import { useEffect, useState } from 'react';
 import { IAuth } from '../../slices/authSlice';
@@ -104,12 +104,16 @@ const HeaderAdmin = () => {
    }, [keyword]);
    const items: MenuProps['items'] = [
       {
-         label: <a href='https://www.antgroup.com'>1st menu item</a>,
-         key: '0'
+         label: (
+            <p className='lg:hidden xl:hidden 2xl:hidden 3xl:hidden font-bold text-greenPrimary'>
+               {auth.user.userName}
+            </p>
+         ),
+         key: '-1'
       },
       {
-         label: <a href='https://www.aliyun.com'>2nd menu item</a>,
-         key: '1'
+         label: <Link to='/manage/account'>Hồ sơ</Link>,
+         key: '0'
       },
       {
          type: 'divider'
@@ -126,17 +130,11 @@ const HeaderAdmin = () => {
    return (
       <Header
          style={{
-            paddingLeft: 10,
-            paddingRight: 30,
-            background: 'white',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            zIndex: '100',
             boxShadow: ' 0 3px 4px -2px rgba(0, 0, 0, 0.123)'
          }}
+         className='pl-[10px] !pr-[10px] xl:!pr-[30px] bg-white flex md:justify-between items-center z-50 justify-start gap-2'
       >
-         <div className='w-[40%] flex justify-start items-center gap-2 rounded-lg border-[1px] border-[rgba(0,0,0,0.1)] px-3 py-2'>
+         <div className='w-[80%] xl:w-[40%] flex justify-between items-center gap-2 rounded-lg border-[1px] border-[rgba(0,0,0,0.1)] px-3 py-2'>
             <SearchOutlined width={'1.5rem'} height={'1.5rem'} color='rgba(0,0,0,0.2)' />
             <Popover
                placement='bottomLeft'
@@ -144,43 +142,49 @@ const HeaderAdmin = () => {
                open={path.length > 0 ? true : false}
                content={() =>
                   path.map((data, index) => (
-                     <Link to={'/manage/' + data.link} key={index} className='p-1 w-[995px] block'>
+                     <Link to={'/manage/' + data.link} key={index} className='p-1 block'>
                         <h1 className='text-lg font-bold'>{data.title}</h1>
                      </Link>
                   ))
                }
             >
-               <Input
+               <input
+                  type='text'
                   value={keyword}
                   onChange={(e) => setKeyword(e.target.value)}
-                  className='outline-none border-none'
+                  className='outline-none border-none h-full p-2 md:p-1 w-full'
                   placeholder='Tìm kiếm'
                />
             </Popover>
          </div>
-         <div className='3xl:max-w-[15%] max-w-[25%] flex justify-end items-center gap-3'>
-            <div className='flex justify-start items-center gap-2 border-[1px] border-[rgba(0,0,0,0.1)] p-2 rounded-lg overflow-hidden h-[3rem] w-[100%]'>
-               <img src={auth.user.avatar} alt='avatar' className='rounded-md object-cover w-[20%] aspect-square' />
-               <Dropdown
-                  menu={{ items }}
-                  trigger={['click']}
-                  onOpenChange={(open) => {
-                     setTriggerDrop(open);
-                  }}
-               >
-                  <div className='flex-1 flex justify-start gap-2 items-center cursor-pointer p-1 text-center '>
+         <div className='3xl:max-w-[15%] max-w-[30%] flex justify-end items-center gap-3'>
+            <Dropdown
+               menu={{ items }}
+               trigger={['click']}
+               onOpenChange={(open) => {
+                  setTriggerDrop(open);
+               }}
+            >
+               <div className='justify-center flex lg:justify-start items-center gap-2 lg:border-[1px] lg:border-[rgba(0,0,0,0.1)] rounded-full lg:p-2 lg:rounded-lg overflow-hidden h-[3rem] w-[50%] md:w-[20%] xl:w-[60%]'>
+                  <img
+                     src={auth.user.avatar}
+                     alt='avatar'
+                     className='rounded-full xl:rounded-md object-cover xl:w-[20%] aspect-square w-[80%]  '
+                  />
+
+                  <div className='hidden xl:flex-1 xl:flex xl:justify-start xl:gap-2 xl:items-center cursor-pointer p-1 text-center '>
                      <span className='font-medium text-sm text-[#6b6765] '>{auth.user.userName}</span>
                      <div className={triggerDrop ? 'round-up' : 'round-down'}>
                         {' '}
                         <DownOutlined color='#6b6765' size={1} />
                      </div>
                   </div>
-               </Dropdown>
-            </div>
+               </div>
+            </Dropdown>
             <Popover
                placement='bottom'
                content={
-                  <div className='max-h-[400px] min-w-[450px] overflow-scroll pr-3'>
+                  <div className='max-h-[400px] lg:min-w-[350px] overflow-scroll pr-3 pl-2 w-[20rem] overflow-x-hidden'>
                      {adminNotification?.body?.data?.map((noti: INotification, index: number) => (
                         <div key={index} className='relative border-b-[1px] border-gray-400  p-2 hover:bg-gray-200'>
                            <Link
@@ -190,16 +194,11 @@ const HeaderAdmin = () => {
                               }}
                               to={noti.link}
                            >
-                              {!noti.isRead && (
-                                 <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
-                                    !
-                                 </span>
-                              )}
-                              <h1 className='font-bold break-words'>{noti.title}</h1>
-                              <p className='text-gray-400 '>{noti.message}</p>
+                              <h1 className='font-bold break-words max-w-[80%]'>{noti.title}</h1>
+                              <p className='text-gray-400 break-words max-w-[80%]'>{noti.message}</p>
                               <span className='text-gray-400'>{formatStringToDate(noti.createdAt)}</span>
                            </Link>
-                           <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
+                           <p className='flex justify-between text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
                               <button
                                  onClick={async () => {
                                     await deleteNotification(noti._id);
@@ -209,6 +208,11 @@ const HeaderAdmin = () => {
                                  Xóa
                               </button>
                            </p>
+                           {!noti.isRead && (
+                              <span className='absolute top-3 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
+                                 !
+                              </span>
+                           )}
                         </div>
                      ))}
                   </div>
@@ -217,11 +221,15 @@ const HeaderAdmin = () => {
             >
                <Badge
                   color='red'
-                  count={adminNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
+                  count={
+                     <p className='!bg-red-400 text-white w-6 h-6 flex justify-center items-center rounded-full text-xs'>
+                        {adminNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
+                     </p>
+                  }
                   showZero={false}
-                  offset={[2, 5]}
+                  offset={[-3, 5]}
                >
-                  <div className='relative w-[3rem] h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#dfdede] cursor-pointer'>
+                  <div className='relative  md:w-[2rem] md:h-[2rem] lg:w-[3rem] lg:h-[3rem] flex justify-center items-center rounded-xl p-2 bg-[#dfdede] cursor-pointer'>
                      <BellIcon />
                   </div>
                </Badge>

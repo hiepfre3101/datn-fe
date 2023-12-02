@@ -139,7 +139,7 @@ const CheckOut = () => {
          await refetch().then((res) => {
             if (res.data && res.data.body.errors) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item:any) => {
+               res.data.body.errors.map((item: any) => {
                   if (item.message == 'The remaining quantity is not enough!') {
                      setError((prevError: string[]) => [
                         ...prevError,
@@ -169,7 +169,7 @@ const CheckOut = () => {
             products: cart['products'].map((product: any) => {
                const {
                   totalWeight,
-                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
@@ -181,7 +181,7 @@ const CheckOut = () => {
             if (res.error) {
                setIsModalOpen(true);
                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-               res.error.data.body?.error.map((item:any) => {
+               res.error.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [

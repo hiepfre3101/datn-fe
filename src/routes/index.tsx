@@ -36,7 +36,6 @@ import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
 
-
 const router = createBrowserRouter([
    {
       path: '/',
@@ -186,10 +185,10 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
-
             path: 'chat',
-            element: <ChatAdmin />,
-
+            element: <ChatAdmin />
+         },
+         {
             path: 'evaluation',
             element: <Evaluation />,
             errorElement: <NotFoundPage />
