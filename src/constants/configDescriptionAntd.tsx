@@ -12,8 +12,8 @@ export const getShipmentData = (data: IShipmentOfProduct, index: number): Descri
    return [
       {
          key: '1',
-         label: 'Mã lô hàng',
-         children: data.idShipment,
+         label: 'Giá nhập',
+         children: data.originPrice + ' VND',
          span: 5
       },
       {
