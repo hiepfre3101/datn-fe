@@ -157,6 +157,15 @@ const Dashboard = () => {
                />
                <span className='text-[#666666] font-bold text-xl'>Trung bình giá một đơn hàng</span>
             </div>
+            <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9] ]'>
+               <Statistic
+                  valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
+                  value={statisticData?.profit}
+                  formatter={formatter as Formatter}
+                  prefix={<span className='text-greenDashboard text-xl'>VND</span>}
+               />
+               <span className='text-[#666666] font-bold text-xl'>Tổng lợi nhuận</span>
+            </div>
          </div>
          <div className='mt-4'>
             <ChartArea options={revenueByDay} />
