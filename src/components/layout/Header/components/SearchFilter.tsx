@@ -47,7 +47,12 @@ const SearchFilter = ({ children }: any) => {
       } else {
          if (e && e.key === 'Enter') {
             const newSearchHistory = [searchDebounce, ...searchHistory];
-            const histories = newSearchHistory.filter((_, index) => index < 5);
+            // Lọc các từ khóa trùng lặp
+            const uniqueSearchHistory = newSearchHistory.filter((item, index) => {
+               return newSearchHistory.indexOf(item) === index;
+            });
+            // Giới hạn lịch sử tìm kiếm tối đa 5 mục
+            const histories = uniqueSearchHistory.filter((_, index) => index < 5);
             setSearchHistory(histories);
             localStorage.setItem('searchHistory', JSON.stringify(histories));
          }
@@ -80,9 +85,9 @@ const SearchFilter = ({ children }: any) => {
                />
                <SearchOutlined className='border-none absolute right-10 translate-y-[50%] bottom-[50%] text-[20px] text-black'></SearchOutlined>
             </div>
-            <div className='items-center flex justify-start my-5 gap-5'>
+            <div className='items-center flex flex-wrap my-5 gap-5'>
                <h2 className='text-xl text-black font-bold '>Search History:</h2>
-               <div className='flex justify-center gap-5'>
+               <div className='flex flex-wrap gap-5'>
                   {searchHistory.map((keyword, index) => (
                      <div key={index} className='search-history flex justify-center items-center cursor-pointer'>
                         <Tag color='green' className='px-5 py-1' onClick={() => handleKeywordClick(keyword)}>
@@ -97,7 +102,7 @@ const SearchFilter = ({ children }: any) => {
                   ))}
                </div>
             </div>
-            <div className=' flex-wrap grid grid-cols-6 mx-auto items-center '>
+            <div className='flex flex-wrap  mx-auto items-center text-center'>
                {isLoading ? (
                   <div className='flex justify-center w-full'>
                      <Spin />
