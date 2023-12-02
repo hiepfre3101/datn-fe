@@ -49,7 +49,7 @@ const items: MenuItem[] = [
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
    getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
    getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
-   getItem(<Link to='/manage/loss-products'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
+   getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
    getItem(<Link to='/manage/chat'>Tư vấn mua hàng</Link>, 'sub5', <NotificationOutlined />)
 ];
 

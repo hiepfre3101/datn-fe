@@ -162,7 +162,7 @@ const Dashboard = () => {
             <ChartArea options={revenueByDay} />
          </div>
          <div className='w-full xl:flex justify-start gap-4 items-center'>
-            <div className='top-product bg-white p-4 xl:w-[30%] mt-4'>
+            <div className='top-product bg-white p-4 xl:w-[50%] mt-4'>
                <ChartColumn options={top5ProductOptions} />
             </div>
             <div className='top-product bg-white p-4 w-full mt-4'>
@@ -170,7 +170,7 @@ const Dashboard = () => {
             </div>
          </div>
          <div className='w-full xl:flex justify-start gap-4 items-center'>
-            <div className='top-product bg-white p-4 xl:w-[30%] mt-4'>
+            <div className='top-product bg-white p-4 xl:w-[50%] mt-4'>
                <ChartColumn options={top5CategoryRevenue} />
             </div>
             <div className='top-product bg-white p-4 w-full  mt-4'>
