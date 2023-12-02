@@ -78,8 +78,11 @@ const ProductAdmin = () => {
          <Helmet>
             <title>Sản phẩm</title>
          </Helmet>
-         <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
-            <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[90%]'>
+         <Layout
+            style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}
+            className='!hidden md:!flex'
+         >
+            <div className='flex-1 flex lg:justify-center items-center flex-col mt-10 lg:w-[90%] w-full'>
                <div className='flex justify-between items-center w-[90%]'>
                   <h1 className='text-3xl font-semibold text-[rgba(0,0,0,0.7)]'>Sản phẩm</h1>
                   <Link to='/manage/add-product'>
@@ -89,7 +92,7 @@ const ProductAdmin = () => {
                      </button>
                   </Link>
                </div>
-               <div className='w-[90%] min-h-[100vh] bg-white rounded-lg mt-5'>
+               <div className='lg:w-[90%] min-h-[60vh] bg-white rounded-lg mt-5 w-[100%]'>
                   <header className='flex justify-start gap-4 items-center px-5 py-5'>
                      <div className='flex justify-between items-center max-w-[50%] gap-2 rounded-[100px] border-[1px] border-[#80b235] p-2'>
                         <SearchOutlined style={{ fontSize: '1rem', color: '#80b235' }} />
@@ -119,8 +122,8 @@ const ProductAdmin = () => {
                   </header>
                   <Table
                      dataSource={products}
-                     pagination={{ pageSize: 5 }}
-                     scroll={{ y: 800, x: 2000 }}
+                     pagination={{ pageSize: 10 }}
+                     scroll={{ y: 800, x: 1400 }}
                      loading={isLoading}
                      rowClassName={(record) => {
                         if (!record.stock || record.expDate.includes('NaN')) {
@@ -131,17 +134,16 @@ const ProductAdmin = () => {
                   >
                      <Column
                         title='Ảnh sản phẩm'
-                        fixed='left'
                         dataIndex='image'
                         key='image'
-                        width={50}
+                        width={20}
                         render={(image) => <img src={image} className='w-[3rem] h-[3rem]' />}
                      />
                      <Column
                         title='Trạng thái bán hàng'
                         dataIndex='isSale'
                         key='isSale'
-                        width={80}
+                        width={30}
                         render={(isSale, record: IProduct) => {
                            if (record?.shipments?.length === 0) return <Tag color='red'>Hết hàng</Tag>;
                            if (isSale) return <Tag color='purple'>Thanh lý</Tag>;
@@ -152,7 +154,7 @@ const ProductAdmin = () => {
                         title='Tên'
                         dataIndex='productName'
                         key='productName'
-                        width={150}
+                        width={30}
                         render={(name, product: IProduct) => (
                            <div className='flex justify-start items-center gap-2'>
                               <span>{name}</span>
@@ -164,27 +166,27 @@ const ProductAdmin = () => {
                            </div>
                         )}
                      />
-                     <Column title='Giá (VND)' dataIndex='price' key='price' width={90} />
-                     <Column title='Danh mục ' dataIndex='category' key='category' width={80} />
+                     <Column title='Giá (VND)' dataIndex='price' key='price' width={20} />
                      <Column
                         title='Số lượng kho hàng (kg)'
                         dataIndex='stock'
                         key='stock'
-                        width={80}
+                        width={30}
                         render={(stock) => <span className='w-[3rem] h-[3rem]'>{stock || 0}</span>}
                      />
                      <Column
                         title='Hạn sử dụng'
                         dataIndex='expDate'
                         key='expDate'
-                        width={80}
+                        width={40}
                         render={(date) => {
                            return <span className='w-[3rem] h-[3rem]'>{date.includes('NaN') ? 'Hết hàng' : date}</span>;
                         }}
                      />
+                     <Column title='Danh mục ' dataIndex='category' key='category' width={30} />
                      <Column
                         fixed='right'
-                        width={80}
+                        width={30}
                         title='Chức năng '
                         key='_id'
                         dataIndex={'_id'}

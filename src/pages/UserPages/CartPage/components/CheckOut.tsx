@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import {
    ICartSlice,
@@ -136,9 +137,9 @@ const CheckOut = () => {
          }
 
          await refetch().then((res) => {
-            if (res.data.body.errors) {
+            if (res.data && res.data.body.errors) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item) => {
+               res.data.body.errors.map((item: any) => {
                   if (item.message == 'The remaining quantity is not enough!') {
                      setError((prevError: string[]) => [
                         ...prevError,
@@ -164,20 +165,23 @@ const CheckOut = () => {
          });
       } else {
          const cartLocal = {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             products: cart['products'].map((product: any) => {
                const {
                   totalWeight,
-                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
 
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
          await checkCartLocal(cartLocal).then((res: any) => {
             if (res.error) {
                setIsModalOpen(true);
-               res.error.data.body?.error.map((item) => {
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               res.error.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -280,7 +284,8 @@ const CheckOut = () => {
    };
    const handleGetListVoucher = async () => {
       const object = {
-         miniMumOrder: subtotal
+         miniMumOrder: subtotal,
+         userId: auth?.user._id
       };
       await GetVoucherUseful(object)
          .unwrap()

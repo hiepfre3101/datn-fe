@@ -1,6 +1,9 @@
+import { useSelector } from 'react-redux';
 import { logoUrl } from '../../../constants/imageUrl';
-
+import { Link } from 'react-router-dom';
+import { IAuth } from '../../../slices/authSlice';
 const NotFoundPage = () => {
+   const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    return (
       <div>
          <div className='text-center p-10'>
@@ -33,11 +36,11 @@ const NotFoundPage = () => {
             </div>
 
             <div className='mt-8'>
-               <a href='/' className='p-2'>
+               <Link to={auth.user.role === 'member' ? '/' : '/manage/dashboard'} className='p-2'>
                   <button className='rounded-full bg-[#6BAA14] px-2 text-white lg:text-lg text-sm  font-medium  h-10 mx-auto md:mx-0'>
                      Quay về trang chủ
                   </button>
-               </a>
+               </Link>
             </div>
          </div>
       </div>
