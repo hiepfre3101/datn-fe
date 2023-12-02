@@ -13,6 +13,7 @@ import { Button, Layout, Radio, Tag, Tooltip, theme } from 'antd';
 import { adminSocket } from '../../../config/socket';
 import { IProduct } from '../../../interfaces/product';
 import { WILL_EXPIRE } from '../../../constants/statusExpireProduct';
+import useDebounce from '../../../hooks/useDebounce';
 const ProductAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
@@ -21,7 +22,8 @@ const ProductAdmin = () => {
 
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [expiredProducts, setExpiredProducts] = useState<any>([]);
-   const { data, isLoading } = useGetAllExpandQuery({ ...filterProducts, expand: true, q: valueSearch });
+   const searchDebounce = useDebounce(valueSearch, 500)
+   const { data, isLoading } = useGetAllExpandQuery({ ...filterProducts, expand: true, q: searchDebounce });
    const [handleRemoveProduct] = useRemoveProductMutation();
    const products = data && productData(data);
    const lastEventId = useRef<null | string>(null);
