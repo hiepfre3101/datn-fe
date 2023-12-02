@@ -7,7 +7,7 @@ import { IAuth } from '../../slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiLogOut } from 'react-icons/fi';
 import { useClearTokenMutation } from '../../services/auth.service';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 const { Header } = Layout;
 import { deleteTokenAndUser } from '../../slices/authSlice';
 import { adminSocket } from '../../config/socket';
@@ -57,7 +57,7 @@ const HeaderAdmin = () => {
    const navigate = useNavigate();
    const [keyword, setKeyword] = useState('');
    const [path, setPath] = useState<any[]>([]);
-
+   const location = useLocation();
    const { data: adminNotification, refetch } = useGetAdminNotificationQuery(auth?.user?._id);
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
@@ -88,7 +88,7 @@ const HeaderAdmin = () => {
          adminSocket.off('expireProduct', handlePurchaseNotification);
          adminSocket.disconnect();
       };
-   }, [auth]);
+   }, [auth, location.pathname]);
    useEffect(() => {
       if (keyword != '') {
          const array: any[] = [];

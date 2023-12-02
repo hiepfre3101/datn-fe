@@ -20,7 +20,7 @@
       screens: {
          sm: '479px',
          'max-sm': { max: '479px' },
-         md: '767px',
+         md: '667px',
          'max-md': { max: '767px' },
          lg: '991px',
          'max-lg': { max: '991px' },
