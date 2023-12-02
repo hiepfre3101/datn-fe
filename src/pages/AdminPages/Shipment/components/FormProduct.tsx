@@ -1,5 +1,5 @@
 import { IProduct } from '../../../../interfaces/product';
-import { Input, Select, Form, Space, DatePicker, Tooltip, Popconfirm, message } from 'antd';
+import { Input, Select, Form, Space, DatePicker, Tooltip, Popconfirm, message, Tag } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { ProductInput } from '../../../../interfaces/shipment';
 import ConfirmIcon from '../../../../components/Icons/ConfirmIcon';
@@ -89,8 +89,9 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
                   }}
                >
                   {products.map((product) => (
-                     <Option key={product._id} value={product._id}>
+                     <Option key={product._id} value={product._id} >
                         {product.productName}
+                        {!product.shipments[0] && <Tag className='ml-2' color='red'>Đã hết hàng</Tag>}
                      </Option>
                   ))}
                </Select>

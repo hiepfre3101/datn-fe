@@ -452,7 +452,7 @@ const CheckOut = () => {
                               <button
                                  disabled={!item.active}
                                  style={{
-                                    backgroundColor: item.active ? 'grey' : ''
+                                    backgroundColor: item.active==false ? 'grey' : ''
                                  }}
                                  onClick={() => {
                                     handleAddVoucher(item.code);

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button, Layout, Modal, Radio, Space, Table, Tag, theme } from 'antd';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Loading from '../../../components/Loading/Loading';
 import { IOrderFull } from '../../../interfaces/order';
 import { CloseOutlined, SearchOutlined } from '@ant-design/icons';
@@ -12,6 +12,7 @@ const { Column } = Table;
 import '../../../css/admin-order.css';
 import { useGetAllOrderQuery } from '../../../services/order.service';
 import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
+import { adminSocket } from '../../../config/socket';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -21,10 +22,16 @@ const OrdersAdmin = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
-   const { data, isLoading } = useGetAllOrderQuery({ ...orders, order: 'desc' });
+   const { data, isLoading, refetch } = useGetAllOrderQuery(
+      { ...orders, order: 'desc' },
+      { refetchOnMountOrArgChange: true }
+   );
+   useEffect(() => {
+      adminSocket.on('purchaseNotification', () => refetch());
+      return () => {};
+   }, []);
 
    if (isLoading) return <Loading sreenSize='lg' />;
-
    return (
       <>
          <Helmet>

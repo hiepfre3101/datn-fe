@@ -12,27 +12,23 @@ HC_exportData(Highcharts);
 
 // Interface mô tả kiểu của đối tượng tooltip
 interface TooltipObject {
-  x: number;
-  y: number;
+   x: number;
+   y: number;
 }
 
 // Hàm formatter cho tooltip
 function tooltipFormatter(this: TooltipObject): string {
-  const { day, dayOfWeek, minutes, month, hours } = formatMstoDate(this.x);
-  return (
-    (dayOfWeek +
+   const { day, dayOfWeek, month } = formatMstoDate(this.x);
+   return (
+      dayOfWeek +
       ', Ngày ' +
       day +
       ', tháng ' +
       month +
       ', ' +
-      hours +
-      ' giờ' +
-      minutes +
-      ' phút| ' +
       'Doanh thu: ' +
-      this.y.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }))
-  );
+      this.y.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+   );
 }
 const ChartArea = (props: any) => {
    const defaultColors = [
@@ -77,7 +73,7 @@ const ChartArea = (props: any) => {
             enabled: false
          },
          tooltip: {
-            formatter:tooltipFormatter
+            formatter: tooltipFormatter
          },
          plotOptions: {
             area: {

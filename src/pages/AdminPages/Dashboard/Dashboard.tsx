@@ -157,12 +157,21 @@ const Dashboard = () => {
                />
                <span className='text-[#666666] font-bold text-xl'>Trung bình giá một đơn hàng</span>
             </div>
+            <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9] ]'>
+               <Statistic
+                  valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
+                  value={statisticData?.profit}
+                  formatter={formatter as Formatter}
+                  prefix={<span className='text-greenDashboard text-xl'>VND</span>}
+               />
+               <span className='text-[#666666] font-bold text-xl'>Tổng lợi nhuận</span>
+            </div>
          </div>
          <div className='mt-4'>
             <ChartArea options={revenueByDay} />
          </div>
          <div className='w-full xl:flex justify-start gap-4 items-center'>
-            <div className='top-product bg-white p-4 xl:w-[30%] mt-4'>
+            <div className='top-product bg-white p-4 xl:w-[50%] mt-4'>
                <ChartColumn options={top5ProductOptions} />
             </div>
             <div className='top-product bg-white p-4 w-full mt-4'>
@@ -170,7 +179,7 @@ const Dashboard = () => {
             </div>
          </div>
          <div className='w-full xl:flex justify-start gap-4 items-center'>
-            <div className='top-product bg-white p-4 xl:w-[30%] mt-4'>
+            <div className='top-product bg-white p-4 xl:w-[50%] mt-4'>
                <ChartColumn options={top5CategoryRevenue} />
             </div>
             <div className='top-product bg-white p-4 w-full  mt-4'>
