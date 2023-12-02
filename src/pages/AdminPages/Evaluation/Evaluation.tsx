@@ -60,7 +60,9 @@ const Evaluation = () => {
                                     key='productId'
                                     width={20}
                                     render={(_: IEvaluationFull, record: IEvaluationFull) => {
-                                        return <img src={record.productId != null ? record.productId?.images[0].url : ''  } className='w-[3rem] h-[3rem]' />
+                                        console.log(record.productId?.images[0].url);
+
+                                        return <img src={record.productId != null ? record.productId?.images[0].url :''  } className='w-[3rem] h-[3rem]' />
                                     }}
 
 

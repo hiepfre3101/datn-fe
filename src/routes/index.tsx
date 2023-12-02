@@ -28,6 +28,9 @@ import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
 import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
 import AddVoucher from '../pages/AdminPages/Voucher/AddVoucher';
 import UpdateVoucher from '../pages/AdminPages/Voucher/UpdateVoucher';
+
+import ChatAdmin from '../pages/AdminPages/Chat/ChatAdmin';
+
 import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
 import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
@@ -183,6 +186,10 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
+            path: 'chat',
+            element: <ChatAdmin />
+         },
+         {
             path: 'evaluation',
             element: <Evaluation />,
             errorElement: <NotFoundPage />
@@ -200,6 +207,7 @@ const router = createBrowserRouter([
          {
             path: 'update-origin/:id',
             element: <UpdateOrigin />,
+
             errorElement: <NotFoundPage />
          },
          {

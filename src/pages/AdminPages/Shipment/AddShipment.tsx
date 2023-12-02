@@ -40,7 +40,7 @@ const AddShipment = () => {
       <>
          <Helmet>Tạo lô hàng</Helmet>
          <div className='w-full flex justify-center '>
-            <div className='w-[80%] mt-20 pb-2'>
+            <div className='w-[100%] mt-20 pb-2'>
                <HeadForm
                   placeHolder='Tạo lô hàng'
                   linkBack='/manage/shipments'

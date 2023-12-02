@@ -129,8 +129,8 @@ const Dashboard = () => {
          <Helmet>
             <title>Quản lý</title>
          </Helmet>
-         <div className='single-statistic grid grid-cols-4 py-4 px-5 bg-white text-center'>
-            <div className='item p-2 flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
+         <div className='single-statistic grid xl:grid-cols-4 py-4 px-5 bg-white text-center'>
+            <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.salesRevenue}
@@ -139,7 +139,7 @@ const Dashboard = () => {
                />
                <span className='text-[#666666] font-bold text-xl'>Tổng doanh thu</span>
             </div>
-            <div className='item p-2 flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9]'>
+            <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.customers}
@@ -148,7 +148,7 @@ const Dashboard = () => {
                />
                <span className='text-[#666666] font-bold text-xl'>Khách hàng</span>
             </div>
-            <div className='item p-2 flex justify-center items-center flex-col  border-r-[2px] border-[#e8e8e9] ]'>
+            <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9] ]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.averageTransactionPrice}
@@ -161,16 +161,16 @@ const Dashboard = () => {
          <div className='mt-4'>
             <ChartArea options={revenueByDay} />
          </div>
-         <div className='w-full flex justify-start gap-4 items-center'>
-            <div className='top-product bg-white p-4 w-[30%] mt-4'>
+         <div className='w-full xl:flex justify-start gap-4 items-center'>
+            <div className='top-product bg-white p-4 xl:w-[30%] mt-4'>
                <ChartColumn options={top5ProductOptions} />
             </div>
             <div className='top-product bg-white p-4 w-full mt-4'>
                <ChartLine options={avgCustomerAndOrders} />
             </div>
          </div>
-         <div className='w-full flex justify-start gap-4 items-center'>
-            <div className='top-product bg-white p-4 w-[30%] mt-4'>
+         <div className='w-full xl:flex justify-start gap-4 items-center'>
+            <div className='top-product bg-white p-4 xl:w-[30%] mt-4'>
                <ChartColumn options={top5CategoryRevenue} />
             </div>
             <div className='top-product bg-white p-4 w-full  mt-4'>

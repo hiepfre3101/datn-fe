@@ -80,7 +80,7 @@ const AddProduct = () => {
                initValue={productName}
             />
             <div className='w-full mt-5 flex flex-wrap gap-5'>
-               <div className='min-w-[800px] flex flex-col gap-5 w-full'>
+               <div className='xl:min-w-[800px] flex flex-col gap-5 w-full'>
                   <BlockForm title='Hình ảnh sản phẩm'>
                      <Form.Item<InputProduct>
                         name='images'
@@ -120,7 +120,7 @@ const AddProduct = () => {
                   </BlockForm>
                   <BlockForm title='Chính sách giá'>
                      <Space direction='vertical' className='w-full'>
-                        <div className='w-full flex justify-start items-center gap-2'>
+                        <div className='w-full xl:flex justify-start items-center gap-2'>
                            <Form.Item
                               className='w-full'
                               name={'price'}
@@ -133,7 +133,7 @@ const AddProduct = () => {
                                  className=' p-2'
                                  min={0}
                                  prefix={
-                                    <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
+                                    <span className='decoration-black underline absolute right-3 z-10'>vnd/kg</span>
                                  }
                                  value={productPrice}
                                  onChange={(e) => setProductPrice(Number(e.target.value))}
@@ -148,7 +148,7 @@ const AddProduct = () => {
                                  value={productPrice}
                                  disabled
                                  prefix={
-                                    <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
+                                    <span className='decoration-black underline absolute right-3 z-10'>vnd/kg</span>
                                  }
                               />
                            </div>
@@ -164,7 +164,7 @@ const AddProduct = () => {
                               className='w-1/2 p-2'
                               max={100}
                               min={0}
-                              prefix={<span className='decoration-black underline absolute right-10 z-10'>%</span>}
+                              prefix={<span className='decoration-black underline absolute right-3 z-10'>%</span>}
                               value={productDiscount}
                               onChange={(e) => {
                                  setProductDiscount(Number(e.target.value));
@@ -179,7 +179,7 @@ const AddProduct = () => {
                   </BlockForm>
                </div>
                <div className='flex flex-col w-full gap-5'>
-                  <BlockForm title='Danh mục' className='min-w-[500px]'>
+                  <BlockForm title='Danh mục' className='xl:min-w-[500px]'>
                      <Form.Item<InputProduct>
                         name='categoryId'
                         hasFeedback
@@ -201,7 +201,7 @@ const AddProduct = () => {
                         </Radio.Group>
                      </Form.Item>
                   </BlockForm>
-                  <BlockForm title='Nguồn gốc' className='min-w-[500px]'>
+                  <BlockForm title='Nguồn gốc' className='xl:min-w-[500px]'>
                      <Form.Item<InputProduct>
                         name='originId'
                         hasFeedback

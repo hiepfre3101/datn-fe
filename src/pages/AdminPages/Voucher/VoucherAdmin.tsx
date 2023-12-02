@@ -1,5 +1,5 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
-import { Layout, Popconfirm, Table, Tooltip } from 'antd';
+import { Layout, Popconfirm, Table, Tag, Tooltip } from 'antd';
 import Column from 'antd/es/table/Column';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
@@ -7,6 +7,8 @@ import { useGetAllVoucherQuery, useRemoveVoucherMutation } from '../../../servic
 import { voucherData } from '../../../constants/configTableAntd';
 import EraserIcon from '../../../components/Icons/EraserIcon';
 import PencilIcon from '../../../components/Icons/PencilIcon';
+import { IVoucher } from '../../../slices/voucherSlice';
+import { formatStringToDate } from '../../../helper';
 
 const VoucherAdmin = () => {
    const { data, isLoading } = useGetAllVoucherQuery();
@@ -47,19 +49,22 @@ const VoucherAdmin = () => {
                      <Table
                         dataSource={vouchers}
                         pagination={{ pageSize: 5 }}
-                        scroll={{ y: 800, x: 2000 }}
+                        scroll={{ y: 800, x: 1000 }}
                         loading={isLoading}
-                        rowClassName={(record) => {
-                           if (!record.stock || record.expDate.includes('NaN')) {
-                              return 'bg-red-100';
-                           }
-                           return '';
-                        }}
                      >
-                        <Column title='Tiêu đề' fixed='left' dataIndex='title' key='title' width={50} />
-
-                        <Column title='Mã giảm giá' dataIndex='code' key='code' width={90} />
-
+                        <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
+                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
+                        <Column
+                           title='Mã giảm giá'
+                           dataIndex='code'
+                           key='code'
+                           width={80}
+                           render={(value, record: IVoucher) => (
+                              <span>
+                                 {value} {!record.status && <Tag color='red'>Ngừng sử dụng</Tag>}
+                              </span>
+                           )}
+                        />
                         <Column
                            title='Số lượng'
                            dataIndex='quantity'
@@ -67,10 +72,21 @@ const VoucherAdmin = () => {
                            width={80}
                            render={(stock) => <span className='w-[3rem] h-[3rem]'>{stock || 0}</span>}
                         />
-                        <Column title='Ngày bắt đầu' dataIndex='dateStart' key='dateStart' width={80} />
-                        <Column title='Ngày hết hạn' dataIndex='dateEnd' key='dateEnd' width={80} />
-                        <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
-                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
+                        <Column
+                           title='Ngày bắt đầu'
+                           dataIndex='dateStart'
+                           key='dateStart'
+                           width={80}
+                           render={(date) => formatStringToDate(date)}
+                        />
+                        <Column
+                           title='Ngày hết hạn'
+                           dataIndex='dateEnd'
+                           key='dateEnd'
+                           width={80}
+                           render={(date) => formatStringToDate(date)}
+                        />
+                        <Column title='Tiêu đề' dataIndex='title' key='title' width={80} />
                         <Column
                            fixed='right'
                            width={80}

@@ -60,7 +60,7 @@ const OrdersAdmin = () => {
                         createdAt: formatStringToDate(order.createdAt)
                      }))}
                      pagination={{ pageSize: 10 }}
-                     scroll={{ y: 800, x: 1000 }}
+                     scroll={{ y: 800, x: 800 }}
                      onRow={(record) => {
                         return {
                            onClick: () => {
@@ -70,18 +70,31 @@ const OrdersAdmin = () => {
                         };
                      }}
                   >
-                     <Column align='center' width={250} title='Ngày mua' dataIndex='createdAt' key='createdAt' />
+                     <Column align='center' width={120} title='Ngày mua' dataIndex='createdAt' key='createdAt' />
                      <Column
                         align='center'
-                        width={250}
+                        width={120}
+                        title='Tổng tiền (VND)'
+                        dataIndex='totalPayment'
+                        key='totalPayment'
+                     />
+                     <Column
+                        align='center'
+                        width={150}
+                        title='Tên khách hàng'
+                        dataIndex='customerName'
+                        key='customerName'
+                     />
+                     <Column
+                        align='center'
+                        width={150}
                         title='Số điện thoại'
                         dataIndex='phoneNumber'
                         key='phoneNumber'
                      />
-                     <Column align='center' width={250} title='Tổng tiền' dataIndex='totalPayment' key='totalPayment' />
                      <Column
                         fixed='right'
-                        width={200}
+                        width={120}
                         title='Trạng thái'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => (
@@ -124,7 +137,6 @@ const OrdersAdmin = () => {
                onCollapse={(value) => setCollapsed(value)}
                trigger={null}
                collapsedWidth={0}
-               
             >
                <div className=' relative px-4'>
                   <Button className='absolute top-3 left-60 border-none' onClick={() => setCollapsed(true)}>
@@ -140,7 +152,9 @@ const OrdersAdmin = () => {
                      onChange={(e) => setOrders((prev: any) => ({ ...prev, status: e.target.value }))}
                   >
                      {ORDER_STATUS_FULL.map((statusOrder) => (
-                        <Radio className='mt-5' value={statusOrder.status.toLowerCase()}>{statusOrder.status}</Radio>
+                        <Radio className='mt-5' value={statusOrder.status.toLowerCase()}>
+                           {statusOrder.status}
+                        </Radio>
                      ))}
                   </Radio.Group>
                   <h1 className='pt-5 pb-3'>Ngày:</h1>

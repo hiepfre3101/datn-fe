@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import {
    ICartSlice,
@@ -21,7 +22,7 @@ const CheckOut = () => {
    const [showfetch, setShowFetch] = useState(false);
    const { data: cartdb, refetch } = useGetCartQuery(undefined, { skip: showfetch == false });
    const [checkCartLocal] = useCheckCartMutation();
-   const [GetVoucherUseful] = useGetVoucherUsefulMutation()
+   const [GetVoucherUseful] = useGetVoucherUsefulMutation();
    const [addVoucher] = useCheckVoucherMutation();
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [isModalOpen2, setIsModalOpen2] = useState(false);
@@ -40,23 +41,28 @@ const CheckOut = () => {
    const [subtotal, setSubtotal] = useState<number>(0);
    const [error, setError] = useState<string[]>([]);
    const [inputVoucher, setInputVoucher] = useState<string>('');
-   const [listVoucher,setListVoucher] = useState<any[]>([])
-   
+   const [listVoucher, setListVoucher] = useState<any[]>([]);
+
    useEffect(() => {
       const temp = auth.user._id
-         ? cart?.reduce( 
-
-              (accumulator: number, product: any) => accumulator + (product.productId.price- (product.productId.price*product.productId.discount/100)) * product.weight,
+         ? cart?.reduce(
+              (accumulator: number, product: any) =>
+                 accumulator +
+                 (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                    product.weight,
               0
            )
          : cart?.totalPrice;
-        
+
       setSubtotal(temp);
    }, [cart]);
    useEffect(() => {
       if (voucher._id) {
          const temp = cartdb?.body.data.products?.reduce(
-            (accumulator: number, product: any) => accumulator + (product.productId.price -(product.productId.price*product.productId.discount/100))* product.weight,
+            (accumulator: number, product: any) =>
+               accumulator +
+               (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                  product.weight,
             0
          );
 
@@ -78,7 +84,10 @@ const CheckOut = () => {
       } else {
          const temp = auth.user._id
             ? cart?.reduce(
-                 (accumulator: number, product: any) => accumulator + (product.productId.price-(product.productId.price*product.productId.discount/100)) * product.weight,
+                 (accumulator: number, product: any) =>
+                    accumulator +
+                    (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                       product.weight,
                  0
               )
             : cart?.totalPrice;
@@ -128,9 +137,9 @@ const CheckOut = () => {
          }
 
          await refetch().then((res) => {
-            if (res.data.body.errors) {
+            if (res.data && res.data.body.errors) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item) => {
+               res.data.body.errors.map((item: any) => {
                   if (item.message == 'The remaining quantity is not enough!') {
                      setError((prevError: string[]) => [
                         ...prevError,
@@ -156,20 +165,23 @@ const CheckOut = () => {
          });
       } else {
          const cartLocal = {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             products: cart['products'].map((product: any) => {
                const {
                   totalWeight,
-                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
 
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
          await checkCartLocal(cartLocal).then((res: any) => {
             if (res.error) {
                setIsModalOpen(true);
-               res.error.data.body?.error.map((item) => {
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               res.error.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -237,49 +249,51 @@ const CheckOut = () => {
          message.error('Bạn cần đăng nhập để sử dụng mã giảm giá');
       }
 
-         const object = {
-            code: code,
-            userId: auth.user._id,
-            miniMumOrder: subtotal
-         };
-         await addVoucher(object)
-            .unwrap()
-            .then((res) => {
-               dispatch(remoteVoucher())
-               dispatch(saveVoucher(res.body.data));
-               setInputVoucher('');
-               setIsModalOpen2(false);
-               message.success('Sử dụng mã giảm giá thành công');
-            })
-            .catch((error) => {
-               if (error.data.message == 'Voucher does not exist!') {
-                  message.error('Mã giảm giá không tồn tại');
-               } else if (error.data.message == 'Voucher is out of quantity!') {
-                  message.error('Mã giảm giá đã hết');
-               } else if (error.data.message == 'Voucher is out of date') {
-                  message.error('Mã giảm giá đã hết hạn');
-               } else if (error.data.message == 'Orders are not satisfactory!') {
-                  message.error(
-                     'Đơn hàng của bạn phải có tổng giá trị trên ' +
-                        error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                  );
-               }else if (error.data.message == 'This voucher code has already been used. Please enter a different code!') {
-                  message.error('Bạn đã dùng mã giảm giá này trước đó');
-               }
-               
-            });
-      
+      const object = {
+         code: code,
+         userId: auth.user._id,
+         miniMumOrder: subtotal
+      };
+      await addVoucher(object)
+         .unwrap()
+         .then((res) => {
+            dispatch(remoteVoucher());
+            dispatch(saveVoucher(res.body.data));
+            setInputVoucher('');
+            setIsModalOpen2(false);
+            message.success('Sử dụng mã giảm giá thành công');
+         })
+         .catch((error) => {
+            if (error.data.message == 'Voucher does not exist!') {
+               message.error('Mã giảm giá không tồn tại');
+            } else if (error.data.message == 'Voucher is out of quantity!') {
+               message.error('Mã giảm giá đã hết');
+            } else if (error.data.message == 'Voucher is out of date') {
+               message.error('Mã giảm giá đã hết hạn');
+            } else if (error.data.message == 'Orders are not satisfactory!') {
+               message.error(
+                  'Đơn hàng của bạn phải có tổng giá trị trên ' +
+                     error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+               );
+            } else if (
+               error.data.message == 'This voucher code has already been used. Please enter a different code!'
+            ) {
+               message.error('Bạn đã dùng mã giảm giá này trước đó');
+            }
+         });
    };
-   const handleGetListVoucher=async ()=>{
-      const object={
-         miniMumOrder:subtotal
-      }
-       await GetVoucherUseful(object).unwrap().then(res=>{
-            setListVoucher(res.body.data)
-       })
-  
-      showModal()
-   }
+   const handleGetListVoucher = async () => {
+      const object = {
+         miniMumOrder: subtotal,
+         userId: auth?.user._id
+      };
+      await GetVoucherUseful(object)
+         .unwrap()
+         .then((res) => {
+            setListVoucher(res.body.data);
+         });
+      showModal();
+   };
    return (
       <div>
          <div className='cart-total'>
@@ -395,45 +409,65 @@ const CheckOut = () => {
             </Modal>
          </div>
          <div>
-         <Modal
-                  title='Chọn giảm giá'
-                  open={isModalOpen2}
-                  onOk={() => handleOk(2)}
-                  onCancel={() => handleOk(2)}
-                  cancelButtonProps={{ style: { display: 'none' } }}
-                  className=' overflow-y-scroll max-h-[80%]'
-               >
-                  <div className='list-voucher flex flex-col gap-y-[10px]'>
-                  {listVoucher.map(item=>{
-                     return<>
-                       <div className=' py-[10px] shadow-[0px_0px_3px_rgba(0,0,0,0.15)] px-[16px]'>
-                        <h1 className='text-[17px] my-[5px]'>{item.title}</h1>
-                        <h1 className='text-[16px] mb-[10px]'>
-                           Mã giảm giá: <span className='font-bold'>{item.code}</span>
-                        </h1>
-                        <ul className='list-disc px-[15px]'>
-                           <li>
-                              Giảm: <span className='text-red-500'>{item.percent}%</span>
-                           </li>
-                           {item.maxReduce>0 && <li>Giảm tối đa {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</li>}
-                           {item.miniMumOrder &&<li>Đơn hàng phải có giá trị trên {item.miniMumOrder?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</li>}
-                        </ul>
-                        <button
-                        disabled={item.active}
-                        style={{
-                           backgroundColor: item.active ? 'grey' : ''
-                         }}
-                        onClick={()=>{handleAddVoucher(item.code)}}
-                           className='my-[10px] bg-[#51A55C] p-[5px] rounded-sm text-white float-right'
-                           type='button'
-                        >
-                           Áp dụng
-                        </button>
-                     </div>
-                     </>
+            <Modal
+               title='Chọn giảm giá'
+               open={isModalOpen2}
+               onOk={() => handleOk(2)}
+               onCancel={() => handleOk(2)}
+               cancelButtonProps={{ style: { display: 'none' } }}
+               className=' overflow-y-scroll max-h-[80%]'
+            >
+               <div className='list-voucher flex flex-col gap-y-[10px]'>
+                  {listVoucher.map((item) => {
+                     return (
+                        <>
+                           <div className=' py-[10px] shadow-[0px_0px_3px_rgba(0,0,0,0.15)] px-[16px]'>
+                              <h1 className='text-[17px] my-[5px]'>{item.title}</h1>
+                              <h1 className='text-[16px] mb-[10px]'>
+                                 Mã giảm giá: <span className='font-bold'>{item.code}</span>
+                              </h1>
+                              <ul className='list-disc px-[15px]'>
+                                 <li>
+                                    Giảm: <span className='text-red-500'>{item.percent}%</span>
+                                 </li>
+                                 {item.maxReduce > 0 && (
+                                    <li>
+                                       Giảm tối đa{' '}
+                                       {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                    </li>
+                                 )}
+                                 {item.miniMumOrder && (
+                                    <li>
+                                       Đơn hàng phải có giá trị trên{' '}
+                                       {item.miniMumOrder?.toLocaleString('vi-VN', {
+                                          style: 'currency',
+                                          currency: 'VND'
+                                       })}
+                                    </li>
+                                 )}
+                              </ul>
+                              {item.active === false && (
+                                 <span className='text-red-500'>*Bạn phải đăng nhập để sử dụng mã khuyễn mãi</span>
+                              )}
+                              <button
+                                 disabled={!item.active}
+                                 style={{
+                                    backgroundColor: item.active ? 'grey' : ''
+                                 }}
+                                 onClick={() => {
+                                    handleAddVoucher(item.code);
+                                 }}
+                                 className='my-[10px] bg-[#51A55C] p-[5px] rounded-sm text-white float-right disabled:cursor-not-allowed disabled:bg-gray-400'
+                                 type='button'
+                              >
+                                 Áp dụng
+                              </button>
+                           </div>
+                        </>
+                     );
                   })}
-                  </div>
-               </Modal>
+               </div>
+            </Modal>
          </div>
       </div>
    );
