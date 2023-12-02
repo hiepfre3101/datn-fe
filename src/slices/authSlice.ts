@@ -20,10 +20,16 @@ const authReducer = createSlice({
       deleteTokenAndUser: (state) => {
          state.accessToken = '';
          state.user = {} as IUser;
+      },
+      updateInfoUser:(state,action)=>{
+         action.payload.avatar? state.user.avatar=action.payload.avatar:""
+         state.user.userName=action.payload.userName
+         state.user.address=action.payload.address
+         state.user.phoneNumber = action.payload.phoneNumber
       }
    }
 });
 
-export const { saveTokenAndUser, deleteTokenAndUser } = authReducer.actions;
+export const { saveTokenAndUser, updateInfoUser,deleteTokenAndUser } = authReducer.actions;
 
 export default authReducer.reducer;
