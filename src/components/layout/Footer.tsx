@@ -31,13 +31,15 @@ const Footer = () => {
    const { data: cartdb } = useGetCartQuery(undefined, { skip: !auth.user._id });
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
+
    const [sendMessage] = useSendMessageMutation();
    const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
    const [openChat, setOpenChat] = useState(false);
    const dispatch = useDispatch();
-   const { data } = useGetAllCateQuery();
+   const { data } = useGetAllCateQuery({});
    const closeModalSearch = () => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -109,12 +111,14 @@ const Footer = () => {
       }
    };
    const [messages, setMesssages] = useState<string>();
-   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, { skip: !auth.user._id || auth.user.role=='admin' });
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, {
+      skip: !auth.user._id || auth.user.role == 'admin'
+   });
    useEffect(() => {
-      const handleUpdateChat = () => { 
-         if(auth?.user?.role == "member" ){
+      const handleUpdateChat = () => {
+         if (auth?.user?.role == 'member') {
             refetch();
-         }   
+         }
       };
       if (auth.user._id && clientSocket) {
          clientSocket.on('updatemess', handleUpdateChat);
@@ -129,14 +133,14 @@ const Footer = () => {
       if (scrollRef.current) {
          scrollRef.current.scrollIntoView({ block: 'end' });
       }
-      if(openChat ==true && auth?.user?._id && auth?.user?.role=="member"){
+      if (openChat == true && auth?.user?._id && auth?.user?.role == 'member') {
          updateIsRead(auth.user._id);
       }
-   }, [chat,openChat]);
+   }, [chat, openChat]);
    const handleChangeMessage = (e: React.FormEvent) => {
       setMesssages(e.target.value);
    };
-   const handleSubmitChat =  async (e: React.FormEvent) => {
+   const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
       const data = {
          roomChatId: auth.user?._id,
@@ -153,9 +157,9 @@ const Footer = () => {
    return (
       <>
          <section
-          style={{
-            display: (auth.user.role == "admin" || !auth.user.role ) ? 'none' : 'block'
-         }}
+            style={{
+               display: auth.user.role == 'admin' || !auth.user.role ? 'none' : 'block'
+            }}
             onClick={() => {
                setOpenChat(!openChat);
                if (scrollRef.current) {
@@ -167,21 +171,20 @@ const Footer = () => {
             <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
                <IoChatbubblesOutline className='text-white w-[30px] text-center m-auto h-[45px] animate-skew_icon_contact transition-all duration-300 ease-in-out' />
                <Badge
-               color='red'
-               count={
-                  chat?.body?.data.messages.filter((item) => {
-                     if (item.isRead == false && item.sender == 'admin') {
-                        return item;
-                     }
-                  }).length
-               }
-               showZero={false}
-               offset={[-24, -50]}
-            >
-               <></>
-            </Badge>
+                  color='red'
+                  count={
+                     chat?.body?.data.messages.filter((item) => {
+                        if (item.isRead == false && item.sender == 'admin') {
+                           return item;
+                        }
+                     }).length
+                  }
+                  showZero={false}
+                  offset={[-24, -50]}
+               >
+                  <></>
+               </Badge>
             </div>
-           
          </section>
          <section
             style={{
@@ -193,7 +196,7 @@ const Footer = () => {
                <div className='user ifo flex items-center gap-x-[10px]'>
                   <img
                      className='avatar w-[48px] h-[48px] rounded-[100%]'
-                     src={"https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png"}
+                     src={'https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png'}
                      alt=''
                   />
                   <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
@@ -629,7 +632,7 @@ const Footer = () => {
                                          0
                                       )
                                       .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                 : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
