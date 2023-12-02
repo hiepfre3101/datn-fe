@@ -21,7 +21,7 @@ import { IAuth } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
 import { useState, useEffect, useRef } from 'react';
 import { clientSocket } from '../../config/socket';
-import { useGetOneChatUserQuery, useSendMessageMutation } from '../../services/chat.service';
+import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
 import { Badge, message } from 'antd';
 import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
 import { MdOutlineCancel } from 'react-icons/md';
@@ -33,6 +33,7 @@ const Footer = () => {
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const [sendMessage] = useSendMessageMutation();
+   const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
    const [openChat, setOpenChat] = useState(false);
    const dispatch = useDispatch();
@@ -110,9 +111,7 @@ const Footer = () => {
    const [messages, setMesssages] = useState<string>();
    const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, { skip: !auth.user._id });
    useEffect(() => {
-      const handleUpdateChat = () => {
-         console.log(openChat);
-         
+      const handleUpdateChat = () => { 
          refetch();
          
       };
@@ -124,9 +123,13 @@ const Footer = () => {
          clientSocket.disconnect();
       };
    }, [auth]);
+
    useEffect(() => {
       if (scrollRef.current) {
          scrollRef.current.scrollIntoView({ block: 'end' });
+      }
+      if(openChat ==true && auth?.user?._id){
+         updateIsRead(auth.user._id);
       }
    }, [chat,openChat]);
    const handleChangeMessage = (e: React.FormEvent) => {

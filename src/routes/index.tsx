@@ -189,7 +189,8 @@ const router = createBrowserRouter([
 
             path: 'chat',
             element: <ChatAdmin />,
-
+         },
+         {
             path: 'evaluation',
             element: <Evaluation />,
             errorElement: <NotFoundPage />

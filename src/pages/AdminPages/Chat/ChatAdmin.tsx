@@ -1,5 +1,5 @@
 import { IoSend } from 'react-icons/io5';
-import { useGetAllChatQuery, useGetOneChatQuery, useSendMessageMutation, useUpdateIsreadMessageMutation } from '../../../services/chat.service';
+import { useGetAllChatQuery, useGetOneChatQuery, useSendMessageMutation } from '../../../services/chat.service';
 import { useState, useEffect, useRef } from 'react';
 import { adminSocket } from '../../../config/socket';
 import { IAuth } from '../../../slices/authSlice';

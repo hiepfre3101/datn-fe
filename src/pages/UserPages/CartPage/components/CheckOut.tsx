@@ -281,6 +281,7 @@ const CheckOut = () => {
    const handleGetListVoucher = async () => {
       const object = {
          miniMumOrder: subtotal
+         
       };
       await GetVoucherUseful(object)
          .unwrap()
