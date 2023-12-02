@@ -1,6 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from 'react';
-import { PieChartOutlined, UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import {
+   PieChartOutlined,
+   UserOutlined,
+   MenuFoldOutlined,
+   MenuUnfoldOutlined,
+   NotificationOutlined
+} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Layout, Menu, Spin, message, theme } from 'antd';
 import { Outlet } from 'react-router';
@@ -36,7 +42,7 @@ const items: MenuItem[] = [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
       getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
       getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
-      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6'),
+      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6')
    ]),
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
    getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
@@ -103,7 +109,9 @@ const AdminLayout = () => {
             trigger={ButtonTrigger}
          >
             <div className='max-h-[150px] flex justify-center items-center'>
-               <img src={logoUrl} alt='logo' className='object-cover max-w-[140px]' />
+               <Link to={'/'}>
+                  <img src={logoUrl} alt='logo' className='object-cover max-w-[140px]' />
+               </Link>
             </div>
             <Menu theme='light' defaultSelectedKeys={['1']} mode='inline' items={items} />
             <Button
