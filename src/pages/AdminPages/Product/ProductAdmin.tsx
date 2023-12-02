@@ -123,7 +123,7 @@ const ProductAdmin = () => {
                   <Table
                      dataSource={products}
                      pagination={{ pageSize: 10 }}
-                     scroll={{ y: 800, x: 1400 }}
+                     scroll={{ y: 500, x: 1400 }}
                      loading={isLoading}
                      rowClassName={(record) => {
                         if (!record.stock || record.expDate.includes('NaN')) {

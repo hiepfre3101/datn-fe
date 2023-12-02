@@ -191,7 +191,7 @@ const UpdateProduct = () => {
                                  type='number'
                                  placeholder='Thêm giá bán sản phẩm'
                                  className='w-1/2 p-2'
-                                 max={100000}
+                                 max={100000000}
                                  min={0}
                                  prefix={
                                     <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
