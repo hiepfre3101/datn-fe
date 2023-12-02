@@ -34,3 +34,23 @@ export const formatCharacterWithoutUTF8 = (string: string) => {
       return khongDau.charAt(index) || match;
    });
 };
+
+export const formatMstoDate = (ms: number) => {
+   const epoch = new Date(0);
+
+   // Tính thời gian
+   const resultDate = new Date(epoch.getTime() + ms);
+
+   // Mảng các tên thứ trong tuần
+   const daysOfWeek = ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'];
+
+   // Lấy thông tin thứ, ngày và tháng
+   const dayOfWeek = daysOfWeek[resultDate.getUTCDay()];
+   const day = resultDate.getUTCDate();
+   const month = resultDate.getUTCMonth() + 1; // Tháng bắt đầu từ 0, cộng thêm 1
+   const year = resultDate.getUTCFullYear();
+   const hours = resultDate.getUTCHours();
+   const minutes = resultDate.getUTCMinutes();
+
+   return { dayOfWeek, day, month, year, hours, minutes };
+};

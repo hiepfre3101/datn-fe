@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef } from 'react';
-import {
-   PieChartOutlined,
-   NotificationOutlined,
-   UserOutlined,
-   MenuFoldOutlined,
-   MenuUnfoldOutlined
-} from '@ant-design/icons';
+import { PieChartOutlined, UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Layout, Menu, Spin, message, theme } from 'antd';
 import { Outlet } from 'react-router';
@@ -17,7 +11,7 @@ import TicketIcon from '../components/Icons/TicketIcon';
 import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
 import { useNavigate } from 'react-router-dom';
-
+import { FaTruckRampBox } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveTokenAndUser } from '../slices/authSlice';
 import NotificationSound from '../assets/notification-sound.mp3';
@@ -41,12 +35,13 @@ const items: MenuItem[] = [
    getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
       getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
-      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5')
+      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
+      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6'),
    ]),
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
    getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
-   getItem(<Link to='/manage/accounts'>Tài khoản</Link>, 'sub3', <UserOutlined />),
-   getItem(<Link to='/manage/notifications'>Thông báo người dùng</Link>, 'sub4', <NotificationOutlined />)
+   getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
+   getItem(<Link to='/manage/loss-products'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />)
 ];
 
 const AdminLayout = () => {

@@ -90,7 +90,7 @@ const CheckOutPage = () => {
                      setError((prevError: string[]) => [
                         ...prevError,
                         'Đơn hàng của bạn phải có tổng giá trị trên ' +
-                        error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                           error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                      ]);
                      dispatch(remoteVoucher());
                   }
@@ -104,8 +104,8 @@ const CheckOutPage = () => {
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Số lượng trong kho của sản phẩm' +
-                        item.productName +
-                        ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                           item.productName +
+                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
                      ]);
                   } else if (item.message == 'Product is currently out of stock!') {
                      setError((prevError: string[]) => [
@@ -160,25 +160,25 @@ const CheckOutPage = () => {
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Giá của sản phẩm ' +
-                        item.productName +
-                        ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                           item.productName +
+                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
                      ]);
                   } else if (item.message == 'Invalid product image!') {
                      dispatch(updateImgProductInCartLocal({ id: item.productId, img: item?.image }));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Ảnh của sản phẩm ' +
-                        item.productName +
-                        ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
+                           item.productName +
+                           ' không đồng nhất với dữ liệu trên hệ thống và đã được cập nhật'
                      ]);
                   } else if (item.message == 'Insufficient quantity of the product in stock!') {
                      dispatch(updateItem({ id: item.productId, weight: item.maxWeight }));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Số lượng sản phẩm ' +
-                        item.productName +
-                        ' trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về ' +
-                        item.maxWeight
+                           item.productName +
+                           ' trong kho không đủ đáp ứng nhu cầu của bạn và đã được cập nhật về ' +
+                           item.maxWeight
                      ]);
                   } else if (item.message == 'The product is currently out of stock!') {
                      dispatch(removeFromCart({ id: item.productId }));
@@ -210,7 +210,7 @@ const CheckOutPage = () => {
          if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
-            data.note = undefined;
+            data.note = ' ';
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
@@ -232,12 +232,12 @@ const CheckOutPage = () => {
                });
                data.totalPayment = auth.user._id
                   ? cart?.products.reduce(
-                     (accumulator: number, product: any) =>
-                        accumulator +
-                        (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
-                        product.weight,
-                     0
-                  )
+                       (accumulator: number, product: any) =>
+                          accumulator +
+                          (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                             product.weight,
+                       0
+                    )
                   : cart.totalPrice;
 
                if (voucher._id) {
@@ -271,7 +271,6 @@ const CheckOutPage = () => {
                      } else {
                         window.location.href = res.body.data.url;
                      }
-
                   })
                   .finally(() => {
                      setLoadingState(false);

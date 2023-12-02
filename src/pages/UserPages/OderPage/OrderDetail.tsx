@@ -40,6 +40,7 @@ const OrderDetail = () => {
             refetch();
          });
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const getStatusOfOrder = () => {
       return ORDER_STATUS_FULL.indexOf(
@@ -169,6 +170,7 @@ const OrderDetail = () => {
                      {data?.body.data &&
                         data?.body.data.products.map((product) => (
                            <ProductInOrder
+                              refetch={refetch}
                               product={product}
                               oderId={data?.body.data._id}
                               statusOrder={data?.body.data.status}

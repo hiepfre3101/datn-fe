@@ -14,6 +14,7 @@ export interface IEvaluationFull {
     _id:string;
     userId : {
         userName: string
+        phoneNumber: string
     } | null;
     productId: string;
     content: string;

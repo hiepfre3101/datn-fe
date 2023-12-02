@@ -68,6 +68,7 @@ const AddVoucher = () => {
                      linkBack='/manage/vouchers'
                      changeValue={(value) => setVoucherTitle(value)}
                      initValue={voucherTitle}
+                     disabled={true}
                   />
                </div>
                <div className='w-full flex justify-center mt-10'>

@@ -11,10 +11,11 @@ import { IEvaluation } from '../../../../interfaces/evaluation';
 type Props = {
    product: IProductOrder;
    statusOrder: string;
-   oderId: string
+   oderId: string;
+   refetch: () => void
 };
 
-const ProductInOrder = ({ product, statusOrder, oderId }: Props) => {
+const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    const user = useSelector((state: { userReducer: IAuth }) => state.userReducer.user);
    const [create, { isLoading, error }] = useAddEvaluationMutation()
@@ -31,6 +32,7 @@ const ProductInOrder = ({ product, statusOrder, oderId }: Props) => {
       values.productId = product.productId
       values.orderId = oderId
       await create(values)
+      refetch()
       setIsOpen(false)
    }
    return (
@@ -44,14 +46,14 @@ const ProductInOrder = ({ product, statusOrder, oderId }: Props) => {
          <div className='flex justify-start gap-2 items-center'>
             <span>{product.weight}x</span>
             <span className='text-lg text-black'>{product.price}</span>
-            {statusOrder === DONE_ORDER.toLowerCase() && (
+            {statusOrder === DONE_ORDER.toLowerCase() && !product?.evaluation? (
                <button
                   onClick={() => setIsOpen(true)}
                   className='rounded-sm ml-3 hover:bg-[#5ac471] py-2 px-5 text-white bg-greenP500 duration-300'
                >
                   Đánh giá
                </button>
-            )}
+            ): <> </>}
          </div>
 
          <ConfigProvider
