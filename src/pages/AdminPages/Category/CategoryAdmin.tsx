@@ -5,10 +5,12 @@ import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service';
 import { useState } from 'react';
+import useDebounce from '../../../hooks/useDebounce';
 // import { itemsClientMenu } from "./ItemDropdown";
 const CategoryAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
-   const { data, isLoading } = useGetAllCateQuery({ q: valueSearch });
+   const searchDebounce = useDebounce(valueSearch, 500);
+   const { data, isLoading } = useGetAllCateQuery({ q: searchDebounce });
    const [removeCategory] = useRemoveCategoryByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const handleDelete = (id: any) => {

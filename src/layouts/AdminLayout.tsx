@@ -118,7 +118,9 @@ const AdminLayout = () => {
             >
                <div className='w-full max-h-[95%] pb-5 overflow-y-auto'>
                   <div className='max-h-[150px] flex justify-center items-center'>
-                     <img src={logoUrl} alt='logo' className='max-w-[50%]' />
+                     <Link to={'/'}>
+                        <img src={logoUrl} alt='logo' className='max-w-[50%]' />
+                     </Link>
                   </div>
                   <Menu theme='light' defaultSelectedKeys={['1']} mode='inline' items={items} />
                </div>
