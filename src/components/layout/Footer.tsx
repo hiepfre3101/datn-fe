@@ -25,6 +25,7 @@ import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation
 import { Badge, message } from 'antd';
 import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
 import { MdOutlineCancel } from 'react-icons/md';
+import SearchFilter from './Header/components/SearchFilter';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -37,39 +38,39 @@ const Footer = () => {
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
    const [openChat, setOpenChat] = useState(false);
    const dispatch = useDispatch();
-   const { data } = useGetAllCateQuery();
-   const closeModalSearch = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
+   const { data } = useGetAllCateQuery({});
+   // const closeModalSearch = () => {
+   //    const bodyElement = document.querySelector('body');
+   //    bodyElement?.classList.toggle('overflow-hidden');
 
-      const section_search_modal = document.querySelector('.section-search-modal');
-      const section_overlay_search = document.querySelector('.section-overlay-search');
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('!translate-y-[0%]');
-      }, 100);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('hidden');
-      }, 200);
-      setTimeout(() => {
-         section_overlay_search?.classList.toggle('hidden');
-      }, 400);
-   };
-   const showModalSearch = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
+   //    const section_search_modal = document.querySelector('.section-search-modal');
+   //    const section_overlay_search = document.querySelector('.section-overlay-search');
+   //    setTimeout(() => {
+   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
+   //    }, 100);
+   //    setTimeout(() => {
+   //       section_search_modal?.classList.toggle('hidden');
+   //    }, 200);
+   //    setTimeout(() => {
+   //       section_overlay_search?.classList.toggle('hidden');
+   //    }, 400);
+   // };
+   // const showModalSearch = () => {
+   //    const bodyElement = document.querySelector('body');
+   //    bodyElement?.classList.toggle('overflow-hidden');
 
-      const section_search_modal = document.querySelector('.section-search-modal');
-      const section_overlay_search = document.querySelector('.section-overlay-search');
-      setTimeout(() => {
-         section_overlay_search?.classList.toggle('hidden');
-      }, 100);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('hidden');
-      }, 200);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('!translate-y-[0%]');
-      }, 400);
-   };
+   //    const section_search_modal = document.querySelector('.section-search-modal');
+   //    const section_overlay_search = document.querySelector('.section-overlay-search');
+   //    setTimeout(() => {
+   //       section_overlay_search?.classList.toggle('hidden');
+   //    }, 100);
+   //    setTimeout(() => {
+   //       section_search_modal?.classList.toggle('hidden');
+   //    }, 200);
+   //    setTimeout(() => {
+   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
+   //    }, 400);
+   // };
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -109,12 +110,14 @@ const Footer = () => {
       }
    };
    const [messages, setMesssages] = useState<string>();
-   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, { skip: !auth.user._id || auth.user.role=='admin' });
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, {
+      skip: !auth.user._id || auth.user.role == 'admin'
+   });
    useEffect(() => {
-      const handleUpdateChat = () => { 
-         if(auth?.user?.role == "member" ){
+      const handleUpdateChat = () => {
+         if (auth?.user?.role == 'member') {
             refetch();
-         }   
+         }
       };
       if (auth.user._id && clientSocket) {
          clientSocket.on('updatemess', handleUpdateChat);
@@ -129,14 +132,14 @@ const Footer = () => {
       if (scrollRef.current) {
          scrollRef.current.scrollIntoView({ block: 'end' });
       }
-      if(openChat ==true && auth?.user?._id && auth?.user?.role=="member"){
+      if (openChat == true && auth?.user?._id && auth?.user?.role == 'member') {
          updateIsRead(auth.user._id);
       }
-   }, [chat,openChat]);
+   }, [chat, openChat]);
    const handleChangeMessage = (e: React.FormEvent) => {
       setMesssages(e.target.value);
    };
-   const handleSubmitChat =  async (e: React.FormEvent) => {
+   const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
       const data = {
          roomChatId: auth.user?._id,
@@ -153,9 +156,9 @@ const Footer = () => {
    return (
       <>
          <section
-          style={{
-            display: (auth.user.role == "admin" || !auth.user.role ) ? 'none' : 'block'
-         }}
+            style={{
+               display: auth.user.role == 'admin' || !auth.user.role ? 'none' : 'block'
+            }}
             onClick={() => {
                setOpenChat(!openChat);
                if (scrollRef.current) {
@@ -167,21 +170,20 @@ const Footer = () => {
             <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
                <IoChatbubblesOutline className='text-white w-[30px] text-center m-auto h-[45px] animate-skew_icon_contact transition-all duration-300 ease-in-out' />
                <Badge
-               color='red'
-               count={
-                  chat?.body?.data.messages.filter((item) => {
-                     if (item.isRead == false && item.sender == 'admin') {
-                        return item;
-                     }
-                  }).length
-               }
-               showZero={false}
-               offset={[-24, -50]}
-            >
-               <></>
-            </Badge>
+                  color='red'
+                  count={
+                     chat?.body?.data.messages.filter((item: any) => {
+                        if (item.isRead == false && item.sender == 'admin') {
+                           return item;
+                        }
+                     }).length
+                  }
+                  showZero={false}
+                  offset={[-24, -50]}
+               >
+                  <></>
+               </Badge>
             </div>
-           
          </section>
          <section
             style={{
@@ -193,7 +195,7 @@ const Footer = () => {
                <div className='user ifo flex items-center gap-x-[10px]'>
                   <img
                      className='avatar w-[48px] h-[48px] rounded-[100%]'
-                     src={"https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png"}
+                     src={'https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png'}
                      alt=''
                   />
                   <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
@@ -203,7 +205,7 @@ const Footer = () => {
                </button>
             </div>
             <div className='list-chat w-full overflow-scroll px-[5px] h-[350px] '>
-               {chat?.body?.data?.messages?.map((item) => {
+               {chat?.body?.data?.messages?.map((item: any) => {
                   return (
                      <>
                         {item.sender == 'client' ? (
@@ -424,7 +426,7 @@ const Footer = () => {
                <div className='search-modal-content '>
                   <div className='text-right'>
                      <button
-                        onClick={closeModalSearch}
+                        // onClick={closeModalSearch}
                         type='button'
                         className='close-modal-search text-[20px] text-[#6f6f6f]'
                      >
@@ -444,10 +446,7 @@ const Footer = () => {
                </div>
             </div>
          </section>
-         <section
-            className='section-overlay-search fixed transition-opacity duration-150 top-0 left-0 right-0 h-full hidden w-full bg-[#000] opacity-[0.5] z-[5]'
-            onClick={closeModalSearch}
-         ></section>
+
          <section className='section-mobile-menu max-sm:block hidden  '>
             <div className='mobile-menu-content  pt-[10px] z-[4] flex justify-between fixed bottom-0 left-0 right-0 rounded-t-xl shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]  bg-white'>
                <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
@@ -457,8 +456,10 @@ const Footer = () => {
                   </Link>
                </div>
 
-               <div onClick={showModalSearch} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] '>
-                  <SearchOutlined style={{ fontSize: '24px' }} />
+               <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] '>
+                  <SearchFilter>
+                     <SearchOutlined style={{ fontSize: '24px' }} />
+                  </SearchFilter>
                   <p className='  text-[10px]  sm:text-[12px]'>Tìm kiếm</p>
                </div>
                <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>

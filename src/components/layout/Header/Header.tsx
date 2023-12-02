@@ -252,7 +252,7 @@ const Header = () => {
                         </li>
                         <li
                            // onClick={showModalSearch}
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
+                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
                         >
                            <SearchFilter>
                               <SearchOutlined />
