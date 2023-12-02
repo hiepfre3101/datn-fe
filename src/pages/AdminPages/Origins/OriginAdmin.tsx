@@ -1,19 +1,18 @@
-
 import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
 import { Card, Layout, Popconfirm, Popover } from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { useGetAllOriginQuery, useRemoveOriginByIdMutation } from '../../../services/origin.service';
 const OriginAdmin = () => {
-    const { data, isLoading } = useGetAllOriginQuery()
-    
-    const [removeCategory] = useRemoveOriginByIdMutation();
+   const { data, isLoading } = useGetAllOriginQuery();
+
+   const [removeCategory] = useRemoveOriginByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const handleDelete = (id: any) => {
       removeCategory(id);
    };
-  return (
-    <>
+   return (
+      <>
          <Helmet>
             <title>Nguồn gốc sản phẩm</title>
          </Helmet>
@@ -21,7 +20,7 @@ const OriginAdmin = () => {
          <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
             <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%]'>
                <div className='flex justify-between items-center w-[90%]'>
-                  <h1 className='text-3xl font-semibold text-[rgba(0,0,0,0.7)]'>Danh mục</h1>
+                  <h1 className='text-3xl font-semibold text-[rgba(0,0,0,0.7)]'>Nguồn gốc</h1>
 
                   <Link to='/manage/add-origin'>
                      <button className='bg-greenPrimary duration-100 hover:bg-greenPri600 text-white text-lg p-2 font-semibold rounded-lg flex justify-start items-center gap-2'>
@@ -38,7 +37,7 @@ const OriginAdmin = () => {
                         <input
                            type='text'
                            className='text-sm outline-none border-none w-full flex-1'
-                           placeholder='Tìm kiếm danh mục'
+                           placeholder='Tìm kiếm nguồn gốc'
                         />
                      </div>
                   </header>
@@ -47,11 +46,8 @@ const OriginAdmin = () => {
                      {isLoading
                         ? 'loading'
                         : data?.body.data.map((origin, index) => {
-                            
-                        
                              return (
                                 <Card
-                                   
                                    className={`w-[200px] h-[100px] lg:w-[300px] lg:h-[100px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
                                    key={index}
                                 >
@@ -89,7 +85,7 @@ const OriginAdmin = () => {
                                                         </Link>
                                                      </li>
                                                      <li>
-                                                       <Popconfirm
+                                                        <Popconfirm
                                                            className={``}
                                                            description='Bạn chắc chắn muốn xóa danh mục chứ?'
                                                            okText='Đồng ý'
@@ -103,8 +99,7 @@ const OriginAdmin = () => {
                                                            >
                                                               Xóa
                                                            </button>
-                                                        </Popconfirm> 
-                                                        
+                                                        </Popconfirm>
                                                      </li>
                                                   </ul>
                                                </div>
@@ -131,7 +126,6 @@ const OriginAdmin = () => {
                                          </Popover>
                                       </div>
                                    </div>
-                                  
                                 </Card>
                              );
                           })}
@@ -140,7 +134,7 @@ const OriginAdmin = () => {
             </div>
          </Layout>
       </>
-  )
-}
+   );
+};
 
-export default OriginAdmin
+export default OriginAdmin;

@@ -7,6 +7,13 @@ import {
    MenuUnfoldOutlined,
    NotificationOutlined
 } from '@ant-design/icons';
+import {
+   PieChartOutlined,
+   UserOutlined,
+   MenuFoldOutlined,
+   MenuUnfoldOutlined,
+   NotificationOutlined
+} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Button, Layout, Menu, message, theme } from 'antd';
 import { Outlet } from 'react-router';
@@ -44,6 +51,7 @@ const items: MenuItem[] = [
       getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
       getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
       getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
+      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6')
       getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6')
    ]),
    getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
