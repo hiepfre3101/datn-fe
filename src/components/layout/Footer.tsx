@@ -109,11 +109,12 @@ const Footer = () => {
       }
    };
    const [messages, setMesssages] = useState<string>();
-   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, { skip: !auth.user._id });
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, { skip: !auth.user._id || auth.user.role=='admin' });
    useEffect(() => {
       const handleUpdateChat = () => { 
-         refetch();
-         
+         if(auth?.user?.role == "member" ){
+            refetch();
+         }   
       };
       if (auth.user._id && clientSocket) {
          clientSocket.on('updatemess', handleUpdateChat);
@@ -128,7 +129,7 @@ const Footer = () => {
       if (scrollRef.current) {
          scrollRef.current.scrollIntoView({ block: 'end' });
       }
-      if(openChat ==true && auth?.user?._id){
+      if(openChat ==true && auth?.user?._id && auth?.user?.role=="member"){
          updateIsRead(auth.user._id);
       }
    }, [chat,openChat]);
@@ -152,6 +153,9 @@ const Footer = () => {
    return (
       <>
          <section
+          style={{
+            display: (auth.user.role == "admin" || !auth.user.role ) ? 'none' : 'block'
+         }}
             onClick={() => {
                setOpenChat(!openChat);
                if (scrollRef.current) {

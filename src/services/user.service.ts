@@ -2,11 +2,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
 import { IUser } from '../interfaces/auth';
 import { paramTransformer } from '../utils/transformParams';
+import { IUserInFo } from '../pages/UserPages/UserInfoPage/UserInforPage';
 
 const userApi = createApi({
    reducerPath: 'userApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8000/api',
+      baseUrl: 'http://localhost:8080/api',
       credentials: 'include'
    }),
    tagTypes: ['user'],
@@ -41,7 +42,7 @@ const userApi = createApi({
          }),
          providesTags: ['user']
       }),
-      updateUser: builder.mutation<IResponse<IUser>, { id: string; data: IUser }>({
+      updateUser: builder.mutation<IResponse<IUser>, { id: string; data: IUserInFo }>({
          query: ({ id, data }) => ({
             url: '/users/' + id,
             method: 'PATCH',

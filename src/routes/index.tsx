@@ -35,7 +35,7 @@ import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
 import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
-
+import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
 
 const router = createBrowserRouter([
    {
@@ -101,6 +101,11 @@ const router = createBrowserRouter([
          {
             path: 'introduct',
             element: <IntroducePage />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'userInfomation',
+            element: <UserInfoPage />,
             errorElement: <NotFoundPage />
          }
       ]
@@ -186,9 +191,8 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
-
             path: 'chat',
-            element: <ChatAdmin />,
+            element: <ChatAdmin />
          },
          {
             path: 'evaluation',

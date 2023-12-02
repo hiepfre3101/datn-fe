@@ -60,7 +60,7 @@ const OrdersAdmin = () => {
                         createdAt: formatStringToDate(order.createdAt)
                      }))}
                      pagination={{ pageSize: 10 }}
-                     scroll={{ y: 800, x: 1000 }}
+                     scroll={{ y: 800, x: 800 }}
                      onRow={(record) => {
                         return {
                            onClick: () => {
@@ -70,25 +70,31 @@ const OrdersAdmin = () => {
                         };
                      }}
                   >
-                     <Column align='center' width={250} title='Ngày mua' dataIndex='createdAt' key='createdAt' />
+                     <Column align='center' width={120} title='Ngày mua' dataIndex='createdAt' key='createdAt' />
                      <Column
                         align='center'
-                        width={250}
+                        width={120}
+                        title='Tổng tiền (VND)'
+                        dataIndex='totalPayment'
+                        key='totalPayment'
+                     />
+                     <Column
+                        align='center'
+                        width={150}
                         title='Tên khách hàng'
                         dataIndex='customerName'
                         key='customerName'
                      />
                      <Column
                         align='center'
-                        width={250}
+                        width={150}
                         title='Số điện thoại'
                         dataIndex='phoneNumber'
                         key='phoneNumber'
                      />
-                     <Column align='center' width={250} title='Tổng tiền' dataIndex='totalPayment' key='totalPayment' />
                      <Column
                         fixed='right'
-                        width={200}
+                        width={120}
                         title='Trạng thái'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => (
