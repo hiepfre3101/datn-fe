@@ -27,14 +27,18 @@ import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
 import { MdOutlineCancel } from 'react-icons/md';
 import SearchFilter from './Header/components/SearchFilter';
 import { formatStringToDate } from '../../helper';
-import { useDeleteNotificationMutation, useGetClientNotificationQuery, useUpdateNotificationMutation } from '../../services/notification';
+import {
+   useDeleteNotificationMutation,
+   useGetClientNotificationQuery,
+   useUpdateNotificationMutation
+} from '../../services/notification';
 import { INotification } from '../../interfaces/notification';
 import { useClearTokenMutation } from '../../services/auth.service';
 import { IVoucher } from '../../slices/voucherSlice';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data: cartdb, refetch: refetchCart  } = useGetCartQuery(undefined, { skip: !auth.user._id });
+   const { data: cartdb, refetch: refetchCart } = useGetCartQuery(undefined, { skip: !auth.user._id });
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
@@ -50,7 +54,7 @@ const Footer = () => {
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
    const [clearToken] = useClearTokenMutation();
-   const navigate = useNavigate()
+   const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
       dispatch(setItem());
@@ -59,25 +63,14 @@ const Footer = () => {
    };
    useEffect(() => {
       clientSocket.open();
-      const handlePurchaseNotification = (data: any) => {
+      const handlePurchaseNotification = () => {
          refetchCart();
          refetchNoti();
-         notification.info({
-            message: 'Bạn có thông báo mới',
-            description: data.data.message
-         });
       };
       if (auth?.user?._id) {
-         clientSocket.emit('joinClientRoom', JSON.stringify(auth?.user?._id));
          clientSocket.on('purchaseNotification', handlePurchaseNotification);
          clientSocket.on('statusNotification', handlePurchaseNotification);
       }
-
-      return () => {
-         clientSocket.off('purchaseNotification', handlePurchaseNotification);
-         clientSocket.off('statusNotification', handlePurchaseNotification);
-         clientSocket.disconnect();
-      };
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
@@ -131,8 +124,7 @@ const Footer = () => {
    const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
    });
-  
-   
+
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
@@ -485,33 +477,37 @@ const Footer = () => {
                <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <div className='test relative w-[24px] h-[24px] m-auto '>
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
-                     <Badge count={cart?.length} showZero={false} className='custom-badge    text-[9px]  right-[2px] top-[4px] absolute text-white'>
-                           <li
-                              onClick={showMiniCart}
-                              className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors  duration-300 cursor-pointer hover:text-[#d2401e]   '
-                           >
-                              <HiOutlineShoppingBag></HiOutlineShoppingBag>
-                           </li>
-                        </Badge>
-                    
+                     <Badge
+                        count={cart?.length}
+                        showZero={false}
+                        className='custom-badge    text-[9px]  right-[2px] top-[4px] absolute text-white'
+                     >
+                        <li
+                           onClick={showMiniCart}
+                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors  duration-300 cursor-pointer hover:text-[#d2401e]   '
+                        >
+                           <HiOutlineShoppingBag></HiOutlineShoppingBag>
+                        </li>
+                     </Badge>
                   </div>
                   <p className=' text-[10px] mt-[2px] sm:text-[12px]'>Giỏ hàng</p>
                </div>
-          {auth.user?._id && <div  onClick={showNotificationTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
-                  <div className='test relative w-[24px] h-[24px] m-auto '>
-                     <BsBell style={{ fontSize: '24px' }} />
-                                 <Badge className='custom-badge    text-[9px]  right-[-5px] top-[-6px] absolute text-white'
-                                       count={
-                                          clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
-                                             .length
-                                       }
-                                       showZero={false}
-                                    >
-                                       
-                                    </Badge>
+               {auth.user?._id && (
+                  <div
+                     onClick={showNotificationTag}
+                     className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'
+                  >
+                     <div className='test relative w-[24px] h-[24px] m-auto '>
+                        <BsBell style={{ fontSize: '24px' }} />
+                        <Badge
+                           className='custom-badge    text-[9px]  right-[-5px] top-[-6px] absolute text-white'
+                           count={clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
+                           showZero={false}
+                        ></Badge>
+                     </div>
+                     <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
                   </div>
-                  <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
-               </div>}
+               )}
                <div onClick={showUserTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <UserOutlined style={{ fontSize: '24px' }} />
                   <p className='  text-[10px] sm:text-[12px]'>Tài khoản</p>
@@ -629,9 +625,9 @@ const Footer = () => {
                                                   currency: 'VND'
                                                })
                                              : item.productId?.price.toLocaleString('vi-VN', {
-                                                style: 'currency',
-                                                currency: 'VND'
-                                             })}
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
@@ -649,68 +645,84 @@ const Footer = () => {
                         </ul>
                      </div>
                      <div className='mini-cart-footer'>
-                    {voucher._id &&  <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                           <span className='subtotal-title text-[16px] '>Tính tạm:</span>
+                        {voucher._id && (
+                           <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                              <span className='subtotal-title text-[16px] '>Tính tạm:</span>
+                              <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                                 {auth.user._id
+                                    ? cart
+                                         ?.reduce(
+                                            (accumulator: number, product: any) =>
+                                               accumulator +
+                                               (product.productId.price -
+                                                  (product.productId.price * product.productId.discount) / 100) *
+                                                  product.weight,
+                                            0
+                                         )
+                                         .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                    : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                              </span>
+                           </div>
+                        )}
+                        {voucher._id && (
+                           <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                              <span className='subtotal-title text-[16px] '>Giảm giá:</span>
+                              <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                                 -{' '}
+                                 {voucher.maxReduce
+                                    ? voucher.maxReduce
+                                    : auth.user._id
+                                    ? (
+                                         (cart?.reduce(
+                                            (accumulator: number, product: any) =>
+                                               accumulator +
+                                               (product.productId.price -
+                                                  (product.productId.price * product.productId.discount) / 100) *
+                                                  product.weight,
+                                            0
+                                         ) *
+                                            voucher.percent) /
+                                         100
+                                      ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                    : ((totalPrice * voucher.percent) / 100)?.toLocaleString('vi-VN', {
+                                         style: 'currency',
+                                         currency: 'VND'
+                                      })}
+                              </span>
+                           </div>
+                        )}
+                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Tổng:</span>
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                               {auth.user._id
-                                 ? cart
-                                      ?.reduce(
+                                 ? (
+                                      cart?.reduce(
                                          (accumulator: number, product: any) =>
                                             accumulator +
                                             (product.productId.price -
                                                (product.productId.price * product.productId.discount) / 100) *
                                                product.weight,
                                          0
-                                      )
-                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                      ) -
+                                      (voucher.maxReduce
+                                         ? voucher.maxReduce
+                                         : auth.user._id
+                                         ? (cart?.reduce(
+                                              (accumulator: number, product: any) =>
+                                                 accumulator +
+                                                 (product.productId.price -
+                                                    (product.productId.price * product.productId.discount) / 100) *
+                                                    product.weight,
+                                              0
+                                           ) *
+                                              voucher.percent) /
+                                           100
+                                         : totalPrice - (totalPrice * voucher.percent) / 100)
+                                   ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
-                        </div>}
-                     {voucher._id&&   <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                           <span className='subtotal-title text-[16px] '>Giảm giá:</span>
-                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                                - {voucher.maxReduce?voucher.maxReduce:auth.user._id
-                                 ? (cart
-                                    ?.reduce(
-                                       (accumulator: number, product: any) =>
-                                          accumulator +
-                                          (product.productId.price -
-                                             (product.productId.price * product.productId.discount) / 100) *
-                                             product.weight,
-                                       0
-                                    )*voucher.percent/100)
-                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                 : (totalPrice*voucher.percent/100)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                           </span>
-                        </div>}
-                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                           <span className='subtotal-title text-[16px] '>Tổng:</span>
-                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                              {auth.user._id
-                                 ?(( cart
-                                    ?.reduce(
-                                       (accumulator: number, product: any) =>
-                                          accumulator +
-                                          (product.productId.price -
-                                             (product.productId.price * product.productId.discount) / 100) *
-                                             product.weight,
-                                       0
-                                    )) -(voucher.maxReduce?voucher.maxReduce:auth.user._id
-                                       ? (cart
-                                          ?.reduce(
-                                             (accumulator: number, product: any) =>
-                                                accumulator +
-                                                (product.productId.price -
-                                                   (product.productId.price * product.productId.discount) / 100) *
-                                                   product.weight,
-                                             0
-                                          )*voucher.percent/100)
-                                           
-                                       : (totalPrice-(totalPrice*voucher.percent/100)))).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                       : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                           </span>
                         </div>
-                     
+
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                            <Link
                               to={'/cart'}
@@ -753,107 +765,100 @@ const Footer = () => {
                         <FaXmark className='text-[20px]'></FaXmark>
                      </span>
                   </li>
-                  {!auth.accessToken && <>
-                     <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to={'/login'} className='flex items-center gap-[5px] py-[5px]'>
-                        <FiLogIn></FiLogIn> Đăng nhập
-                     </Link>
-                  </li>
-                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to={'/signup'} className='flex items-center gap-[5px] py-[5px]'>
-                        <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
-                     </Link>
-                  </li>
-                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='forgetPassword' className='flex items-center gap-[5px] py-[5px]'>
-                        <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
-                     </Link>
-                  </li>
-                 
-                  </>}
-                  {auth.accessToken && <>
-                     <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
-                        <PiUserListBold></PiUserListBold> Hồ sơ của bạn
-                     </Link>
-                  </li>
-                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <RiBillLine></RiBillLine> Lịch sử mua hàng
-                     </Link>
-                  </li>
-                  
-            
-                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <button  onClick={() => onHandleLogout()} className='flex items-center gap-[5px] py-[5px]'>
-                        <FiLogOut></FiLogOut> Đăng xuất
-                     </button>
-                  </li>
-                  </>}
-              
-                 
+                  {!auth.accessToken && (
+                     <>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to={'/login'} className='flex items-center gap-[5px] py-[5px]'>
+                              <FiLogIn></FiLogIn> Đăng nhập
+                           </Link>
+                        </li>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to={'/signup'} className='flex items-center gap-[5px] py-[5px]'>
+                              <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
+                           </Link>
+                        </li>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='forgetPassword' className='flex items-center gap-[5px] py-[5px]'>
+                              <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
+                           </Link>
+                        </li>
+                     </>
+                  )}
+                  {auth.accessToken && (
+                     <>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
+                              <PiUserListBold></PiUserListBold> Hồ sơ của bạn
+                           </Link>
+                        </li>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                              <RiBillLine></RiBillLine> Lịch sử mua hàng
+                           </Link>
+                        </li>
+
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <button onClick={() => onHandleLogout()} className='flex items-center gap-[5px] py-[5px]'>
+                              <FiLogOut></FiLogOut> Đăng xuất
+                           </button>
+                        </li>
+                     </>
+                  )}
                </ul>
             </div>
          </section>
-         {auth.user?._id && <section className='noti-tag-moble '>
-            <div
-               onClick={showNotificationTag}
-               className='overlay-noti-tag-mobile xl:hidden  fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
-            ></div>
-            <div className='noti-tag-mobile-content w-[320px] transition duration-300 fixed top-0 left-0 h-full bg-white z-[8] min-w-[320px] translate-x-[-100%]'>
-               <ul>
-                  <li className='px-[15px] py-[10px] flex justify-end'>
-                     <span onClick={showNotificationTag} className='cursor-pointer text-center'>
-                        <FaXmark className='text-[20px]'></FaXmark>
-                     </span>
-                  </li>
-              
-                     <li className='px-[15px] py-[10px] '>
-         
-               
-                                    <div className='max-h-[450px] w-full overflow-scroll '>
-                                       {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
-                                          <div
-                                             key={index}
-                                             className='relative border-b-[1px] w-[270px] border-gray-400  p-2  '
-                                          >
-                                             <Link
-                                                onClick={async () => {
-                                                   await updateNotification({ id: noti._id, isRead: true });
-                                                }}
-                                                to={noti.link}
-                                                className='w-[270px] block'
-                                             >
-                                                {!noti.isRead && (
-                                                   <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
-                                                      !
-                                                   </span>
-                                                )}
-                                                <h1 className='font-bold break-words'>{noti.title}</h1>
-                                                <p className='text-gray-400 '>{noti.message}</p>
-                                                <span className='text-gray-400'>
-                                                   {formatStringToDate(noti.createdAt)}
-                                                </span>
-                                             </Link>
-                                             <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
-                                                <button
-                                                   onClick={async () => {
-                                                      await deleteNotification(noti._id);
-                                                   }}
-                                                   className='text-black-300 hover:underline'
-                                                >
-                                                   Xóa
-                                                </button>
-                                             </p>
-                                          </div>
-                                       ))}
-                                       
-                                    </div>
-                            </li>
-               </ul>
-            </div>
-         </section>}
+         {auth.user?._id && (
+            <section className='noti-tag-moble '>
+               <div
+                  onClick={showNotificationTag}
+                  className='overlay-noti-tag-mobile xl:hidden  fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
+               ></div>
+               <div className='noti-tag-mobile-content w-[320px] transition duration-300 fixed top-0 left-0 h-full bg-white z-[8] min-w-[320px] translate-x-[-100%]'>
+                  <ul>
+                     <li className='px-[15px] py-[10px] flex justify-end'>
+                        <span onClick={showNotificationTag} className='cursor-pointer text-center'>
+                           <FaXmark className='text-[20px]'></FaXmark>
+                        </span>
+                     </li>
 
+                     <li className='px-[15px] py-[10px] '>
+                        <div className='max-h-[450px] w-full overflow-scroll '>
+                           {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
+                              <div key={index} className='relative border-b-[1px] w-[270px] border-gray-400  p-2  '>
+                                 <Link
+                                    onClick={async () => {
+                                       await updateNotification({ id: noti._id, isRead: true });
+                                    }}
+                                    to={noti.link}
+                                    className='w-[270px] block'
+                                 >
+                                    {!noti.isRead && (
+                                       <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
+                                          !
+                                       </span>
+                                    )}
+                                    <h1 className='font-bold break-words'>{noti.title}</h1>
+                                    <p className='text-gray-400 '>{noti.message}</p>
+                                    <span className='text-gray-400'>{formatStringToDate(noti.createdAt)}</span>
+                                 </Link>
+                                 <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
+                                    <button
+                                       onClick={async () => {
+                                          await deleteNotification(noti._id);
+                                       }}
+                                       className='text-black-300 hover:underline'
+                                    >
+                                       Xóa
+                                    </button>
+                                 </p>
+                              </div>
+                           ))}
+                        </div>
+                     </li>
+                  </ul>
+               </div>
+            </section>
+         )}
       </>
    );
 };

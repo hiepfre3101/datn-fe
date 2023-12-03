@@ -19,7 +19,8 @@ import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../../services/cate.service';
 import { clientSocket } from '../../../config/socket';
 import SearchFilter from './components/SearchFilter';
-import { LuUser2 } from "react-icons/lu";
+import { LuUser2 } from 'react-icons/lu';
+import { CiHeart } from 'react-icons/ci';
 import {
    useDeleteNotificationMutation,
    useGetClientNotificationQuery,
@@ -200,46 +201,47 @@ const Header = () => {
                               Giới thiệu
                            </Link>
                         </li>
-                      <div className='group/wrap'>
-                      <li onClick={showCategoriesMenu}  className='cursor-pointer  main-menu-item   group/categories-menu cate-menu max-xl:overflow-hidden max-xl:max-h-[41px] text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
-                           <div  className='w-full h-full xl:hidden absolute'></div>
-                           <div  className='flex items-center group-hover:text-[#51A55C] max-xl:justify-between'>
-                              <span className='after:content-[""] xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
-                                 Danh mục
-                                 
-                              </span>
-                              <Link to='/collections'>
-                                 <span className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
+                        <div className='group/wrap'>
+                           <li
+                              onClick={showCategoriesMenu}
+                              className='cursor-pointer  main-menu-item   group/categories-menu cate-menu max-xl:overflow-hidden max-xl:max-h-[41px] text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'
+                           >
+                              <div className='w-full h-full xl:hidden absolute'></div>
+                              <div className='flex items-center group-hover:text-[#51A55C] max-xl:justify-between'>
+                                 <span className='after:content-[""] xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                     Danh mục
                                  </span>
-                                 
-                              </Link>
+                                 <Link to='/collections'>
+                                    <span className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
+                                       Danh mục
+                                    </span>
+                                 </Link>
 
-                              <span className='text-[11px] ml-[5px]'>
-                                 <FaChevronDown></FaChevronDown>
-                              </span>
-                           </div>
-                     
-                        </li>
-                        <ul className='sub-menu max-xl:!hidden  xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 group-hover/wrap:block xl:group-hover/wrap:translate-y-[0%] xl:z-[-1] xl:group-hover/wrap:z-[3] xl:group-hover/wrap:visible xl:group-hover/wrap:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
+                                 <span className='text-[11px] ml-[5px]'>
+                                    <FaChevronDown></FaChevronDown>
+                                 </span>
+                              </div>
+                           </li>
+                           <ul className='sub-menu max-xl:!hidden  xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 group-hover/wrap:block xl:group-hover/wrap:translate-y-[0%] xl:z-[-1] xl:group-hover/wrap:z-[3] xl:group-hover/wrap:visible xl:group-hover/wrap:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
                               {data?.body.data.map((item) => {
                                  return (
                                     <>
-                                     <Link
-                                             to={'/collections?cate_id=' + item._id}
-                                             className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
+                                       <Link
+                                          to={'/collections?cate_id=' + item._id}
+                                          className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
+                                       >
+                                          <li
+                                             onClick={showMenuReponsive}
+                                             className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'
                                           >
-                                       <li onClick={showMenuReponsive}  className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
-                                         
                                              {item.cateName}
-                                         
-                                       </li>
+                                          </li>
                                        </Link>
                                     </>
                                  );
                               })}
                            </ul>
-                      </div>
+                        </div>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
                            <Link
                               to='/contact'
@@ -289,7 +291,7 @@ const Header = () => {
                                           <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
                                        </Link>
 
-                                       <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                       <Link to='/forgetPassword' className='flex items-center gap-[5px] py-[5px]'>
                                           <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
                                        </Link>
                                     </>
@@ -318,23 +320,24 @@ const Header = () => {
                                                 </Link>
                                              </div>
                                           ) : (
-                                            <>
-                                             <div>
-                                                <Link
-                                                   to='/manage/dashboard'
-                                                   className='flex items-center gap-[5px] py-[5px]'
-                                                >
-                                                   <PiUserListBold></PiUserListBold> Quản lý cửa hàng
-                                                </Link>
-                                             </div>
-                                              <div>
-                                                <Link
-                                                   to='/userinformation'
-                                                   className='flex items-center gap-[5px] py-[5px]'
-                                                >
-                                                   <LuUser2></LuUser2> Thông tin tài khoản
-                                                </Link>
-                                             </div></>
+                                             <>
+                                                <div>
+                                                   <Link
+                                                      to='/manage/dashboard'
+                                                      className='flex items-center gap-[5px] py-[5px]'
+                                                   >
+                                                      <PiUserListBold></PiUserListBold> Quản lý cửa hàng
+                                                   </Link>
+                                                </div>
+                                                <div>
+                                                   <Link
+                                                      to='/userinformation'
+                                                      className='flex items-center gap-[5px] py-[5px]'
+                                                   >
+                                                      <LuUser2></LuUser2> Thông tin tài khoản
+                                                   </Link>
+                                                </div>
+                                             </>
                                           )}
 
                                           <div>
@@ -404,7 +407,8 @@ const Header = () => {
                                  trigger='click'
                               >
                                  {auth.accessToken && (
-                                    <Badge className='max-sm:hidden'
+                                    <Badge
+                                       className='max-sm:hidden'
                                        color='red'
                                        count={
                                           clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
@@ -428,6 +432,11 @@ const Header = () => {
                               <HiOutlineShoppingBag></HiOutlineShoppingBag>
                            </li>
                         </Badge>
+                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
+                           <Link to='/wishList'>
+                              <CiHeart />
+                           </Link>
+                        </li>
                      </ul>
                   </div>
                </div>

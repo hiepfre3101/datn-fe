@@ -39,7 +39,7 @@ const WishListPage = () => {
                         <div className='flex w-full space-x-2 sm:space-x-4'>
                            <img
                               className='flex-shrink-0 object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500'
-                              src={item.images}
+                              src={item.images[0].url}
                               alt='Polaroid camera'
                            />
                            <div className='flex flex-col justify-between w-full pb-4'>
