@@ -2,10 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
 import { IShipmentFull, InputShipment } from '../interfaces/shipment';
 import { paramTransformer } from '../utils/transformParams';
+import { dbUrl } from '../constants/dbUrl';
 
 const shipmentApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: dbUrl + '/api',
       prepareHeaders: (headers) => {
          headers.set('Access-Control-Allow-Origin', '*');
          headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH,PUT, DELETE');

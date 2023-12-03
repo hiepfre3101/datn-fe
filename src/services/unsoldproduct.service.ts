@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '../interfaces/base';
 import { IunsoldProduct } from '../interfaces/unsoldproduct';
+import { dbUrl } from '../constants/dbUrl';
 
 const unsoldproduct = createApi({
    reducerPath: 'unsoldproduct',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: dbUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['unsoldproduct'],

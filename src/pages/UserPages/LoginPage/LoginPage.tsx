@@ -7,6 +7,7 @@ import { useLoginMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
 import Loading from '../../../components/Loading/Loading';
 import { GoogleOutlined } from '@ant-design/icons';
+import { dbUrl } from '../../../constants/dbUrl';
 
 const LoginPage = () => {
    const [email, setEmail] = useState('');
@@ -89,7 +90,7 @@ const LoginPage = () => {
                            >
                               Đăng nhập
                            </button>
-                           <Link className='w-[100%]' to={'http://localhost:8080/api/auth/google/login'}>
+                           <Link className='w-[100%]' to={dbUrl + '/api/auth/google/login'}>
                               <button
                                  type='button'
                                  className='w-full btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
