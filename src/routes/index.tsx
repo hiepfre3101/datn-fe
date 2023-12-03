@@ -106,7 +106,7 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
-            path: 'userInfomation',
+            path: 'userInformation',
             element: <UserInfoPage />,
             errorElement: <NotFoundPage />
          },

@@ -10,8 +10,8 @@ export interface DataAuthResponse {
          accessToken: string;
          expires: number;
          data: IUser;
-      }
-   }
+      };
+   };
    message: string;
 }
 
@@ -21,7 +21,7 @@ export interface AuthSignupInput {
    password: string;
    phoneNumber: string;
    address: string;
-   avatar: string;
+   avatar?: string;
    confirmPassword: string;
 }
 
@@ -53,8 +53,8 @@ export interface TokenResponse {
    body: {
       accessToken: string;
       expries: number;
-      data: IUser
-   },
+      data: IUser;
+   };
    message: string;
    status: number;
 }

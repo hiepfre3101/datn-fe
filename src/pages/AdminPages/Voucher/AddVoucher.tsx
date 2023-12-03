@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Divider, Form, Input, InputNumber, Layout } from 'antd';
 import { DatePicker } from 'antd';
 import React, { useState } from 'react';
@@ -10,33 +11,21 @@ import { useAddVoucherMutation } from '../../../services/voucher.service';
 const AddVoucher = () => {
    const [voucherTitle, setVoucherTitle] = useState<string>('');
    const [loading, setLoading] = useState<boolean>(false);
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [form] = Form.useForm<any>();
    const navigate = useNavigate();
    const [handleAddVoucher, { error }] = useAddVoucherMutation();
-   const validateDateStartRange = (_: any, values: any) => {
-      const { dateEnd } = form.getFieldsValue(true);
-
-      if (values.isAfter(dateEnd)) {
-         return Promise.reject('Ngày bắt đầu không được lớn hơn ngày kết thúc!');
-      } else {
-         return Promise.resolve();
-      }
-   };
-   const validateDateEndRange = (_: any, values: any) => {
-      const { dateStart } = form.getFieldsValue(true);
-
-      if (values.isBefore(dateStart)) {
-         return Promise.reject('Ngày kết thúc phải lớn hơn ngày bắt đầu!');
-      } else {
-         return Promise.resolve();
-      }
-   };
+   const { RangePicker } = DatePicker;
    const handleSubmit = async (values: any) => {
-      console.log(values);
-
+      const dataSubmit = {
+         ...values,
+         dateStart: values.timeVoucher[0].$d.toString(),
+         dateEnd: values.timeVoucher[1].$d.toString(),
+         timeVoucher: undefined
+      };
       try {
          setLoading(true);
-         await handleAddVoucher(values);
+         await handleAddVoucher(dataSubmit);
          if (error) {
             console.log(error);
             return;
@@ -97,30 +86,19 @@ const AddVoucher = () => {
                            label={'Số lượng'}
                            rules={[
                               { required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' },
-                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
+                              { type: 'number', min: 1, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
+                           <InputNumber min={1} className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
                         </Form.Item>
                         <Form.Item
-                           name={'dateStart'}
+                           name={'timeVoucher'}
                            label={'Ngày bắt đầu'}
                            rules={[
-                              { required: true, message: 'Vui lòng điền ngày bắt đầu mã khuyến mãi !' },
-                              { validator: validateDateStartRange }
+                              { required: true, message: 'Vui lòng điền ngày bắt đầu và kết thúc mã khuyến mãi !' }
                            ]}
                         >
-                           <DatePicker />
-                        </Form.Item>
-                        <Form.Item
-                           name={'dateEnd'}
-                           label={'Ngày kết thúc'}
-                           rules={[
-                              { required: true, message: 'Vui lòng điền ngày kết thúc mã khuyến mãi !' },
-                              { validator: validateDateEndRange }
-                           ]}
-                        >
-                           <DatePicker />
+                           <RangePicker format={'DD/MM/YYYY'} />
                         </Form.Item>
                         <Form.Item
                            name={'percent'}
@@ -130,7 +108,7 @@ const AddVoucher = () => {
                               { type: 'number', min: 1, message: 'Vui lòng nhập số lớn hơn 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' placeholder='Thêm % giảm bớt' />
+                           <InputNumber max={100} min={0} className='w-full' placeholder='Thêm % giảm bớt' />
                         </Form.Item>
                         <Form.Item
                            name={'miniMumOrder'}

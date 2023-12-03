@@ -12,7 +12,6 @@ const HomePage = () => {
    const {data: liquidationProducts} = useGetAllLiquidationProductQuery()
    const {data: ProductSoldBest} = useGetProductSoldDescLimitQuery()
    const {data: NewProduct} = useGetNewProductInStorageQuery()
-   console.log(liquidationProducts);
    
    return (
    

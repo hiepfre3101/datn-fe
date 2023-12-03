@@ -16,7 +16,7 @@ import {
 import ProductInOrder from './Component/ProductInOrder';
 import { IAuth } from '../../../slices/authSlice';
 import { useSelector } from 'react-redux';
-import { adminSocket, clientSocket } from '../../../config/socket';
+import { clientSocket } from '../../../config/socket';
 import { useConfirmOrderMemberMutation, useGetOneOrderForMemberQuery } from '../../../services/order.service';
 const OrderDetail = () => {
    const { id } = useParams();
@@ -32,14 +32,7 @@ const OrderDetail = () => {
          }
          refetch();
       });
-      return () => {
-         clientSocket.off('statusNotification', (data) => {
-            if (data.status === SUCCESS_ORDER.toLowerCase()) {
-               setIsShowConfirm(true);
-            }
-            refetch();
-         });
-      };
+      return () => {};
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const getStatusOfOrder = () => {
@@ -60,6 +53,7 @@ const OrderDetail = () => {
          note: data.body.data.note!,
          paymentMethod: data.body.data.paymentMethod!,
          userId: data.body.data.userId!,
+         invoiceId: data.body.data.invoiceId,
          shippingAddress: data.body.data.shippingAddress!,
          products: data.body.data.products!,
          phoneNumber: data.body.data.phoneNumber!,
@@ -67,7 +61,7 @@ const OrderDetail = () => {
          status: DONE_ORDER.toLowerCase()
       };
       try {
-         adminSocket.emit('confirmOrder', JSON.stringify(dataSubmit));
+         clientSocket.emit('confirmOrder', JSON.stringify(dataSubmit));
          refetch();
          message.success('Xác nhận đơn hàng thành công!');
       } catch (error) {

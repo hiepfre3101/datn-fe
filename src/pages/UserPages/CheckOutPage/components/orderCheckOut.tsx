@@ -8,7 +8,7 @@ import { IOrder } from '../../../../interfaces/order';
 import { Link } from 'react-router-dom';
 import { useGetCartQuery } from '../../../../services/cart.service';
 import { IAuth } from '../../../../slices/authSlice';
-import { momoUrl, vnpayUrl } from '../../../../constants/imageUrl';
+import { vnpayUrl } from '../../../../constants/imageUrl';
 import { IVoucher } from '../../../../slices/voucherSlice';
 interface Iprops {
    onSubmit: (data: IOrder) => void;
@@ -23,7 +23,6 @@ export type paymentMethod = {
 };
 const PAYMENT_METHODS: paymentMethod[] = [
    { name: 'Thanh toán khi nhận hàng', value: 'cod', type: 'text' },
-   { name: 'MoMo', value: 'momo', type: 'logo', srcLogo: momoUrl },
    { name: 'VNpay', value: 'vnpay', type: 'logo', srcLogo: vnpayUrl }
 ];
 const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {

@@ -2,7 +2,7 @@
 import { DownOutlined, SearchOutlined } from '@ant-design/icons';
 import { Badge, Dropdown, Layout, MenuProps, Popover, notification } from 'antd';
 import BellIcon from '../Icons/BellIcon';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { IAuth } from '../../slices/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiLogOut } from 'react-icons/fi';
@@ -19,6 +19,8 @@ import {
 import { INotification } from '../../interfaces/notification';
 import { formatStringToDate } from '../../helper';
 import { setItem } from '../../slices/cartSlice';
+import NotificationSound from '../../assets/notification-sound.mp3';
+
 const pagePaths = [
    {
       title: 'Sản phẩm',
@@ -61,6 +63,7 @@ const HeaderAdmin = () => {
    const { data: adminNotification, refetch } = useGetAdminNotificationQuery(auth?.user?._id);
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
+   const audioPlayer = useRef<HTMLAudioElement | null>(null)
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
       dispatch(setItem());
@@ -73,6 +76,9 @@ const HeaderAdmin = () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handlePurchaseNotification = (data: any) => {
          refetch();
+         if (audioPlayer.current !== null) {
+            audioPlayer.current.play()
+         }
          notification.info({
             message: 'Bạn có thông báo mới',
             description: data?.data?.message || 'Kiểm tra ngay'
@@ -112,7 +118,7 @@ const HeaderAdmin = () => {
          key: '-1'
       },
       {
-         label: <Link to='/manage/account'>Hồ sơ</Link>,
+         label: <Link to='/userInformation'>Hồ sơ</Link>,
          key: '0'
       },
       {
@@ -234,6 +240,7 @@ const HeaderAdmin = () => {
                   </div>
                </Badge>
             </Popover>
+            <audio ref={audioPlayer} src={NotificationSound} />
          </div>
       </Header>
    );

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IoSend } from 'react-icons/io5';
 import { useGetAllChatQuery, useGetOneChatQuery, useSendMessageMutation } from '../../../services/chat.service';
 import { useState, useEffect, useRef } from 'react';
@@ -38,7 +39,7 @@ const ChatAdmin = () => {
       }
       getAllRefetch();
    }, [messagesInARoom]);
-   const handleChangeMessage = (e) => {
+   const handleChangeMessage = (e: any) => {
       setMesssage(e.target.value);
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
@@ -57,7 +58,7 @@ const ChatAdmin = () => {
       <>
          <section className='list-Chat bg-white flex w-full'>
             <div className='left border-[#E5E5E5] border-[1px] px-[5px] w-[30%] relative'>
-               {data?.body.data.map((item) => {
+               {data?.body.data.map((item: any) => {
                   if (item.roomChatId?.role == 'member') {
                      return (
                         <>
@@ -94,7 +95,7 @@ const ChatAdmin = () => {
                                        <Badge
                                           color='red'
                                           count={
-                                             item.messages.filter((item) => {
+                                             item.messages.filter((item: any) => {
                                                 if (item.isRead == false && item.sender == 'client') {
                                                    return item;
                                                 }
@@ -129,7 +130,7 @@ const ChatAdmin = () => {
                   </div>
                   <div className='content-right px-[10px] '>
                      <div className='list-chat overflow-scroll h-[480px] '>
-                        {messagesInARoom?.body?.data.messages.map((item) => {
+                        {messagesInARoom?.body?.data.messages.map((item: any) => {
                            return (
                               <>
                                  {item.sender == 'client' ? (

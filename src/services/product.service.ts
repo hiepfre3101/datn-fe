@@ -127,7 +127,8 @@ const productApi = createApi({
          },
          invalidatesTags: ['product']
       }),
-      searchProduct: builder.mutation<{ product: IProduct[] }, string>({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      searchProduct: builder.mutation<any, string>({
          query: (search) => ({
             url: '/products?_q=' + search,
             method: 'GET'

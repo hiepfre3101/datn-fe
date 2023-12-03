@@ -19,7 +19,7 @@ import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
 import { IAuth } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { clientSocket } from '../../config/socket';
 import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
 import { Badge, message } from 'antd';
@@ -32,7 +32,9 @@ const Footer = () => {
    const { data: cartdb } = useGetCartQuery(undefined, { skip: !auth.user._id });
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
+
    const [sendMessage] = useSendMessageMutation();
    const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
@@ -110,7 +112,7 @@ const Footer = () => {
       }
    };
    const [messages, setMesssages] = useState<string>();
-   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, {
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
    });
    useEffect(() => {
@@ -136,8 +138,8 @@ const Footer = () => {
          updateIsRead(auth.user._id);
       }
    }, [chat, openChat]);
-   const handleChangeMessage = (e: React.FormEvent) => {
-      setMesssages(e.target.value);
+   const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target) setMesssages(e.target.value);
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -630,7 +632,7 @@ const Footer = () => {
                                          0
                                       )
                                       .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                 : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>

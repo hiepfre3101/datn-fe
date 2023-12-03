@@ -7,6 +7,7 @@ import { useSearchProductMutation } from '../../../../services/product.service';
 import { Link } from 'react-router-dom';
 import useDebounce from '../../../../hooks/useDebounce';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SearchFilter = ({ children }: any) => {
    const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
    const [searchValue, setSearchValue] = useState<string>('');

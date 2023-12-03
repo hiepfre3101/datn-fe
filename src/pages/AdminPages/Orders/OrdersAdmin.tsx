@@ -13,21 +13,25 @@ import '../../../css/admin-order.css';
 import { useGetAllOrderQuery } from '../../../services/order.service';
 import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
 import { adminSocket } from '../../../config/socket';
+import useDebounce from '../../../hooks/useDebounce';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    const [idOrder, setIdOrder] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
    const [orders, setOrders] = useState<any>({});
+   const [invoiceId, setInvoiceId] = useState<string>('');
+   const finalInvoiceId = useDebounce(invoiceId, 800);
    const {
       token: { colorBgContainer }
    } = theme.useToken();
    const { data, isLoading, refetch } = useGetAllOrderQuery(
-      { ...orders, order: 'desc' },
+      { ...orders, order: 'desc', invoiceId: finalInvoiceId },
       { refetchOnMountOrArgChange: true }
    );
    useEffect(() => {
       adminSocket.on('purchaseNotification', () => refetch());
+      adminSocket.on('adminStatusNotification', () => refetch());
       return () => {};
    }, []);
 
@@ -44,14 +48,16 @@ const OrdersAdmin = () => {
                </div>
                <div className='w-[90%] min-h-[100vh] bg-white rounded-lg mt-5'>
                   <header className='flex justify-start gap-4 items-center px-5 py-5'>
-                     <div className='flex justify-between items-center max-w-[50%] gap-2 rounded-[100px] border-[1px] border-[#80b235] p-2'>
+                     <form className='flex justify-between items-center max-w-[50%] gap-2 rounded-[100px] border-[1px] border-[#80b235] p-2'>
                         <SearchOutlined style={{ fontSize: '1rem', color: '#80b235' }} />
                         <input
                            type='text'
                            className='text-sm outline-none border-none w-full flex-1'
                            placeholder='Tìm kiếm đơn hàng'
+                           value={invoiceId}
+                           onChange={(e) => setInvoiceId(e.target.value)}
                         />
-                     </div>
+                     </form>
                      <button
                         onClick={() => setCollapsed(false)}
                         className='border-[1px] border-[rgba(0,0,0,0.2)] rounded-xl p-2 text-greenPrimary flex items-center gap-1 hover:-translate-y-1 duration-100'
@@ -62,10 +68,14 @@ const OrdersAdmin = () => {
                   </header>
 
                   <Table
-                     dataSource={data?.body?.data?.map((order) => ({
-                        ...order,
-                        createdAt: formatStringToDate(order.createdAt)
-                     }))}
+                     dataSource={
+                        data?.body.data
+                           ? data?.body?.data?.map((order) => ({
+                                ...order,
+                                createdAt: formatStringToDate(order.createdAt)
+                             }))
+                           : []
+                     }
                      pagination={{ pageSize: 10 }}
                      scroll={{ y: 800, x: 800 }}
                      onRow={(record) => {
@@ -84,6 +94,14 @@ const OrdersAdmin = () => {
                         title='Tổng tiền (VND)'
                         dataIndex='totalPayment'
                         key='totalPayment'
+                        render={(price) => (
+                           <p>
+                              {price.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
+                           </p>
+                        )}
                      />
                      <Column
                         align='center'
