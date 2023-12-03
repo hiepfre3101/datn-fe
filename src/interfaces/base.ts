@@ -44,4 +44,5 @@ export interface IQueryParam {
    status: string;
    productId: string;
    shipmentId: string;
+   invoiceId: string;
 }

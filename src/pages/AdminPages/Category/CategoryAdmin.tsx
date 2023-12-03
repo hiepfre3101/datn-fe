@@ -64,8 +64,13 @@ const CategoryAdmin = () => {
                         : data?.body.data.map((cate, index) => {
                              return (
                                 <Card
-                                   style={{ backgroundImage: `url(${cate.image?.url})` }}
-                                   className={`w-[200px] h-[200px] lg:w-[300px] lg:h-[300px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
+                                   style={{
+                                      backgroundImage: `url(${cate.image?.url})`,
+                                      backgroundPosition: 'center',
+                                      backgroundSize: '200px 200px',
+                                      backgroundRepeat: 'no-repeat'
+                                   }}
+                                   className={`w-[200px] h-[200px] lg:w-[250px] lg:h-[300px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
                                    key={index}
                                 >
                                    <div className='flex justify-between '>

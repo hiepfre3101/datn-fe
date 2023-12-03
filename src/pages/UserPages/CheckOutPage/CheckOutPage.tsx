@@ -36,7 +36,6 @@ const CheckOutPage = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
    const { data: cartdb, refetch } = useGetCartQuery(undefined, { skip: showfetch == false });
-
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -54,6 +53,13 @@ const CheckOutPage = () => {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [error, setError] = useState<string[]>([]);
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
+
+   useEffect(() => {
+      if (!cart || cart?.products.length === 0 || cart?.length === 0) {
+         navigate('/');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [cart]);
    const CheckCart = async () => {
       let temp = false;
       if (auth.user._id) {
