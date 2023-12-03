@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '../interfaces/base';
+import { dbUrl } from '../constants/dbUrl';
 
 const chat = createApi({
    reducerPath: 'chat',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: dbUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['chat'],

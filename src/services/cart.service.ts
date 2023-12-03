@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { dbUrl } from '../constants/dbUrl';
 const cartDB = createApi({
    reducerPath: 'cartDB',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: dbUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['cart'],

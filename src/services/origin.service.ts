@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '../interfaces/base';
 import { IOrigin } from '../interfaces/origin';
+import { dbUrl } from '../constants/dbUrl';
 
 const origin = createApi({
    reducerPath: 'origin',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: dbUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['origin'],

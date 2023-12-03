@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { AuthSignupInput, DataAuthResponse } from '../interfaces/auth';
 import { AuthLoginInput } from '../interfaces/auth';
+import { dbUrl } from '../constants/dbUrl';
 
 const authApi = createApi({
    reducerPath: 'authApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: dbUrl + '/api',
       credentials: 'include',
    }),
    tagTypes: ['auth'],
