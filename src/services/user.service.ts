@@ -58,7 +58,31 @@ const userApi = createApi({
             credentials: 'include'
          }),
          invalidatesTags: ['user']
-      })
+      }),
+      SendCodeToChangePassword: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/generateVerificationToken',
+            method: 'POST',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
+      verifyTokenChangePassword: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/verifyToken',
+            method: 'POST',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
+      ChangePassword: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/forgotPassword' ,
+            method: 'PUT',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
    })
 });
 
@@ -67,6 +91,9 @@ export const {
    useGetAllQuery,
    useGetOneQuery,
    useUpdateUserMutation,
-   useRemoveUserMutation
+   useRemoveUserMutation,
+   useSendCodeToChangePasswordMutation,
+   useChangePasswordMutation,
+   useVerifyTokenChangePasswordMutation,
 } = userApi;
 export default userApi;

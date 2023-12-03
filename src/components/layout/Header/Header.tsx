@@ -125,21 +125,7 @@ const Header = () => {
       cate_menu?.classList.toggle('max-xl:max-h-[41px]');
       sub_menu?.classList.toggle('max-xl:block');
    };
-   // const showModalSearch = () => {
-   //    const bodyElement = document.querySelector('body');
-   //    bodyElement?.classList.toggle('overflow-hidden');
-   //    const section_search_modal = document.querySelector('.section-search-modal');
-   //    const section_overlay_search = document.querySelector('.section-overlay-search');
-   //    setTimeout(() => {
-   //       section_overlay_search?.classList.toggle('hidden');
-   //    }, 300);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('hidden');
-   //    }, 500);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
-   //    }, 600);
-   // };
+
    let oldScrollY = window.scrollY;
    const fixedMenu = () => {
       const header = document.querySelector('.header');
@@ -285,7 +271,7 @@ const Header = () => {
                                           <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
                                        </Link>
 
-                                       <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                       <Link to={'forgetPassword'} className='flex items-center gap-[5px] py-[5px]'>
                                           <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
                                        </Link>
                                     </>

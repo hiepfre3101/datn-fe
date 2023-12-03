@@ -10,7 +10,7 @@ import { IOrigin } from '../../../../interfaces/origin';
 import { CheckboxChangeEvent } from 'antd/es/checkbox';
 import { useNavigate } from 'react-router-dom';
 const FillterProducts = () => {
-   const { data } = useGetAllCateQuery();
+   const { data } = useGetAllCateQuery({});
    const filter = useContext(FilterFieldContext);
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    useEffect(() => {

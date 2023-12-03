@@ -1,4 +1,3 @@
-
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -6,10 +5,8 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-
-
 // import required modules
-import { Autoplay} from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import { useGetAllCateQuery } from '../../../../services/cate.service';
 import { Link } from 'react-router-dom';
 

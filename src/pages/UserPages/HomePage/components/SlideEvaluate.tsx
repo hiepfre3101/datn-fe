@@ -5,6 +5,7 @@ import 'swiper/css/pagination';
 import { BiSolidQuoteAltRight } from 'react-icons/bi';
 import { Navigation, Autoplay } from 'swiper/modules';
 import { useGetEvaluationBestRateLimitQuery } from '../../../../services/evaluation.service';
+import { ConfigProvider, Rate } from 'antd';
 
 export default function SlideEvaluate() {
    const {data} = useGetEvaluationBestRateLimitQuery()
@@ -49,7 +50,17 @@ export default function SlideEvaluate() {
                         <div className='evaluate-content text-left max-w-[70%] max-md:w-full max-sm:text-center'>
                         <p dangerouslySetInnerHTML={{__html: item.content }} className='review-text mt-[18px]'>
                 
-                </p>
+                </p> 
+                <ConfigProvider
+                        theme={{
+                           token: {
+                              controlHeightLG: 35
+                           }
+                        }}
+                     >
+                        <Rate allowHalf disabled value={item.rate} />
+                       
+                     </ConfigProvider>
                            <p className='evaluate-title font-bold text-[#51A55C] sm:mt-[30px] max-sm:mt-[10px] text-[16px] max-sm:text-center'>
                               Nguyễn Quang Đăng
                            </p>

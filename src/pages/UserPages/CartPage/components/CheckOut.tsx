@@ -136,6 +136,7 @@ const CheckOut = () => {
                         'Đơn hàng của bạn phải có tổng giá trị trên ' +
                            error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                      ]);
+                     dispatch(remoteVoucher());
                   }
                });
          }
@@ -270,7 +271,10 @@ const CheckOut = () => {
          .catch((error) => {
             if (error.data.message == 'Voucher does not exist!') {
                message.error('Mã giảm giá không tồn tại');
-            } else if (error.data.message == 'Voucher is out of quantity!') {
+            } else if (error.data.message == 'Voucher does not work!') {
+               message.error('Mã giảm giá không còn hoạt động');
+            } 
+            else if (error.data.message == 'Voucher is out of quantity!') {
                message.error('Mã giảm giá đã hết');
             } else if (error.data.message == 'Voucher is out of date') {
                message.error('Mã giảm giá đã hết hạn');
@@ -298,6 +302,8 @@ const CheckOut = () => {
          });
       showModal();
    };
+   console.log(listVoucher);
+   
    return (
       <div>
          <div className='cart-total'>
@@ -322,7 +328,7 @@ const CheckOut = () => {
                         <span className='temporary font-bold  text-[14px] '>
                            {!voucher.maxReduce
                               ? '- ' +
-                                Math.ceil((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                               ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                    style: 'currency',
                                    currency: 'VND'
                                 })
@@ -334,7 +340,7 @@ const CheckOut = () => {
                                  ? '- ' +
                                    voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : '- ' +
-                                   Math.ceil(subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                  (subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                       style: 'currency',
                                       currency: 'VND'
                                    })}
@@ -434,12 +440,14 @@ const CheckOut = () => {
                                  <li>
                                     Giảm: <span className='text-red-500'>{item.percent}%</span>
                                  </li>
+
                                  {item.maxReduce > 0 && (
                                     <li>
-                                       Giảm tối đa{' '}
+                                       Giảm tối đa
                                        {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </li>
                                  )}
+
                                  {item.miniMumOrder && (
                                     <li>
                                        Đơn hàng phải có giá trị trên{' '}

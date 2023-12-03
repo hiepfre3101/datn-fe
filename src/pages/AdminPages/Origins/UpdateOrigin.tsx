@@ -1,67 +1,63 @@
-import { Divider, Form, Input, Layout } from 'antd'
-import React, { useEffect, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Divider, Form, Input, Layout } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import BlockForm from '../Product/BlockForm'
-import HeadForm from '../../../components/HeadForm/HeadForm'
-import { Helmet } from 'react-helmet'
-import {  useGetOneOriginByIdQuery, useUpdateOriginMutation } from '../../../services/origin.service'
+import BlockForm from '../Product/BlockForm';
+import HeadForm from '../../../components/HeadForm/HeadForm';
+import { Helmet } from 'react-helmet';
+import { useGetOneOriginByIdQuery, useUpdateOriginMutation } from '../../../services/origin.service';
 
-import { IOrigin } from '../../../interfaces/origin'
-import Loading from '../../../components/Loading/Loading'
+import { IOrigin } from '../../../interfaces/origin';
+import Loading from '../../../components/Loading/Loading';
 
 const UpdateOrigin = () => {
-    const [loading, setLoading] = useState<boolean>(false);
-    const { id } = useParams();
-    const [form] = Form.useForm<IOrigin>();
-    const { data } = useGetOneOriginByIdQuery(id!);
- 
-    const navigate = useNavigate();
-    const [OriginName, setOriginName] = useState<string>('');
-    const [handleUpdateOrigin] = useUpdateOriginMutation();
+   const [loading, setLoading] = useState<boolean>(false);
+   const { id } = useParams();
+   const [form] = Form.useForm<IOrigin>();
+   const { data } = useGetOneOriginByIdQuery(id!);
 
+   const navigate = useNavigate();
+   const [OriginName, setOriginName] = useState<string>('');
+   const [handleUpdateOrigin] = useUpdateOriginMutation();
 
-    useEffect(
-        () => {
-           if (!data) {
-              return;
-           }
-           setOriginName(data.body.data.name!);
-           
-           const newbody = {
-              ...data?.body.data,
-              _id: undefined,
-              createdAt: undefined,
-              updatedAt: undefined,
-              
-           };
-           // console.log(newbody);
-           form.setFieldsValue({ ...newbody});
-        },
-  
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        [id, data]
-     );
+   useEffect(
+      () => {
+         if (!data) {
+            return;
+         }
+         setOriginName(data.body.data.name!);
 
-     const handleSubmit = async () => {
-        setLoading(true);
-        try {
-           
-  
-           const newFormData = form.getFieldsValue(true);
-  
-           await handleUpdateOrigin({ id: id!, ...newFormData, name: OriginName });
-           setLoading(false);
-           navigate('/manage/origin');
-        } catch (error) {
-           setLoading(false);
-           console.log(error);
-        }
-     };
+         const newbody = {
+            ...data?.body.data,
+            _id: undefined,
+            createdAt: undefined,
+            updatedAt: undefined
+         };
+         // console.log(newbody);
+         form.setFieldsValue({ ...newbody });
+      },
 
-     if (loading) return <Loading sreenSize='lg' />;
-  return (
-    <>
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [id, data]
+   );
+
+   const handleSubmit = async () => {
+      setLoading(true);
+      try {
+         const newFormData = form.getFieldsValue(true);
+
+         await handleUpdateOrigin({ id: id!, ...newFormData, name: OriginName });
+         setLoading(false);
+         navigate('/manage/origin');
+      } catch (error) {
+         setLoading(false);
+         console.log(error);
+      }
+   };
+
+   if (loading) return <Loading sreenSize='lg' />;
+   return (
+      <>
          <Helmet>
             <title>Chỉnh sửa danh mục</title>
          </Helmet>
@@ -77,8 +73,7 @@ const UpdateOrigin = () => {
                <div className=' flex justify-between  w-[90%] '>
                   <HeadForm
                      placeHolder='Danh mục không tên'
-                     linkBack='/manage/categories'
-                     
+                     linkBack='/manage/origin'
                      changeValue={(value) => setOriginName(value)}
                      initValue={OriginName}
                   />
@@ -95,12 +90,10 @@ const UpdateOrigin = () => {
                            <Input
                               placeholder='Thêm tên danh mục'
                               value={OriginName}
-                            //   disabled={categoryType === 'default' ? true : false}
+                              //   disabled={categoryType === 'default' ? true : false}
                               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setOriginName(e.target.value)}
                            ></Input>
                         </Form.Item>
-
-                        
                      </>
                   </BlockForm>
                </div>
@@ -128,7 +121,7 @@ const UpdateOrigin = () => {
             {/* </div> */}
          </Layout>
       </>
-  )
-}
+   );
+};
 
-export default UpdateOrigin
+export default UpdateOrigin;

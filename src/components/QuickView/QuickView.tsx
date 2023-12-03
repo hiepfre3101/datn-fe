@@ -22,7 +22,6 @@ const QuickView = ({ product_info }: QuickViewProp) => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
 
-   
    useEffect(() => {
       setTotalWeight(
          product_info[0]?.shipments?.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
@@ -58,9 +57,13 @@ const QuickView = ({ product_info }: QuickViewProp) => {
             };
             await addCart(product)
                .unwrap()
-               .catch((res) => {
-                  res
-                  message.error("Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có");
+               .then((res) => {
+                  res;
+                  message.success('Cập nhật sản phẩm thành công');
+               })
+               .catch((error) => {
+                  error;
+                  message.error('Số lượng vượt quá sản phẩm đang có trong kho');
                });
          } else {
             const product = {
@@ -68,7 +71,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                   _id: product_info[0]?._id,
                   productName: product_info[0]?.productName,
                   images: [{ url: product_info[0]?.images[0].url }],
-                  price: product_info[0]?.price - (product_info[0]?.price * product_info[0].discount)/100,
+                  price: product_info[0]?.price - (product_info[0]?.price * product_info[0].discount) / 100,
                   originId: {
                      _id: product_info[0]?.originId._id,
                      name: product_info[0]?.originId.name
@@ -131,7 +134,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                         {product_info[0]?.productName}
                      </div>
                      <span className='product-origin text-[14px]'>
-                        Xuất sứ:
+                        Xuất sứ: 
                         <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
                      </span>
                   </div>
@@ -139,7 +142,10 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                      <div className='product-price flex w-full items-center'>
                         <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
                         <div className='product-price-content text-[18px] text-red-500 pr-[10px] font-bold'>
-                           {(product_info[0]?.price-(product_info[0]?.price*product_info[0]?.discount)/100).toLocaleString('vi-VN', {
+                           {(
+                              product_info[0]?.price -
+                              (product_info[0]?.price * product_info[0]?.discount) / 100
+                           ).toLocaleString('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                            })}{' '}

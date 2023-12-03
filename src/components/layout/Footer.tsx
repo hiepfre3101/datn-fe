@@ -19,7 +19,7 @@ import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
 import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { clientSocket } from '../../config/socket';
 import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
 import { Badge, message, notification } from 'antd';
@@ -30,6 +30,7 @@ import { formatStringToDate } from '../../helper';
 import { useDeleteNotificationMutation, useGetClientNotificationQuery, useUpdateNotificationMutation } from '../../services/notification';
 import { INotification } from '../../interfaces/notification';
 import { useClearTokenMutation } from '../../services/auth.service';
+import { IVoucher } from '../../slices/voucherSlice';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -39,7 +40,7 @@ const Footer = () => {
    const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
    const { data: clientNotification, refetch: refetchNoti } = useGetClientNotificationQuery(auth?.user?._id);
-
+   const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
    const [sendMessage] = useSendMessageMutation();
    const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
@@ -127,9 +128,11 @@ const Footer = () => {
       }
    };
    const [messages, setMesssages] = useState<string>();
-   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, {
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
    });
+  
+   
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
@@ -153,8 +156,8 @@ const Footer = () => {
          updateIsRead(auth.user._id);
       }
    }, [chat, openChat]);
-   const handleChangeMessage = (e: React.FormEvent) => {
-      setMesssages(e.target.value);
+   const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target) setMesssages(e.target.value);
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
@@ -516,7 +519,7 @@ const Footer = () => {
             </div>
          </section>
          <section className='section-mini-cart '>
-            {cart?.length === 0 ? (
+            {cart?.length === 0 || cart?.length == undefined ? (
                <div className='cart-emty'>
                   <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                      <div
@@ -643,8 +646,8 @@ const Footer = () => {
                         </ul>
                      </div>
                      <div className='mini-cart-footer'>
-                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                           <span className='subtotal-title text-[16px] '>Subtotal:</span>
+                    {voucher._id &&  <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Tính tạm:</span>
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                               {auth.user._id
                                  ? cart
@@ -659,7 +662,52 @@ const Footer = () => {
                                       .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
+                        </div>}
+                     {voucher._id&&   <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Giảm giá:</span>
+                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                                - {voucher.maxReduce?voucher.maxReduce:auth.user._id
+                                 ? (cart
+                                    ?.reduce(
+                                       (accumulator: number, product: any) =>
+                                          accumulator +
+                                          (product.productId.price -
+                                             (product.productId.price * product.productId.discount) / 100) *
+                                             product.weight,
+                                       0
+                                    )*voucher.percent/100)
+                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                 : (totalPrice*voucher.percent/100)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           </span>
+                        </div>}
+                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Tổng:</span>
+                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                              {auth.user._id
+                                 ?(( cart
+                                    ?.reduce(
+                                       (accumulator: number, product: any) =>
+                                          accumulator +
+                                          (product.productId.price -
+                                             (product.productId.price * product.productId.discount) / 100) *
+                                             product.weight,
+                                       0
+                                    )) -(voucher.maxReduce?voucher.maxReduce:auth.user._id
+                                       ? (cart
+                                          ?.reduce(
+                                             (accumulator: number, product: any) =>
+                                                accumulator +
+                                                (product.productId.price -
+                                                   (product.productId.price * product.productId.discount) / 100) *
+                                                   product.weight,
+                                             0
+                                          )*voucher.percent/100)
+                                           
+                                       : (totalPrice-(totalPrice*voucher.percent/100)))).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                       : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           </span>
                         </div>
+                     
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                            <Link
                               to={'/cart'}
@@ -714,13 +762,14 @@ const Footer = () => {
                      </Link>
                   </li>
                   <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                     <Link to='forgetPassword' className='flex items-center gap-[5px] py-[5px]'>
                         <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
                      </Link>
                   </li>
                  
                   </>}
-                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                  {auth.accessToken && <>
+                     <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
                      <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
                         <PiUserListBold></PiUserListBold> Hồ sơ của bạn
                      </Link>
@@ -737,6 +786,8 @@ const Footer = () => {
                         <FiLogOut></FiLogOut> Đăng xuất
                      </button>
                   </li>
+                  </>}
+              
                  
                </ul>
             </div>
@@ -795,10 +846,7 @@ const Footer = () => {
                                        ))}
                                        
                                     </div>
-            
-                  </li>
-                
-                             
+                            </li>
                </ul>
             </div>
          </section>}
