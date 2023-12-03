@@ -8,7 +8,7 @@ import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
 import notificationReducer from './services/notification';
 import cartSlice from './slices/cartSlice';
-import whishListReducer from './slices/whishListSlice';
+import wishListReducer from './slices/wishListSlice';
 import userReducer from './slices/authSlice';
 import productSlice from './slices/productSlice';
 import vouchersReducer from './slices/voucherSlice';
@@ -33,7 +33,7 @@ export const store = configureStore({
       [unsoldproductReducer.reducerPath]: unsoldproductReducer.reducer,
       [chatReducer.reducerPath]: chatReducer.reducer,
       cart: cartSlice.reducer,
-      whishList: whishListReducer.reducer,
+      wishList: wishListReducer.reducer,
       vouchersReducer: vouchersReducer,
       userReducer: userReducer,
       [shipmentReducer.reducerPath]: shipmentReducer.reducer,
@@ -54,7 +54,7 @@ export const store = configureStore({
          shipmentReducer.middleware,
          evaluationReducer.middleware,
          originReducer.middleware,
-         unsoldproductReducer.middleware,
+         unsoldproductReducer.middleware
       ])
 });
 

@@ -8,12 +8,14 @@ import { IProductInfoProp } from '../../../../interfaces/product';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import { addToWhishList } from '../../../../slices/whishListSlice';
+import { addToWishList } from '../../../../slices/wishListSlice';
 import { FcLike } from 'react-icons/fc';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
+   console.log(product_info);
+
    const [inputWeight, setinputWeight] = useState<any>(0.5);
    const [totalWeight, setTotalWeight] = useState<number>(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -78,14 +80,16 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
          message.error('Kg không hợp lệ');
       }
    };
-   const add_to_whishList = () => {
+   const add_to_wishList = () => {
       const product = {
          _id: product_info?._id,
          name: product_info?.productName,
          images: product_info?.images[0].url,
-         price: product_info?.price
+         price: product_info?.price,
+         discount: product_info?.discount,
+         originId: product_info?.originId
       };
-      dispatch(addToWhishList(product));
+      dispatch(addToWishList(product));
    };
    const dec = () => {
       setinputWeight(inputWeight + 0.5);
@@ -96,7 +100,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
       }
    };
    const isAdded = useSelector((state: any) =>
-      state?.whishList?.items?.find((item: any) => item?._id === product_info?._id)
+      state?.wishList?.items?.find((item: any) => item?._id === product_info?._id)
    );
    return (
       <>
@@ -127,13 +131,19 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                         </div>
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                        {product_info?.price ? <div className='product-price text-[20px] font-bold'>
-                           {(product_info?.price-(product_info?.price*product_info?.discount/100)).toLocaleString('vi-VN', {
-                              style: 'currency',
-                              currency: 'VND'
-                           })}
-                        </div>:"" }
-                       
+                        {product_info?.price ? (
+                           <div className='product-price text-[20px] font-bold'>
+                              {(
+                                 product_info?.price -
+                                 (product_info?.price * product_info?.discount) / 100
+                              ).toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
+                           </div>
+                        ) : (
+                           ''
+                        )}
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                         <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng còn lại:</div>
@@ -208,7 +218,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                               <button
-                                 onClick={add_to_whishList}
+                                 onClick={add_to_wishList}
                                  type='button'
                                  className='btn-love text-[18px]  font-bold flex items-center hover:text-[#333333]'
                               >
