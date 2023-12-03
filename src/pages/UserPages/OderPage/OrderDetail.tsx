@@ -32,14 +32,7 @@ const OrderDetail = () => {
          }
          refetch();
       });
-      return () => {
-         clientSocket.off('statusNotification', (data) => {
-            if (data.status === SUCCESS_ORDER.toLowerCase()) {
-               setIsShowConfirm(true);
-            }
-            refetch();
-         });
-      };
+      return () => {};
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const getStatusOfOrder = () => {
@@ -60,6 +53,7 @@ const OrderDetail = () => {
          note: data.body.data.note!,
          paymentMethod: data.body.data.paymentMethod!,
          userId: data.body.data.userId!,
+         invoiceId: data.body.data.invoiceId,
          shippingAddress: data.body.data.shippingAddress!,
          products: data.body.data.products!,
          phoneNumber: data.body.data.phoneNumber!,
