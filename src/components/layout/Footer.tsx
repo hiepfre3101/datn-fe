@@ -628,7 +628,10 @@ const Footer = () => {
                                                   style: 'currency',
                                                   currency: 'VND'
                                                })
-                                             : item.productId?.price}
+                                             : item.productId?.price.toLocaleString('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                             })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>

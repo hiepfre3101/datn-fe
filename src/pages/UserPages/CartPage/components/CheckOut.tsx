@@ -75,8 +75,9 @@ const CheckOut = () => {
             const temp =
                subtotal > voucher.maxReduce
                   ? subtotal - voucher.maxReduce
-                  : subtotal - (subtotal * voucher.percent) / 100;
+                  : subtotal - (subtotal * voucher.percent / 100);
             setTotal(temp);
+            
          } else {
             const temp = subtotal - (subtotal * voucher.percent) / 100;
             setTotal(temp);
@@ -340,7 +341,7 @@ const CheckOut = () => {
                                  ? '- ' +
                                    voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : '- ' +
-                                  (subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                  ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                       style: 'currency',
                                       currency: 'VND'
                                    })}
@@ -443,8 +444,8 @@ const CheckOut = () => {
 
                                  {item.maxReduce > 0 && (
                                     <li>
-                                       Giảm tối đa
-                                       {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                       Giảm tối đa: {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                       
                                     </li>
                                  )}
 
