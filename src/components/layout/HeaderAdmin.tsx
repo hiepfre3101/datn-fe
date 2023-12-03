@@ -112,7 +112,7 @@ const HeaderAdmin = () => {
          key: '-1'
       },
       {
-         label: <Link to='/userInfomation'>Hồ sơ</Link>,
+         label: <Link to='/userInformation'>Hồ sơ</Link>,
          key: '0'
       },
       {

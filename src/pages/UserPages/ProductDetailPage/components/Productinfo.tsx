@@ -52,7 +52,11 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                productName: product_info?.productName,
                weight: inputWeight
             };
-            await addCart(product).unwrap();
+            await addCart(product)
+               .unwrap()
+               .catch((res) => {
+                  message.error(res.data.message);
+               });
          } else {
             const product = {
                productId: {
@@ -127,13 +131,19 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                         </div>
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                        {product_info?.price ? <div className='product-price text-[20px] font-bold'>
-                           {(product_info?.price-(product_info?.price*product_info?.discount/100)).toLocaleString('vi-VN', {
-                              style: 'currency',
-                              currency: 'VND'
-                           })}
-                        </div>:"" }
-                       
+                        {product_info?.price ? (
+                           <div className='product-price text-[20px] font-bold'>
+                              {(
+                                 product_info?.price -
+                                 (product_info?.price * product_info?.discount) / 100
+                              ).toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
+                           </div>
+                        ) : (
+                           ''
+                        )}
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                         <div className='stock-qty-title text-[20px] text-[#333333] font-bold'>Số lượng còn lại:</div>

@@ -252,7 +252,7 @@ const Header = () => {
                         </li>
                         <li
                            // onClick={showModalSearch}
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
+                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]'
                         >
                            <SearchFilter>
                               <SearchOutlined />
@@ -302,7 +302,10 @@ const Header = () => {
                                        <>
                                           {auth.user.role === 'member' ? (
                                              <div>
-                                                <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                                <Link
+                                                   to='/userInformation'
+                                                   className='flex items-center gap-[5px] py-[5px]'
+                                                >
                                                    <PiUserListBold></PiUserListBold> Hồ sơ của bạn
                                                 </Link>
                                              </div>

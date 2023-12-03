@@ -107,7 +107,13 @@ const DetailOrder = ({ idOrder }: Props) => {
                   <span className='font-semibold'>{product.productName}</span>
                </Col>
                <Col span={6}>
-                  <span className='font-semibold'>{product.price}(vnd)</span>
+                  <span className='font-semibold'>
+                     {product.price.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                     })}
+                     (vnd)
+                  </span>
                </Col>
                <Col span={6}>
                   {' '}
@@ -115,7 +121,13 @@ const DetailOrder = ({ idOrder }: Props) => {
                </Col>
                <Col span={6}>
                   {' '}
-                  <span className='font-semibold'>{Number(product.weight) * product.price}(vnd)</span>
+                  <span className='font-semibold'>
+                     {(Number(product.weight) * product.price).toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                     })}
+                     (vnd)
+                  </span>
                </Col>
             </Row>
          ))}
@@ -128,7 +140,13 @@ const DetailOrder = ({ idOrder }: Props) => {
                <span className='text-sm  text-greenP800 font-bold'>TỔNG TIỀN:</span>
             </Col>
             <Col span={4}>
-               <span className='text-lg  text-greenP800 font-bold'>{order?.totalPayment} (vnd)</span>
+               <span className='text-lg  text-greenP800 font-bold'>
+                  {order?.totalPayment.toLocaleString('vi-VN', {
+                     style: 'currency',
+                     currency: 'VND'
+                  })}{' '}
+                  (vnd)
+               </span>
             </Col>
          </Row>
          <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-5' align={'middle'}>

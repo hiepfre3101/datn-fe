@@ -206,7 +206,8 @@ const CheckOutPage = () => {
          if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
-            data.note = '';
+            //dung dong vao cho nay
+            data.note = ' ';
          }
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;

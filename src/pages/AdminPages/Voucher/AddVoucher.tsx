@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Divider, Form, Input, InputNumber, Layout } from 'antd';
 import { DatePicker } from 'antd';
 import React, { useState } from 'react';
@@ -10,6 +11,7 @@ import { useAddVoucherMutation } from '../../../services/voucher.service';
 const AddVoucher = () => {
    const [voucherTitle, setVoucherTitle] = useState<string>('');
    const [loading, setLoading] = useState<boolean>(false);
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [form] = Form.useForm<any>();
    const navigate = useNavigate();
    const [handleAddVoucher, { error }] = useAddVoucherMutation();
