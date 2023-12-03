@@ -15,7 +15,7 @@ import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 
 import QuickView from '../../../../components/QuickView/QuickView';
 import { RootState } from '../../../../store';
-import { addToWhishList } from '../../../../slices/whishListSlice';
+import { addToWishList } from '../../../../slices/wishListSlice';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 interface IRelatedProduct {
@@ -29,7 +29,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const [addCart] = useAddCartMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const add_to_wishList = (product: any) => {
-      dispatch(addToWhishList(product));
+      dispatch(addToWishList(product));
    };
    const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
