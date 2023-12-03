@@ -8,7 +8,6 @@ import 'swiper/css/pagination';
 // import required modules
 import { Autoplay } from 'swiper/modules';
 import { useGetAllCateQuery } from '../../../../services/cate.service';
-import { Link } from 'react-router-dom';
 
 export default function SlideCateHomePage() {
    const { data } = useGetAllCateQuery({});
@@ -51,10 +50,7 @@ export default function SlideCateHomePage() {
                      <>
                         <SwiperSlide>
                            <div className='cate-wrap group'>
-                              <Link
-                                 to={'/' + 'collections' + '?cart_id=' + item._id}
-                                 className='cate-item flex items-center'
-                              >
+                              <p className='cate-item flex items-center'>
                                  <span className='cate-icon rounded-[50%] bg-[#F8F8F8] mr-[30px] h-[80px] w-[80px] block'>
                                     <img className='h-[80px] w-[80px]' src={item.image.url} alt='' />
                                  </span>
@@ -64,7 +60,7 @@ export default function SlideCateHomePage() {
                                        {item.products.length} sản phẩm
                                     </p>
                                  </div>
-                              </Link>
+                              </p>
                            </div>
                         </SwiperSlide>
                      </>

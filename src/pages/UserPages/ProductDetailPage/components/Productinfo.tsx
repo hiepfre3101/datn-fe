@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMemo } from 'react';
 import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
 import { useDispatch, useSelector } from 'react-redux';
@@ -111,6 +112,13 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const isAdded = useSelector((state: any) =>
       state?.whishList?.items?.find((item: any) => item?._id === product_info?._id)
    );
+   const avgRate = useMemo(() => {
+      if (!product_info) return 0;
+      const totalRate = product_info?.evaluated.reduce((rate, item) => {
+         return (rate += Number(item.evaluatedId.rate));
+      }, 0);
+      return totalRate / product_info.evaluated.length;
+   }, [product_info]);
    return (
       <>
          <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
@@ -127,9 +135,9 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                            }
                         }}
                      >
-                        <Rate allowHalf disabled defaultValue={4.5} />
+                        <Rate allowHalf disabled value={avgRate} />
                         <span className='text-[#bbb] before:content-["("] after:content-[")"] ml-[5px] after:absolute before:absolute after:right-0 before:left-0 relative px-[10px]'>
-                           3 đánh giá
+                           {product_info && product_info.evaluated.length} đánh giá
                         </span>
                      </ConfigProvider>
                   </div>
