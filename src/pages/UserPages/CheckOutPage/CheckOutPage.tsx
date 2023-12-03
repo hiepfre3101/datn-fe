@@ -101,26 +101,27 @@ const CheckOutPage = () => {
          await refetch().then((res) => {
             if (res?.data?.body?.errors as any) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item: any) => {
-                  if (item.message == 'The remaining quantity is not enough!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Số lượng trong kho của sản phẩm' +
-                           item.productName +
-                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
-                     ]);
-                  } else if (item.message == 'Product is currently out of stock!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã hết hàng'
-                     ]);
-                  } else if (item.message == 'Product is no longer available!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
-                     ]);
-                  }
-               });
+               res.data &&
+                  res.data.body.errors.map((item: any) => {
+                     if (item.message == 'The remaining quantity is not enough!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Số lượng trong kho của sản phẩm' +
+                              item.productName +
+                              ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                        ]);
+                     } else if (item.message == 'Product is currently out of stock!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Sản phẩm' + item.productName + ' đã hết hàng'
+                        ]);
+                     } else if (item.message == 'Product is no longer available!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
+                        ]);
+                     }
+                  });
             } else {
                temp = status ? true : false;
             }

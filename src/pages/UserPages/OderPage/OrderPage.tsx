@@ -35,8 +35,14 @@ const OrderPage = () => {
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
       const data = await handleCancelOrder(id);
-      clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
-      message.success('Hủy đơn hàng thành công !');
+      if ('body' in data) {
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         const { body }: any = data;
+         if (data.body && 'data' in body) {
+            clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
+            message.success('Hủy đơn hàng thành công !');
+         }
+      }
    };
 
    const handleSubmit = async (invoiceId: string) => {

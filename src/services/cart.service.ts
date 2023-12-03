@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IResponse } from '../interfaces/base';
-
 const cartDB = createApi({
    reducerPath: 'cartDB',
    baseQuery: fetchBaseQuery({
@@ -10,7 +8,7 @@ const cartDB = createApi({
    }),
    tagTypes: ['cart'],
    endpoints: (builder) => ({
-      getCart: builder.query<IResponse<any>, void>({
+      getCart: builder.query<any, void>({
          query: () => ({
             url: '/cart',
             method: 'GET',
@@ -53,10 +51,17 @@ const cartDB = createApi({
             url: '/cart-local/',
             method: 'POST',
             body: item
-         }),
-      }),
+         })
+      })
    })
 });
 
-export const { useGetCartQuery,useCheckCartMutation, useAddCartMutation, useUpdateCartMutation, useDeleteProductInCartMutation,useDeleteAllProductInCartMutation } = cartDB;
+export const {
+   useGetCartQuery,
+   useCheckCartMutation,
+   useAddCartMutation,
+   useUpdateCartMutation,
+   useDeleteProductInCartMutation,
+   useDeleteAllProductInCartMutation
+} = cartDB;
 export default cartDB;
