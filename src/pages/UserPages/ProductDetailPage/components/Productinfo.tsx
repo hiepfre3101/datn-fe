@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useMemo } from 'react';
 import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,12 +9,14 @@ import { IProductInfoProp } from '../../../../interfaces/product';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import { AiOutlineHeart } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
-import { addToWhishList } from '../../../../slices/whishListSlice';
+import { addToWishList } from '../../../../slices/wishListSlice';
 import { FcLike } from 'react-icons/fc';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
+   console.log(product_info);
+
    const [inputWeight, setinputWeight] = useState<any>(0.5);
    const [totalWeight, setTotalWeight] = useState<number>(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -92,14 +95,16 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
          message.error('Kg không hợp lệ');
       }
    };
-   const add_to_whishList = () => {
+   const add_to_wishList = () => {
       const product = {
          _id: product_info?._id,
          name: product_info?.productName,
          images: product_info?.images[0].url,
-         price: product_info?.price
+         price: product_info?.price,
+         discount: product_info?.discount,
+         originId: product_info?.originId
       };
-      dispatch(addToWhishList(product));
+      dispatch(addToWishList(product));
    };
    const dec = () => {
       setinputWeight(inputWeight + 0.5);
@@ -110,8 +115,15 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
       }
    };
    const isAdded = useSelector((state: any) =>
-      state?.whishList?.items?.find((item: any) => item?._id === product_info?._id)
+      state?.wishList?.items?.find((item: any) => item?._id === product_info?._id)
    );
+   const avgRate = useMemo(() => {
+      if (!product_info) return 0;
+      const totalRate = product_info?.evaluated.reduce((rate, item) => {
+         return (rate += Number(item.evaluatedId.rate));
+      }, 0);
+      return totalRate / product_info.evaluated.length;
+   }, [product_info]);
    return (
       <>
          <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
@@ -128,9 +140,9 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                            }
                         }}
                      >
-                        <Rate allowHalf disabled defaultValue={4.5} />
+                        <Rate allowHalf disabled value={avgRate} />
                         <span className='text-[#bbb] before:content-["("] after:content-[")"] ml-[5px] after:absolute before:absolute after:right-0 before:left-0 relative px-[10px]'>
-                           3 đánh giá
+                           {product_info && product_info.evaluated.length} đánh giá
                         </span>
                      </ConfigProvider>
                   </div>
@@ -228,7 +240,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                            </div>
                            <div className='product-info md:mt-[30px] max-md:mt-[20px] flex items-center'>
                               <button
-                                 onClick={add_to_whishList}
+                                 onClick={add_to_wishList}
                                  type='button'
                                  className='btn-love text-[18px]  font-bold flex items-center hover:text-[#333333]'
                               >

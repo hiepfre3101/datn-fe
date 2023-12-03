@@ -38,6 +38,7 @@ import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
 import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
 import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
 import ForgetPassword from '../pages/UserPages/ForgetPassword/ForgetPassword';
+import WishListPage from '../pages/UserPages/WishListPage/WishListPage';
 
 const router = createBrowserRouter([
    {
@@ -113,6 +114,11 @@ const router = createBrowserRouter([
          {
             path: 'forgetPassword',
             element: <ForgetPassword />,
+        
+         },
+         {
+            path: 'wishList',
+            element: <WishListPage />,
             errorElement: <NotFoundPage />
          }
       ]

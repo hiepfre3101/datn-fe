@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom';
 import Footer from '../components/layout/Footer';
 import { useEffect } from 'react';
 import { setItem } from '../slices/cartSlice';
-import { setwhishListName, setwhishList } from '../slices/whishListSlice';
+import { setWishListName, setWishList } from '../slices/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { useGetTokenQuery } from '../services/auth.service';
 import { saveTokenAndUser } from '../slices/authSlice';
@@ -14,10 +14,10 @@ const DefaultLayout = () => {
    useEffect(() => {
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         dispatch(setwhishListName(data.body.data.data.userName || 'wishList'));
+         dispatch(setWishListName(data.body.data.data.userName || 'wishList'));
       }
       dispatch(setItem());
-      dispatch(setwhishList());
+      dispatch(setWishList());
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data, isLoading]);
 

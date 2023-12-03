@@ -3,7 +3,7 @@ import { ConfigProvider, Rate, message } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
 import { Link } from 'react-router-dom';
-import { addToWhishList } from '../../../../slices/whishListSlice';
+import { addToWishList } from '../../../../slices/wishListSlice';
 import { IResponseHasPaginate } from '../../../../interfaces/base';
 import { IProduct, IProductExpanded } from '../../../../interfaces/product';
 import QuickView from '../../../../components/QuickView/QuickView';
@@ -24,7 +24,7 @@ const ShowProducts = ({ data }: IProps) => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
    const add_to_wishList = (product: any) => {
-      dispatch(addToWhishList(product));
+      dispatch(addToWishList(product));
    };
    const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
@@ -49,14 +49,16 @@ const ShowProducts = ({ data }: IProps) => {
             productName: data?.productName,
             weight: 1
          };
-         await addCart(product).unwrap().then(res => {
-            res
-           message.success('Cập nhật sản phẩm thành công');
-         })
-         .catch(error => {
-            error
-         message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
-         });
+         await addCart(product)
+            .unwrap()
+            .then((res) => {
+               res;
+               message.success('Cập nhật sản phẩm thành công');
+            })
+            .catch((error) => {
+               error;
+               message.error('Số lượng vượt quá sản phẩm đang có trong kho');
+            });
       } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;

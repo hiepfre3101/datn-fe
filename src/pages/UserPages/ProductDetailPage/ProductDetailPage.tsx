@@ -16,7 +16,6 @@ const ProductDetail = () => {
    const { data: relatedProductsData } = useGetRelatedProductsQuery(objId!, {
       skip: !objId.idCategory || !objId.idProduct
    });
-
    return (
       <>
          <div className='main'>
@@ -31,16 +30,13 @@ const ProductDetail = () => {
                <ProductInfo product_info={oneProductData?.body.data}></ProductInfo>
             </section>
             <section className='section-description  lg:py-[100px] md:py-[80px] max-md:py-[60px]'>
-               {
-                  oneProductData && (
-
-                     <ProductDescriptionTab
+               {oneProductData && (
+                  <ProductDescriptionTab
                      productId={oneProductData?.body.data._id}
-                        desc={oneProductData?.body.data.desc}
-                        originName={oneProductData?.body.data ? oneProductData?.body.data.originId.name : ''}
-                     ></ProductDescriptionTab>
-                  )
-               }
+                     desc={oneProductData?.body.data.desc}
+                     originName={oneProductData?.body.data ? oneProductData?.body.data.originId.name : ''}
+                  ></ProductDescriptionTab>
+               )}
             </section>
             <section className='section-related-product bg-[#f8f8f8]  max-lg:py-[60px] border-b'>
                <div className='related-product-header text-center xl:mb-[70px] lg:mb-[40px] max-lg:mb-[30px]'>
