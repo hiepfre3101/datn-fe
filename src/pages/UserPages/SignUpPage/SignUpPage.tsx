@@ -6,7 +6,7 @@ import { useSignupMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
 import { setItem } from '../../../slices/cartSlice';
 import { GoogleOutlined } from '@ant-design/icons';
-import { dbUrl } from '../../../constants/dbUrl';
+import { baseUrl } from '../../../constants/baseUrl';
 
 const SignUpPage = () => {
    const [userName, setuserName] = useState('');
@@ -156,7 +156,7 @@ const SignUpPage = () => {
                            >
                               Đăng ký
                            </button>
-                           <Link className='w-[100%]' to={dbUrl + '/api/auth/google/login'}>
+                           <Link className='w-[100%]' to={baseUrl + '/api/auth/google/login'}>
                               <button
                                  type='button'
                                  className='w-full btn-sign-up text-white bg-[#333333] text-center px-[40px] py-[15px] rounded-[5px] font-bold transition-colors duration-300 hover:bg-[#51A55C] '
