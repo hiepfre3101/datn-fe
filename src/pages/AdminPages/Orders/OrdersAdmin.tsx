@@ -14,6 +14,7 @@ import { useGetAllOrderQuery } from '../../../services/order.service';
 import { ORDER_STATUS_FULL } from '../../../constants/orderStatus';
 import { adminSocket } from '../../../config/socket';
 import useDebounce from '../../../hooks/useDebounce';
+import ReSizePage from '../../ReSizePage';
 
 const OrdersAdmin = () => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -41,6 +42,9 @@ const OrdersAdmin = () => {
          <Helmet>
             <title>Đơn hàng</title>
          </Helmet>
+         <div className='lg:hidden'>
+            <ReSizePage />
+         </div>
          <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
             <div className='flex-1 flex justify-center items-center flex-col mt-10 w-[100%]'>
                <div className='flex justify-between items-center w-[90%]'>

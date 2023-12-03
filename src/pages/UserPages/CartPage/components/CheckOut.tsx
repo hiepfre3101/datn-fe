@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -75,9 +76,8 @@ const CheckOut = () => {
             const temp =
                subtotal > voucher.maxReduce
                   ? subtotal - voucher.maxReduce
-                  : subtotal - (subtotal * voucher.percent / 100);
+                  : subtotal - (subtotal * voucher.percent) / 100;
             setTotal(temp);
-            
          } else {
             const temp = subtotal - (subtotal * voucher.percent) / 100;
             setTotal(temp);
@@ -124,8 +124,7 @@ const CheckOut = () => {
                   } else if (error.data.message == 'Voucher does not work!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá không hoạt động']);
                      dispatch(remoteVoucher());
-                  }
-                   else if (error.data.message == 'Voucher is out of quantity!') {
+                  } else if (error.data.message == 'Voucher is out of quantity!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết']);
                      dispatch(remoteVoucher());
                   } else if (error.data.message == 'Voucher is out of date') {
@@ -173,11 +172,13 @@ const CheckOut = () => {
          const cartLocal = {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             products: cart['products'].map((product: any) => {
-               const {
+               let {
                   totalWeight,
-                  productId: { originId: { ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { name = undefined, ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
+               // eslint-disable-next-line @typescript-eslint/no-unused-vars
+               name = undefined;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
@@ -274,8 +275,7 @@ const CheckOut = () => {
                message.error('Mã giảm giá không tồn tại');
             } else if (error.data.message == 'Voucher does not work!') {
                message.error('Mã giảm giá không còn hoạt động');
-            } 
-            else if (error.data.message == 'Voucher is out of quantity!') {
+            } else if (error.data.message == 'Voucher is out of quantity!') {
                message.error('Mã giảm giá đã hết');
             } else if (error.data.message == 'Voucher is out of date') {
                message.error('Mã giảm giá đã hết hạn');
@@ -304,7 +304,7 @@ const CheckOut = () => {
       showModal();
    };
    console.log(listVoucher);
-   
+
    return (
       <div>
          <div className='cart-total'>
@@ -329,7 +329,7 @@ const CheckOut = () => {
                         <span className='temporary font-bold  text-[14px] '>
                            {!voucher.maxReduce
                               ? '- ' +
-                               ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                    style: 'currency',
                                    currency: 'VND'
                                 })
@@ -341,7 +341,7 @@ const CheckOut = () => {
                                  ? '- ' +
                                    voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : '- ' +
-                                  ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                   ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                       style: 'currency',
                                       currency: 'VND'
                                    })}
@@ -444,18 +444,19 @@ const CheckOut = () => {
 
                                  {item.maxReduce > 0 && (
                                     <li>
-                                       Giảm tối đa: {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
-                                       
+                                       Giảm tối đa:{' '}
+                                       {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </li>
                                  )}
 
-                                 {item.miniMumOrder && (
+                                 {item.miniMumOrder > 0 && (
                                     <li>
-                                       Đơn hàng phải có giá trị trên{' '}
-                                       {item.miniMumOrder?.toLocaleString('vi-VN', {
-                                          style: 'currency',
-                                          currency: 'VND'
-                                       })}
+                                       Đơn hàng phải có giá trị trên
+                                       {item.miniMumOrder > 0 &&
+                                          item.miniMumOrder?.toLocaleString('vi-VN', {
+                                             style: 'currency',
+                                             currency: 'VND'
+                                          })}
                                     </li>
                                  )}
                               </ul>
@@ -465,7 +466,7 @@ const CheckOut = () => {
                               <button
                                  disabled={!item.active}
                                  style={{
-                                    backgroundColor: item.active==false ? 'grey' : ''
+                                    backgroundColor: item.active == false ? 'grey' : ''
                                  }}
                                  onClick={() => {
                                     handleAddVoucher(item.code);

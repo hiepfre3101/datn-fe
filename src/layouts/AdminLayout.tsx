@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
    PieChartOutlined,
    UserOutlined,
@@ -60,7 +60,6 @@ const AdminLayout = () => {
    const auth = useSelector((state: any) => state.userReducer);
    const navigate = useNavigate();
    const dispatch = useDispatch();
-   const audioPlayer = useRef(null);
 
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>

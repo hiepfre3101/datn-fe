@@ -113,8 +113,7 @@ const router = createBrowserRouter([
          },
          {
             path: 'forgetPassword',
-            element: <ForgetPassword />,
-        
+            element: <ForgetPassword />
          },
          {
             path: 'wishList',

@@ -1,4 +1,3 @@
-import { IEvaluation } from './evaluation';
 import { IShipmentOfProduct } from './shipment';
 
 export interface IProduct {
@@ -10,7 +9,8 @@ export interface IProduct {
            cateName: string;
            _id: string;
         };
-   evaluated: []|IEvaluation[];
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   evaluated: any[];
    desc: string;
    discount: number;
    images: { url: string; public_id: string }[];
@@ -37,7 +37,8 @@ export interface IProductExpanded extends IProduct {
       _id: string;
       name: string;
    };
-   evaluatedId:IEvaluation[]
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   evaluatedId: any[];
 }
 
 export interface IDescProp {

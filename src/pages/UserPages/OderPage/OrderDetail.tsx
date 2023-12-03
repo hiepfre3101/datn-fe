@@ -20,7 +20,7 @@ import { clientSocket } from '../../../config/socket';
 import { useConfirmOrderMemberMutation, useGetOneOrderForMemberQuery } from '../../../services/order.service';
 const OrderDetail = () => {
    const { id } = useParams();
-   const { data, isLoading, refetch } = useGetOneOrderForMemberQuery(id!);
+   const { data, isLoading, refetch } = useGetOneOrderForMemberQuery(id!, { refetchOnMountOrArgChange: true });
    const [handleConfirmOrder, { isLoading: loadingConfirm }] = useConfirmOrderMemberMutation();
    const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);

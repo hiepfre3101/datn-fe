@@ -98,12 +98,12 @@ const LoginPage = () => {
                               </button>
                            </Link>
                         </div>
-                        <a
-                           href='#'
+                        <Link
+                           to='/forgetPassword'
                            className='link-to-forget-password underline max=sm:text-[16px] sm:text-[18px] hover:text-[#333333] '
                         >
                            Quên mật khẩu ?
-                        </a>
+                        </Link>
                         <div className='link-to-sign-up mt-[30px] py-[30px] px-[15px] bg-[#333333] text-white text-[18px] text-center rounded-[5px]'>
                            Bạn không có tài khoản?{' '}
                            <a

@@ -67,8 +67,8 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
             await addCart(product)
                .unwrap()
                .catch((res) => {
-                  res
-                  message.error("Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có");
+                  res;
+                  message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có');
                });
          } else {
             const product = {

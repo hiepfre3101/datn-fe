@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Divider, Form, Input, InputNumber, Layout } from 'antd';
+import { Divider, Form, Input, InputNumber, Layout, message } from 'antd';
 import { DatePicker } from 'antd';
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -30,9 +30,12 @@ const AddVoucher = () => {
             console.log(error);
             return;
          }
+         
+         message.success('Tạo voucher thành công !');
          setLoading(false);
          navigate('/manage/vouchers');
       } catch (error) {
+         message.success('Tạo voucher thất bại !');
          setLoading(false);
          console.log(error);
       }
@@ -114,20 +117,21 @@ const AddVoucher = () => {
                            name={'miniMumOrder'}
                            label={'Số tiền tối thiểu để sử dụng mã (VNĐ)'}
                            rules={[
+                              { required: true, message: 'Vui lòng điền số tiền tối thiểu để sử dụng mã !' },
                               { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' placeholder='Thêm số tiền tối thiểu' />
+                           <InputNumber className='w-full' placeholder='Thêm số tiền tối thiểu' min={0} />
                         </Form.Item>
                         <Form.Item
                            name={'maxReduce'}
                            label={' Giảm tối đa (VNĐ)'}
                            rules={[
-                              // { required: true, message: 'Vui lòng điền số tiền giảm tối đa !' },
+                              { required: true, message: 'Vui lòng điền số tiền giảm tối đa !' },
                               { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' defaultValue={0} placeholder='Thêm số tiền giảm tối đa' />
+                           <InputNumber className='w-full' placeholder='Thêm số tiền giảm tối đa' min={0} />
                         </Form.Item>
                      </>
                   </BlockForm>
