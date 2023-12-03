@@ -22,7 +22,7 @@ import { ICartDataBaseItem } from '../../interfaces/cart';
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { clientSocket } from '../../config/socket';
 import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
-import { Badge, message, notification } from 'antd';
+import { Badge, message } from 'antd';
 import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
 import { MdOutlineCancel } from 'react-icons/md';
 import SearchFilter from './Header/components/SearchFilter';
