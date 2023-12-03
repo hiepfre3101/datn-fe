@@ -1,5 +1,5 @@
 import { io } from 'socket.io-client';
-import { dbUrl } from '../constants/dbUrl';
+import { baseUrl } from '../constants/baseUrl';
 
-export const clientSocket = io(dbUrl);
-export const adminSocket = io(dbUrl + '/admin');
+export const clientSocket = io(baseUrl);
+export const adminSocket = io(baseUrl + '/admin');

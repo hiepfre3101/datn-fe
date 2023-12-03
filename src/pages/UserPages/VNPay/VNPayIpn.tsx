@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { dbUrl } from "../../../constants/dbUrl";
+import { baseUrl } from "../../../constants/baseUrl";
 
 function VNPayIpn() {
     const [sucess, setSuccess] = useState<boolean>(false)
@@ -9,7 +9,7 @@ function VNPayIpn() {
     const location = useLocation();
     const fetchApi = async (data: Record<string, string | number>) => {
         try {
-            const url = new URL(dbUrl + '/api/vnpay_ipn');
+            const url = new URL(baseUrl + '/api/vnpay_ipn');
 
             // Thêm các tham số vào URL
             Object.keys(data).forEach(key => {

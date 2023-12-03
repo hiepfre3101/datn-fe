@@ -3,12 +3,12 @@ import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base
 import { IUser } from '../interfaces/auth';
 import { paramTransformer } from '../utils/transformParams';
 import { IUserInFo } from '../pages/UserPages/UserInfoPage/UserInforPage';
-import { dbUrl } from '../constants/dbUrl';
+import { baseUrl } from '../constants/baseUrl';
 
 const userApi = createApi({
    reducerPath: 'userApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: dbUrl + '/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['user'],

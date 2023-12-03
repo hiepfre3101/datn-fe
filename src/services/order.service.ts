@@ -4,10 +4,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IOrder, IOrderFull } from '../interfaces/order';
 import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
 import { paramTransformer } from '../utils/transformParams';
-import { dbUrl } from '../constants/dbUrl';
+import { baseUrl } from '../constants/baseUrl';
 const orderApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: dbUrl + '/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include',
       prepareHeaders: (headers) => {
          headers.set('Access-Control-Allow-Origin', '*');

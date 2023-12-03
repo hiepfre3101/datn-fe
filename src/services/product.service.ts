@@ -8,11 +8,11 @@ import {
    InputSaleProduct
 } from '../interfaces/product';
 import { paramTransformer } from '../utils/transformParams';
-import { dbUrl } from '../constants/dbUrl';
+import { baseUrl } from '../constants/baseUrl';
 
 const productApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: dbUrl + '/api',
+      baseUrl: baseUrl + '/api',
       prepareHeaders: (headers) => {
          headers.set('Access-Control-Allow-Origin', '*');
          headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH,PUT, DELETE');
