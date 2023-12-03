@@ -28,6 +28,7 @@ const OrdersAdmin = () => {
    );
    useEffect(() => {
       adminSocket.on('purchaseNotification', () => refetch());
+      adminSocket.on('adminStatusNotification', () => refetch());
       return () => {};
    }, []);
    if (isLoading) return <Loading sreenSize='lg' />;
