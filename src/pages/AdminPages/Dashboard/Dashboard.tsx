@@ -2,7 +2,7 @@
 import { Helmet } from 'react-helmet';
 import { useState, useEffect, useMemo } from 'react';
 import Loading from '../../../components/Loading/Loading';
-import { Statistic, message } from 'antd';
+import { Divider, Rate, Statistic, message } from 'antd';
 import CountUp from 'react-countup';
 import { Formatter } from 'antd/es/statistic/utils';
 import { CiUser } from 'react-icons/ci';
@@ -10,6 +10,7 @@ import ChartColumn from './components/ChartColumn';
 import ChartLine from './components/ChartLine';
 import ChartArea from './components/ChartArea';
 import { getAllStatistics } from '../../../api/statistic';
+import Title from 'antd/es/typography/Title';
 const Dashboard = () => {
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [statisticData, setStatisticData] = useState<any>({});
@@ -115,7 +116,7 @@ const Dashboard = () => {
    }, [statisticData]);
    const revenueByDay = useMemo(() => {
       const rawData = statisticData?.salesRevenueByDay || [];
-      console.log(rawData);
+      // console.log(rawData);
 
       return {
          title: 'Doanh thu theo ngày',
@@ -157,7 +158,7 @@ const Dashboard = () => {
                />
                <span className='text-[#666666] font-bold text-xl'>Trung bình giá một đơn hàng</span>
             </div>
-            <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9] ]'>
+            <div className='item p-2 flex justify-center items-center flex-col   ]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
                   value={statisticData?.profit}
@@ -184,6 +185,37 @@ const Dashboard = () => {
             </div>
             <div className='top-product bg-white p-4 w-full  mt-4'>
                <ChartLine options={avgPriceAndUnitPerOrders} />
+            </div>
+         </div>
+         <div className='w-full xl:flex gap-5 mt-4 items-center bg-white'>
+            <div className='flex-1'>
+               <Title className=' text-center' level={2}>Sản phẩm có đánh giá tốt nhất</Title>
+               <div className='xl:flex justify-center gap-3'>
+                  <div>
+                     <h2>{statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.productName}</h2>
+                     <img className='w-[200px] h-[200px]' src={statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.image} alt="" />
+                  </div>
+                  <div>
+                     <h1>Trung bình số sao</h1>
+                     <Rate allowHalf disabled defaultValue={statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.starCount} />
+                     <span>{statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.starCount}</span>
+                  </div>
+               </div>
+            </div>
+            <Divider type='vertical' className='h-[200px]' />
+            <div className='flex-1'>
+               <Title className=' text-center' level={2}>Sản phẩm có đánh giá tệ nhất</Title>
+               <div  className='xl:flex justify-center gap-3'>
+                  <div>
+                     <h1>{statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.productName}</h1>
+                     <img className='w-[200px] h-[200px]' src={statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.image} alt="" />
+                  </div>
+                  <div>
+                     <h2>Trung bình số sao</h2>
+                     <Rate allowHalf disabled defaultValue={statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.starCount} />
+                     <span>{statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.starCount}</span>
+                  </div>
+               </div>
             </div>
          </div>
       </div>
