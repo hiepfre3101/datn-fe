@@ -1,4 +1,5 @@
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable prefer-const */
 import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
@@ -121,9 +122,9 @@ const CheckOutPage = () => {
       } else {
          const cartLocal = {
             products: cart['products'].map((product: any) => {
-               const {
+               let {
                   totalWeight,
-                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { name = undefined, ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
@@ -205,6 +206,7 @@ const CheckOutPage = () => {
          if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
+            //dung dong vao cho nay
             data.note = ' ';
          }
          data.products = cart.items;

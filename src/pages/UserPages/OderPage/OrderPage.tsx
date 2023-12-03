@@ -30,13 +30,12 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day });
+   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day }, { refetchOnMountOrArgChange: true });
    const [handleCancelOrder, { isLoading: loadingCancel }] = useCancelOrderMemberMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
       const data = await handleCancelOrder(id);
-      console.log(data);
-      clientSocket.emit('confirmOrder', JSON.stringify(data));
+      clientSocket.emit('confirmOrder', JSON.stringify(data.body.data));
       message.success('Hủy đơn hàng thành công !');
    };
 

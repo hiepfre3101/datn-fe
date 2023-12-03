@@ -32,7 +32,9 @@ const Footer = () => {
    const { data: cartdb } = useGetCartQuery(undefined, { skip: !auth.user._id });
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
+
    const [sendMessage] = useSendMessageMutation();
    const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
@@ -630,7 +632,7 @@ const Footer = () => {
                                          0
                                       )
                                       .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                 : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>

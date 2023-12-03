@@ -302,7 +302,10 @@ const Header = () => {
                                        <>
                                           {auth.user.role === 'member' ? (
                                              <div>
-                                                <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                                                <Link
+                                                   to='/userInformation'
+                                                   className='flex items-center gap-[5px] py-[5px]'
+                                                >
                                                    <PiUserListBold></PiUserListBold> Hồ sơ của bạn
                                                 </Link>
                                              </div>

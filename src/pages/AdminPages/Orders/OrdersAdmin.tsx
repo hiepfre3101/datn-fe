@@ -30,7 +30,6 @@ const OrdersAdmin = () => {
       adminSocket.on('purchaseNotification', () => refetch());
       return () => {};
    }, []);
-
    if (isLoading) return <Loading sreenSize='lg' />;
    return (
       <>
@@ -84,6 +83,14 @@ const OrdersAdmin = () => {
                         title='Tổng tiền (VND)'
                         dataIndex='totalPayment'
                         key='totalPayment'
+                        render={(price) => (
+                           <p>
+                              {price.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
+                           </p>
+                        )}
                      />
                      <Column
                         align='center'

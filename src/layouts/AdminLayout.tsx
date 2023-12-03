@@ -116,7 +116,7 @@ const AdminLayout = () => {
             >
                <div className='w-full max-h-[95%] pb-5 overflow-y-auto'>
                   <div className='max-h-[150px] flex justify-center items-center'>
-                     <Link to={'/'}>
+                     <Link to={'/'} className='flex justify-center items-center'>
                         <img src={logoUrl} alt='logo' className='max-w-[50%]' />
                      </Link>
                   </div>

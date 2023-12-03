@@ -1,21 +1,19 @@
 import { message } from 'antd';
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSignupMutation } from '../../../services/auth.service';
 import { saveTokenAndUser } from '../../../slices/authSlice';
-import {  setItem } from '../../../slices/cartSlice';
+import { setItem } from '../../../slices/cartSlice';
 import { GoogleOutlined } from '@ant-design/icons';
 
 const SignUpPage = () => {
-
-   const [userName,setuserName] = useState('');
-   const [email,setemail] = useState('');
-   const [password,setpassword] = useState('');
-   const [confirmPassword,setconfirmPassword] = useState('');
+   const [userName, setuserName] = useState('');
+   const [email, setemail] = useState('');
+   const [password, setpassword] = useState('');
+   const [confirmPassword, setconfirmPassword] = useState('');
    const [phoneNumber, setphoneNumber] = useState('');
    const [address, setaddress] = useState('');
-   
 
    const navigate = useNavigate();
    const dispatch = useDispatch();
@@ -30,24 +28,22 @@ const SignUpPage = () => {
    useEffect(() => {
       if (!isLoading && data) {
          dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         dispatch(setItem())
+         dispatch(setItem());
          navigate('/');
       }
    }, [data, isLoading, error, dispatch, navigate]);
 
-   const signHandle = ()=>{
-      
-         signup({
-            userName,
-            email,
-            password,
-            confirmPassword,
-            phoneNumber,
-            address,
-         });
-         return;
-     
-   }
+   const signHandle = () => {
+      signup({
+         userName,
+         email,
+         password,
+         confirmPassword,
+         phoneNumber,
+         address
+      });
+      return;
+   };
 
    return (
       <>
@@ -68,10 +64,10 @@ const SignUpPage = () => {
                      <p className='login-sub-title mt-[18px]'>Vui lòng điền thông tin tài khoản</p>
                   </div>
                   <div className='login-content xl:w-[50%] lg:w-[60%] md:w-[70%] max-md:w-[100%] m-auto'>
-                     <form action=''  className='login-form'>
+                     <form action='' className='login-form'>
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
-                           Tên
+                              Tên
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
@@ -79,10 +75,10 @@ const SignUpPage = () => {
                               id='userName'
                               type='text'
                               value={userName}
-                              onChange={(e)=>setuserName(e.target.value)}
+                              onChange={(e) => setuserName(e.target.value)}
                            />
                         </div>
-                       
+
                         <div className='login-mail mt-[25px]'>
                            <label htmlFor='mail' className='block cursor-pointer mb-[10px]'>
                               Email
@@ -93,13 +89,13 @@ const SignUpPage = () => {
                               id='mail'
                               type='email'
                               value={email}
-                              onChange={(e)=>setemail(e.target.value)}
+                              onChange={(e) => setemail(e.target.value)}
                            />
                         </div>
 
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
-                           Điện thoại
+                              Điện thoại
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
@@ -107,13 +103,13 @@ const SignUpPage = () => {
                               id='phoneNumber'
                               type='text'
                               value={phoneNumber}
-                              onChange={(e)=>setphoneNumber(e.target.value)}
+                              onChange={(e) => setphoneNumber(e.target.value)}
                            />
                         </div>
 
                         <div className='login-first-name mt-[25px]'>
                            <label htmlFor='first' className='block cursor-pointer mb-[10px]'>
-                           Địa chỉ
+                              Địa chỉ
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
@@ -121,10 +117,9 @@ const SignUpPage = () => {
                               id='address'
                               type='text'
                               value={address}
-                              onChange={(e)=>setaddress(e.target.value)}
+                              onChange={(e) => setaddress(e.target.value)}
                            />
                         </div>
-
 
                         <div className='login-password mt-[25px]'>
                            <label htmlFor='password' className='block cursor-pointer mb-[10px]'>
@@ -136,7 +131,7 @@ const SignUpPage = () => {
                               id='password'
                               type='password'
                               value={password}
-                              onChange={(e)=>setpassword(e.target.value.trim())}
+                              onChange={(e) => setpassword(e.target.value.trim())}
                            />
                         </div>
                         <div className='login-password mt-[25px]'>
@@ -145,11 +140,11 @@ const SignUpPage = () => {
                            </label>
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
-                              placeholder='confimpassword'
+                              placeholder='Nhập lại mật khẩu'
                               id='confimpassword'
                               type='password'
                               value={confirmPassword}
-                              onChange={(e)=>setconfirmPassword(e.target.value.trim())}
+                              onChange={(e) => setconfirmPassword(e.target.value.trim())}
                            />
                         </div>
                         <div className='action-btn flex items-center justify-between sm:mt-[30px] max-sm:mt-[20px] gap-2 gap-y-[20px]'>
@@ -170,15 +165,15 @@ const SignUpPage = () => {
                            </Link>
                         </div>
                      </form>
-                        <div className='link-to-log-in mt-[30px] py-[30px] px-[15px] bg-[#333333] text-white text-[18px] text-center rounded-[5px]'>
-                           Bạn đã có tài khoản?{' '}
-                           <a
-                              href='/login'
-                              className='underline max-sm:block text-[rgba(255,255,255,0.5)] hover:text-[rgba(255,255,255,0.8)] ml-[5px]'
-                           >
-                              Đăng nhập
-                           </a>
-                        </div>
+                     <div className='link-to-log-in mt-[30px] py-[30px] px-[15px] bg-[#333333] text-white text-[18px] text-center rounded-[5px]'>
+                        Bạn đã có tài khoản?{' '}
+                        <a
+                           href='/login'
+                           className='underline max-sm:block text-[rgba(255,255,255,0.5)] hover:text-[rgba(255,255,255,0.8)] ml-[5px]'
+                        >
+                           Đăng nhập
+                        </a>
+                     </div>
                   </div>
                </div>
             </section>
