@@ -20,7 +20,6 @@ import { useNavigate } from 'react-router-dom';
 import { FaTruckRampBox } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
 import { saveTokenAndUser } from '../slices/authSlice';
-import NotificationSound from '../assets/notification-sound.mp3';
 import { useGetTokenQuery } from '../services/auth.service';
 import ReSizePage from '../pages/ReSizePage';
 import Loading from '../components/Loading/Loading';
@@ -145,7 +144,6 @@ const AdminLayout = () => {
                }
             >
                <HeaderAdmin />
-               <audio ref={audioPlayer} src={NotificationSound} />
                <Content className=' w-full px-6  pt-[50px] pb-[50px] flex justify-center '>
                   <Outlet />
                </Content>
