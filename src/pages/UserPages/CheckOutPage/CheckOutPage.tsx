@@ -55,7 +55,7 @@ const CheckOutPage = () => {
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
 
    useEffect(() => {
-      if (!cart || cart?.products.length === 0 || cart?.length === 0) {
+      if ((cart?.products && cart?.products.length === 0) || cart?.length === 0) {
          navigate('/');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,6 +66,7 @@ const CheckOutPage = () => {
          let status = true;
          if (voucher._id) {
             const total = cartdb?.body.data.products?.reduce(
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
                (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
                0
             );
