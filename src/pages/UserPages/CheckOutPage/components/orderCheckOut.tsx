@@ -180,7 +180,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='temporary font-bold  text-[14px] '>
                            {!voucher.maxReduce
                               ? '- ' +
-                                Math.ceil((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                    style: 'currency',
                                    currency: 'VND'
                                 })
@@ -192,7 +192,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                  ? '- ' +
                                    voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : '- ' +
-                                   Math.ceil(subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                   ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                       style: 'currency',
                                       currency: 'VND'
                                    })}
