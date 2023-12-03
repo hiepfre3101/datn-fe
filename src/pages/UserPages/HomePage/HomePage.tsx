@@ -11,8 +11,7 @@ import { useGetAllLiquidationProductQuery, useGetNewProductInStorageQuery, useGe
 const HomePage = () => {
    const {data: liquidationProducts} = useGetAllLiquidationProductQuery()
    const {data: ProductSoldBest} = useGetProductSoldDescLimitQuery()
-   const {data: NewProduct} = useGetNewProductInStorageQuery()
-   
+   const {data: NewProduct} = useGetNewProductInStorageQuery()   
    return (
    
       <>

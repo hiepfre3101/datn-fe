@@ -114,7 +114,6 @@ const AddVoucher = () => {
                            name={'miniMumOrder'}
                            label={'Số tiền tối thiểu để sử dụng mã (VNĐ)'}
                            rules={[
-                              { required: true, message: 'Vui lòng điền số tiền tối thiểu để sử dụng mã !' },
                               { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >

@@ -48,7 +48,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
       }
    };
    const add_to_cart = async () => {
-      if (inputWeight != '' && !inputWeight.endsWith('.')) {
+      if (inputWeight != '') {
          if (auth.user._id) {
             const product = {
                productId: product_info[0]?._id,
@@ -81,7 +81,6 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                totalWeight: totalWeight
             };
             dispatch(addItem(product));
-            message.success('Đã thêm sản phẩm vào giỏ hàng');
          }
       } else {
          setinputWeight(0.5);

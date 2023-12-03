@@ -13,13 +13,13 @@ import { useClearTokenMutation } from '../../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../../slices/authSlice';
 import { Badge, Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../../constants/imageUrl';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../../services/cate.service';
 import { clientSocket } from '../../../config/socket';
 import SearchFilter from './components/SearchFilter';
-import NotificationSound from '../../../assets/notification-sound.mp3';
+import { LuUser2 } from "react-icons/lu";
 import {
    useDeleteNotificationMutation,
    useGetClientNotificationQuery,
@@ -52,7 +52,7 @@ const Header = () => {
    const [deleteNotification] = useDeleteNotificationMutation();
    const { data } = useGetAllCateQuery({});
    const localCartLength = useSelector((state: { cart: ICartSlice }) => state?.cart?.products.length);
-   const audioPlayer = useRef<HTMLAudioElement | null>(null)
+
    const totalProductInCart = useMemo(() => {
       if (auth.user._id) {
          return cartdb?.body?.data?.products ? cartdb?.body?.data?.products.length : 0;
@@ -85,9 +85,6 @@ const Header = () => {
       const handlePurchaseNotification = (data: any) => {
          refetchCart();
          refetch();
-         if( audioPlayer.current !== null) {
-            audioPlayer.current.play()
-         }
          notification.info({
             message: 'Bạn có thông báo mới',
             description: data.data.message
@@ -123,8 +120,8 @@ const Header = () => {
       header_menu?.classList.toggle('max-xl:translate-x-[0%]');
    };
    const showCategoriesMenu = () => {
-      const cate_menu = document.querySelector('.cate-menu');
-      cate_menu?.classList.toggle('max-xl:max-h-[41px]');
+      const sub_menu = document.querySelector('.sub-menu');
+      sub_menu?.classList.toggle('max-xl:!hidden');
    };
    // const showModalSearch = () => {
    //    const bodyElement = document.querySelector('body');
@@ -168,10 +165,9 @@ const Header = () => {
 
    return (
       <div className='main-header'>
-         <audio ref={audioPlayer} src={NotificationSound} />
          <header className='header  top-0 right-0 left-0 z-[5] transition-all duration-500 border-b-[1px] bg-white border-[#e2e2e2]  shadow-[0px_0px_10px_rgba(51,51,51,0.15)]'>
             <section className='mx-auto px-[30px] w-full relative max-w-[1520px] m-auto'>
-               <div className='header-content flex items-center max-xl:justify-between max-xl:py-[15px] '>
+               <div className='header-content flex items-center max-xl:justify-between '>
                   <div className='header-logo xl:w-[10%] max-xl:[w-auto] '>
                      <Link to='/'>
                         <img className='logo-img max-w-[100px] aspect-square' src={logoUrl} alt='' />
@@ -181,8 +177,8 @@ const Header = () => {
                      onClick={showMenuReponsive}
                      className='overlay-menu-homepage xl:hidden fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
                   ></div>
-                  <div className='header-menu xl:w-[60%] max-xl:fixed  max-xl:transition-all max-xl:duration-500 max-xl:translate-x-[-100%]  max-xl:bottom-0 top-0 left-0 w-[320px] max-xl:z-[8] max-xl:bg-white'>
-                     <ul className='main-menu flex max-xl:flex  max-xl:flex-col'>
+                  <div className='header-menu overflow-scroll xl:w-[60%] max-xl:fixed  max-xl:transition-all max-xl:duration-500 max-xl:translate-x-[-100%]  max-xl:bottom-0 top-0 left-0 w-[320px] max-xl:z-[8] max-xl:bg-white'>
+                     <ul className='main-menu  flex max-xl:flex  max-xl:flex-col'>
                         <li className='cursor-pointer main-menu-item text-[20px] flex justify-end xl:hidden  xl:py-[40px] xl:px-[15px] font-extrabold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[10px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2]'>
                            <span onClick={showMenuReponsive} className='cursor-pointer'>
                               <FaXmark className='text-[20px]'></FaXmark>
@@ -204,38 +200,46 @@ const Header = () => {
                               Giới thiệu
                            </Link>
                         </li>
-                        <li className='cursor-pointer  main-menu-item   group/categories-menu cate-menu max-xl:overflow-hidden max-xl:max-h-[41px] text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
-                           <div onClick={showCategoriesMenu} className='w-full h-full xl:hidden absolute'></div>
-                           <div className='flex items-center group-hover:text-[#51A55C] max-xl:justify-between'>
+                      <div className='group/wrap'>
+                      <li onClick={showCategoriesMenu}  className='cursor-pointer  main-menu-item   group/categories-menu cate-menu max-xl:overflow-hidden max-xl:max-h-[41px] text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
+                           <div  className='w-full h-full xl:hidden absolute'></div>
+                           <div  className='flex items-center group-hover:text-[#51A55C] max-xl:justify-between'>
                               <span className='after:content-[""] xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                  Danh mục
+                                 
                               </span>
                               <Link to='/collections'>
                                  <span className='after:content-[""] max-xl:hidden after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'>
                                     Danh mục
                                  </span>
+                                 
                               </Link>
+
                               <span className='text-[11px] ml-[5px]'>
                                  <FaChevronDown></FaChevronDown>
                               </span>
                            </div>
-                           <ul className='sub-menu xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 xl:group-hover/categories-menu:translate-y-[0%] xl:z-[-1] xl:group-hover/categories-menu:z-[3] xl:group-hover/categories-menu:visible xl:group-hover/categories-menu:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
+                     
+                        </li>
+                        <ul className='sub-menu max-xl:!hidden  xl:min-w-[175px] xl:absolute  xl:top-[100%]  xl:shadow-[0px_0px_10px_rgba(51,51,51,0.15)] xl:invisible bg-white xl:translate-y-[20%] xl:transition-all xl:duration-500 xl:opacity-0 group-hover/wrap:block xl:group-hover/wrap:translate-y-[0%] xl:z-[-1] xl:group-hover/wrap:z-[3] xl:group-hover/wrap:visible xl:group-hover/wrap:opacity-100 max-xl:w-full max-xl:mt-[9px]  '>
                               {data?.body.data.map((item) => {
                                  return (
                                     <>
-                                       <li className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
-                                          <Link
+                                     <Link
                                              to={'/collections?cate_id=' + item._id}
                                              className='group-hover/sub-menu:text-[#51A55C] text-[#6f6f6f] font-medium '
                                           >
+                                       <li onClick={showMenuReponsive}  className='group/sub-menu sub-menu-item py-[10px] px-[15px]  cursor-pointer'>
+                                         
                                              {item.cateName}
-                                          </Link>
+                                         
                                        </li>
+                                       </Link>
                                     </>
                                  );
                               })}
                            </ul>
-                        </li>
+                      </div>
                         <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
                            <Link
                               to='/contact'
@@ -314,6 +318,7 @@ const Header = () => {
                                                 </Link>
                                              </div>
                                           ) : (
+                                            <>
                                              <div>
                                                 <Link
                                                    to='/manage/dashboard'
@@ -322,6 +327,14 @@ const Header = () => {
                                                    <PiUserListBold></PiUserListBold> Quản lý cửa hàng
                                                 </Link>
                                              </div>
+                                              <div>
+                                                <Link
+                                                   to='/userinformation'
+                                                   className='flex items-center gap-[5px] py-[5px]'
+                                                >
+                                                   <LuUser2></LuUser2> Thông tin tài khoản
+                                                </Link>
+                                             </div></>
                                           )}
 
                                           <div>
@@ -391,7 +404,7 @@ const Header = () => {
                                  trigger='click'
                               >
                                  {auth.accessToken && (
-                                    <Badge
+                                    <Badge className='max-sm:hidden'
                                        color='red'
                                        count={
                                           clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
@@ -407,15 +420,14 @@ const Header = () => {
                               </Popover>
                            </>
                         )}
-                        <Badge count={totalProductInCart} showZero={false}>
+                        <Badge className='max-sm:hidden' count={totalProductInCart} showZero={false}>
                            <li
                               onClick={showMiniCart}
                               className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '
                            >
-                              {' '}
                               <HiOutlineShoppingBag></HiOutlineShoppingBag>
                            </li>
-                        </Badge>{' '}
+                        </Badge>
                      </ul>
                   </div>
                </div>

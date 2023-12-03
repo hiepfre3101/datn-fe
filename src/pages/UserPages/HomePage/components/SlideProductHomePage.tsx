@@ -18,14 +18,14 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
    
    return (
       <>
-         <div className='featured-product-item lg:w-[calc(33%-10px)] max-lg:w-full    pt-[50px]'>
+         <div className='featured-product-item lg:w-[calc(33%-10px)] max-lg:w-full    pt-[50px] '>
             <div className='fetured-title '>
                <p className='text-[#333333] text-[18px]  font-bold xl:mb-[50px]'>{slideName} </p>
             </div>
             <Swiper
                slidesPerView={1}
                grid={{
-                  rows: 2
+                  rows: 3
                }}
                autoplay={{
                    delay: 2000,
@@ -35,13 +35,13 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
                 1201: {
                    slidesPerView: 1,
                    grid:{
-                    rows: 2
+                    rows: 3
                  }
                 },
                 1200: {
                     slidesPerView: 1,
                     grid:{
-                        rows: 1
+                        rows: 3
                      }
                   
                 },
@@ -77,8 +77,8 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
             >
                {data?.map(item=>{
                   return<>
-<SwiperSlide className='h-[29%] bg-white !mt-[20px] '>
-                  <div className='featured-product-item-slide flex items-center gap-x-[10px]'>
+<SwiperSlide className='h-[29%] bg-white !mt-[20px]  '>
+                  <div className='featured-product-item-slide flex items-center gap-x-[10px] '>
                      <div className='silde-img  '>
                         <img className='w-[149px] h-[149px]' src={item.images[0].url} alt='' />
                      </div>

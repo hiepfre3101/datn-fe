@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { IEvaluation } from './evaluation';
 import { IShipmentOfProduct } from './shipment';
 
 export interface IProduct {
@@ -10,7 +10,7 @@ export interface IProduct {
            cateName: string;
            _id: string;
         };
-   commentId: string;
+   evaluated: []|IEvaluation[];
    desc: string;
    discount: number;
    images: { url: string; public_id: string }[];
@@ -24,7 +24,6 @@ export interface IProduct {
            _id: string;
         };
    isSale: boolean;
-   evaluated: any[];
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
@@ -38,7 +37,9 @@ export interface IProductExpanded extends IProduct {
       _id: string;
       name: string;
    };
+   evaluatedId:IEvaluation[]
 }
+
 export interface IDescProp {
    desc: string | undefined;
    originName: string;

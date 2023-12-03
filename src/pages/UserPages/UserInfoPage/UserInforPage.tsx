@@ -142,7 +142,15 @@ const UserInfoPage = () => {
                                  <span className='input-name'>Email</span>
                                  <input
                                     type='text'
-                                    {...register('email', { required: 'Email là trường bắt buộc' })}
+                                    {...register('email', { required: 'Email là trường bắt buộc' ,
+                                    validate: {
+                                      validEmail: value => {
+                                        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                        if (!emailRegex.test(value)) {
+                                          return 'Email không hợp lệ';
+                                        }
+                                      }
+                                    }})}
                                     className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[10px]'
                                  />
                               </label>
@@ -174,7 +182,13 @@ const UserInfoPage = () => {
                                  <span className='input-name'>Số điện thoại</span>
                                  <input
                                     type='text'
-                                    {...register('phoneNumber', { required: 'Email là trường bắt buộc' })}
+                                    {...register('phoneNumber', { 
+                                       required: 'Số điện thoại là trường bắt buộc',
+                                       pattern: {
+                                          value: /^0\d{9,10}$/,
+                                          message: 'Vui lòng nhập đúng định dạng số điện thoại'
+                                       }
+                                    })}
                                     className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[10px]'
                                  />
                               </label>

@@ -61,11 +61,18 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
          const product = {
+            productName:data.productName,
             productId: data?._id,
             weight: 1
          };
-         await addCart(product).unwrap();
-         message.success('Thêm sản phẩm vào giỏ hàng thành công');
+         await addCart(product).unwrap().then(res => {
+            res
+           message.success('Thêm sản phẩm vào giỏ hàng thành công');
+         })
+         .catch(error => {
+            error 
+         message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
+         });
       } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
@@ -106,17 +113,23 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                   1200: {
                      slidesPerView: 3
                   },
+                  991:{
+                     spaceBetween:10
+                  },
                   767: {
-                     slidesPerView: 3
+                     slidesPerView: 3,
                   },
                   766: {
-                     slidesPerView: 2
+                     slidesPerView: 2,
+                     spaceBetween:10
                   },
                   400: {
-                     slidesPerView: 2
+                     slidesPerView: 2,
+                     spaceBetween:10
                   },
                   1: {
-                     slidesPerView: 1
+                     slidesPerView: 1,
+                     spaceBetween:10
                   }
                }}
                modules={[Navigation, Autoplay]}
@@ -141,12 +154,12 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                  <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
                                     <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
                                        <img
-                                          className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover object-left-bottom'
+                                          className='product-main-img lg:h-[331px] min-w-[100%] max-w-[100%] md:w-[212px] md:h-[257px] sm:h-[280px] object-center max-sm:w-full max-sm:h-[210px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover '
                                           src={item?.images[0]?.url}
                                           alt=''
                                        />
                                        <img
-                                          className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover object-left-bottom'
+                                          className='product-sub-img lg:h-[331px] min-w-[100%] max-w-[100%] md:w-[212px] md:h-[257px] sm:h-[280px] object-center  max-sm:w-full max-sm:h-[210px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover '
                                           src={item?.images[1]?.url}
                                           alt=''
                                        />

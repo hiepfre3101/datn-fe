@@ -8,8 +8,8 @@ import { FaArrowUp, FaPlus, FaWindowMinimize, FaInstagram } from 'react-icons/fa
 import { FiHeadphones, FiLogOut, FiLogIn } from 'react-icons/fi';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartItems, ICartSlice, removeFromCart } from '../../slices/cartSlice';
-import { Link } from 'react-router-dom';
+import { ICartItems, ICartSlice, removeFromCart, setItem } from '../../slices/cartSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
@@ -17,62 +17,69 @@ import { MdOutlineLockReset } from 'react-icons/md';
 import { logoUrl } from '../../constants/imageUrl';
 import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
-import { IAuth } from '../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
 import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { clientSocket } from '../../config/socket';
 import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
-import { Badge, message } from 'antd';
+import { Badge, message, notification } from 'antd';
 import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
 import { MdOutlineCancel } from 'react-icons/md';
 import SearchFilter from './Header/components/SearchFilter';
+import { formatStringToDate } from '../../helper';
+import { useDeleteNotificationMutation, useGetClientNotificationQuery, useUpdateNotificationMutation } from '../../services/notification';
+import { INotification } from '../../interfaces/notification';
+import { useClearTokenMutation } from '../../services/auth.service';
+import { IVoucher } from '../../slices/voucherSlice';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data: cartdb } = useGetCartQuery(undefined, { skip: !auth.user._id });
+   const { data: cartdb, refetch: refetchCart  } = useGetCartQuery(undefined, { skip: !auth.user._id });
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
    const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
-
+   const { data: clientNotification, refetch: refetchNoti } = useGetClientNotificationQuery(auth?.user?._id);
+   const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
    const [sendMessage] = useSendMessageMutation();
    const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
    const [openChat, setOpenChat] = useState(false);
    const dispatch = useDispatch();
    const { data } = useGetAllCateQuery({});
-   // const closeModalSearch = () => {
-   //    const bodyElement = document.querySelector('body');
-   //    bodyElement?.classList.toggle('overflow-hidden');
+   const [updateNotification] = useUpdateNotificationMutation();
+   const [deleteNotification] = useDeleteNotificationMutation();
+   const [clearToken] = useClearTokenMutation();
+   const navigate = useNavigate()
+   const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/');
+   };
+   useEffect(() => {
+      clientSocket.open();
+      const handlePurchaseNotification = (data: any) => {
+         refetchCart();
+         refetchNoti();
+         notification.info({
+            message: 'Bạn có thông báo mới',
+            description: data.data.message
+         });
+      };
+      if (auth?.user?._id) {
+         clientSocket.emit('joinClientRoom', JSON.stringify(auth?.user?._id));
+         clientSocket.on('purchaseNotification', handlePurchaseNotification);
+         clientSocket.on('statusNotification', handlePurchaseNotification);
+      }
 
-   //    const section_search_modal = document.querySelector('.section-search-modal');
-   //    const section_overlay_search = document.querySelector('.section-overlay-search');
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
-   //    }, 100);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('hidden');
-   //    }, 200);
-   //    setTimeout(() => {
-   //       section_overlay_search?.classList.toggle('hidden');
-   //    }, 400);
-   // };
-   // const showModalSearch = () => {
-   //    const bodyElement = document.querySelector('body');
-   //    bodyElement?.classList.toggle('overflow-hidden');
-
-   //    const section_search_modal = document.querySelector('.section-search-modal');
-   //    const section_overlay_search = document.querySelector('.section-overlay-search');
-   //    setTimeout(() => {
-   //       section_overlay_search?.classList.toggle('hidden');
-   //    }, 100);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('hidden');
-   //    }, 200);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
-   //    }, 400);
-   // };
+      return () => {
+         clientSocket.off('purchaseNotification', handlePurchaseNotification);
+         clientSocket.off('statusNotification', handlePurchaseNotification);
+         clientSocket.disconnect();
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -101,6 +108,15 @@ const Footer = () => {
       const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
       user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
    };
+   const showNotificationTag = () => {
+      const bodyElement = document.querySelector('body');
+      bodyElement?.classList.toggle('overflow-hidden');
+      const overlay_notifi_tag_mobile = document.querySelector('.overlay-noti-tag-mobile');
+      overlay_notifi_tag_mobile?.classList.toggle('!opacity-[0.15]');
+      overlay_notifi_tag_mobile?.classList.toggle('!visible');
+      const notifi_tag_mobile_content = document.querySelector('.noti-tag-mobile-content');
+      notifi_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
+   };
    const handleRemoveProductInCart = (item: ICartDataBaseItem | ICartItems) => {
       if (auth.user._id) {
          deleteProductInCartDB(item?.productId?._id).then((res) => {
@@ -115,6 +131,8 @@ const Footer = () => {
    const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
    });
+  
+   
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
@@ -297,7 +315,7 @@ const Footer = () => {
                            return (
                               <>
                                  <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                                    <Link to='dfa'>{item.cateName}</Link>
+                                    <Link to={'/collections?cate_id=' + item._id}>{item.cateName}</Link>
                                  </li>
                               </>
                            );
@@ -467,23 +485,33 @@ const Footer = () => {
                <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <div className='test relative w-[24px] h-[24px] m-auto '>
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
-
-                     <p className='custom-badge w-[16px] h-[16px] leading-[16px] rounded-[50%] text-[9px]  right-[-6px] top-[-1px] bg-[#d2401e] absolute text-white'>
-                        {cart?.length}
-                     </p>
+                     <Badge count={cart?.length} showZero={false} className='custom-badge    text-[9px]  right-[2px] top-[4px] absolute text-white'>
+                           <li
+                              onClick={showMiniCart}
+                              className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors  duration-300 cursor-pointer hover:text-[#d2401e]   '
+                           >
+                              <HiOutlineShoppingBag></HiOutlineShoppingBag>
+                           </li>
+                        </Badge>
+                    
                   </div>
                   <p className=' text-[10px] mt-[2px] sm:text-[12px]'>Giỏ hàng</p>
                </div>
-               <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
+          {auth.user?._id && <div  onClick={showNotificationTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <div className='test relative w-[24px] h-[24px] m-auto '>
                      <BsBell style={{ fontSize: '24px' }} />
-
-                     <p className='custom-badge w-[16px] h-[16px] leading-[16px] rounded-[50%] text-[9px]  right-[-6px] top-[-1px] bg-[#d2401e] absolute text-white'>
-                        0
-                     </p>
+                                 <Badge className='custom-badge    text-[9px]  right-[-5px] top-[-6px] absolute text-white'
+                                       count={
+                                          clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false)
+                                             .length
+                                       }
+                                       showZero={false}
+                                    >
+                                       
+                                    </Badge>
                   </div>
                   <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
-               </div>
+               </div>}
                <div onClick={showUserTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <UserOutlined style={{ fontSize: '24px' }} />
                   <p className='  text-[10px] sm:text-[12px]'>Tài khoản</p>
@@ -491,7 +519,7 @@ const Footer = () => {
             </div>
          </section>
          <section className='section-mini-cart '>
-            {cart?.length === 0 ? (
+            {cart?.length === 0 || cart?.length == undefined ? (
                <div className='cart-emty'>
                   <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                      <div
@@ -618,8 +646,8 @@ const Footer = () => {
                         </ul>
                      </div>
                      <div className='mini-cart-footer'>
-                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                           <span className='subtotal-title text-[16px] '>Subtotal:</span>
+                    {voucher._id &&  <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Tính tạm:</span>
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                               {auth.user._id
                                  ? cart
@@ -634,7 +662,52 @@ const Footer = () => {
                                       .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
+                        </div>}
+                     {voucher._id&&   <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Giảm giá:</span>
+                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                                - {voucher.maxReduce?voucher.maxReduce:auth.user._id
+                                 ? (cart
+                                    ?.reduce(
+                                       (accumulator: number, product: any) =>
+                                          accumulator +
+                                          (product.productId.price -
+                                             (product.productId.price * product.productId.discount) / 100) *
+                                             product.weight,
+                                       0
+                                    )*voucher.percent/100)
+                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                 : (totalPrice*voucher.percent/100)?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           </span>
+                        </div>}
+                        <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                           <span className='subtotal-title text-[16px] '>Tổng:</span>
+                           <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                              {auth.user._id
+                                 ?(( cart
+                                    ?.reduce(
+                                       (accumulator: number, product: any) =>
+                                          accumulator +
+                                          (product.productId.price -
+                                             (product.productId.price * product.productId.discount) / 100) *
+                                             product.weight,
+                                       0
+                                    )) -(voucher.maxReduce?voucher.maxReduce:auth.user._id
+                                       ? (cart
+                                          ?.reduce(
+                                             (accumulator: number, product: any) =>
+                                                accumulator +
+                                                (product.productId.price -
+                                                   (product.productId.price * product.productId.discount) / 100) *
+                                                   product.weight,
+                                             0
+                                          )*voucher.percent/100)
+                                           
+                                       : (totalPrice-(totalPrice*voucher.percent/100)))).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                       : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           </span>
                         </div>
+                     
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                            <Link
                               to={'/cart'}
@@ -665,7 +738,7 @@ const Footer = () => {
                <FaArrowUp></FaArrowUp>
             </div>
          </section>
-         <section className='user-tag-moble'>
+         <section className='user-tag-moble w-[320px]'>
             <div
                onClick={showUserTag}
                className='overlay-user-tag-mobile xl:hidden fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
@@ -677,39 +750,107 @@ const Footer = () => {
                         <FaXmark className='text-[20px]'></FaXmark>
                      </span>
                   </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                  {!auth.accessToken && <>
+                     <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to={'/login'} className='flex items-center gap-[5px] py-[5px]'>
+                        <FiLogIn></FiLogIn> Đăng nhập
+                     </Link>
+                  </li>
+                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to={'/signup'} className='flex items-center gap-[5px] py-[5px]'>
+                        <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
+                     </Link>
+                  </li>
+                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='forgetPassword' className='flex items-center gap-[5px] py-[5px]'>
+                        <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
+                     </Link>
+                  </li>
+                 
+                  </>}
+                  {auth.accessToken && <>
+                     <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
                         <PiUserListBold></PiUserListBold> Hồ sơ của bạn
                      </Link>
                   </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
                      <Link to='' className='flex items-center gap-[5px] py-[5px]'>
                         <RiBillLine></RiBillLine> Lịch sử mua hàng
                      </Link>
                   </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <FiLogIn></FiLogIn> Đăng nhập
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                  
+            
+                  <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                     <button  onClick={() => onHandleLogout()} className='flex items-center gap-[5px] py-[5px]'>
                         <FiLogOut></FiLogOut> Đăng xuất
-                     </Link>
+                     </button>
                   </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
-                     </Link>
-                  </li>
+                  </>}
+              
+                 
                </ul>
             </div>
          </section>
+         {auth.user?._id && <section className='noti-tag-moble '>
+            <div
+               onClick={showNotificationTag}
+               className='overlay-noti-tag-mobile xl:hidden  fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
+            ></div>
+            <div className='noti-tag-mobile-content w-[320px] transition duration-300 fixed top-0 left-0 h-full bg-white z-[8] min-w-[320px] translate-x-[-100%]'>
+               <ul>
+                  <li className='px-[15px] py-[10px] flex justify-end'>
+                     <span onClick={showNotificationTag} className='cursor-pointer text-center'>
+                        <FaXmark className='text-[20px]'></FaXmark>
+                     </span>
+                  </li>
+              
+                     <li className='px-[15px] py-[10px] '>
+         
+               
+                                    <div className='max-h-[450px] w-full overflow-scroll '>
+                                       {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
+                                          <div
+                                             key={index}
+                                             className='relative border-b-[1px] w-[270px] border-gray-400  p-2  '
+                                          >
+                                             <Link
+                                                onClick={async () => {
+                                                   await updateNotification({ id: noti._id, isRead: true });
+                                                }}
+                                                to={noti.link}
+                                                className='w-[270px] block'
+                                             >
+                                                {!noti.isRead && (
+                                                   <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
+                                                      !
+                                                   </span>
+                                                )}
+                                                <h1 className='font-bold break-words'>{noti.title}</h1>
+                                                <p className='text-gray-400 '>{noti.message}</p>
+                                                <span className='text-gray-400'>
+                                                   {formatStringToDate(noti.createdAt)}
+                                                </span>
+                                             </Link>
+                                             <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
+                                                <button
+                                                   onClick={async () => {
+                                                      await deleteNotification(noti._id);
+                                                   }}
+                                                   className='text-black-300 hover:underline'
+                                                >
+                                                   Xóa
+                                                </button>
+                                             </p>
+                                          </div>
+                                       ))}
+                                       
+                                    </div>
+                            </li>
+               </ul>
+            </div>
+         </section>}
+
       </>
    );
 };
