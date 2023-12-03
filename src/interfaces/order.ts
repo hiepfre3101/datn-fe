@@ -8,7 +8,7 @@ export interface IProductOrder {
    weight: number;
    price: number;
    productId: string;
-   evaluation: boolean
+   evaluation: boolean;
 }
 export interface IOrder {
    customerName: string;
@@ -21,7 +21,8 @@ export interface IOrder {
    userId: string | undefined;
    paymentMethod: 'cod' | 'momo';
    status?: string;
-   voucherCode?:string;
+   voucherCode?: string;
+   code?: string;
 }
 
 export type IOrderFull = {

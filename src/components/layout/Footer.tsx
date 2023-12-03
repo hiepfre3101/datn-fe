@@ -19,7 +19,7 @@ import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
 import { IAuth } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
 import { clientSocket } from '../../config/socket';
 import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
 import { Badge, message } from 'antd';
@@ -112,7 +112,7 @@ const Footer = () => {
       }
    };
    const [messages, setMesssages] = useState<string>();
-   const { data: chat, refetch } = useGetOneChatUserQuery(auth?.user?._id, {
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
    });
    useEffect(() => {
@@ -138,8 +138,8 @@ const Footer = () => {
          updateIsRead(auth.user._id);
       }
    }, [chat, openChat]);
-   const handleChangeMessage = (e: React.FormEvent) => {
-      setMesssages(e.target.value);
+   const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target) setMesssages(e.target.value);
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();

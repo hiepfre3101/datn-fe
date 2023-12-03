@@ -55,7 +55,7 @@ const CheckOutPage = () => {
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
 
    useEffect(() => {
-      if (!cart || cart?.products.length === 0 || cart?.length === 0) {
+      if ((cart?.products && cart?.products.length === 0) || cart?.length === 0) {
          navigate('/');
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -66,6 +66,7 @@ const CheckOutPage = () => {
          let status = true;
          if (voucher._id) {
             const total = cartdb?.body.data.products?.reduce(
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
                (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
                0
             );
@@ -101,26 +102,27 @@ const CheckOutPage = () => {
          await refetch().then((res) => {
             if (res?.data?.body?.errors as any) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item: any) => {
-                  if (item.message == 'The remaining quantity is not enough!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Số lượng trong kho của sản phẩm' +
-                           item.productName +
-                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
-                     ]);
-                  } else if (item.message == 'Product is currently out of stock!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã hết hàng'
-                     ]);
-                  } else if (item.message == 'Product is no longer available!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
-                     ]);
-                  }
-               });
+               res.data &&
+                  res.data.body.errors.map((item: any) => {
+                     if (item.message == 'The remaining quantity is not enough!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Số lượng trong kho của sản phẩm' +
+                              item.productName +
+                              ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                        ]);
+                     } else if (item.message == 'Product is currently out of stock!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Sản phẩm' + item.productName + ' đã hết hàng'
+                        ]);
+                     } else if (item.message == 'Product is no longer available!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
+                        ]);
+                     }
+                  });
             } else {
                temp = status ? true : false;
             }
