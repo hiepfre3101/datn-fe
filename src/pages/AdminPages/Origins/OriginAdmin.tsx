@@ -1,11 +1,10 @@
-import { PlusCircleOutlined, SearchOutlined } from '@ant-design/icons';
+import { PlusCircleOutlined } from '@ant-design/icons';
 import { Card, Layout, Popconfirm, Popover } from 'antd';
 import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { useGetAllOriginQuery, useRemoveOriginByIdMutation } from '../../../services/origin.service';
 const OriginAdmin = () => {
    const { data, isLoading } = useGetAllOriginQuery();
-
    const [removeCategory] = useRemoveOriginByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const handleDelete = (id: any) => {
@@ -31,24 +30,13 @@ const OriginAdmin = () => {
                </div>
 
                <div className='w-[90%] min-h-[100vh] bg-white rounded-lg mt-5'>
-                  <header className='flex justify-start gap-4 items-center px-5 py-5'>
-                     <div className='flex justify-between items-center max-w-[50%] gap-2 rounded-[100px] border-[1px] border-[#80b235] p-2'>
-                        <SearchOutlined style={{ fontSize: '1rem', color: '#80b235' }} />
-                        <input
-                           type='text'
-                           className='text-sm outline-none border-none w-full flex-1'
-                           placeholder='Tìm kiếm nguồn gốc'
-                        />
-                     </div>
-                  </header>
-
                   <div className='flex gap-7 flex-wrap justify-start' style={{ margin: 30 }}>
                      {isLoading
                         ? 'loading'
                         : data?.body.data.map((origin, index) => {
                              return (
                                 <Card
-                                   className={`w-[200px] h-[100px] lg:w-[300px] lg:h-[100px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
+                                   className={`w-[200px] h-[100px] lg:w-[250px] lg:h-[100px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
                                    key={index}
                                 >
                                    <div className='flex justify-between '>
