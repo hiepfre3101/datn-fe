@@ -49,21 +49,19 @@ const QuickView = ({ product_info }: QuickViewProp) => {
       }
    };
    const add_to_cart = async () => {
-      if (inputWeight != '' && !inputWeight.endsWith('.')) {
+      if (inputWeight != '') {
          if (auth.user._id) {
             const product = {
                productId: product_info[0]?._id,
                productName: product_info[0]?.productName,
                weight: inputWeight
             };
-            await addCart(product).unwrap().then(res => {
-               res
-              message.success('Cập nhật sản phẩm thành công');
-            })
-            .catch(error => {
-               error 
-            message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
-            });
+            await addCart(product)
+               .unwrap()
+               .catch((res) => {
+                  res
+                  message.error("Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có");
+               });
          } else {
             const product = {
                productId: {
@@ -80,7 +78,6 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                totalWeight: totalWeight
             };
             dispatch(addItem(product));
-            message.success('Đã thêm sản phẩm vào giỏ hàng');
          }
       } else {
          setinputWeight(0.5);
@@ -134,8 +131,8 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                         {product_info[0]?.productName}
                      </div>
                      <span className='product-origin text-[14px]'>
-                        Thương hiệu:
-                        <strong className='text-[#51A55C]'>{product_info[0]?.shipments[0]?.origin}</strong>
+                        Xuất sứ:
+                        <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
                      </span>
                   </div>
                   {product_info[0]?.shipments.length > 0 && (

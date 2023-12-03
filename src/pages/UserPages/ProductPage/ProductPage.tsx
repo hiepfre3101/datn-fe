@@ -52,6 +52,8 @@ const ProductPage = () => {
       sort: filter.field.sort,
       order: filter.field.order
    });
+
+   
    useEffect(()=>{
       if (filter.setfield) {
          filter.setfield({

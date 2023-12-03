@@ -120,7 +120,11 @@ const CheckOut = () => {
                   if (error.data.message == 'Voucher does not exist!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá không tồn tại']);
                      dispatch(remoteVoucher());
-                  } else if (error.data.message == 'Voucher is out of quantity!') {
+                  } else if (error.data.message == 'Voucher does not work!') {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá không hoạt động']);
+                     dispatch(remoteVoucher());
+                  }
+                   else if (error.data.message == 'Voucher is out of quantity!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết']);
                      dispatch(remoteVoucher());
                   } else if (error.data.message == 'Voucher is out of date') {

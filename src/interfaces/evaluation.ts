@@ -13,6 +13,7 @@ export interface IEvaluation {
 export interface IEvaluationFull {
     _id:string;
     userId : {
+        avatar:string;
         userName: string
         phoneNumber: string
         rate: number

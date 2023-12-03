@@ -26,6 +26,13 @@ const evaluation = createApi({
          }),
          providesTags: ['evaluation']
       }),
+      getEvaluationBestRateLimit: builder.query<IResponse<IEvaluationFull[]>,void>({
+         query: () => ({
+            url: '/evaluation/?_rate=5&_limit=10',
+            method: 'GET',
+            credentials: 'include'
+         }),
+      }),
       getEvaluationByProductId: builder.query<IResponse<IEvaluationFull[]>,string>({
         query: (id) => ({
            url: '/evaluationByProductId/' + id,
@@ -54,5 +61,5 @@ const evaluation = createApi({
    })
 });
 
-export const { useGetAllEvaluationQuery, useGetOneEvaluationByIdQuery, useGetEvaluationByProductIdQuery, useAddEvaluationMutation, useUpdateEvaluationMutation } = evaluation;
+export const { useGetAllEvaluationQuery,useGetEvaluationBestRateLimitQuery, useGetOneEvaluationByIdQuery, useGetEvaluationByProductIdQuery, useAddEvaluationMutation, useUpdateEvaluationMutation } = evaluation;
 export default evaluation;
