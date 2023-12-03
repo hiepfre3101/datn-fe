@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const BannerSales = () => {
    return (
       <div>
@@ -5,7 +7,7 @@ const BannerSales = () => {
             <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                <div className='banner-content flex flex-wrap  md:gap-[30px] max-md:gap-[12px] justify-between'>
                   <div className='banner-item md:w-[calc(50%-15px)] max-md:w-[100%] '>
-                     <a href='#' className='banner-img flex items-center relative'>
+                     <Link to='/collections' className='banner-img flex items-center relative'>
                         <img
                            className='w-full rounded-[5px]'
                            src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/banner/banner-1.png'
@@ -22,10 +24,10 @@ const BannerSales = () => {
                               MUA NGAY
                            </p>
                         </div>
-                     </a>
+                     </Link>
                   </div>
                   <div className='banner-item md:w-[calc(50%-15px)] max-md:w-[100%]   '>
-                     <a href='#' className='banner-img flex items-center relative'>
+                     <Link to='/collections' className='banner-img flex items-center relative'>
                         <img
                            className='w-full rounded-[5px]'
                            src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/banner/banner-2.png'
@@ -42,7 +44,7 @@ const BannerSales = () => {
                               MUA NGAY
                            </p>
                         </div>
-                     </a>
+                     </Link>
                   </div>
                </div>
             </div>

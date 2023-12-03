@@ -1,4 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useMemo } from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Autoplay, Navigation } from 'swiper/modules';
@@ -46,6 +47,17 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
       }, 300);
       dispatch(saveProduct(data));
    };
+   const calAvgRate = useMemo(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      () => (evaluations: any[]) => {
+         const totalRate = evaluations.reduce((rate, item) => {
+            return (rate += Number(item.evaluatedId.rate));
+         }, 0);
+         return totalRate / evaluations.length;
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [products]
+   );
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
          const product = {
@@ -63,7 +75,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                _id: data?._id,
                productName: data?.productName,
                images: [{ url: data?.images[0].url }],
-               price: data?.price-(data?.price*data?.discount)/100,
+               price: data?.price - (data?.price * data?.discount) / 100,
                originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
@@ -173,11 +185,11 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                           }
                                        }}
                                     >
-                                       <Rate allowHalf disabled defaultValue={4.5} />
+                                       <Rate allowHalf disabled value={calAvgRate(item.evaluated)} />
                                     </ConfigProvider>
                                  </div>
                                  <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                                    {(item?.price-(item?.price*item?.discount)/100)?.toLocaleString('vi-VN', {
+                                    {(item?.price - (item?.price * item?.discount) / 100)?.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}

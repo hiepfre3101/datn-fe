@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { IShipmentOfProduct } from './shipment';
 
 export interface IProduct {
@@ -23,7 +24,7 @@ export interface IProduct {
            _id: string;
         };
    isSale: boolean;
-
+   evaluated: any[];
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
@@ -41,7 +42,7 @@ export interface IProductExpanded extends IProduct {
 export interface IDescProp {
    desc: string | undefined;
    originName: string;
-   productId: string
+   productId: string;
 }
 export interface IProductInfoProp {
    product_info: IProductExpanded | undefined;
@@ -51,11 +52,9 @@ export interface IObjIdForGetRelatedProducts {
    idProduct: string | undefined;
 }
 
-
 export interface InputSaleProduct {
    productId: string;
    shipmentId: string;
    productName: string;
    discount: number;
 }
-
