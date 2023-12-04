@@ -7,13 +7,30 @@ import BannerSales from './components/BannerSales';
 import BestSellerProducts from './components/BestSellerProducts';
 import HappyClient from './components/HappyClient';
 import { useGetAllLiquidationProductQuery, useGetNewProductInStorageQuery, useGetProductSoldDescLimitQuery } from '../../../services/product.service';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
-   const {data: liquidationProducts} = useGetAllLiquidationProductQuery()
-   const {data: ProductSoldBest} = useGetProductSoldDescLimitQuery()
-   const {data: NewProduct} = useGetNewProductInStorageQuery()   
+   const { data: liquidationProducts } = useGetAllLiquidationProductQuery()
+   const { data: ProductSoldBest } = useGetProductSoldDescLimitQuery()
+   const { data: NewProduct } = useGetNewProductInStorageQuery()
+   const navigate = useNavigate()
+   const location = useLocation();
+   useEffect(() => {
+      const searchParams = new URLSearchParams(location.search);
+      // Chuyển đổi đối tượng thành chuỗi query URL
+      if (searchParams.toString()) {
+         const queryString = [...searchParams.entries()]
+         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+         .join('&');
+         
+         // Kết quả
+         const result = `?${queryString}`;
+         navigate('/vnpay_return' + result)
+      }
+   }, [location, navigate]);
    return (
-   
+
       <>
          <div className='main '>
             <SlideCateHomePage></SlideCateHomePage>
