@@ -303,8 +303,6 @@ const CheckOut = () => {
          });
       showModal();
    };
-   console.log(listVoucher);
-
    return (
       <div>
          <div className='cart-total'>

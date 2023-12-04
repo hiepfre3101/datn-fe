@@ -120,6 +120,39 @@ const Footer = () => {
          dispatch(removeFromCart({ id: item.productId._id }));
       }
    };
+   console.log(cartdb);
+   
+   const [subtotal,setSubtotal] = useState<number>(0)
+   const [discount,setDiscount] = useState<number>(0)
+   useEffect(()=>{
+      if(auth.user._id) {
+         const temp = cartdb?.body.data.products?.reduce((cal:any, product:any) => {
+            console.log(product);
+            return cal + (product.weight * product.productId.price);
+        }, 0);
+       
+        
+        if(temp!==undefined){
+         setSubtotal(temp)
+        }
+      }
+    
+   },[data,voucher,cartdb])
+   useEffect(()=>{
+      if(voucher && auth.user._id){
+         if(voucher?.maxReduce){
+            if(voucher.maxReduce<subtotal){
+               setDiscount(voucher.maxReduce)
+            }else{
+               setDiscount((subtotal*voucher.percent/100))
+            }
+            
+         }
+         else{
+            setDiscount((subtotal*voucher.percent/100))
+         }
+      }
+   },[data,subtotal,voucher])
    const [messages, setMesssages] = useState<string>();
    const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
@@ -645,49 +678,20 @@ const Footer = () => {
                         </ul>
                      </div>
                      <div className='mini-cart-footer'>
-                        {voucher._id && (
+                        {voucher._id && auth.user._id && (
                            <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                               <span className='subtotal-title text-[16px] '>Tính tạm:</span>
                               <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                                 {auth.user._id
-                                    ? cart
-                                         ?.reduce(
-                                            (accumulator: number, product: any) =>
-                                               accumulator +
-                                               (product.productId.price -
-                                                  (product.productId.price * product.productId.discount) / 100) *
-                                                  product.weight,
-                                            0
-                                         )
-                                         .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                    : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 {subtotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
                         )}
-                        {voucher._id && (
+                        {voucher._id && auth.user._id && (
                            <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                               <span className='subtotal-title text-[16px] '>Giảm giá:</span>
                               <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                                 -{' '}
-                                 {voucher.maxReduce
-                                    ? voucher.maxReduce
-                                    : auth.user._id
-                                    ? (
-                                         (cart?.reduce(
-                                            (accumulator: number, product: any) =>
-                                               accumulator +
-                                               (product.productId.price -
-                                                  (product.productId.price * product.productId.discount) / 100) *
-                                                  product.weight,
-                                            0
-                                         ) *
-                                            voucher.percent) /
-                                         100
-                                      ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                    : ((totalPrice * voucher.percent) / 100)?.toLocaleString('vi-VN', {
-                                         style: 'currency',
-                                         currency: 'VND'
-                                      })}
+                                 -
+                                {discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
                         )}

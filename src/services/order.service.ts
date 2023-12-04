@@ -84,7 +84,7 @@ const orderApi = createApi({
          },
          invalidatesTags: ['orders-member', 'detail-order']
       }),
-      getOneOrderForMember: builder.query<IResponse<IOrderFull>, string>({
+      getOneOrderForMember: builder.query<IResponse<IOrderFull> & {body:{data:IOrderFull,voucher:any}}, string>({
          query: (idOrder) => {
             return {
                url: 'orders/' + idOrder,
