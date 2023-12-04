@@ -243,6 +243,9 @@ const router = createBrowserRouter([
          // }
       ]
    }
-]);
+],
+   {
+      basename: '/'
+   });
 
 export default router;
