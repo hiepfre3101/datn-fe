@@ -42,8 +42,11 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
             <span className='text-black font-semibold'>{product.productName}</span>
          </div>
          <div className='flex justify-start gap-2 items-center'>
-            <span>{product.weight}x</span>
-            <span className='text-lg text-black'>{product.price}</span>
+            <span>{product.weight} x</span>
+            <span className='text-lg text-black'>{product.price.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}</span>
             {statusOrder === DONE_ORDER.toLowerCase() && !product?.evaluation ? (
                <button
                   onClick={() => setIsOpen(true)}

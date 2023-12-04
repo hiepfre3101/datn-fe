@@ -20,7 +20,7 @@ import { useGetAllCateQuery } from '../../../services/cate.service';
 import { clientSocket } from '../../../config/socket';
 import SearchFilter from './components/SearchFilter';
 import { LuUser2 } from 'react-icons/lu';
-import { CiHeart } from 'react-icons/ci';
+import { GoHeart } from "react-icons/go";
 import {
    useDeleteNotificationMutation,
    useGetClientNotificationQuery,
@@ -183,25 +183,25 @@ const Header = () => {
                      onClick={showMenuReponsive}
                      className='overlay-menu-homepage xl:hidden fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
                   ></div>
-                  <div className='header-menu overflow-scroll xl:w-[60%] max-xl:fixed  max-xl:transition-all max-xl:duration-500 max-xl:translate-x-[-100%]  max-xl:bottom-0 top-0 left-0 w-[320px] max-xl:z-[8] max-xl:bg-white'>
+                  <div className='header-menu max-xl:overflow-scroll  xl:w-[60%] max-xl:fixed  max-xl:transition-all max-xl:duration-500 max-xl:translate-x-[-100%]  max-xl:bottom-0 top-0 left-0 w-[320px] max-xl:z-[8] max-xl:bg-white'>
                      <ul className='main-menu  flex max-xl:flex  max-xl:flex-col'>
                         <li className='cursor-pointer main-menu-item text-[20px] flex justify-end xl:hidden  xl:py-[40px] xl:px-[15px] font-extrabold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[10px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2]'>
                            <span onClick={showMenuReponsive} className='cursor-pointer'>
                               <FaXmark className='text-[20px]'></FaXmark>
                            </span>
                         </li>
-                        <li className=' cursor-pointer main-menu-item group/menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative'>
+                        <li onClick={showMenuReponsive} className=' cursor-pointer main-menu-item group/menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group  max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative'>
                            <Link
                               to='/'
-                              className='group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px] '
+                              className='group-hover:text-[#51A55C] block after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px] '
                            >
                               Trang chủ
                            </Link>
                         </li>
-                        <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
+                        <li onClick={showMenuReponsive} className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
                            <Link
                               to='/introduct'
-                              className='group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
+                              className=' block group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
                            >
                               Giới thiệu
                            </Link>
@@ -247,12 +247,20 @@ const Header = () => {
                               })}
                            </ul>
                         </div>
-                        <li className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
+                        <li  onClick={showMenuReponsive} className='cursor-pointer  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
                            <Link
                               to='/contact'
-                              className='group-hover:text-[#51A55C] after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
+                              className='group-hover:text-[#51A55C] block after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
                            >
                               Liên hệ
+                           </Link>
+                        </li>
+                        <li onClick={showMenuReponsive} className='cursor-pointer sm:hidden max-sm:block  main-menu-item text-[17px] xl:py-[40px] xl:px-[15px] font-bold group max-xl:text-[#6f6f6f] max-xl:text-[14px] max-xl:py-[10px] max-xl:px-[15px] max-xl:border-t-[1px]  max-xl:border-[#e2e2e2] relative group/menu-item'>
+                           <Link
+                              to='/wishList'
+                              className='group-hover:text-[#51A55C] block after:content-[""] after:w-[0] after:h-[2px] after:bg-[#51A55C] after:max-xl:hidden after:transition-all after:duration-300 group-hover/menu-item:after:w-[calc(100%-30px)] after:block after:absolute after:bottom-0 after:left-[15px]'
+                           >
+                             Sản phẩm yêu thích
                            </Link>
                         </li>
                      </ul>
@@ -368,6 +376,7 @@ const Header = () => {
                                     />
                                  </Popover>
                               </li>
+                              
                               <Popover
                                  placement='bottom'
                                  content={
@@ -429,6 +438,11 @@ const Header = () => {
                               </Popover>
                            </>
                         )}
+                        <li  className='max-sm:hidden header-icon-item header-search-icon  ml-[30px] relative transition-colors duration-300    '>
+                           <Link to='/wishList' className='text-black text-[20px] font-thin cursor-pointer hover:text-[#d2401e]'>
+                              <GoHeart />
+                           </Link>
+                        </li>
                         <Badge className='max-sm:hidden' count={totalProductInCart} showZero={false}>
                            <li
                               onClick={showMiniCart}
@@ -437,11 +451,7 @@ const Header = () => {
                               <HiOutlineShoppingBag></HiOutlineShoppingBag>
                            </li>
                         </Badge>
-                        <li className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors duration-300 cursor-pointer hover:text-[#d2401e]   '>
-                           <Link to='/wishList'>
-                              <CiHeart />
-                           </Link>
-                        </li>
+                        
                      </ul>
                   </div>
                </div>

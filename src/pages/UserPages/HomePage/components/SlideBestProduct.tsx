@@ -50,10 +50,10 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const calAvgRate = useMemo(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       () => (evaluations: any[]) => {
-         const totalRate = evaluations.reduce((rate, item) => {
+         const totalRate = evaluations?.reduce((rate, item) => {
             return (rate += Number(item.evaluatedId.rate));
          }, 0);
-         return totalRate / evaluations.length;
+         return totalRate / evaluations?.length;
       },
       // eslint-disable-next-line react-hooks/exhaustive-deps
       [products]

@@ -13,7 +13,8 @@ const WishListPage = () => {
    };
    const totalProductInWishList = useSelector((state: { wishList: any }) => state?.wishList?.items.length);
    return (
-      <div>
+      <div className='mx-auto px-[15px] flex  3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
+   <div>
          {wishList?.items?.length <= 0 ? (
             <div className='cart-emty'>
                <p className='cart-title xl:text-[30px]  border-[#e2e2e2] max-xl:text-[18px] text-[#51A55C] font-bold items-center text-center pb-[12px]'>
@@ -31,26 +32,26 @@ const WishListPage = () => {
                </div>
             </div>
          ) : (
-            <div className='flex flex-col items-center w-full p-6 space-y-4 sm:p-10 dark:bg-gray-900 dark:text-gray-100'>
+            <div className='flex  flex-col items-center  w-full p-6 space-y-4 sm:p-10 dark:bg-gray-900 dark:text-gray-100'>
                <h2 className='text-xl font-semibold'> {totalProductInWishList} sản phẩm yêu thích</h2>
+               <div className='flex gap-x-[50px] flex-wrap '>
                {wishList?.items?.map((item: any, index: number) => (
-                  <ul key={index} className='flex flex-col divide-y dark:divide-gray-700'>
-                     <li className='flex flex-col py-6 sm:flex-row sm:justify-between'>
-                        <div className='flex w-full space-x-2 sm:space-x-4'>
+                  <ul key={index} className='flex flex-col divide-y dark:divide-gray-700 xl:max-w-[30%] sm:w-[100%]'>
+                     <li className='flex flex-col py-6 sm:flex-row sm:justify-between '>
+                        <div className='flex w-full space-x-2 sm:space-x-4 max-sm:items-center max-sm:flex-wrap ' >
                            <img
-                              className='flex-shrink-0 object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500'
+                              className='flex-shrink-0 max-sm:m-auto  max-sm:w-[300px] max-sm:h-[200px] object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500'
                               src={item.images[0].url}
                               alt='Polaroid camera'
                            />
-                           <div className='flex flex-col justify-between w-full pb-4'>
-                              <div className='flex justify-between w-full pb-2 space-x-2'>
+                           <div className='flex flex-col justify-between w-full pb-4 '>
+                              <div className='flex max-sm:flex-col justify-between w-full pb-2 space-x-2 '>
                                  <div className='space-y-1'>
-                                    <h3 className='text-lg font-semibold leadi sm:pr-8'>{item.name}</h3>
+                                    <h3 className='text-lg font-semibold leadi sm:pr-8'>{item.productName}</h3>
                                     <p className='text-sm dark:text-gray-400'>{item.originId.name}</p>
                                  </div>
-                                 <div className='text-right'>
+                                 <div className='sm:text-right max-sm:flex max-sm:items-center max-sm:gap-x-[20px] max-sm:!ml-[0px]'>
                                     <p className='text-lg font-semibold'>
-                                       {' '}
                                        {item?.discount > 0
                                           ? (item?.price - (item?.price * item?.discount) / 100).toLocaleString(
                                                'vi-VN',
@@ -104,6 +105,8 @@ const WishListPage = () => {
                      </li>
                   </ul>
                ))}
+               </div>
+             
                <div className='flex justify-end space-x-4'>
                   <Link to={'/collections'} className='px-6 py-2 border rounded-md dark:border-violet-400'>
                      Trở về trang sản phẩm
@@ -112,6 +115,8 @@ const WishListPage = () => {
             </div>
          )}
       </div>
+      </div>
+   
    );
 };
 
