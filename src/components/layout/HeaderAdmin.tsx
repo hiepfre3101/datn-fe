@@ -88,10 +88,16 @@ const HeaderAdmin = () => {
       adminSocket.on('purchaseNotification', handlePurchaseNotification);
       adminSocket.on('expireProduct', handlePurchaseNotification);
       adminSocket.on('adminStatusNotification', handlePurchaseNotification);
+      adminSocket.on('updatemess', () => {
+         if (audioPlayer.current !== null) {
+            audioPlayer.current.play()
+         }
+      });
       return () => {
          adminSocket.off('purchaseNotification', handlePurchaseNotification);
          adminSocket.off('adminStatusNotification', handlePurchaseNotification);
          adminSocket.off('expireProduct', handlePurchaseNotification);
+         adminSocket.off('updatemess');
          adminSocket.disconnect();
       };
    }, [auth, location.pathname]);

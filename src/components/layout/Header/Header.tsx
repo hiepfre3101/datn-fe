@@ -13,7 +13,7 @@ import { useClearTokenMutation } from '../../../services/auth.service';
 import { IAuth, deleteTokenAndUser } from '../../../slices/authSlice';
 import { Badge, Popover, Tooltip, notification } from 'antd';
 import { logoUrl } from '../../../constants/imageUrl';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useRef } from 'react';
 import { BsBell } from 'react-icons/bs';
 import { PiPackageLight, PiUserListBold } from 'react-icons/pi';
 import { useGetAllCateQuery } from '../../../services/cate.service';
@@ -29,11 +29,13 @@ import {
 import { INotification } from '../../../interfaces/notification';
 import { formatStringToDate } from '../../../helper';
 import { useGetCartQuery } from '../../../services/cart.service';
+import NotificationSound from '../../../assets/notification-sound.mp3';
 
 const Header = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
    const { data: cartdb, refetch: refetchCart } = useGetCartQuery(undefined, { skip: !showfetch });
+   const audioPlayer = useRef<HTMLAudioElement | null>(null)
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -86,6 +88,9 @@ const Header = () => {
       const handlePurchaseNotification = (data: any) => {
          refetchCart();
          refetch();
+         if (audioPlayer.current !== null) {
+            audioPlayer.current.play()
+         }
          notification.info({
             message: 'Bạn có thông báo mới',
             description: data.data.message
@@ -440,6 +445,7 @@ const Header = () => {
                      </ul>
                   </div>
                </div>
+               <audio ref={audioPlayer} src={NotificationSound} />
             </section>
          </header>
       </div>
