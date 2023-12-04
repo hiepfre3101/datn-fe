@@ -7,6 +7,7 @@ import { IAuth } from '../../../slices/authSlice';
 import { useSelector } from 'react-redux';
 import { formatStringToDate } from '../../../helper';
 import { Badge } from 'antd';
+import NotificationSound from '../../../assets/notification-sound.mp3';
 
 const ChatAdmin = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -16,6 +17,7 @@ const ChatAdmin = () => {
    const [message, setMesssage] = useState<string>();
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const { data: messagesInARoom, refetch } = useGetOneChatQuery(room, { skip: room == '0' });
+   const audioPlayer = useRef<HTMLAudioElement | null>(null)
    useEffect(() => {
       if (room != '0') {
          refetch();
@@ -24,14 +26,13 @@ const ChatAdmin = () => {
    useEffect(() => {
       adminSocket.open();
       const handleUpdateChat = async () => {
+         if (audioPlayer.current !== null) {
+            audioPlayer.current.play()
+         }
          getAllRefetch();
          refetch();
       };
       adminSocket.on('updatemess', handleUpdateChat);
-      return () => {
-         adminSocket.off('updatemess', handleUpdateChat);
-         adminSocket.disconnect();
-      };
    }, [auth]);
    useEffect(() => {
       if (scrollRef.current) {
@@ -57,6 +58,7 @@ const ChatAdmin = () => {
    return (
       <>
          <section className='list-Chat bg-white flex w-full'>
+            <audio ref={audioPlayer} src={NotificationSound} />
             <div className='left border-[#E5E5E5] border-[1px] px-[5px] w-[30%] relative'>
                {data?.body.data.map((item: any) => {
                   if (item.roomChatId?.role == 'member') {
