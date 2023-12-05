@@ -32,6 +32,7 @@ import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
 import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
+import Account from '../pages/AdminPages/Account/Account';
 
 const router = createBrowserRouter([
    {
@@ -200,7 +201,12 @@ const router = createBrowserRouter([
             path: 'update-origin/:id',
             element: <UpdateOrigin />,
             errorElement: <NotFoundPage />
-         }
+         },
+         {
+            path: 'account',
+            element: <Account />,
+            errorElement: <NotFoundPage />
+         },
 
          // {
          //    path: 'accounts',
