@@ -1,10 +1,11 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IResponse } from '../interfaces/base';
 import { INotification } from '../interfaces/notification';
+import { baseUrl } from '../constants/baseUrl';
 const notification = createApi({
    reducerPath: 'notification',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['notification'],

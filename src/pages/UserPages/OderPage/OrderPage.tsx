@@ -30,14 +30,18 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day });
+   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day }, { refetchOnMountOrArgChange: true });
    const [handleCancelOrder, { isLoading: loadingCancel }] = useCancelOrderMemberMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
-      const data = await handleCancelOrder(id);
-      console.log(data);
-      clientSocket.emit('confirmOrder', JSON.stringify(data));
-      message.success('Hủy đơn hàng thành công !');
+      const dataCart = await handleCancelOrder(id);
+      if ('data' in dataCart)
+         if ('body' in dataCart.data) {
+            if (dataCart.data.body.data) {
+               clientSocket.emit('confirmOrder', JSON.stringify(dataCart.data.body.data));
+               message.success('Hủy đơn hàng thành công !');
+            }
+         }
    };
 
    const handleSubmit = async (invoiceId: string) => {

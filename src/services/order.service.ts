@@ -4,9 +4,10 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { IOrder, IOrderFull } from '../interfaces/order';
 import { IQueryParam, IResponseHasPaginate } from '../interfaces/base';
 import { paramTransformer } from '../utils/transformParams';
+import { baseUrl } from '../constants/baseUrl';
 const orderApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include',
       prepareHeaders: (headers) => {
          headers.set('Access-Control-Allow-Origin', '*');
@@ -83,7 +84,7 @@ const orderApi = createApi({
          },
          invalidatesTags: ['orders-member', 'detail-order']
       }),
-      getOneOrderForMember: builder.query<IResponse<IOrderFull>, string>({
+      getOneOrderForMember: builder.query<IResponse<IOrderFull> & {body:{data:IOrderFull,voucher:any}}, string>({
          query: (idOrder) => {
             return {
                url: 'orders/' + idOrder,

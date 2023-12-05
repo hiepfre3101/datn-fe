@@ -4,7 +4,7 @@ import { useGetAllQuery, useRemoveUserMutation } from '../../../services/user.se
 
 
 const Account = () => {
-    const { data } = useGetAllQuery();
+    const { data } = useGetAllQuery({});
     
     const [removeUser] = useRemoveUserMutation();
     const onHandleDelete = (id: any) => {

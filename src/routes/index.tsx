@@ -28,11 +28,18 @@ import IntroducePage from '../pages/UserPages/IntroducePage/IntroducePage';
 import VoucherAdmin from '../pages/AdminPages/Voucher/VoucherAdmin';
 import AddVoucher from '../pages/AdminPages/Voucher/AddVoucher';
 import UpdateVoucher from '../pages/AdminPages/Voucher/UpdateVoucher';
+
+import ChatAdmin from '../pages/AdminPages/Chat/ChatAdmin';
+
 import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
 import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
 import Account from '../pages/AdminPages/Account/Account';
+import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
+import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
+import ForgetPassword from '../pages/UserPages/ForgetPassword/ForgetPassword';
+import WishListPage from '../pages/UserPages/WishListPage/WishListPage';
 
 const router = createBrowserRouter([
    {
@@ -98,6 +105,20 @@ const router = createBrowserRouter([
          {
             path: 'introduct',
             element: <IntroducePage />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'userInformation',
+            element: <UserInfoPage />,
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'forgetPassword',
+            element: <ForgetPassword />
+         },
+         {
+            path: 'wishList',
+            element: <WishListPage />,
             errorElement: <NotFoundPage />
          }
       ]
@@ -183,6 +204,10 @@ const router = createBrowserRouter([
             errorElement: <NotFoundPage />
          },
          {
+            path: 'chat',
+            element: <ChatAdmin />
+         },
+         {
             path: 'evaluation',
             element: <Evaluation />,
             errorElement: <NotFoundPage />
@@ -200,6 +225,12 @@ const router = createBrowserRouter([
          {
             path: 'update-origin/:id',
             element: <UpdateOrigin />,
+
+            errorElement: <NotFoundPage />
+         },
+         {
+            path: 'unsoldproduct',
+            element: <UnSoldProduct />,
             errorElement: <NotFoundPage />
          },
          {
@@ -218,6 +249,9 @@ const router = createBrowserRouter([
          // }
       ]
    }
-]);
+],
+   {
+      basename: '/'
+   });
 
 export default router;

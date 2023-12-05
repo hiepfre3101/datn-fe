@@ -1,4 +1,4 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
@@ -19,15 +19,16 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
             navigation={true}
             thumbs={{ swiper: thumbsSwiper && !thumbsSwiper['destroyed'] ? thumbsSwiper : null }}
             modules={[FreeMode, Navigation, Thumbs]}
-        className="mySwiper2 product-detail-slide rounded-[5px]"
-      >
-               {body?.map((item) => {
+            className='mySwiper2 product-detail-slide rounded-[5px]'
+         >
+            {body?.map((item) => {
                return (
-                  <>
-                     <SwiperSlide  className='border  sm:h-[527px] max-sm:h-[400px] border-[#e2e2e2] max-h-[400px]' >
-                        <img className='w-full h-full rounded-[5px]' src={item.url} />
-                     </SwiperSlide>
-                  </>
+                  <SwiperSlide
+                     className='border  sm:h-[527px] max-sm:h-[400px] border-[#e2e2e2] max-h-[400px]'
+                     key={item.public_id}
+                  >
+                     <img className='w-full h-full rounded-[5px]' src={item.url} />
+                  </SwiperSlide>
                );
             })}
          </Swiper>
@@ -55,12 +56,9 @@ export default function ProductThumbsGallery({ body }: IImageResponse) {
             {body?.map((item) => {
                return (
                   <>
-                      <SwiperSlide  className='cursor-pointer w-[115px] h-[140px]'>
-               <img
-                  className=' h-full w-full  rounded-[5px]'
-                  src={item.url}
-               />
-            </SwiperSlide>
+                     <SwiperSlide className='cursor-pointer w-[115px] h-[140px]'>
+                        <img className=' h-full w-full  rounded-[5px]' src={item.url} />
+                     </SwiperSlide>
                   </>
                );
             })}

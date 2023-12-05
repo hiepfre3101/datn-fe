@@ -27,7 +27,7 @@ const UpdateProduct = () => {
    const [categoryId, setCategoryId] = useState<string>();
    const [origins, setOrigins] = useState<IOrigin[]>([]);
    const [productName, setProductName] = useState<string>('');
-   const [productPrice, setProductPrice] = useState<number>();
+   const [productPrice, setProductPrice] = useState<number>(0);
    const [productDiscount, setProductDiscount] = useState<number>(0);
    const [shipments, setShipments] = useState<IShipmentOfProduct[]>([]);
    // const [currentShipment, setCurrentShipment] = useState<IShipmentOfProduct>();
@@ -43,7 +43,7 @@ const UpdateProduct = () => {
    };
    const [handleUpdateProduct, { isLoading, error }] = useUpdateProductMutation();
    const { data } = useGetOneProductQuery(id!, { skip: !id });
-   const { data: categories } = useGetAllCateQuery();
+   const { data: categories } = useGetAllCateQuery({});
    useEffect(() => {
       (async () => {
          try {
@@ -65,7 +65,7 @@ const UpdateProduct = () => {
       setCategoryId(formatedCategories);
       setProductName(data?.body.data.productName as string);
       setDefaultDesc(data?.body.data.desc as string);
-      setProductPrice(data?.body.data.price);
+      setProductPrice(data ? data.body.data.price! : 0);
       // setCurrentShipment(data?.body.data.shipments[0]);
       setShipments(data ? data.body.data.shipments! : []);
       const newBody = {
@@ -119,7 +119,7 @@ const UpdateProduct = () => {
    };
    if (isLoading) return <Loading sreenSize='lg' />;
    return (
-      <div className='w-[80%]'>
+      <div className=''>
          <Helmet>
             <title>Cập nhật sản phẩm</title>
          </Helmet>
@@ -131,7 +131,7 @@ const UpdateProduct = () => {
                initValue={productName}
             />
             <div className='w-full mt-5 flex flex-wrap gap-5'>
-               <div className='min-w-[800px] flex flex-col gap-5 w-full'>
+               <div className='xl:min-w-[800px] flex flex-col gap-5 w-full'>
                   <BlockForm title='Hình ảnh sản phẩm'>
                      <Form.Item<InputProduct>
                         name='images'
@@ -191,12 +191,11 @@ const UpdateProduct = () => {
                                  type='number'
                                  placeholder='Thêm giá bán sản phẩm'
                                  className='w-1/2 p-2'
-                                 max={100000}
+                                 max={100000000}
                                  min={0}
                                  prefix={
                                     <span className='decoration-black underline absolute right-10 z-10'>vnd/kg</span>
                                  }
-                                 value={productPrice}
                                  onChange={(e) => setProductPrice(Number(e.target.value))}
                               />
                            </Form.Item>
@@ -229,10 +228,10 @@ const UpdateProduct = () => {
                               value={productDiscount}
                               onChange={(e) => {
                                  setProductDiscount(Number(e.target.value));
-                                 setProductPrice((prev) => {
-                                    if (!prev) return;
-                                    return prev - (prev * Number(e.target.value)) / 100;
-                                 });
+                                 setProductPrice(
+                                    Number(form.getFieldValue('price')) -
+                                       (Number(form.getFieldValue('price')) * Number(e.target.value)) / 100
+                                 );
                               }}
                            />
                         </Form.Item>

@@ -16,15 +16,39 @@ import {
 import ProductInOrder from './Component/ProductInOrder';
 import { IAuth } from '../../../slices/authSlice';
 import { useSelector } from 'react-redux';
-import { adminSocket, clientSocket } from '../../../config/socket';
+import { clientSocket } from '../../../config/socket';
 import { useConfirmOrderMemberMutation, useGetOneOrderForMemberQuery } from '../../../services/order.service';
 const OrderDetail = () => {
    const { id } = useParams();
-   const { data, isLoading, refetch } = useGetOneOrderForMemberQuery(id!);
+   const { data, isLoading, refetch } = useGetOneOrderForMemberQuery(id!, { refetchOnMountOrArgChange: true });
    const [handleConfirmOrder, { isLoading: loadingConfirm }] = useConfirmOrderMemberMutation();
    const [isShowConfirm, setIsShowConfirm] = useState<boolean>(false);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-
+   const [subtotal,setSubtotal] = useState<number>(0)
+   const [discount,setDiscount] = useState<number>(0)
+   useEffect(()=>{
+      const temp = data?.body.data?.products?.reduce((cal, product) => {
+         return cal + (product.weight * product.price);
+     }, 0);
+     if(temp!==undefined){
+      setSubtotal(temp)
+     }
+   },[data])
+   useEffect(()=>{
+      if(data?.body.voucher){
+         if(data?.body.voucher?.maxReduce){
+            if(data?.body.voucher.maxReduce<subtotal){
+               setDiscount(data?.body.voucher.maxReduce)
+            }else{
+               setDiscount((subtotal*data?.body.voucher.percent/100))
+            }
+            
+         }
+         else{
+            setDiscount((subtotal*data?.body.voucher.percent/100))
+         }
+      }
+   },[data,subtotal])
    useEffect(() => {
       clientSocket.on('statusNotification', (data) => {
          if (data.status === SUCCESS_ORDER.toLowerCase()) {
@@ -32,15 +56,7 @@ const OrderDetail = () => {
          }
          refetch();
       });
-      return () => {
-         clientSocket.off('statusNotification', (data) => {
-            if (data.status === SUCCESS_ORDER.toLowerCase()) {
-               setIsShowConfirm(true);
-            }
-            refetch();
-         });
-      };
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+      return () => {};
    }, [auth]);
    const getStatusOfOrder = () => {
       return ORDER_STATUS_FULL.indexOf(
@@ -60,6 +76,7 @@ const OrderDetail = () => {
          note: data.body.data.note!,
          paymentMethod: data.body.data.paymentMethod!,
          userId: data.body.data.userId!,
+         invoiceId: data.body.data.invoiceId,
          shippingAddress: data.body.data.shippingAddress!,
          products: data.body.data.products!,
          phoneNumber: data.body.data.phoneNumber!,
@@ -67,7 +84,7 @@ const OrderDetail = () => {
          status: DONE_ORDER.toLowerCase()
       };
       try {
-         adminSocket.emit('confirmOrder', JSON.stringify(dataSubmit));
+         clientSocket.emit('confirmOrder', JSON.stringify(dataSubmit));
          refetch();
          message.success('Xác nhận đơn hàng thành công!');
       } catch (error) {
@@ -76,8 +93,11 @@ const OrderDetail = () => {
       }
    };
    if (isLoading) return <Loading sreenSize='lg' />;
+   console.log(data);
+   
    return (
       <div className=' flex flex-col items-start gap-[30px] max-w-[1520px] m-auto p-10'>
+
          <Link to='/orders' className='flex justify-start items-center gap-[10px] text-black'>
             <BiChevronLeft className='text-[1.5rem]' />
             <span className='text-lg hover:font-semibold duration-200'>Tất cả đơn hàng</span>
@@ -169,24 +189,38 @@ const OrderDetail = () => {
                   <div className=' flex flex-col items-start gap-4 max-h-[350px] overflow-auto px-10'>
                      {data?.body.data &&
                         data?.body.data.products.map((product) => (
-                           <ProductInOrder refetch={refetch} product={product} oderId={data?.body.data._id} statusOrder={data?.body.data.status} />
+                           <ProductInOrder
+                              refetch={refetch}
+                              product={product}
+                              oderId={data?.body.data._id}
+                              statusOrder={data?.body.data.status}
+                           />
                         ))}
                   </div>
                   <Divider />
                   <div className='flex justify-between items-center text-black px-10'>
-                     <strong>Tổng sản phẩm</strong>
+                     <strong>Tính tạm</strong>
                      <span className='font-semibold'>
-                        {transformCurrency(data?.body.data ? data?.body.data?.totalPayment : 0)}
+                        {subtotal.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
                      </span>
                   </div>
-                  <div className='mt-3 flex justify-between items-center text-black px-10'>
+                {data?.body.voucher &&  <div className='mt-3 flex justify-between items-center text-black px-10'>
                      <strong>Khuyến mãi</strong>
-                     <span className='font-semibold'>0 vnd</span>
-                  </div>
+                     <span className='font-semibold'>
+                    - {discount.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}
+                     
+                     </span>
+                  </div>}
                   <div className='mt-3 flex justify-between items-center text-black px-10 text-xl '>
                      <strong className='font-bold'>Tổng tiền</strong>
                      <span className='font-bold'>
-                        {transformCurrency(data?.body.data ? data?.body.data?.totalPayment : 0)} vnd
+                        {transformCurrency(data?.body.data ? data?.body.data?.totalPayment : 0)}
                      </span>
                   </div>
                </div>

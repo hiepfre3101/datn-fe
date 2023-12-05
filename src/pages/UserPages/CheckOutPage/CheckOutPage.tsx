@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable prefer-const */
 import { useEffect, useState } from 'react';
 import OrderDetail from './components/orderDetail';
 import OrderNote from './components/orderNote';
@@ -28,11 +28,7 @@ import { formatCharacterWithoutUTF8 } from '../../../helper';
 import { IVoucher, remoteVoucher } from '../../../slices/voucherSlice';
 import { useCheckVoucherMutation } from '../../../services/voucher.service';
 const CheckOutPage = () => {
-   // const [checkOutState, setCheckOutState] = useState<string>('order-detail');
    const navigate = useNavigate();
-   // const handleChangeCheckOutState = (state:string) => {
-   //    setCheckOutState(state)
-   // }
    const methods = useForm<IOrder>();
    const [handleAddOrder] = useAddOrderMutation();
    const [checkCartLocal] = useCheckCartMutation();
@@ -40,7 +36,6 @@ const CheckOutPage = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [showfetch, setShowFetch] = useState(false);
    const { data: cartdb, refetch } = useGetCartQuery(undefined, { skip: showfetch == false });
-
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -58,12 +53,20 @@ const CheckOutPage = () => {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [error, setError] = useState<string[]>([]);
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
+
+   useEffect(() => {
+      if ((cart?.products && cart?.products.length === 0) || cart?.length === 0) {
+         navigate('/');
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [cart]);
    const CheckCart = async () => {
       let temp = false;
       if (auth.user._id) {
          let status = true;
          if (voucher._id) {
             const total = cartdb?.body.data.products?.reduce(
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
                (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
                0
             );
@@ -80,7 +83,11 @@ const CheckOutPage = () => {
                   if (error.data.message == 'Voucher does not exist!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá không tồn tại']);
                      dispatch(remoteVoucher());
-                  } else if (error.data.message == 'Voucher is out of quantity!') {
+                  } else if (error.data.message == 'Voucher does not work!') {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá này hiện không còn hoạt động']);
+                     dispatch(remoteVoucher());
+                  } 
+                   else if (error.data.message == 'Voucher is out of quantity!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết']);
                      dispatch(remoteVoucher());
                   } else if (error.data.message == 'Voucher is out of date') {
@@ -99,26 +106,27 @@ const CheckOutPage = () => {
          await refetch().then((res) => {
             if (res?.data?.body?.errors as any) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item: any) => {
-                  if (item.message == 'The remaining quantity is not enough!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Số lượng trong kho của sản phẩm' +
-                           item.productName +
-                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
-                     ]);
-                  } else if (item.message == 'Product is currently out of stock!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã hết hàng'
-                     ]);
-                  } else if (item.message == 'Product is no longer available!') {
-                     setError((prevError: string[]) => [
-                        ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
-                     ]);
-                  }
-               });
+               res.data &&
+                  res.data.body.errors.map((item: any) => {
+                     if (item.message == 'The remaining quantity is not enough!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Số lượng trong kho của sản phẩm' +
+                              item.productName +
+                              ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                        ]);
+                     } else if (item.message == 'Product is currently out of stock!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Sản phẩm' + item.productName + ' đã hết hàng'
+                        ]);
+                     } else if (item.message == 'Product is no longer available!') {
+                        setError((prevError: string[]) => [
+                           ...prevError,
+                           '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
+                        ]);
+                     }
+                  });
             } else {
                temp = status ? true : false;
             }
@@ -126,9 +134,9 @@ const CheckOutPage = () => {
       } else {
          const cartLocal = {
             products: cart['products'].map((product: any) => {
-               const {
+               let {
                   totalWeight,
-                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { name = undefined, ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
@@ -210,6 +218,7 @@ const CheckOutPage = () => {
          if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
+            //dung dong vao cho nay
             data.note = ' ';
          }
          data.products = cart.items;

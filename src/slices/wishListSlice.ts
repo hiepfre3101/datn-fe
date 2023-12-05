@@ -4,37 +4,37 @@ export type ICartSlice = {
    customerName: string;
    email: string;
    items: ICartItems[];
-   whishListName: string;
+   wishListName: string;
 };
 export interface ICartItems {
    _id: string;
    name: string;
-   images: string;
+   image: string;
    price: number;
 }
 const initialState: ICartSlice = {
    customerName: '',
    email: '',
    items: [],
-   whishListName: 'whishList'
+   wishListName: 'wishList'
 };
-const whishListSlice = createSlice({
-   name: 'whishList',
+const wishListSlice = createSlice({
+   name: 'wishList',
    initialState,
    reducers: {
-      setwhishListName: (state, action) => {
-         state.whishListName = action.payload || 'whishList';
+      setWishListName: (state, action) => {
+         state.wishListName = action.payload || 'wishList';
       },
-      setwhishList: (state) => {
-         if (!localStorage.getItem(state.whishListName)) {
-            localStorage.setItem(state.whishListName, '[]');
+      setWishList: (state) => {
+         if (!localStorage.getItem(state.wishListName)) {
+            localStorage.setItem(state.wishListName, '[]');
          }
-         const products = localStorage.getItem(state.whishListName)
-            ? JSON.parse(localStorage.getItem(state.whishListName)!)
+         const products = localStorage.getItem(state.wishListName)
+            ? JSON.parse(localStorage.getItem(state.wishListName)!)
             : [];
          state.items = products;
       },
-      addToWhishList: (state, action) => {
+      addToWishList: (state, action) => {
          const value = action.payload;
          let isAdded = false;
          const products = state.items.map((item: any) => {
@@ -54,17 +54,24 @@ const whishListSlice = createSlice({
          if (isAdded) {
             // Sản phẩm đã có trong whishList, xóa sản phẩm khỏi whishList
             const newProducts = products.filter((product: any) => product?._id !== value._id);
-            localStorage.setItem(state.whishListName, JSON.stringify(newProducts));
+            localStorage.setItem(state.wishListName, JSON.stringify(newProducts));
             state.items = newProducts;
             message.success('xóa sản phẩm yêu thích thành công');
          } else {
             // Sản phẩm chưa có trong whishList, thêm sản phẩm vào whishList
-            localStorage.setItem(state.whishListName, JSON.stringify([...state.items, value]));
+            localStorage.setItem(state.wishListName, JSON.stringify([...state.items, value]));
             state.items = [...state.items, value];
             message.success('thêm sản phẩm vào sản phẩm yêu thích thành công');
          }
+      },
+      removeFromWishList: (state, action) => {
+         const products = JSON.parse(localStorage.getItem(state.wishListName)!);
+         const newProducts = products.filter((product: any) => product._id !== action.payload.id);
+         state.items = newProducts;
+         localStorage.setItem(state.wishListName, JSON.stringify(state.items));
+         message.success('Xóa sản phẩm yêu thích thành công');
       }
    }
 });
-export const { addToWhishList, setwhishList, setwhishListName } = whishListSlice.actions;
-export default whishListSlice;
+export const { addToWishList, setWishList, setWishListName, removeFromWishList } = wishListSlice.actions;
+export default wishListSlice;

@@ -2,10 +2,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ICategories, InputCategories } from '../interfaces/category';
 import { IQueryParam, IResponse } from '../interfaces/base';
 import { paramTransformer } from '../utils/transformParams';
+import { baseUrl } from '../constants/baseUrl';
 const category = createApi({
    reducerPath: 'category',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['category'],

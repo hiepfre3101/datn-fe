@@ -13,10 +13,19 @@ export interface IEvaluation {
 export interface IEvaluationFull {
     _id:string;
     userId : {
+        avatar:string;
         userName: string
         phoneNumber: string
-    } | null;
-    productId: string;
+        rate: number
+    }  | null;
+    
+    productId:{
+        images: {
+            url : string
+        }[];
+        productName: string
+        
+    }  | null
     content: string;
     imgUrl: string;
     rate: number;

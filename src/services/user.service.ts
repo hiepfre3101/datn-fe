@@ -1,12 +1,14 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IResponse } from '../interfaces/base';
+import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
 import { IUser } from '../interfaces/auth';
-
+import { paramTransformer } from '../utils/transformParams';
+import { IUserInFo } from '../pages/UserPages/UserInfoPage/UserInforPage';
+import { baseUrl } from '../constants/baseUrl';
 
 const userApi = createApi({
    reducerPath: 'userApi',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['user'],
@@ -22,11 +24,12 @@ const userApi = createApi({
          },
          invalidatesTags: ['user']
       }),
-      getAll: builder.query<{user:IUser[]},void>({
-         query: () => {
+      getAll: builder.query<IResponseHasPaginate<IUser>, Partial<IQueryParam>>({
+         query: (params) => {
             return {
                url: '/users',
                method: 'GET',
+               params: paramTransformer(params),
                credentials: 'include'
             };
          },
@@ -40,7 +43,7 @@ const userApi = createApi({
          }),
          providesTags: ['user']
       }),
-      updateUser: builder.mutation<IResponse<IUser>, { id: string; data: IUser }>({
+      updateUser: builder.mutation<IResponse<IUser>, { id: string; data: IUserInFo }>({
          query: ({ id, data }) => ({
             url: '/users/' + id,
             method: 'PATCH',
@@ -56,7 +59,31 @@ const userApi = createApi({
             credentials: 'include'
          }),
          invalidatesTags: ['user']
-      })
+      }),
+      SendCodeToChangePassword: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/generateVerificationToken',
+            method: 'POST',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
+      verifyTokenChangePassword: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/verifyToken',
+            method: 'POST',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
+      ChangePassword: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/forgotPassword' ,
+            method: 'PUT',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
    })
 });
 
@@ -65,6 +92,9 @@ export const {
    useGetAllQuery,
    useGetOneQuery,
    useUpdateUserMutation,
-   useRemoveUserMutation
+   useRemoveUserMutation,
+   useSendCodeToChangePasswordMutation,
+   useChangePasswordMutation,
+   useVerifyTokenChangePasswordMutation,
 } = userApi;
 export default userApi;

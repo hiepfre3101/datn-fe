@@ -8,8 +8,8 @@ import { FaArrowUp, FaPlus, FaWindowMinimize, FaInstagram } from 'react-icons/fa
 import { FiHeadphones, FiLogOut, FiLogIn } from 'react-icons/fi';
 import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
-import { ICartItems, ICartSlice, removeFromCart } from '../../slices/cartSlice';
-import { Link } from 'react-router-dom';
+import { ICartItems, ICartSlice, removeFromCart, setItem } from '../../slices/cartSlice';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
@@ -17,59 +17,62 @@ import { MdOutlineLockReset } from 'react-icons/md';
 import { logoUrl } from '../../constants/imageUrl';
 import { useGetAllCateQuery } from '../../services/cate.service';
 import { useDeleteProductInCartMutation, useGetCartQuery } from '../../services/cart.service';
-import { IAuth } from '../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../slices/authSlice';
 import { ICartDataBaseItem } from '../../interfaces/cart';
-import { message } from 'antd';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, ChangeEvent } from 'react';
+import { clientSocket } from '../../config/socket';
+import { useGetOneChatUserQuery, useSendMessageMutation, useUpdateIsReadMutation } from '../../services/chat.service';
+import { Badge, message } from 'antd';
+import { IoChatbubblesOutline, IoSend } from 'react-icons/io5';
+import { MdOutlineCancel } from 'react-icons/md';
+import SearchFilter from './Header/components/SearchFilter';
+import { formatStringToDate } from '../../helper';
+import {
+   useDeleteNotificationMutation,
+   useGetClientNotificationQuery,
+   useUpdateNotificationMutation
+} from '../../services/notification';
+import { INotification } from '../../interfaces/notification';
+import { useClearTokenMutation } from '../../services/auth.service';
+import { IVoucher } from '../../slices/voucherSlice';
 
 const Footer = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const [showfetch, setShowFetch] = useState(false);
-   const { data: cartdb } = useGetCartQuery(undefined, { skip: !showfetch });
-   useEffect(() => {
-      if (auth.user._id) {
-         setShowFetch(true);
-      }
-   }, [auth.user._id]);
+   const { data: cartdb, refetch: refetchCart } = useGetCartQuery(undefined, { skip: !auth.user._id });
+   const scrollRef = useRef<HTMLDivElement | null>(null);
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart.products);
+   const totalPrice = useSelector((state: { cart: ICartSlice }) => state?.cart.totalPrice);
    const cart = auth.user._id ? cartdb?.body.data.products : CartLocal;
-
+   const { data: clientNotification, refetch: refetchNoti } = useGetClientNotificationQuery(auth?.user?._id);
+   const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
+   const [sendMessage] = useSendMessageMutation();
+   const [updateIsRead] = useUpdateIsReadMutation();
    const [deleteProductInCartDB] = useDeleteProductInCartMutation();
-
+   const [openChat, setOpenChat] = useState(false);
    const dispatch = useDispatch();
-   const { data } = useGetAllCateQuery();
-   const closeModalSearch = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
-
-      const section_search_modal = document.querySelector('.section-search-modal');
-      const section_overlay_search = document.querySelector('.section-overlay-search');
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('!translate-y-[0%]');
-      }, 100);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('hidden');
-      }, 200);
-      setTimeout(() => {
-         section_overlay_search?.classList.toggle('hidden');
-      }, 400);
+   const { data } = useGetAllCateQuery({});
+   const [updateNotification] = useUpdateNotificationMutation();
+   const [deleteNotification] = useDeleteNotificationMutation();
+   const [clearToken] = useClearTokenMutation();
+   const navigate = useNavigate();
+   const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/');
    };
-   const showModalSearch = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
-
-      const section_search_modal = document.querySelector('.section-search-modal');
-      const section_overlay_search = document.querySelector('.section-overlay-search');
-      setTimeout(() => {
-         section_overlay_search?.classList.toggle('hidden');
-      }, 100);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('hidden');
-      }, 200);
-      setTimeout(() => {
-         section_search_modal?.classList.toggle('!translate-y-[0%]');
-      }, 400);
-   };
+   useEffect(() => {
+      clientSocket.open();
+      const handlePurchaseNotification = () => {
+         refetchCart();
+         refetchNoti();
+      };
+      if (auth?.user?._id) {
+         clientSocket.on('purchaseNotification', handlePurchaseNotification);
+         clientSocket.on('statusNotification', handlePurchaseNotification);
+      }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
       mini_cart_overlay?.classList.toggle('hidden');
@@ -98,6 +101,15 @@ const Footer = () => {
       const user_tag_mobile_content = document.querySelector('.user-tag-mobile-content');
       user_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
    };
+   const showNotificationTag = () => {
+      const bodyElement = document.querySelector('body');
+      bodyElement?.classList.toggle('overflow-hidden');
+      const overlay_notifi_tag_mobile = document.querySelector('.overlay-noti-tag-mobile');
+      overlay_notifi_tag_mobile?.classList.toggle('!opacity-[0.15]');
+      overlay_notifi_tag_mobile?.classList.toggle('!visible');
+      const notifi_tag_mobile_content = document.querySelector('.noti-tag-mobile-content');
+      notifi_tag_mobile_content?.classList.toggle('max-xl:translate-x-[0%]');
+   };
    const handleRemoveProductInCart = (item: ICartDataBaseItem | ICartItems) => {
       if (auth.user._id) {
          deleteProductInCartDB(item?.productId?._id).then((res) => {
@@ -108,8 +120,182 @@ const Footer = () => {
          dispatch(removeFromCart({ id: item.productId._id }));
       }
    };
+   console.log(cartdb);
+   
+   const [subtotal,setSubtotal] = useState<number>(0)
+   const [discount,setDiscount] = useState<number>(0)
+   useEffect(()=>{
+      if(auth.user._id) {
+         const temp = cartdb?.body.data.products?.reduce((cal:any, product:any) => {
+            console.log(product);
+            return cal + (product.weight * product.productId.price);
+        }, 0);
+       
+        
+        if(temp!==undefined){
+         setSubtotal(temp)
+        }
+      }
+    
+   },[data,voucher,cartdb])
+   useEffect(()=>{
+      if(voucher && auth.user._id){
+         if(voucher?.maxReduce){
+            if(voucher.maxReduce<subtotal){
+               setDiscount(voucher.maxReduce)
+            }else{
+               setDiscount((subtotal*voucher.percent/100))
+            }
+            
+         }
+         else{
+            setDiscount((subtotal*voucher.percent/100))
+         }
+      }
+   },[data,subtotal,voucher])
+   const [messages, setMesssages] = useState<string>();
+   const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
+      skip: !auth.user._id || auth.user.role == 'admin'
+   });
+
+   useEffect(() => {
+      const handleUpdateChat = () => {
+         if (auth?.user?.role == 'member') {
+            refetch();
+         }
+      };
+      if (auth.user._id && clientSocket) {
+         clientSocket.on('updatemess', handleUpdateChat);
+      }
+      return () => {
+         clientSocket.off('updatemess', handleUpdateChat);
+         clientSocket.disconnect();
+      };
+   }, [auth]);
+
+   useEffect(() => {
+      if (scrollRef.current) {
+         scrollRef.current.scrollIntoView({ block: 'end' });
+      }
+      if (openChat == true && auth?.user?._id && auth?.user?.role == 'member') {
+         updateIsRead(auth.user._id);
+      }
+   }, [chat, openChat]);
+   const handleChangeMessage = (e: ChangeEvent<HTMLInputElement>) => {
+      if (e.target) setMesssages(e.target.value);
+   };
+   const handleSubmitChat = async (e: React.FormEvent) => {
+      e.preventDefault();
+      const data = {
+         roomChatId: auth.user?._id,
+         content: messages,
+         sender: 'client'
+      };
+      console.log(data);
+
+      await sendMessage(data);
+      const jsonData = JSON.stringify(data);
+      clientSocket.emit('ClientSendMessage', jsonData);
+      setMesssages('');
+   };
    return (
       <>
+         <section
+            style={{
+               display: auth.user.role == 'admin' || !auth.user.role ? 'none' : 'block'
+            }}
+            onClick={() => {
+               setOpenChat(!openChat);
+               if (scrollRef.current) {
+                  scrollRef.current.scrollIntoView({ block: 'end' });
+               }
+            }}
+            className=' section-icon-contact fixed bottom-[105px] right-[24px] cursor-pointer z-[4]'
+         >
+            <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
+               <IoChatbubblesOutline className='text-white w-[30px] text-center m-auto h-[45px] animate-skew_icon_contact transition-all duration-300 ease-in-out' />
+               <Badge
+                  color='red'
+                  count={
+                     chat?.body?.data.messages.filter((item: any) => {
+                        if (item.isRead == false && item.sender == 'admin') {
+                           return item;
+                        }
+                     }).length
+                  }
+                  showZero={false}
+                  offset={[-24, -50]}
+               >
+                  <></>
+               </Badge>
+            </div>
+         </section>
+         <section
+            style={{
+               display: openChat == true ? 'block' : 'none'
+            }}
+            className='chat max-sm:max-w-[316px] max-sm:bottom-[71px] max-md:right-[3px] max-w-[350px] rounded-t-md fixed bottom-[0px] right-[100px] shadow-[0_12px_28px_0_rgba(0,0,0,0.1)] z-[8] bg-white h-[455px]'
+         >
+            <div className='header-right justify-between rounded-t-md mb-[10px] bg-white  sticky top-[0] pl-[10px] flex items-center  shadow-[0_0_4px_rgba(0,0,0,0.2)] py-[5px]'>
+               <div className='user ifo flex items-center gap-x-[10px]'>
+                  <img
+                     className='avatar w-[48px] h-[48px] rounded-[100%]'
+                     src={'https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png'}
+                     alt=''
+                  />
+                  <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
+               </div>
+               <button type='button' onClick={() => setOpenChat(!openChat)}>
+                  <MdOutlineCancel className='text-[#0A7CFF] text-[30px] mr-[10px]' />
+               </button>
+            </div>
+            <div className='list-chat w-full overflow-scroll px-[5px] h-[350px] '>
+               {chat?.body?.data?.messages?.map((item: any) => {
+                  return (
+                     <>
+                        {item.sender == 'client' ? (
+                           <div className='admin-message flex justify-end items-center mb-[6px]  '>
+                              <div className='content-admin ml-[10px] bg-[#0A7CFF] max-w-[60%] break-words text-left rounded-[15px] px-[12px] py-[8px]'>
+                                 <span className='admin-name text-white  font-[400]'>{item.content}</span>
+                              </div>
+                           </div>
+                        ) : (
+                           <div className='use-message flex items-center mb-[6px]'>
+                              <img
+                                 className='avatar w-[38px] h-[38px] rounded-[100%]'
+                                 src='data:image/jpeg;base64,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'
+                                 alt=''
+                              />
+                              <div className='content-user ml-[10px] bg-[#E5E5E5] break-words max-w-[60%] rounded-[15px] px-[12px] py-[8px] text-left'>
+                                 <span className='user-name text-black  font-[400]  '>{item.content}</span>
+                              </div>
+                           </div>
+                        )}
+                     </>
+                  );
+               })}
+               <div ref={scrollRef!}></div>
+            </div>
+            <form
+               action=''
+               className='flex  w-full px-[5px] items-center py-[5px]  sticky bottom-0 bg-white   '
+               onSubmit={handleSubmitChat}
+            >
+               <input
+                  onChange={handleChangeMessage}
+                  value={messages}
+                  placeholder='Aa'
+                  className=' pl-[15px] text-black outline-none bg-[#E5E5E5] w-[90%] h-[30px] rounded-[20px]'
+                  type='text'
+               />
+               <div className='p-[8px] hover:bg-[E5E5E5] w-[7%] rounded-[50%]  flex items-center'>
+                  <button className='text-[#0A7CFF] ml-[3px]'>
+                     <IoSend className='text-[20px]'></IoSend>
+                  </button>
+               </div>
+            </form>
+         </section>
+
          <footer className='bg-[#f8f8f8] '>
             <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                <ul className='footer-list flex py-[60px] flex-wrap ml-[-30px]'>
@@ -154,7 +340,7 @@ const Footer = () => {
                            return (
                               <>
                                  <li className='text-[16px] mt-[15px] hover:text-[#51A55C] transition-colors duration-300'>
-                                    <Link to='dfa'>{item.cateName}</Link>
+                                    <Link to={'/collections?cate_id=' + item._id}>{item.cateName}</Link>
                                  </li>
                               </>
                            );
@@ -285,7 +471,7 @@ const Footer = () => {
                <div className='search-modal-content '>
                   <div className='text-right'>
                      <button
-                        onClick={closeModalSearch}
+                        // onClick={closeModalSearch}
                         type='button'
                         className='close-modal-search text-[20px] text-[#6f6f6f]'
                      >
@@ -305,10 +491,7 @@ const Footer = () => {
                </div>
             </div>
          </section>
-         <section
-            className='section-overlay-search fixed transition-opacity duration-150 top-0 left-0 right-0 h-full hidden w-full bg-[#000] opacity-[0.5] z-[5]'
-            onClick={closeModalSearch}
-         ></section>
+
          <section className='section-mobile-menu max-sm:block hidden  '>
             <div className='mobile-menu-content  pt-[10px] z-[4] flex justify-between fixed bottom-0 left-0 right-0 rounded-t-xl shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]  bg-white'>
                <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
@@ -318,30 +501,46 @@ const Footer = () => {
                   </Link>
                </div>
 
-               <div onClick={showModalSearch} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] '>
-                  <SearchOutlined style={{ fontSize: '24px' }} />
+               <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] '>
+                  <SearchFilter>
+                     <SearchOutlined style={{ fontSize: '24px' }} />
+                  </SearchFilter>
                   <p className='  text-[10px]  sm:text-[12px]'>Tìm kiếm</p>
                </div>
                <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <div className='test relative w-[24px] h-[24px] m-auto '>
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
-
-                     <p className='custom-badge w-[16px] h-[16px] leading-[16px] rounded-[50%] text-[9px]  right-[-6px] top-[-1px] bg-[#d2401e] absolute text-white'>
-                        {cart?.length}
-                     </p>
+                     <Badge
+                        count={cart?.length}
+                        showZero={false}
+                        className='custom-badge    text-[9px]  right-[2px] top-[4px] absolute text-white'
+                     >
+                        <li
+                           onClick={showMiniCart}
+                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors  duration-300 cursor-pointer hover:text-[#d2401e]   '
+                        >
+                           <HiOutlineShoppingBag></HiOutlineShoppingBag>
+                        </li>
+                     </Badge>
                   </div>
                   <p className=' text-[10px] mt-[2px] sm:text-[12px]'>Giỏ hàng</p>
                </div>
-               <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
-                  <div className='test relative w-[24px] h-[24px] m-auto '>
-                     <BsBell style={{ fontSize: '24px' }} />
-
-                     <p className='custom-badge w-[16px] h-[16px] leading-[16px] rounded-[50%] text-[9px]  right-[-6px] top-[-1px] bg-[#d2401e] absolute text-white'>
-                        0
-                     </p>
+               {auth.user?._id && (
+                  <div
+                     onClick={showNotificationTag}
+                     className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'
+                  >
+                     <div className='test relative w-[24px] h-[24px] m-auto '>
+                        <BsBell style={{ fontSize: '24px' }} />
+                        <Badge
+                           className='custom-badge    text-[9px]  right-[-5px] top-[-6px] absolute text-white'
+                           count={clientNotification?.body?.data?.filter((noti: any) => noti.isRead == false).length}
+                           showZero={false}
+                        ></Badge>
+                     </div>
+                     <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
                   </div>
-                  <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
-               </div>
+               )}
                <div onClick={showUserTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
                   <UserOutlined style={{ fontSize: '24px' }} />
                   <p className='  text-[10px] sm:text-[12px]'>Tài khoản</p>
@@ -349,7 +548,7 @@ const Footer = () => {
             </div>
          </section>
          <section className='section-mini-cart '>
-            {cart?.length === 0 ? (
+            {cart?.length === 0 || cart?.length == undefined ? (
                <div className='cart-emty'>
                   <div className='container mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
                      <div
@@ -458,7 +657,10 @@ const Footer = () => {
                                                   style: 'currency',
                                                   currency: 'VND'
                                                })
-                                             : item.productId?.price}
+                                             : item.productId?.price.toLocaleString('vi-VN', {
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
@@ -476,23 +678,55 @@ const Footer = () => {
                         </ul>
                      </div>
                      <div className='mini-cart-footer'>
+                        {voucher._id && auth.user._id && (
+                           <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                              <span className='subtotal-title text-[16px] '>Tính tạm:</span>
+                              <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                                 {subtotal.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                              </span>
+                           </div>
+                        )}
+                        {voucher._id && auth.user._id && (
+                           <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
+                              <span className='subtotal-title text-[16px] '>Giảm giá:</span>
+                              <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
+                                 -
+                                {discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                              </span>
+                           </div>
+                        )}
                         <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
-                           <span className='subtotal-title text-[16px] '>Subtotal:</span>
+                           <span className='subtotal-title text-[16px] '>Tổng:</span>
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                               {auth.user._id
-                                 ? cart
-                                      ?.reduce(
+                                 ? (
+                                      cart?.reduce(
                                          (accumulator: number, product: any) =>
                                             accumulator +
                                             (product.productId.price -
                                                (product.productId.price * product.productId.discount) / 100) *
                                                product.weight,
                                          0
-                                      )
-                                      .toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                                 : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                      ) -
+                                      (voucher.maxReduce
+                                         ? voucher.maxReduce
+                                         : auth.user._id
+                                         ? (cart?.reduce(
+                                              (accumulator: number, product: any) =>
+                                                 accumulator +
+                                                 (product.productId.price -
+                                                    (product.productId.price * product.productId.discount) / 100) *
+                                                    product.weight,
+                                              0
+                                           ) *
+                                              voucher.percent) /
+                                           100
+                                         : totalPrice - (totalPrice * voucher.percent) / 100)
+                                   ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                 : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>
+
                         <div className='cart-btn px-[15px] pb-[15px] pt-[10px] w-full'>
                            <Link
                               to={'/cart'}
@@ -514,22 +748,7 @@ const Footer = () => {
                </div>
             )}
          </section>
-         <section className=' section-icon-contact fixed bottom-[105px] right-[24px] cursor-pointer z-[4]'>
-            <div className="icon-contact-item w-[48px] h-[48px] rounded-[50%] border-[1px] text-center border-white shadow-[0_4px_8px_rgba(0,0,0,0.15)] bg-[#0090E4] animate-pulse_icon_contact after:[''] relative after:absolute after:z-[-1] after:w-[48px] after:h-[48px] after:left-0 after:top-0 before:rounded-[50%] before:bg-[#0090E4]  before:animate-euiBeaconPulseSmall2            before:absolute before:z-[-1] before:w-[48px] before:h-[48px] before:left-0 before:top-0 after:rounded-[50%] after:bg-[#0090E4]  after:animate-euiBeaconPulseSmall">
-               <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  className='text-white w-[30px] text-center m-auto h-[45px] animate-skew_icon_contact transition-all duration-300 ease-in-out'
-                  viewBox='0 0 1249 439'
-               >
-                  <style></style>
-                  <path
-                     className='shp0 fill-white'
-                     d='m649.69 129.68v-23.37h70.02v328.67h-40.06c-16.49 0-29.87-13.32-29.96-29.78-0.01 0.01-0.02 0.01-0.03 0.02-28.2 20.62-63.06 32.87-100.71 32.87-94.3 0-170.76-76.41-170.76-170.65s76.46-170.64 170.76-170.64c37.65 0 72.51 12.24 100.71 32.86 0.01 0.01 0.02 0.01 0.03 0.02zm-289.64-129.06v10.65c0 19.88-2.66 36.1-15.57 55.14l-1.56 1.78c-2.82 3.2-9.44 10.71-12.59 14.78l-224.76 282.11h254.48v39.94c0 16.55-13.43 29.96-29.98 29.96h-329.73v-18.83c0-23.07 5.73-33.35 12.97-44.07l239.61-296.57h-242.59v-74.89h349.72zm444.58 434.36c-13.77 0-24.97-11.19-24.97-24.94v-409.42h74.94v434.36h-49.97zm271.56-340.24c94.95 0 171.91 76.98 171.91 171.79 0 94.9-76.96 171.88-171.91 171.88-94.96 0-171.91-76.98-171.91-171.88 0-94.81 76.95-171.79 171.91-171.79zm-527.24 273.1c55.49 0 100.46-44.94 100.46-100.4 0-55.37-44.97-100.32-100.46-100.32s-100.47 44.95-100.47 100.32c0 55.46 44.98 100.4 100.47 100.4zm527.24-0.17c55.82 0 101.12-45.27 101.12-101.14 0-55.78-45.3-101.05-101.12-101.05-55.91 0-101.13 45.27-101.13 101.05 0 55.87 45.22 101.14 101.13 101.14z'
-                     fill-rule='evenodd'
-                  />
-               </svg>
-            </div>
-         </section>
+
          <section className=' section-icon-to-top transition-all duration-300 fixed bottom-[180px] right-[30px] cursor-pointer z-[4] invisible opacity-0'>
             <div
                onClick={toTop}
@@ -538,7 +757,7 @@ const Footer = () => {
                <FaArrowUp></FaArrowUp>
             </div>
          </section>
-         <section className='user-tag-moble'>
+         <section className='user-tag-moble w-[320px]'>
             <div
                onClick={showUserTag}
                className='overlay-user-tag-mobile xl:hidden fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
@@ -550,39 +769,100 @@ const Footer = () => {
                         <FaXmark className='text-[20px]'></FaXmark>
                      </span>
                   </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <PiUserListBold></PiUserListBold> Hồ sơ của bạn
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <RiBillLine></RiBillLine> Lịch sử mua hàng
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <FiLogIn></FiLogIn> Đăng nhập
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <FiLogOut></FiLogOut> Đăng xuất
-                     </Link>
-                  </li>
-                  <li className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                     <Link to='' className='flex items-center gap-[5px] py-[5px]'>
-                        <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
-                     </Link>
-                  </li>
+                  {!auth.accessToken && (
+                     <>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to={'/login'} className='flex items-center gap-[5px] py-[5px]'>
+                              <FiLogIn></FiLogIn> Đăng nhập
+                           </Link>
+                        </li>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to={'/signup'} className='flex items-center gap-[5px] py-[5px]'>
+                              <AiOutlineUserAdd></AiOutlineUserAdd> Đăng ký
+                           </Link>
+                        </li>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='forgetPassword' className='flex items-center gap-[5px] py-[5px]'>
+                              <MdOutlineLockReset></MdOutlineLockReset> Quên mật khẩu
+                           </Link>
+                        </li>
+                     </>
+                  )}
+                  {auth.accessToken && (
+                     <>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
+                              <PiUserListBold></PiUserListBold> Hồ sơ của bạn
+                           </Link>
+                        </li>
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                              <RiBillLine></RiBillLine> Lịch sử mua hàng
+                           </Link>
+                        </li>
+
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <button onClick={() => onHandleLogout()} className='flex items-center gap-[5px] py-[5px]'>
+                              <FiLogOut></FiLogOut> Đăng xuất
+                           </button>
+                        </li>
+                     </>
+                  )}
                </ul>
             </div>
          </section>
+         {auth.user?._id && (
+            <section className='noti-tag-moble '>
+               <div
+                  onClick={showNotificationTag}
+                  className='overlay-noti-tag-mobile xl:hidden  fixed w-[100%] top-0 bottom-0 left-0 right-0 z-[7] opacity-0 bg-[#333333]   invisible'
+               ></div>
+               <div className='noti-tag-mobile-content w-[320px] transition duration-300 fixed top-0 left-0 h-full bg-white z-[8] min-w-[320px] translate-x-[-100%]'>
+                  <ul>
+                     <li className='px-[15px] py-[10px] flex justify-end'>
+                        <span onClick={showNotificationTag} className='cursor-pointer text-center'>
+                           <FaXmark className='text-[20px]'></FaXmark>
+                        </span>
+                     </li>
+
+                     <li className='px-[15px] py-[10px] '>
+                        <div className='max-h-[450px] w-full overflow-scroll '>
+                           {clientNotification?.body?.data?.map((noti: INotification, index: number) => (
+                              <div key={index} className='relative border-b-[1px] w-[270px] border-gray-400  p-2  '>
+                                 <Link
+                                    onClick={async () => {
+                                       await updateNotification({ id: noti._id, isRead: true });
+                                    }}
+                                    to={noti.link}
+                                    className='w-[270px] block'
+                                 >
+                                    {!noti.isRead && (
+                                       <span className='absolute top-2 right-2 w-[15px] h-[15px] bg-red-500 rounded-full text-center text-white text-[9px]'>
+                                          !
+                                       </span>
+                                    )}
+                                    <h1 className='font-bold break-words'>{noti.title}</h1>
+                                    <p className='text-gray-400 '>{noti.message}</p>
+                                    <span className='text-gray-400'>{formatStringToDate(noti.createdAt)}</span>
+                                 </Link>
+                                 <p className='text-right mt-2 absolute bottom-0 right-2 bg-red-300 px-3 py-1 mb-2 text-white hover:bg-red-400 duration-300'>
+                                    <button
+                                       onClick={async () => {
+                                          await deleteNotification(noti._id);
+                                       }}
+                                       className='text-black-300 hover:underline'
+                                    >
+                                       Xóa
+                                    </button>
+                                 </p>
+                              </div>
+                           ))}
+                        </div>
+                     </li>
+                  </ul>
+               </div>
+            </section>
+         )}
       </>
    );
 };

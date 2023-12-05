@@ -43,7 +43,15 @@ const OrderDetail = () => {
                            <input
                               type='text'
 
-                              {...register('email', { required: 'Email là trường bắt buộc' })}
+                              {...register('email', { required: 'Email là trường bắt buộc',
+                              validate: {
+                                validEmail: value => {
+                                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                                  if (!emailRegex.test(value)) {
+                                    return 'Email không hợp lệ';
+                                  }
+                                }
+                              } })}
                               className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
                               placeholder='Email'
                            />

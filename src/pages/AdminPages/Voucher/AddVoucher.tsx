@@ -1,4 +1,5 @@
-import { Divider, Form, Input, InputNumber, Layout } from 'antd';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Divider, Form, Input, InputNumber, Layout, message } from 'antd';
 import { DatePicker } from 'antd';
 import React, { useState } from 'react';
 import { Helmet } from 'react-helmet';
@@ -10,40 +11,31 @@ import { useAddVoucherMutation } from '../../../services/voucher.service';
 const AddVoucher = () => {
    const [voucherTitle, setVoucherTitle] = useState<string>('');
    const [loading, setLoading] = useState<boolean>(false);
+   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [form] = Form.useForm<any>();
    const navigate = useNavigate();
    const [handleAddVoucher, { error }] = useAddVoucherMutation();
-   const validateDateStartRange = (_: any, values: any) => {
-      const { dateEnd } = form.getFieldsValue(true);
-
-      if (values.isAfter(dateEnd)) {
-         return Promise.reject('Ngày bắt đầu không được lớn hơn ngày kết thúc!');
-      } else {
-         return Promise.resolve();
-      }
-   };
-   const validateDateEndRange = (_: any, values: any) => {
-      const { dateStart } = form.getFieldsValue(true);
-
-      if (values.isBefore(dateStart)) {
-         return Promise.reject('Ngày kết thúc phải lớn hơn ngày bắt đầu!');
-      } else {
-         return Promise.resolve();
-      }
-   };
+   const { RangePicker } = DatePicker;
    const handleSubmit = async (values: any) => {
-      console.log(values);
-
+      const dataSubmit = {
+         ...values,
+         dateStart: values.timeVoucher[0].$d.toString(),
+         dateEnd: values.timeVoucher[1].$d.toString(),
+         timeVoucher: undefined
+      };
       try {
          setLoading(true);
-         await handleAddVoucher(values);
+         await handleAddVoucher(dataSubmit);
          if (error) {
             console.log(error);
             return;
          }
+         
+         message.success('Tạo voucher thành công !');
          setLoading(false);
          navigate('/manage/vouchers');
       } catch (error) {
+         message.success('Tạo voucher thất bại !');
          setLoading(false);
          console.log(error);
       }
@@ -97,30 +89,19 @@ const AddVoucher = () => {
                            label={'Số lượng'}
                            rules={[
                               { required: true, message: 'Vui lòng điền số lượng mã khuyến mãi !' },
-                              { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
+                              { type: 'number', min: 1, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
+                           <InputNumber min={1} className='w-full' placeholder='Thêm số lượng mã khuyến mãi' />
                         </Form.Item>
                         <Form.Item
-                           name={'dateStart'}
+                           name={'timeVoucher'}
                            label={'Ngày bắt đầu'}
                            rules={[
-                              { required: true, message: 'Vui lòng điền ngày bắt đầu mã khuyến mãi !' },
-                              { validator: validateDateStartRange }
+                              { required: true, message: 'Vui lòng điền ngày bắt đầu và kết thúc mã khuyến mãi !' }
                            ]}
                         >
-                           <DatePicker />
-                        </Form.Item>
-                        <Form.Item
-                           name={'dateEnd'}
-                           label={'Ngày kết thúc'}
-                           rules={[
-                              { required: true, message: 'Vui lòng điền ngày kết thúc mã khuyến mãi !' },
-                              { validator: validateDateEndRange }
-                           ]}
-                        >
-                           <DatePicker />
+                           <RangePicker format={'DD/MM/YYYY'} />
                         </Form.Item>
                         <Form.Item
                            name={'percent'}
@@ -130,7 +111,7 @@ const AddVoucher = () => {
                               { type: 'number', min: 1, message: 'Vui lòng nhập số lớn hơn 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' placeholder='Thêm % giảm bớt' />
+                           <InputNumber max={100} min={0} className='w-full' placeholder='Thêm % giảm bớt' />
                         </Form.Item>
                         <Form.Item
                            name={'miniMumOrder'}
@@ -140,17 +121,17 @@ const AddVoucher = () => {
                               { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' placeholder='Thêm số tiền tối thiểu' />
+                           <InputNumber className='w-full' placeholder='Thêm số tiền tối thiểu' min={0} />
                         </Form.Item>
                         <Form.Item
                            name={'maxReduce'}
                            label={' Giảm tối đa (VNĐ)'}
                            rules={[
-                              // { required: true, message: 'Vui lòng điền số tiền giảm tối đa !' },
+                              { required: true, message: 'Vui lòng điền số tiền giảm tối đa !' },
                               { type: 'number', min: 0, message: 'Vui lòng nhập số lớn hơn hoặc bằng 0' }
                            ]}
                         >
-                           <InputNumber className='w-full' defaultValue={0} placeholder='Thêm số tiền giảm tối đa' />
+                           <InputNumber className='w-full' placeholder='Thêm số tiền giảm tối đa' min={0} />
                         </Form.Item>
                      </>
                   </BlockForm>

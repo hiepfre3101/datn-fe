@@ -8,10 +8,11 @@ import {
    InputSaleProduct
 } from '../interfaces/product';
 import { paramTransformer } from '../utils/transformParams';
+import { baseUrl } from '../constants/baseUrl';
 
 const productApi = createApi({
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: baseUrl + '/api',
       prepareHeaders: (headers) => {
          headers.set('Access-Control-Allow-Origin', '*');
          headers.set('Access-Control-Allow-Methods', 'GET, POST, PATCH,PUT, DELETE');
@@ -49,6 +50,27 @@ const productApi = createApi({
          query: () => {
             return {
                url: '/products-sold'
+            };
+         }
+      }),
+      getAllLiquidationProduct: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
+            return {
+               url: '/products/?_isSale=true'
+            };
+         }
+      }),
+      getProductSoldDescLimit: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
+            return {
+               url: '/products/?_sort=sold&_order=desc?_limit=9'
+            };
+         }
+      }),
+      getNewProductInStorage: builder.query<IResponse<IProductExpanded[]>, void>({
+         query: () => {
+            return {
+               url: '/products/?_sort=createdAt&_order=desc?_limit=9'
             };
          }
       }),
@@ -106,7 +128,8 @@ const productApi = createApi({
          },
          invalidatesTags: ['product']
       }),
-      searchProduct: builder.mutation<{ product: IProduct[] }, string>({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      searchProduct: builder.mutation<any, string>({
          query: (search) => ({
             url: '/products?_q=' + search,
             method: 'GET'
@@ -117,6 +140,9 @@ const productApi = createApi({
 });
 
 export const {
+   useGetAllLiquidationProductQuery,
+   useGetNewProductInStorageQuery,
+   useGetProductSoldDescLimitQuery,
    useGetProductSoldDescQuery,
    useUpdateProductMutation,
    useGetAllWithoutExpandQuery,

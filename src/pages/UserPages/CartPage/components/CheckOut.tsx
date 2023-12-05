@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
 import {
    ICartSlice,
@@ -119,6 +121,9 @@ const CheckOut = () => {
                   if (error.data.message == 'Voucher does not exist!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá không tồn tại']);
                      dispatch(remoteVoucher());
+                  } else if (error.data.message == 'Voucher does not work!') {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá không hoạt động']);
+                     dispatch(remoteVoucher());
                   } else if (error.data.message == 'Voucher is out of quantity!') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết']);
                      dispatch(remoteVoucher());
@@ -131,14 +136,15 @@ const CheckOut = () => {
                         'Đơn hàng của bạn phải có tổng giá trị trên ' +
                            error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                      ]);
+                     dispatch(remoteVoucher());
                   }
                });
          }
 
          await refetch().then((res) => {
-            if (res.data.body.errors) {
+            if (res.data && res.data.body.errors) {
                setIsModalOpen(true);
-               res.data.body.errors.map((item) => {
+               res.data.body.errors.map((item: any) => {
                   if (item.message == 'The remaining quantity is not enough!') {
                      setError((prevError: string[]) => [
                         ...prevError,
@@ -164,20 +170,25 @@ const CheckOut = () => {
          });
       } else {
          const cartLocal = {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             products: cart['products'].map((product: any) => {
-               const {
+               let {
                   totalWeight,
-                  productId: { originId: { name, ...originIdRest } = {}, ...productIdRest } = {},
+                  productId: { originId: { name = undefined, ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
+               // eslint-disable-next-line @typescript-eslint/no-unused-vars
+               name = undefined;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
 
+         // eslint-disable-next-line @typescript-eslint/no-explicit-any
          await checkCartLocal(cartLocal).then((res: any) => {
             if (res.error) {
                setIsModalOpen(true);
-               res.error.data.body?.error.map((item) => {
+               // eslint-disable-next-line @typescript-eslint/no-explicit-any
+               res.error.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -262,6 +273,8 @@ const CheckOut = () => {
          .catch((error) => {
             if (error.data.message == 'Voucher does not exist!') {
                message.error('Mã giảm giá không tồn tại');
+            } else if (error.data.message == 'Voucher does not work!') {
+               message.error('Mã giảm giá không còn hoạt động');
             } else if (error.data.message == 'Voucher is out of quantity!') {
                message.error('Mã giảm giá đã hết');
             } else if (error.data.message == 'Voucher is out of date') {
@@ -280,7 +293,8 @@ const CheckOut = () => {
    };
    const handleGetListVoucher = async () => {
       const object = {
-         miniMumOrder: subtotal
+         miniMumOrder: subtotal,
+         userId: auth?.user._id
       };
       await GetVoucherUseful(object)
          .unwrap()
@@ -313,7 +327,7 @@ const CheckOut = () => {
                         <span className='temporary font-bold  text-[14px] '>
                            {!voucher.maxReduce
                               ? '- ' +
-                                Math.ceil((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                    style: 'currency',
                                    currency: 'VND'
                                 })
@@ -325,7 +339,7 @@ const CheckOut = () => {
                                  ? '- ' +
                                    voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : '- ' +
-                                   Math.ceil(subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                   ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                       style: 'currency',
                                       currency: 'VND'
                                    })}
@@ -425,19 +439,22 @@ const CheckOut = () => {
                                  <li>
                                     Giảm: <span className='text-red-500'>{item.percent}%</span>
                                  </li>
+
                                  {item.maxReduce > 0 && (
                                     <li>
-                                       Giảm tối đa{' '}
+                                       Giảm tối đa:{' '}
                                        {item.maxReduce?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                                     </li>
                                  )}
-                                 {item.miniMumOrder && (
+
+                                 {item.miniMumOrder > 0 && (
                                     <li>
-                                       Đơn hàng phải có giá trị trên{' '}
-                                       {item.miniMumOrder?.toLocaleString('vi-VN', {
-                                          style: 'currency',
-                                          currency: 'VND'
-                                       })}
+                                       Đơn hàng phải có giá trị trên
+                                       {item.miniMumOrder > 0 &&
+                                          item.miniMumOrder?.toLocaleString('vi-VN', {
+                                             style: 'currency',
+                                             currency: 'VND'
+                                          })}
                                     </li>
                                  )}
                               </ul>
@@ -447,7 +464,7 @@ const CheckOut = () => {
                               <button
                                  disabled={!item.active}
                                  style={{
-                                    backgroundColor: item.active ? 'grey' : ''
+                                    backgroundColor: item.active == false ? 'grey' : ''
                                  }}
                                  onClick={() => {
                                     handleAddVoucher(item.code);

@@ -5,10 +5,12 @@ import { SearchOutlined, PlusCircleOutlined } from '@ant-design/icons';
 
 import { useGetAllCateQuery, useRemoveCategoryByIdMutation } from '../../../services/cate.service';
 import { useState } from 'react';
+import useDebounce from '../../../hooks/useDebounce';
 // import { itemsClientMenu } from "./ItemDropdown";
 const CategoryAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
-   const { data, isLoading } = useGetAllCateQuery({ q: valueSearch });
+   const searchDebounce = useDebounce(valueSearch, 500);
+   const { data, isLoading } = useGetAllCateQuery({ q: searchDebounce });
    const [removeCategory] = useRemoveCategoryByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const handleDelete = (id: any) => {
@@ -56,14 +58,19 @@ const CategoryAdmin = () => {
                      </div>
                   </header>
 
-                  <div className='flex gap-7 flex-wrap justify-center' style={{ margin: 30 }}>
+                  <div className='flex gap-7 flex-wrap justify-start  items-center' style={{ margin: 30 }}>
                      {isLoading
                         ? 'loading'
                         : data?.body.data.map((cate, index) => {
                              return (
                                 <Card
-                                   style={{ backgroundImage: `url(${cate.image?.url})` }}
-                                   className={`w-[200px] h-[200px] lg:w-[300px] lg:h-[300px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
+                                   style={{
+                                      backgroundImage: `url(${cate.image?.url})`,
+                                      backgroundPosition: 'center',
+                                      backgroundSize: '200px 200px',
+                                      backgroundRepeat: 'no-repeat'
+                                   }}
+                                   className={`w-[200px] h-[200px] lg:w-[250px] lg:h-[300px]  bg-cover max-w-sm bg-slate-50 text-black border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700`}
                                    key={index}
                                 >
                                    <div className='flex justify-between '>

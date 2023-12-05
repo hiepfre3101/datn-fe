@@ -8,7 +8,7 @@ import { IOrder } from '../../../../interfaces/order';
 import { Link } from 'react-router-dom';
 import { useGetCartQuery } from '../../../../services/cart.service';
 import { IAuth } from '../../../../slices/authSlice';
-import { momoUrl, vnpayUrl } from '../../../../constants/imageUrl';
+import { vnpayUrl } from '../../../../constants/imageUrl';
 import { IVoucher } from '../../../../slices/voucherSlice';
 interface Iprops {
    onSubmit: (data: IOrder) => void;
@@ -23,7 +23,6 @@ export type paymentMethod = {
 };
 const PAYMENT_METHODS: paymentMethod[] = [
    { name: 'Thanh toán khi nhận hàng', value: 'cod', type: 'text' },
-   { name: 'MoMo', value: 'momo', type: 'logo', srcLogo: momoUrl },
    { name: 'VNpay', value: 'vnpay', type: 'logo', srcLogo: vnpayUrl }
 ];
 const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
@@ -181,7 +180,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         <span className='temporary font-bold  text-[14px] '>
                            {!voucher.maxReduce
                               ? '- ' +
-                                Math.ceil((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                    style: 'currency',
                                    currency: 'VND'
                                 })
@@ -193,7 +192,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                  ? '- ' +
                                    voucher.maxReduce.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : '- ' +
-                                   Math.ceil(subtotal - (subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
+                                   ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                       style: 'currency',
                                       currency: 'VND'
                                    })}

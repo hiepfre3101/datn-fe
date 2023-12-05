@@ -26,7 +26,7 @@ const HeadForm = ({
       setValue(initValue);
    }, [initValue]);
    return (
-      <div className='flex justify-between items-center w-full relative'>
+      <div className='flex justify-between items-center w-full relative '>
          {hasName && (
             <input
                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -37,10 +37,10 @@ const HeadForm = ({
                value={value}
                type='text'
                placeholder={placeHolder}
-               className='underline-offset-[11px] font-semibold text-[rgba(0,0,0,0.5)] text-[3rem] outline-none border-none bg-transparent decoration-greenPri600 hover:underline hover:decoration-dashed decoration-1 focus:underline focus:decoration-solid max-w-[50%]'
+               className='hidden underline-offset-[11px] font-semibold text-[rgba(0,0,0,0.5)] text-[3rem] outline-none border-none bg-transparent decoration-greenPri600 hover:underline hover:decoration-dashed decoration-1 focus:underline focus:decoration-solid max-w-[50%]'
             />
          )}
-         <div className='flex justify-end items-center gap-5 absolute right-0'>
+         <div className='flex justify-end items-center gap-5 absolute right-0 mb-5'>
             <Link to={linkBack}>
                <button
                   type='button'

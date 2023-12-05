@@ -24,6 +24,7 @@ export interface IResponse<T> {
    };
    message: string;
    status: number;
+   errors: string;
 }
 
 export interface IQueryParam {
@@ -43,4 +44,5 @@ export interface IQueryParam {
    status: string;
    productId: string;
    shipmentId: string;
+   invoiceId: string;
 }

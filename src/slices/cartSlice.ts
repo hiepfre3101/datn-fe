@@ -33,7 +33,7 @@ const initialState: ICartSlice = {
    phoneNumber: '',
    products: [],
    totalPrice: 0,
-   cartName: 'cart'
+   cartName: 'cart',
 };
 const cartSlice = createSlice({
    name: 'cart',

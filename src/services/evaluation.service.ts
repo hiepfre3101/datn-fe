@@ -1,11 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IEvaluationFull, IEvaluation } from '../interfaces/evaluation'
 import { IResponse } from '../interfaces/base';
+import { baseUrl } from '../constants/baseUrl';
 
 const evaluation = createApi({
    reducerPath: 'evaluation',
    baseQuery: fetchBaseQuery({
-      baseUrl: 'http://localhost:8080/api',
+      baseUrl: baseUrl + '/api',
       credentials: 'include'
    }),
    tagTypes: ['evaluation'],
@@ -25,6 +26,13 @@ const evaluation = createApi({
             credentials: 'include'
          }),
          providesTags: ['evaluation']
+      }),
+      getEvaluationBestRateLimit: builder.query<IResponse<IEvaluationFull[]>,void>({
+         query: () => ({
+            url: '/evaluation/?_rate=5&_limit=10',
+            method: 'GET',
+            credentials: 'include'
+         }),
       }),
       getEvaluationByProductId: builder.query<IResponse<IEvaluationFull[]>,string>({
         query: (id) => ({
@@ -54,5 +62,5 @@ const evaluation = createApi({
    })
 });
 
-export const { useGetAllEvaluationQuery, useGetOneEvaluationByIdQuery, useGetEvaluationByProductIdQuery, useAddEvaluationMutation, useUpdateEvaluationMutation } = evaluation;
+export const { useGetAllEvaluationQuery,useGetEvaluationBestRateLimitQuery, useGetOneEvaluationByIdQuery, useGetEvaluationByProductIdQuery, useAddEvaluationMutation, useUpdateEvaluationMutation } = evaluation;
 export default evaluation;

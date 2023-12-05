@@ -1,4 +1,3 @@
-
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
@@ -6,15 +5,13 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 
-
-
 // import required modules
-import { Autoplay} from 'swiper/modules';
+import { Autoplay } from 'swiper/modules';
 import { useGetAllCateQuery } from '../../../../services/cate.service';
 import { Link } from 'react-router-dom';
 
 export default function SlideCateHomePage() {
-  const {data} = useGetAllCateQuery()
+  const {data} = useGetAllCateQuery({})
   return (
     <>
      <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px]'>
@@ -52,9 +49,10 @@ export default function SlideCateHomePage() {
       >
         {data?.body.data.map(item=>{
           return<>
-             <SwiperSlide>
+
+          <SwiperSlide>
             <div className="cate-wrap group">
-              <Link to={"/"} className='cate-item flex items-center'>
+              <Link to={'/collections?cate_id=' + item._id} className='cate-item flex items-center'>
           <span className='cate-icon rounded-[50%] bg-[#F8F8F8] mr-[30px] h-[80px] w-[80px] block'>
             <img className='h-[80px] w-[80px]' src={item.image.url} alt="" />
           </span>
@@ -65,6 +63,7 @@ export default function SlideCateHomePage() {
               </Link>
             </div>
           </SwiperSlide> 
+            
           </>
         })}
        

@@ -6,12 +6,31 @@ import MyService from './components/MyService';
 import BannerSales from './components/BannerSales';
 import BestSellerProducts from './components/BestSellerProducts';
 import HappyClient from './components/HappyClient';
+import { useGetAllLiquidationProductQuery, useGetNewProductInStorageQuery, useGetProductSoldDescLimitQuery } from '../../../services/product.service';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
- 
-
+   const { data: liquidationProducts } = useGetAllLiquidationProductQuery()
+   const { data: ProductSoldBest } = useGetProductSoldDescLimitQuery()
+   const { data: NewProduct } = useGetNewProductInStorageQuery()
+   const navigate = useNavigate()
+   const location = useLocation();
+   useEffect(() => {
+      const searchParams = new URLSearchParams(location.search);
+      // Chuyển đổi đối tượng thành chuỗi query URL
+      if (searchParams.toString()) {
+         const queryString = [...searchParams.entries()]
+         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+         .join('&');
+         
+         // Kết quả
+         const result = `?${queryString}`;
+         navigate('/vnpay_return' + result)
+      }
+   }, [location, navigate]);
    return (
-   
+
       <>
          <div className='main '>
             <SlideCateHomePage></SlideCateHomePage>
@@ -23,9 +42,9 @@ const HomePage = () => {
             <section className='section-featured-product flex bg-[#f8f8f8] pb-[20px]'>
                <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] w-full'>
                   <div className='featured-product-content flex  gap-[15px] max-lg:flex-wrap'>
-                     <SlideProductHomepage></SlideProductHomepage>
-                     <SlideProductHomepage></SlideProductHomepage>
-                     <SlideProductHomepage></SlideProductHomepage>
+                     <SlideProductHomepage data={liquidationProducts?.body.data} slideName="Sản phẩm đang hạ giá"></SlideProductHomepage>
+                     <SlideProductHomepage data={ProductSoldBest?.body.data} slideName="Top 9 sản phẩm bán chạy nhất"></SlideProductHomepage>
+                     <SlideProductHomepage data={NewProduct?.body.data} slideName="Top 9 sản phẩm mới"></SlideProductHomepage>
                   </div>
                </div>
             </section>

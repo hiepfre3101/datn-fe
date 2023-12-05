@@ -1,4 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { useMemo } from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Autoplay, Navigation } from 'swiper/modules';
@@ -14,7 +15,7 @@ import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 
 import QuickView from '../../../../components/QuickView/QuickView';
 import { RootState } from '../../../../store';
-import { addToWhishList } from '../../../../slices/whishListSlice';
+import { addToWishList } from '../../../../slices/wishListSlice';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 interface IRelatedProduct {
@@ -28,7 +29,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const [addCart] = useAddCartMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const add_to_wishList = (product: any) => {
-      dispatch(addToWhishList(product));
+      dispatch(addToWishList(product));
    };
    const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
@@ -46,14 +47,32 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
       }, 300);
       dispatch(saveProduct(data));
    };
+   const calAvgRate = useMemo(
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      () => (evaluations: any[]) => {
+         const totalRate = evaluations?.reduce((rate, item) => {
+            return (rate += Number(item.evaluatedId.rate));
+         }, 0);
+         return totalRate / evaluations?.length;
+      },
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [products]
+   );
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
          const product = {
+            productName:data.productName,
             productId: data?._id,
             weight: 1
          };
-         await addCart(product).unwrap();
-         message.success('Thêm sản phẩm vào giỏ hàng thành công');
+         await addCart(product).unwrap().then(res => {
+            res
+           message.success('Thêm sản phẩm vào giỏ hàng thành công');
+         })
+         .catch(error => {
+            error 
+         message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
+         });
       } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
@@ -63,7 +82,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                _id: data?._id,
                productName: data?.productName,
                images: [{ url: data?.images[0].url }],
-               price: data?.price-(data?.price*data?.discount)/100,
+               price: data?.price - (data?.price * data?.discount) / 100,
                originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
@@ -94,17 +113,23 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                   1200: {
                      slidesPerView: 3
                   },
+                  991:{
+                     spaceBetween:10
+                  },
                   767: {
-                     slidesPerView: 3
+                     slidesPerView: 3,
                   },
                   766: {
-                     slidesPerView: 2
+                     slidesPerView: 2,
+                     spaceBetween:10
                   },
                   400: {
-                     slidesPerView: 2
+                     slidesPerView: 2,
+                     spaceBetween:10
                   },
                   1: {
-                     slidesPerView: 1
+                     slidesPerView: 1,
+                     spaceBetween:10
                   }
                }}
                modules={[Navigation, Autoplay]}
@@ -129,12 +154,12 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                  <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
                                     <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
                                        <img
-                                          className='product-main-img lg:h-[331px] lg:w-[272px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover object-left-bottom'
+                                          className='product-main-img lg:h-[331px] min-w-[100%] max-w-[100%] md:w-[212px] md:h-[257px] sm:h-[280px] object-center max-sm:w-full max-sm:h-[210px]  xl:group-hover/product-wrap:invisible  visible transition-all duration-300 opacity-100 object-cover '
                                           src={item?.images[0]?.url}
                                           alt=''
                                        />
                                        <img
-                                          className='product-sub-img lg:h-[331px] lg:w-[272px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover object-left-bottom'
+                                          className='product-sub-img lg:h-[331px] min-w-[100%] max-w-[100%] md:w-[212px] md:h-[257px] sm:h-[280px] object-center  max-sm:w-full max-sm:h-[210px] max-xl:hidden absolute group-hover/product-wrap:opacity-100 group-hover/product-wrap:visible transition-all duration-300 top-0 left-0 invisible opacity-0  object-cover '
                                           src={item?.images[1]?.url}
                                           alt=''
                                        />
@@ -173,11 +198,11 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                           }
                                        }}
                                     >
-                                       <Rate allowHalf disabled defaultValue={4.5} />
+                                       <Rate allowHalf disabled value={calAvgRate(item.evaluated)} />
                                     </ConfigProvider>
                                  </div>
                                  <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                                    {(item?.price-(item?.price*item?.discount)/100)?.toLocaleString('vi-VN', {
+                                    {(item?.price - (item?.price * item?.discount) / 100)?.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}

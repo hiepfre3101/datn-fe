@@ -6,17 +6,20 @@ import orderReducer from './services/order.service';
 import cartReducer from './services/cart.service';
 import shipmentReducer from './services/shipment.service';
 import userSlice from './services/user.service';
-import voucherReducer from './services/voucher.service';
 import notificationReducer from './services/notification';
 import cartSlice from './slices/cartSlice';
-import whishListReducer from './slices/whishListSlice';
+import wishListReducer from './slices/wishListSlice';
 import userReducer from './slices/authSlice';
 import productSlice from './slices/productSlice';
 import vouchersReducer from './slices/voucherSlice';
+import noticeReducer from './slices/notice';
 import evaluationReducer from './services/evaluation.service';
 import originReducer from './services/origin.service';
 import accountReducer from './services/user.service';
 
+import unsoldproductReducer from './services/unsoldproduct.service';
+import voucherReducer from './services/voucher.service';
+import chatReducer from './services/chat.service';
 export const store = configureStore({
    reducer: {
       [authReducer.reducerPath]: authReducer.reducer,
@@ -31,9 +34,12 @@ export const store = configureStore({
       [originReducer.reducerPath]: originReducer.reducer,
       [voucherReducer.reducerPath]: voucherReducer.reducer,
       [accountReducer.reducerPath]: accountReducer.reducer,
+      [unsoldproductReducer.reducerPath]: unsoldproductReducer.reducer,
+      [chatReducer.reducerPath]: chatReducer.reducer,
       cart: cartSlice.reducer,
-      whishList: whishListReducer.reducer,
+      wishList: wishListReducer.reducer,
       vouchersReducer: vouchersReducer,
+      noticeReducer: noticeReducer,
       userReducer: userReducer,
       [shipmentReducer.reducerPath]: shipmentReducer.reducer,
       productSlice: productSlice
@@ -41,6 +47,7 @@ export const store = configureStore({
    middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware().concat([
          authReducer.middleware,
+         chatReducer.middleware,
          categoryReducer.middleware,
          productReducer.middleware,
          orderReducer.middleware,
@@ -53,6 +60,7 @@ export const store = configureStore({
          evaluationReducer.middleware,
          originReducer.middleware,
          accountReducer.middleware,
+         unsoldproductReducer.middleware
       ])
 });
 

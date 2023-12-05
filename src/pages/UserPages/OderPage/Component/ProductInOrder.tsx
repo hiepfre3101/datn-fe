@@ -12,14 +12,14 @@ type Props = {
    product: IProductOrder;
    statusOrder: string;
    oderId: string;
-   refetch: () => void
+   refetch: () => void;
 };
 
 const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
    const [isOpen, setIsOpen] = useState<boolean>(false);
    const user = useSelector((state: { userReducer: IAuth }) => state.userReducer.user);
-   const [create, { isLoading, error }] = useAddEvaluationMutation()
-   const [form] = Form.useForm()
+   const [create, { isLoading, error }] = useAddEvaluationMutation();
+   const [form] = Form.useForm();
    useEffect(() => {
       if (error && 'data' in error) {
          const data = error.data as { message: string };
@@ -28,32 +28,35 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
    }, [error]);
    const handleFinish = async (values: IEvaluation) => {
       console.log(values);
-      values.userId = Object.keys(user).length > 0 ? user._id : null
-      values.productId = product.productId
-      values.orderId = oderId
-      await create(values)
-      refetch()
-      setIsOpen(false)
-   }
+      values.userId = Object.keys(user).length > 0 ? user._id : null;
+      values.productId = product.productId;
+      values.orderId = oderId;
+      await create(values);
+      refetch();
+      setIsOpen(false);
+   };
    return (
       <div className='one-product flex justify-between items-center w-full'>
-
-
          <div className='flex justify-start gap-2 items-center'>
             <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
             <span className='text-black font-semibold'>{product.productName}</span>
          </div>
          <div className='flex justify-start gap-2 items-center'>
-            <span>{product.weight}x</span>
-            <span className='text-lg text-black'>{product.price}</span>
-            {statusOrder === DONE_ORDER.toLowerCase() && !product?.evaluation? (
+            <span>{product.weight} x</span>
+            <span className='text-lg text-black'>{product.price.toLocaleString('vi-VN', {
+                                 style: 'currency',
+                                 currency: 'VND'
+                              })}</span>
+            {statusOrder === DONE_ORDER.toLowerCase() && !product?.evaluation ? (
                <button
                   onClick={() => setIsOpen(true)}
                   className='rounded-sm ml-3 hover:bg-[#5ac471] py-2 px-5 text-white bg-greenP500 duration-300'
                >
                   Đánh giá
                </button>
-            ): <> </>}
+            ) : (
+               <> </>
+            )}
          </div>
 
          <ConfigProvider
@@ -72,12 +75,13 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
                width={800}
                onCancel={() => setIsOpen(false)}
                footer={[
-                  <Button className='bg-white' onClick={() => {
-                     setIsOpen(false)
-                     form.resetFields()
-                  }
-                  }>
-
+                  <Button
+                     className='bg-white'
+                     onClick={() => {
+                        setIsOpen(false);
+                        form.resetFields();
+                     }}
+                  >
                      Hủy
                   </Button>,
                   <Button
@@ -92,9 +96,7 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
                   </Button>
                ]}
             >
-
                <div className='one-product w-full'>
-
                   <Form form={form} onFinish={handleFinish} layout='vertical' className='w-full'>
                      <div className='flex justify-start gap-2 items-center'>
                         <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
@@ -111,7 +113,10 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
                            </Form.Item>
                            <Form.Item
                               label='Số điện thoại'
-                              rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
+                              rules={[
+                                 { required: true, message: 'Vui lòng điền thông tin' },
+                                 { len: 10, message: 'Vui lòng nhập đúng định dạng số điện thoại (10-11 số)' }
+                              ]}
                               name='phoneNumber'
                            >
                               <Input type='text' />
