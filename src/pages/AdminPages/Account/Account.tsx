@@ -1,14 +1,16 @@
 import { Layout } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
-import { useGetAllQuery, useRemoveUserMutation } from '../../../services/user.service';
+import { useGetAllQuery, useUpdateUserMutation } from '../../../services/user.service';
 
 
 const Account = () => {
-    const { data } = useGetAllQuery({});
+    const { data, refetch} = useGetAllQuery({});
     
-    const [removeUser] = useRemoveUserMutation();
-    const onHandleDelete = (id: any) => {
-        removeUser(id);
+    const [update] = useUpdateUserMutation();
+    const onHandleUpdate = async (item: any) => { 
+        
+       await update({id: item._id,data:{userName:item.userName,email:item.email,state:!item.state}});
+       refetch()
     };
 
     return (
@@ -58,20 +60,29 @@ const Account = () => {
                                                         <tr className="border-b dark:border-neutral-500">
                                                      
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.userName}</td>
-                                                            <td className="whitespace-nowrap px-6 py-4"><img className='w-[100px] h-[100px] items-center text-center' src={item.avatar} alt='' /></td>
+                                                            <td className="block whitespace-nowrap px-6 py-4 w-[150px]"><img className='w-[200px] h-[100px] items-center text-center' src={item.avatar} alt='' /></td>
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.email}</td>
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.role}</td>
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.phoneNumber}</td>
-                                                            <td className="whitespace-nowrap px-6 py-4">{item?.address}</td>
+                                                            <td className=" px-6 py-4"><p className='w-[100px] break-all'>{item?.address}</p></td>
 
                                                             <td className="whitespace-nowrap px-6 py-4">
-                                                              
-                                                                    <button
+                                                              {item.role !="admin"? item.state?(
+                                                                <button
+                                                                        type="button"
+                                                                        className="inline-block rounded bg-red-500 px-3 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#dc4c64] transition duration-150 ease-in-out hover:bg-danger-600 hover:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.3),0_4px_18px_0_rgba(220,76,100,0.2)] focus:bg-danger-600 focus:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.3),0_4px_18px_0_rgba(220,76,100,0.2)] focus:outline-none focus:ring-0 active:bg-danger-700 active:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.3),0_4px_18px_0_rgba(220,76,100,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(220,76,100,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.2),0_4px_18px_0_rgba(220,76,100,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.2),0_4px_18px_0_rgba(220,76,100,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.2),0_4px_18px_0_rgba(220,76,100,0.1)]"
+                                                                        onClick={() => onHandleUpdate(item)}>
+                                                                        Vô hiệu hóa
+                                                                    </button>
+                                                              ):(
+                                                                <button
                                                                         type="button"
                                                                         className="inline-block rounded bg-red-500 px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#dc4c64] transition duration-150 ease-in-out hover:bg-danger-600 hover:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.3),0_4px_18px_0_rgba(220,76,100,0.2)] focus:bg-danger-600 focus:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.3),0_4px_18px_0_rgba(220,76,100,0.2)] focus:outline-none focus:ring-0 active:bg-danger-700 active:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.3),0_4px_18px_0_rgba(220,76,100,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(220,76,100,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.2),0_4px_18px_0_rgba(220,76,100,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.2),0_4px_18px_0_rgba(220,76,100,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(220,76,100,0.2),0_4px_18px_0_rgba(220,76,100,0.1)]"
-                                                                        onClick={() => onHandleDelete(item._id)}>
-                                                                        Cấm
+                                                                        onClick={() => onHandleUpdate(item)}>
+                                                                        Kích hoạt
                                                                     </button>
+                                                              ):<></>}
+                                                                    
                                                                      
                                                                   
                                                                 
