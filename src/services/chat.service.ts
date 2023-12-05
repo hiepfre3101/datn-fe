@@ -11,7 +11,7 @@ const chat = createApi({
    }),
    tagTypes: ['chat'],
    endpoints: (builder) => ({
-      getAllChat: builder.query<IResponse<any>, void>({
+      getAllChat: builder.query<IResponse<any>, object>({
          query: () => ({
             url: '/chat',
             credentials: 'include'
