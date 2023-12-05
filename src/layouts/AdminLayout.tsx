@@ -8,7 +8,7 @@ import {
    NotificationOutlined
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-import { Button, Layout, Menu, message, theme } from 'antd';
+import { Badge, Button, Layout, Menu, message, theme } from 'antd';
 import { Outlet } from 'react-router';
 import { logoUrl } from '../constants/imageUrl';
 import ProductIcon from '../components/Icons/ProductIcon';
@@ -23,6 +23,7 @@ import { saveTokenAndUser } from '../slices/authSlice';
 import { useGetTokenQuery } from '../services/auth.service';
 import ReSizePage from '../pages/ReSizePage';
 import Loading from '../components/Loading/Loading';
+import { useGetAllChatQuery } from '../services/chat.service';
 
 const { Content, Sider } = Layout;
 
@@ -37,29 +38,61 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
    } as MenuItem;
 }
 
-const items: MenuItem[] = [
-   getItem(<Link to='/manage/dashboard'>Trang chủ</Link>, '1', <PieChartOutlined />),
-   getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
-      getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
-      getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
-      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
-      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6')
-   ]),
-   getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
-   getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
-   getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
-   getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
-   getItem(<Link to='/manage/chat'>Tư vấn mua hàng</Link>, 'sub5', <NotificationOutlined />)
-];
-
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
    const [checking, setChecking] = useState(true);
    const [open, setOpen] = useState(false);
+   const reload = useSelector((state: { noticeReducer: { reload: boolean } }) => state.noticeReducer.reload)
    const { data, isLoading } = useGetTokenQuery();
    const auth = useSelector((state: any) => state.userReducer);
    const navigate = useNavigate();
    const dispatch = useDispatch();
+   const { data: allChat, isLoading: chatLoading, refetch: getAllRefetch } = useGetAllChatQuery({}, { skip: auth?.user?.id });
+   const [messagesCount, setMessagesCount] = useState<number>(0)
+   useEffect(() => {
+      getAllRefetch()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [reload])
+
+   useEffect(() => {
+      if (!chatLoading && allChat) {
+         let count: number = 0
+         allChat?.body.data.map((room: any) => room.messages.filter((message: any) => {
+            if (message.isRead == false && message.sender == 'client') {
+               count += 1;
+            }
+         }))
+         setMessagesCount(count)
+      }
+   }, [allChat, chatLoading])
+
+   const items: MenuItem[] = [
+      getItem(<Link to='/manage/dashboard'>Trang chủ</Link>, '1', <PieChartOutlined />),
+      getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
+         getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
+         getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
+         getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
+         getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6')
+      ]),
+      getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
+      getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
+      getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
+      getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
+      getItem(<Link to='/manage/chat' className='block w-full h-full'>
+         <Badge
+            color='red'
+            count={
+               <p className='!bg-red-400 text-white w-6 h-6 flex justify-center items-center rounded-full text-xs'>
+                  {messagesCount}
+               </p>
+            }
+            showZero={false}
+            offset={[50, 0]}
+         >
+            Tư vấn mua hàng
+         </Badge>
+      </Link>, 'sub5', <NotificationOutlined />)
+   ];
 
    const ButtonTrigger = (
       <button className='bg-greenPrimary text-white w-full font-semibold'>{collapsed ? 'Hiện' : 'Ẩn'}</button>

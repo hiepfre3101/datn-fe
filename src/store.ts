@@ -12,6 +12,7 @@ import wishListReducer from './slices/wishListSlice';
 import userReducer from './slices/authSlice';
 import productSlice from './slices/productSlice';
 import vouchersReducer from './slices/voucherSlice';
+import noticeReducer from './slices/notice';
 import evaluationReducer from './services/evaluation.service';
 import originReducer from './services/origin.service';
 import unsoldproductReducer from './services/unsoldproduct.service';
@@ -35,6 +36,7 @@ export const store = configureStore({
       cart: cartSlice.reducer,
       wishList: wishListReducer.reducer,
       vouchersReducer: vouchersReducer,
+      noticeReducer: noticeReducer,
       userReducer: userReducer,
       [shipmentReducer.reducerPath]: shipmentReducer.reducer,
       productSlice: productSlice
