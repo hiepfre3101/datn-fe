@@ -62,7 +62,7 @@ export default function SlideEvaluate() {
                        
                      </ConfigProvider>
                            <p className='evaluate-title font-bold text-[#51A55C] sm:mt-[30px] max-sm:mt-[10px] text-[16px] max-sm:text-center'>
-                              Nguyễn Quang Đăng
+                           {item.userName!= null ? item.userName : item.userId?.userName}
                            </p>
                         </div>
                      </div>
