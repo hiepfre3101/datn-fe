@@ -58,7 +58,7 @@ const Account = () => {
                                                         <tr className="border-b dark:border-neutral-500">
                                                      
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.userName}</td>
-                                                            <td className="whitespace-nowrap px-6 py-4"><img className=' items-center text-center' src={item.avatar} alt='' /></td>
+                                                            <td className="whitespace-nowrap px-6 py-4"><img className='w-[100px] h-[100px] items-center text-center' src={item.avatar} alt='' /></td>
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.email}</td>
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.role}</td>
                                                             <td className="whitespace-nowrap px-6 py-4">{item?.phoneNumber}</td>

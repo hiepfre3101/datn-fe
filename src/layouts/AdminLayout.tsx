@@ -38,21 +38,6 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
    } as MenuItem;
 }
 
-const items: MenuItem[] = [
-   getItem(<Link to='/manage/dashboard'>Trang chủ</Link>, '1', <PieChartOutlined />),
-   getItem('Sản phẩm cửa hàng', '2', <ProductIcon />, [
-      getItem(<Link to='/manage/products'>Sản phẩm</Link>, '3'),
-      getItem(<Link to='/manage/categories'>Danh mục</Link>, '4'),
-      getItem(<Link to='/manage/shipments'>Lô hàng</Link>, '5'),
-      getItem(<Link to='/manage/origin'>Nguồn gốc</Link>, '6'),
-   ]),
-   getItem(<Link to='/manage/orders'>Đơn hàng</Link>, 'sub1', <OrderIcon />),
-   getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
-   getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
-   getItem(<Link to='/manage/loss-products'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
-   getItem(<Link to='/manage/account'>Quản lý tài khoản</Link>, 'sub5', <UserOutlined />),
-
-];
 
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
@@ -94,6 +79,7 @@ const AdminLayout = () => {
       getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
       getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
       getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
+      getItem(<Link to='/manage/account'>Quản lý tài khoản</Link>, 'sub5', <UserOutlined />),
       getItem(<Link to='/manage/chat' className='block w-full h-full'>
          <Badge
             color='red'
