@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
-import { Col, Row, message } from 'antd';
+import { Button, Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
-import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
+import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS, PENDING_ORDER } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 import { adminSocket } from '../../../config/socket';
@@ -68,9 +68,16 @@ const DetailOrder = ({ idOrder }: Props) => {
    };
    return (
       <div className='p-3 max-h-[600px] overflow-auto'>
-         <div className='flex justify-start items-end gap-2'>
-            <h2 className='text-xl'>{order?.customerName}</h2>
-            <span className='text-greenP500'>(#) {order?.invoiceId}</span>
+         <div className='flex justify-between items-end gap-2'>
+            <div className='flex justify-start items-end gap-2'>
+               <h2 className='text-xl'>{order?.customerName}</h2>
+               <span className='text-greenP500'>(#) {order?.invoiceId}</span>
+            </div>
+            {statusOrder !== FAIL_ORDER.toLowerCase() && order?.status.toLowerCase() == PENDING_ORDER.toLowerCase() ? (
+               <Button size='large' type='text' className='bg-red-500 text-white mx-2' onClick={() => handleChangeStatus('đã hủy')}>Hủy đơn hàng</Button>
+            ) : (
+               <></>
+            )}
          </div>
          <div className='flex justify-start items-center gap-[100px]'>
             <div className='flex flex-col items-start gap-[5px] mt-5'>
@@ -151,20 +158,24 @@ const DetailOrder = ({ idOrder }: Props) => {
          </Row>
          <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-5' align={'middle'}>
             {statusOrder !== FAIL_ORDER.toLowerCase() &&
-               ORDER_OF_STATUS.map((status, index) => (
-                  <Col span={6} key={index}>
-                     <ButtonCheck
-                        colorPrimary={status.color}
-                        value={status.status}
-                        disable={
-                           ORDER_OF_STATUS.indexOf(
-                              ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
-                           ) >= index || statusOrder === DONE_ORDER.toLowerCase()
-                        }
-                        onClick={(value) => handleChangeStatus(value)}
-                     />
-                  </Col>
-               ))}
+               ORDER_OF_STATUS.map((status, index) => {
+                  if (status.status.toLowerCase() != 'đã hủy') {
+                     return (
+                        <Col span={6} key={index}>
+                           <ButtonCheck
+                              colorPrimary={status.color}
+                              value={status.status}
+                              disable={
+                                 ORDER_OF_STATUS.indexOf(
+                                    ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!
+                                 ) >= index || statusOrder === DONE_ORDER.toLowerCase()
+                              }
+                              onClick={(value) => handleChangeStatus(value)}
+                           />
+                        </Col>
+                     )
+                  }
+               })}
          </Row>
       </div>
    );

@@ -7,6 +7,7 @@ export const DONE_ORDER = 'Đơn hàng hoàn thành';
 //đừng động vào cái mảng này nhé :)
 export const ORDER_OF_STATUS = [
    { status: PENDING_ORDER, color: '#e3dc1c' },
+   { status: FAIL_ORDER, color: '#E31C1C' },
    { status: SHIPPING_ORDER, color: '#e77e18' },
    { status: SUCCESS_ORDER, color: '#80b235' }
 ];
