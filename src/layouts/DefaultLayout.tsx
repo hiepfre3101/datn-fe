@@ -7,6 +7,7 @@ import { setWishListName, setWishList } from '../slices/wishListSlice';
 import { useDispatch } from 'react-redux';
 import { useGetTokenQuery } from '../services/auth.service';
 import { saveTokenAndUser } from '../slices/authSlice';
+import ScrollToTop from '../components/ScrollToTop/ScrollToTop';
 
 const DefaultLayout = () => {
    const dispatch = useDispatch();
@@ -23,6 +24,7 @@ const DefaultLayout = () => {
 
    return (
       <>
+         <ScrollToTop />
          <Header />
          <Outlet />
          <Footer />
