@@ -39,6 +39,7 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
    } as MenuItem;
 }
 
+
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
    const [checking, setChecking] = useState(true);
@@ -79,6 +80,7 @@ const AdminLayout = () => {
       getItem(<Link to='/manage/vouchers'>Mã khuyễn mãi</Link>, 'sub2', <TicketIcon />),
       getItem(<Link to='/manage/evaluation'>Quản lý đánh giá</Link>, 'sub3', <UserOutlined />),
       getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
+      getItem(<Link to='/manage/account'>Quản lý tài khoản</Link>, 'sub5', <UserOutlined />),
       getItem(<Link to='/manage/chat' className='block w-full h-full'>
          <Badge
             color='red'

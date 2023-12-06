@@ -35,6 +35,7 @@ import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
 import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
+import Account from '../pages/AdminPages/Account/Account';
 import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
 import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
 import ForgetPassword from '../pages/UserPages/ForgetPassword/ForgetPassword';
@@ -231,7 +232,12 @@ const router = createBrowserRouter([
             path: 'unsoldproduct',
             element: <UnSoldProduct />,
             errorElement: <NotFoundPage />
-         }
+         },
+         {
+            path: 'account',
+            element: <Account />,
+            errorElement: <NotFoundPage />
+         },
 
          // {
          //    path: 'accounts',

@@ -11,11 +11,12 @@ import UploadButton from '../../../components/UploadButton/UploadButton';
 import { useUpdateUserMutation } from '../../../services/user.service';
 
 export type IUserInFo = {
-   avatar: string;
+   avatar?: string;
    userName: string;
    email: string;
-   phoneNumber: string;
-   address: string;
+   phoneNumber?: string;
+   address?: string;
+   state?: boolean;
 };
 const UserInfoPage = () => {
    const [loading, setLoading] = useState(false);

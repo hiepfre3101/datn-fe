@@ -15,6 +15,8 @@ import vouchersReducer from './slices/voucherSlice';
 import noticeReducer from './slices/notice';
 import evaluationReducer from './services/evaluation.service';
 import originReducer from './services/origin.service';
+import accountReducer from './services/user.service';
+
 import unsoldproductReducer from './services/unsoldproduct.service';
 import voucherReducer from './services/voucher.service';
 import chatReducer from './services/chat.service';
@@ -31,6 +33,7 @@ export const store = configureStore({
       [evaluationReducer.reducerPath]: evaluationReducer.reducer,
       [originReducer.reducerPath]: originReducer.reducer,
       [voucherReducer.reducerPath]: voucherReducer.reducer,
+      [accountReducer.reducerPath]: accountReducer.reducer,
       [unsoldproductReducer.reducerPath]: unsoldproductReducer.reducer,
       [chatReducer.reducerPath]: chatReducer.reducer,
       cart: cartSlice.reducer,
@@ -56,6 +59,7 @@ export const store = configureStore({
          shipmentReducer.middleware,
          evaluationReducer.middleware,
          originReducer.middleware,
+         accountReducer.middleware,
          unsoldproductReducer.middleware
       ])
 });
