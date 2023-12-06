@@ -24,6 +24,7 @@ import { useGetTokenQuery } from '../services/auth.service';
 import ReSizePage from '../pages/ReSizePage';
 import Loading from '../components/Loading/Loading';
 import { useGetAllChatQuery } from '../services/chat.service';
+import ScrollToTop from '../components/ScrollToTop/ScrollToTop';
 
 const { Content, Sider } = Layout;
 
@@ -130,6 +131,7 @@ const AdminLayout = () => {
       <>
          <div className='w-full md:hidden'>
             <ReSizePage />
+            <ScrollToTop/>
          </div>
          <Layout>
             <Sider
