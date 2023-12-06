@@ -120,7 +120,7 @@ const Footer = () => {
          dispatch(removeFromCart({ id: item.productId._id }));
       }
    };
-   console.log(cartdb);
+
    
    const [subtotal,setSubtotal] = useState<number>(0)
    const [discount,setDiscount] = useState<number>(0)

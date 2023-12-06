@@ -117,7 +117,7 @@ const Header = () => {
    };
    const showMenuReponsive = () => {
       const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
+      bodyElement?.classList.toggle('max-xl:overflow-hidden');
       const overlay_menu_homepage = document.querySelector('.overlay-menu-homepage');
       overlay_menu_homepage?.classList.toggle('!opacity-[0.15]');
       overlay_menu_homepage?.classList.toggle('!visible');

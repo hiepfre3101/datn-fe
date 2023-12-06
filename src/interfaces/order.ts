@@ -23,6 +23,9 @@ export interface IOrder {
    status?: string;
    voucherCode?: string;
    code?: string;
+   districtCode?:number,
+   districtName?:string,
+   ward?:string;
 }
 
 export type IOrderFull = {

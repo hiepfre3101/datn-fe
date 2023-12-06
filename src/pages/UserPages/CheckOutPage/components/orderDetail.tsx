@@ -1,19 +1,48 @@
 import { useFormContext } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { IAuth } from "../../../../slices/authSlice";
-import { useEffect } from "react";
-
+import {  useEffect, useState } from "react";
 
 const OrderDetail = () => {
-   const { register ,formState: { errors },setValue} = useFormContext();
+   const { register ,formState: { errors },setValue,watch} = useFormContext();
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer.user);
+   const [provinces,setProvinces] = useState<any>({})
+   const [districtCode,setDistrictCode] = useState<any>(0)
+   const [wards,setWards] = useState<any>({})
    useEffect(()=>{
       setValue('customerName', auth.userName )
       setValue('email', auth.email )
       setValue('phoneNumber', auth.phoneNumber )
       setValue('shippingAddress', auth.address )
    },[auth]) 
+   useEffect(()=>{
+      fetch('https://provinces.open-api.vn/api/p/1/?depth=2',{
+         method:"GET",
+      }).then((res)=>res.json()).then(res=>{
+          setProvinces(res)
+      })
+   },[])
+   
+   useEffect(()=>{
+   
+      
+      fetch(`https://provinces.open-api.vn/api/d/${districtCode}?depth=2`,{
+         method:"GET",
+      }).then((res)=>res.json()).then(res=>{
+         setWards(res)
+     
+      })
+   },[districtCode])
+   useEffect(()=>{
+   
+      setValue('districtName',wards.name )
+   },[wards])
+   useEffect(()=>{
 
+   setDistrictCode(watch('districtCode'))         
+   },[watch('districtCode')]) 
+   
+   
     return  <>
          <div className='order-detail'>
             <form action=''>
@@ -26,7 +55,6 @@ const OrderDetail = () => {
                         Họ và tên
                         <input
                            type='text'
-      
                            {...register('customerName', { required: 'Họ và tên là trường bắt buộc' })}
                            className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
                            placeholder='Họ và tên'
@@ -81,6 +109,7 @@ const OrderDetail = () => {
                            )}
                      </div>
                   </div>
+              
                   <div className='order-form-item mt-[15px]'>
                      <label>
                         Địa chỉ
@@ -95,6 +124,42 @@ const OrderDetail = () => {
                               <p className='error-message text-[13px] text-red-500'>{errors?.shippingAddress?.message?.toString()}</p>
                            )}
                   </div>
+                  <div className="flex justify-between mt-[10px] items-start">
+
+                     <div className='w-[30%] mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'>{provinces.name}</div>
+
+        <div className="flex flex-col w-[30%]">
+
+
+
+
+
+        <select {...register('districtCode', { required: 'Huyện là trường bắt buộc' })}   className=' mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]' >
+                  <option value={""}>Huyện</option>
+                     {provinces?.districts?.map((item:any)=>{ 
+                           return<>
+                           <option value={item.code}>{item.name}</option>
+                           </>
+                     })}
+                  </select>
+                  {errors.districtCode &&  (
+                              <p className='error-message text-[13px] text-red-500'>{errors?.districtCode?.message?.toString()}</p>
+                           )}
+        </div>
+                  <div className="flex flex-col w-[30%]">
+                  <select  {...register('ward', { required: 'Xã là trường bắt buộc' })}  className=' mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'>
+                     <option  value="">Xã</option>
+                        {wards?.wards?.map((item:any)=>{ 
+                              return<>
+                              <option value={item.name}>{item.name}</option>
+                              </>
+                        })}
+                  </select>
+                  {errors.ward &&  (
+                              <p className='error-message text-[13px] text-red-500'>{errors?.ward?.message?.toString()}</p>
+                           )}
+                  </div>
+                </div>
                </div>
             </form>
          </div>

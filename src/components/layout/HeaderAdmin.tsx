@@ -187,7 +187,6 @@ const HeaderAdmin = () => {
                   <div className='hidden xl:flex-1 xl:flex xl:justify-start xl:gap-2 xl:items-center cursor-pointer p-1 text-center '>
                      <span className='font-medium text-sm text-[#6b6765] '>{auth.user.userName}</span>
                      <div className={triggerDrop ? 'round-up' : 'round-down'}>
-                        {' '}
                         <DownOutlined color='#6b6765' size={1} />
                      </div>
                   </div>
