@@ -9,8 +9,7 @@ import { useGetAllunsoldproductQuery } from '../../../services/unsoldproduct.ser
 import { formatStringToDate } from '../../../helper';
 
 const UnSoldProduct = () => {
-   const { data, isLoading } = useGetAllunsoldproductQuery();
-   console.log(data?.body?.data);
+   const { data, isLoading } = useGetAllunsoldproductQuery(undefined, { refetchOnMountOrArgChange: true });
 
    // const [updateEvaluationMutation] = useUpdateEvaluationMutation()
    if (isLoading) return <Loading sreenSize='lg' />;
@@ -44,6 +43,14 @@ const UnSoldProduct = () => {
                         />
 
                         <Column
+                           title='Lô hàng ngày'
+                           key='conte'
+                           width={30}
+                           render={(_, record: any) => (
+                              <p>{formatStringToDate(record.shipments[0].shipmentId.createdAt)}</p>
+                           )}
+                        />
+                        <Column
                            title='Số lượng'
                            key='content'
                            width={30}
@@ -54,7 +61,15 @@ const UnSoldProduct = () => {
                            title='Giá'
                            key='userName'
                            width={30}
-                           render={(_, record: any) => <p>{record.shipments[0].purchasePrice} (VND)</p>}
+                           render={(_, record: any) => (
+                              <p>
+                                 {record.shipments[0].purchasePrice.toLocaleString('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                 })}{' '}
+                                 (VND)
+                              </p>
+                           )}
                         />
 
                         <Column
@@ -66,7 +81,12 @@ const UnSoldProduct = () => {
                            render={(_, record: any) => {
                               return (
                                  <p>
-                                    {Number(record.shipments[0].purchasePrice) * Number(record.shipments[0].weight)}{' '}
+                                    {(
+                                       Number(record.shipments[0].purchasePrice) * Number(record.shipments[0].weight)
+                                    ).toLocaleString('vi-VN', {
+                                       style: 'currency',
+                                       currency: 'VND'
+                                    })}{' '}
                                     (VND)
                                  </p>
                               );

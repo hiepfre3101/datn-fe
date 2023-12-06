@@ -11,7 +11,7 @@ import { IVoucher } from '../../../slices/voucherSlice';
 import { formatStringToDate } from '../../../helper';
 
 const VoucherAdmin = () => {
-   const { data, isLoading } = useGetAllVoucherQuery();
+   const { data, isLoading } = useGetAllVoucherQuery(undefined, { refetchOnMountOrArgChange: true });
    const vouchers = data && voucherData(data);
    console.log(vouchers);
    const [handleRemoveVoucher] = useRemoveVoucherMutation();

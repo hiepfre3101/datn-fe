@@ -10,7 +10,7 @@ import '../../../css/config-antd.css';
 import { useState } from 'react';
 const ShipmentPage = () => {
    const [page, setPage] = useState<number>(1);
-   const { data } = useGetAllShipmentExpandQuery({ page, limit: 6 });
+   const { data } = useGetAllShipmentExpandQuery({ page, limit: 6 }, { refetchOnMountOrArgChange: true });
    console.log(data?.body.pagination.totalItems);
    const [handleUpdateShipment] = useUpdateShipmentMutation();
    return (
