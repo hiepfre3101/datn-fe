@@ -20,6 +20,7 @@ import { INotification } from '../../interfaces/notification';
 import { formatStringToDate } from '../../helper';
 import { setItem } from '../../slices/cartSlice';
 import NotificationSound from '../../assets/notification-sound.mp3';
+import { setState } from '../../slices/notice';
 
 const pagePaths = [
    {
@@ -72,7 +73,6 @@ const HeaderAdmin = () => {
    };
    useEffect(() => {
       adminSocket.open();
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handlePurchaseNotification = (data: any) => {
          refetch();
@@ -91,6 +91,7 @@ const HeaderAdmin = () => {
       adminSocket.on('updatemess', () => {
          if (audioPlayer.current !== null) {
             audioPlayer.current.play()
+            dispatch(setState())
          }
       });
       return () => {
