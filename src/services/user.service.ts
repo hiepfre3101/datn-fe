@@ -1,6 +1,6 @@
+import { IUser } from './../interfaces/auth';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { IQueryParam, IResponse, IResponseHasPaginate } from '../interfaces/base';
-import { IUser } from '../interfaces/auth';
 import { paramTransformer } from '../utils/transformParams';
 import { IUserInFo } from '../pages/UserPages/UserInfoPage/UserInforPage';
 import { baseUrl } from '../constants/baseUrl';
@@ -24,7 +24,7 @@ const userApi = createApi({
          },
          invalidatesTags: ['user']
       }),
-      getAll: builder.query<IResponseHasPaginate<IUser>, Partial<IQueryParam>>({
+      getAll: builder.query<IResponseHasPaginate<IUser>&{body:{data:{docs:IUser[]}}}, Partial<IQueryParam>>({
          query: (params) => {
             return {
                url: '/users',
