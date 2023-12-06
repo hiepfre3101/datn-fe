@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import CheckOut from './components/CheckOut';
-import NoteForSeller from './components/NoteForSeller';
 import ProductsInCart from './components/ProductsInCart';
 
 const CartPage = () => {
@@ -19,7 +18,6 @@ const CartPage = () => {
                   <div className='cart-page-wrap mx-[-15px] flex max-lg:flex-wrap items-start  '>
                      <div className='cart-content  xl:w-[75%] lg:w-[66.67%] max-lg:w-full px-[15px]'>
                         <ProductsInCart />
-                        <NoteForSeller />
                      </div>
                      <div className='cart-header lg:sticky xl:top-[110px] max-xl:top-[80px] px-[15px] xl:w-[25%] lg:w-[33.33%] max-lg:w-full max-lg:mt-[30px]'>
                         <div className='cart-total-wrap p-[20px] border-[1px] border-[#e2e2e2]'>

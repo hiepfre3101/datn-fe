@@ -54,12 +54,7 @@ const CheckOutPage = () => {
    const [error, setError] = useState<string[]>([]);
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
 
-   useEffect(() => {
-      if ((cart?.products && cart?.products.length === 0) || cart?.length === 0) {
-         navigate('/');
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [cart]);
+
    const CheckCart = async () => {
       let temp = false;
       if (auth.user._id) {
@@ -221,6 +216,10 @@ const CheckOutPage = () => {
             //dung dong vao cho nay
             data.note = ' ';
          }
+         data.shippingAddress = "Thành phố Hà Nội"+", "+data.districtName+", "+data.ward+", "+data.shippingAddress
+         delete data.districtCode;
+         delete data.ward;
+         delete data.districtName;
          data.products = cart.items;
          data.totalPayment = cart.totalPrice;
          try {
@@ -263,6 +262,8 @@ const CheckOutPage = () => {
                if (voucher._id) {
                   data.code = voucher.code;
                }
+               console.log(data);
+               
                await handleAddOrder(data)
                   .unwrap()
                   .then((res) => {
@@ -356,7 +357,7 @@ const CheckOutPage = () => {
                                  type='text'
                                  onClick={methods.handleSubmit(onSubmit)}
                               >
-                                 Next
+                                 Tiếp
                               </Button>
                            )}
                            {current > 0 && (
@@ -365,7 +366,7 @@ const CheckOutPage = () => {
                                  style={{ margin: '0 8px' }}
                                  onClick={() => prev()}
                               >
-                                 Previous
+                                 Trước đó
                               </Button>
                            )}
                         </div>

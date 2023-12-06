@@ -117,7 +117,7 @@ const Header = () => {
    };
    const showMenuReponsive = () => {
       const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
+      bodyElement?.classList.toggle('max-xl:overflow-hidden');
       const overlay_menu_homepage = document.querySelector('.overlay-menu-homepage');
       overlay_menu_homepage?.classList.toggle('!opacity-[0.15]');
       overlay_menu_homepage?.classList.toggle('!visible');
@@ -129,21 +129,6 @@ const Header = () => {
       const sub_menu = document.querySelector('.sub-menu');
       sub_menu?.classList.toggle('max-xl:!hidden');
    };
-   // const showModalSearch = () => {
-   //    const bodyElement = document.querySelector('body');
-   //    bodyElement?.classList.toggle('overflow-hidden');
-   //    const section_search_modal = document.querySelector('.section-search-modal');
-   //    const section_overlay_search = document.querySelector('.section-overlay-search');
-   //    setTimeout(() => {
-   //       section_overlay_search?.classList.toggle('hidden');
-   //    }, 300);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('hidden');
-   //    }, 500);
-   //    setTimeout(() => {
-   //       section_search_modal?.classList.toggle('!translate-y-[0%]');
-   //    }, 600);
-   // };
    let oldScrollY = window.scrollY;
    const fixedMenu = () => {
       const header = document.querySelector('.header');

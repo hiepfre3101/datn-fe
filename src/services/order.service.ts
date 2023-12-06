@@ -114,7 +114,7 @@ export const {
    useCancelOrderMemberMutation,
    useConfirmOrderMemberMutation,
    useGetOneOrderForMemberQuery,
-   useGetOrderForMemberQuery
+   useGetOrderForMemberQuery,
 } = orderApi;
 
 export default orderApi;

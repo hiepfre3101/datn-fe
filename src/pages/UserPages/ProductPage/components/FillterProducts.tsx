@@ -86,6 +86,7 @@ const FillterProducts = () => {
             <AiOutlineCloseCircle onClick={showFilter} className='text-white text-[28px]'></AiOutlineCloseCircle>
          </div>
          <div className='max-lg:overflow-y-auto max-lg:px-[10px] max-lg:pt-[10px] lg:px-[5px]'>
+            
             <div
                className={`categories   overflow-hidden   transition-all duration-200 ease-linear   pb-[30px] mb-[30px] shadow-[0_0_3px_rgba(0,0,0,0.08)] rounded-[4px]`}
             >

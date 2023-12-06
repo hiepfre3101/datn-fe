@@ -1,5 +1,6 @@
 import { BsTruck, BsCurrencyDollar } from 'react-icons/bs';
-import { FaHeadphones, FaArrowRotateRight } from 'react-icons/fa6';
+import { FaHeadphones } from 'react-icons/fa6';
+import { GiFruitBowl } from "react-icons/gi";
 const MyService = () => {
    return (
       <div className=''>
@@ -11,8 +12,8 @@ const MyService = () => {
                         <BsTruck></BsTruck>
                      </div>
                      <div className='service-text ml-[20px]'>
-                        <p className='service-title text-[#333333] font-bold text-[18px]'>Miễn phí ship</p>
-                        <p className='text-[16px]'>Cho đơn hàng trên 1 triệu</p>
+                        <p className='service-title text-[#333333] font-bold text-[18px]'>Giao hàng uy tín</p>
+                        <p className='text-[16px]'>Đảm bảo giao đến tận nơi</p>
                      </div>
                   </div>
                   <div className='service-item max-md:w-full p-[20px] border-[1px] border-[rgba(0,0,0,10%)] lg:w-[calc(25%-30px)]  md:w-[calc(50%-30px)] rounded-[5px] flex items-center'>
@@ -30,16 +31,16 @@ const MyService = () => {
                      </div>
                      <div className='service-text ml-[20px]'>
                         <p className='service-title text-[#333333] font-bold text-[18px]'>Hỗ trợ trực tuyến 24/7</p>
-                        <p className='text-[16px]'>Hỗ trợ khách hàng tinh tế</p>
+                        <p className='text-[16px]'>Hỗ trợ khách hàng nhiệt tình</p>
                      </div>
                   </div>
                   <div className='service-item max-md:w-full p-[20px] border-[1px] border-[rgba(0,0,0,10%)] lg:w-[calc(25%-30px)]  md:w-[calc(50%-30px)] rounded-[5px] flex items-center'>
                      <div className='service-icon text-[#51A55C] text-[30px]'>
-                        <FaArrowRotateRight></FaArrowRotateRight>
+                       <GiFruitBowl></GiFruitBowl>
                      </div>
                      <div className='service-text ml-[20px]'>
-                        <p className='service-title text-[#333333] font-bold text-[18px]'>Hoàn trả 2 ngày</p>
-                        <p className='text-[16px]'>Nếu hàng hóa có vấn đề</p>
+                        <p className='service-title text-[#333333] font-bold text-[18px]'>Trái cây chất lượng cao</p>
+                        <p className='text-[16px]'>Đạt chuẩn chất lượng</p>
                      </div>
                   </div>
                </div>

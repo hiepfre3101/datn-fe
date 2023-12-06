@@ -14,15 +14,15 @@ const BannerSales = () => {
                            alt=''
                         />
                         <div className='banner-text absolute m-w-[35%] max-lg:left-[15px] max-lg:max-w-full lg:left-[30px] '>
-                           <span className='banner-title text-[#51A55C] relative uppercase font-bold text-[16px]'>
-                              Giảm giá 80%
-                           </span>
                            <p className='banner-sub-title  lg:text-[28px] md:text-[23px] sm:text-[28px] max-sm:text-[20px] font-bold text-[#333333] mt-[10px] '>
                               Hoa quả tươi
                            </p>
+                           <Link to="/collections">
                            <p className=' inline-block hover:text-white xl:mt-[20px] max-xl:mt-[15px] text-[#51A55C] bg-white rounded-[50px] py-[10px] hover:bg-[#7aa32a] transition-colors duration-500   px-[30px] font-bold text-[16px] '>
                               MUA NGAY
                            </p>
+                           </Link>
+                          
                         </div>
                      </Link>
                   </div>
@@ -34,15 +34,15 @@ const BannerSales = () => {
                            alt=''
                         />
                         <div className='banner-text absolute m-w-[35%] max-lg:left-[15px] max-lg:max-w-full lg:left-[30px] '>
-                           <span className='banner-title text-[#51A55C] relative uppercase font-bold text-[16px]'>
-                              Giảm giá 80%
-                           </span>
                            <p className='banner-sub-title   lg:text-[28px] md:text-[23px] sm:text-[28px] max-sm:text-[20px] font-bold text-[#333333] mt-[10px] '>
                               Hoa quả tươi
                            </p>
+                           <Link to="/collections">
                            <p className=' inline-block hover:text-white xl:mt-[20px] max-xl:mt-[15px] text-[#51A55C] bg-white rounded-[50px] py-[10px] hover:bg-[#7aa32a] transition-colors duration-500   px-[30px] font-bold text-[16px] '>
                               MUA NGAY
                            </p>
+                              </Link>
+                 
                         </div>
                      </Link>
                   </div>
