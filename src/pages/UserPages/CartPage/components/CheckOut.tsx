@@ -367,7 +367,7 @@ const CheckOut = () => {
                      : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                </span>
             </div>
-            {voucher._id ? <div className='discount-action mt-[30px] text-center'>
+            {!voucher._id ? <div className='discount-action mt-[30px] text-center'>
                <input
                   type='text'
                   value={inputVoucher}
