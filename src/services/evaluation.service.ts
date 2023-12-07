@@ -51,11 +51,11 @@ const evaluation = createApi({
          }),
          invalidatesTags: ['evaluation'],
       }),
-      updateEvaluation: builder.mutation<IResponse<IEvaluationFull>,{id:string}>({
-         query: ({ id }) => ({
-            url: '/evaluation/' + id,
+      updateEvaluation: builder.mutation<IResponse<IEvaluationFull>,{_id:string,isReviewVisible:boolean}>({
+         query: (item) => ({
+            url: '/evaluation/' + item._id,
             method: 'PATCH',
-           
+            body: item
          }),
          invalidatesTags: ['evaluation'],
       })

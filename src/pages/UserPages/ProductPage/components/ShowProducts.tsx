@@ -14,6 +14,7 @@ import { addItem } from '../../../../slices/cartSlice';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
+import { CountExpirationDate } from '../../../../helper';
 
 interface IProps {
    data: IResponseHasPaginate<IProductExpanded> | undefined;
@@ -144,7 +145,8 @@ const ShowProducts = ({ data }: IProps) => {
                               }}
                            >
                               <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
-                                 {item?.productName}
+                                 {item?.productName} 
+                                 <p className='text-[14px]'>{item.isSale==true?"HSD: "+ CountExpirationDate(item?.shipments[0]?.date)+ " ngày":""}</p>
                               </p>
                            </Link>
                      <div className=''>

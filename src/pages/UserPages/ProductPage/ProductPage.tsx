@@ -18,7 +18,7 @@ export interface IFilterFieldProductPage {
       minPriceOfAllProducts?: number;
       sort?: string;
       order?: 'asc' | 'desc';
-      isSale?:boolean;
+      isSale?:any;
    };
    setfield?: (value: IFilterFieldProductPage) => void;
 }
@@ -42,7 +42,7 @@ const ProductPage = () => {
    });
    const [products, setProduct] = useState<IResponseHasPaginate<IProductExpanded>>();
    const [SortState, setSortState] = useState<ISort|undefined>();
-   const [isSaleState, setIsSaleState] = useState<boolean>(false);
+   const [isSaleState, setIsSaleState] = useState<any>(true);
    const { data } = useGetAllExpandQuery({
       expand: true,
       limit: 9,
@@ -53,8 +53,9 @@ const ProductPage = () => {
       originId: filter.field.origin,
       sort: filter.field.sort,
       order: filter.field.order,
-      isSale: filter.field.isSale
+      isSale:isSaleState==true?  filter.field.isSale:""
    });
+console.log(products);
 
    
    useEffect(()=>{

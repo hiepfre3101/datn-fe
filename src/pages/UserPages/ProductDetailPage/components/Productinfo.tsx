@@ -152,9 +152,9 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                            {product_info?.productName}
                         </div>
                      </div>
-                     <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
+                     <div className='product-info md:mt-[30px] max-md:mt-[20px] '>
                         {product_info?.price ? (
-                           <div className='product-price text-[20px] font-bold'>
+                           <div className='product-price text-[20px] font-bold flex items-center'>
                               {(
                                  product_info?.price -
                                  (product_info?.price * product_info?.discount) / 100
@@ -162,6 +162,16 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
+                            {product_info?.discount>0 &&<>
+                              <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                    {product_info?.price?.toLocaleString('vi-VN', {
+                                       style: 'currency',
+                                       currency: 'VND'
+                                    })}
+                                 </span>
+                                 <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>-{product_info.discount}%</div>
+                            </>
+                                 }
                            </div>
                         ) : (
                            ''

@@ -15,6 +15,8 @@ const DetailOrder = ({ idOrder }: Props) => {
    const [order, setOrder] = useState<IOrderFull>();
    const [statusOrder, setStatusOrder] = useState<string>();
    const [handleUpdateOrder, { isLoading }] = useUpdateOrderMutation();
+   const [subtotal,setSubtotal] = useState<number>(0)
+   const [discount,setDiscount] = useState<number>(0)
    useEffect(() => {
       (async () => {
          try {
@@ -26,6 +28,30 @@ const DetailOrder = ({ idOrder }: Props) => {
          }
       })();
    }, [idOrder]);
+   useEffect(()=>{
+      const temp = order?.products?.reduce((cal, product) => {
+         return cal + (product.weight * product.price);
+     }, 0);
+     if(temp!==undefined){
+      setSubtotal(temp)
+     }
+   },[order])   
+   useEffect(()=>{
+      if(order?.voucher){
+         if(order?.voucher.maxReduce>0){
+            if(order?.voucher.maxReduce<subtotal){
+               setDiscount(order.voucher.maxReduce)
+            }else{
+               setDiscount((subtotal*order?.voucher?.percent/100))
+            }
+            
+         }
+         else{
+            setDiscount((subtotal*order?.voucher?.percent/100))
+         }
+      }
+   },[order,subtotal])
+   
    const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
       console.log(value);
@@ -146,7 +172,35 @@ const DetailOrder = ({ idOrder }: Props) => {
             <span className='text-sm font-semibold text-greenP500'>GHI CHÚ</span>
             <span className='text-sm max-w-[200px] text-wrap'>{order?.note}</span>
          </div>
-         <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-10' align={'middle'}>
+         {order?.voucher?.code &&  <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-10' align={'middle'}>
+            <Col span={4}>
+               <span className='text-sm  text-greenP800 font-bold'>Tính tạm:</span>
+            </Col>
+            <Col span={4}>
+               <span className='text-lg  text-greenP800 font-bold'>
+                  {subtotal.toLocaleString('vi-VN', {
+                     style: 'currency',
+                     currency: 'VND'
+                  })}
+                  (vnd)
+               </span>
+            </Col>
+         </Row>}
+         {order?.voucher?.code &&  <Row className=' border-t-[1px] pt-[15px] border-[rgba(0,0,0,0.1)] ' align={'middle'}>
+            <Col span={4}>
+               <span className='text-sm  text-greenP800 font-bold'>Giảm giá:</span>
+            </Col>
+            <Col span={4}>
+            <span className='text-lg  text-greenP800 '>
+                  - {discount.toLocaleString('vi-VN', {
+                     style: 'currency',
+                     currency: 'VND'
+                  })}
+                  (vnd)
+               </span>
+            </Col>
+         </Row>}
+         <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-5' align={'middle'}>
             <Col span={4}>
                <span className='text-sm  text-greenP800 font-bold'>TỔNG TIỀN:</span>
             </Col>
