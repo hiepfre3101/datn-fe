@@ -18,6 +18,7 @@ export interface IFilterFieldProductPage {
       minPriceOfAllProducts?: number;
       sort?: string;
       order?: 'asc' | 'desc';
+      isSale?:boolean;
    };
    setfield?: (value: IFilterFieldProductPage) => void;
 }
@@ -41,6 +42,7 @@ const ProductPage = () => {
    });
    const [products, setProduct] = useState<IResponseHasPaginate<IProductExpanded>>();
    const [SortState, setSortState] = useState<ISort|undefined>();
+   const [isSaleState, setIsSaleState] = useState<boolean>(false);
    const { data } = useGetAllExpandQuery({
       expand: true,
       limit: 9,
@@ -50,7 +52,8 @@ const ProductPage = () => {
       categoryId: filter.field.category,
       originId: filter.field.origin,
       sort: filter.field.sort,
-      order: filter.field.order
+      order: filter.field.order,
+      isSale: filter.field.isSale
    });
 
    
@@ -67,6 +70,7 @@ const ProductPage = () => {
        }  
    },[cate_id])
    useEffect(()=>{
+      setIsSaleState(false)
       if (filter.setfield) {
          filter.setfield({
            ...filter,
@@ -77,9 +81,18 @@ const ProductPage = () => {
            },
          });
        }  
-   
-       
    },[SortState])
+   useEffect(()=>{
+      if (filter.setfield) {
+         filter.setfield({
+           ...filter,
+           field: {
+             ...filter.field,
+             isSale: isSaleState,
+           },
+         });
+       }  
+   },[isSaleState])
    useEffect(() => {
       if(data?.body.data.length==0){
         if(filter.setfield){
@@ -105,6 +118,9 @@ const ProductPage = () => {
 
    const handleChangeSortState = (sort?:string,order?: 'asc' | 'desc') => {
       setSortState({sort:sort,order:order});
+   };
+   const handleChangeIsSaleState = (value:boolean) => {
+      setIsSaleState(value);
    };
    const handlePageChange = (pageNumber: number) => {
       setFilter({
@@ -134,7 +150,7 @@ const ProductPage = () => {
 
                      <div className=' px-[20px] max-md:px-0 main-content max-border-l-2 border-[#cccccc]   w-[75%] max-lg:w-[100%] '>
                         <div className='product-item mb-[30px]'>
-                           <SorterProduct setSortState={handleChangeSortState} />
+                           <SorterProduct setSortState={handleChangeSortState} setIsSale={handleChangeIsSaleState} />
                            {products?.body?.data?.length ? (
                               <ShowProducts data={products} />
                            ) : (

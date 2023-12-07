@@ -45,4 +45,5 @@ export interface IQueryParam {
    productId: string;
    shipmentId: string;
    invoiceId: string;
+   isSale: boolean;
 }

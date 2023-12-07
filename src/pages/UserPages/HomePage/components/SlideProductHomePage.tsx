@@ -9,6 +9,7 @@ import 'swiper/css/pagination';
 import { Grid, Autoplay } from 'swiper/modules';
 import { ConfigProvider, Rate } from 'antd';
 import { IProductExpanded } from '../../../../interfaces/product';
+import { Link } from 'react-router-dom';
 interface IProps{
    slideName:string
    data: IProductExpanded[]|undefined
@@ -77,8 +78,9 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
             >
                {data?.map(item=>{
                   return<>
-<SwiperSlide className='h-[29%] bg-white !mt-[20px]  '>
-                  <div className='featured-product-item-slide flex items-center gap-x-[10px] '>
+               <SwiperSlide className='h-[29%] bg-white !mt-[20px]  '>
+                  <Link to={"/products/"+item._id}>
+                  <div className='featured-product-item-slide flex items-center gap-x-[10px] cursor-pointer'>
                      <div className='silde-img  '>
                         <img className='w-[149px] h-[149px]' src={item.images[0].url} alt='' />
                      </div>
@@ -112,6 +114,7 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
                      </div>
                      
                   </div>
+                  </Link>
                </SwiperSlide>
                   </>
                })}

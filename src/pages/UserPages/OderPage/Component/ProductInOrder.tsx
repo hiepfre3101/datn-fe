@@ -36,14 +36,14 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
       setIsOpen(false);
    };
    return (
-      <div className='one-product flex justify-between items-center w-full'>
-         <div className='flex justify-start gap-2 items-center'>
+      <div className='one-product flex justify-between items-center w-full flex-wrap'>
+         <div className='flex justify-start gap-2 md:items-center max-md:flex-col'>
             <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-            <span className='text-black font-semibold'>{product.productName}</span>
+            <span className='text-black font-semibold max-w-[300px]'>{product.productName}</span>
          </div>
-         <div className='flex justify-start gap-2 items-center'>
+         <div className='flex justify-start gap-2 items-center max-md:text-[16px]'>
             <span>{product.weight} x</span>
-            <span className='text-lg text-black'>{product.price.toLocaleString('vi-VN', {
+            <span className='text-lg text-black max-md:text-[16px]'>{product.price.toLocaleString('vi-VN', {
                                  style: 'currency',
                                  currency: 'VND'
                               })}</span>
@@ -100,7 +100,7 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
                   <Form form={form} onFinish={handleFinish} layout='vertical' className='w-full'>
                      <div className='flex justify-start gap-2 items-center'>
                         <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-                        <span className='text-black font-semibold'>{product.productName}</span>
+                        <span className='text-black font-semibold '>{product.productName}</span>
                      </div>
                      {Object.keys(user).length == 0 && (
                         <Space className='w-full' size={'large'}>

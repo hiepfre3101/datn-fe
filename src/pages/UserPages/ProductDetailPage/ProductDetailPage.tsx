@@ -34,7 +34,7 @@ const ProductDetail = () => {
                   <ProductDescriptionTab
                      productId={oneProductData?.body.data._id}
                      desc={oneProductData?.body.data.desc}
-                     originName={oneProductData?.body.data ? oneProductData?.body.data.originId.name : ''}
+                     originName={oneProductData?.body.data ? oneProductData?.body.data.originId?.name : ''}
                   ></ProductDescriptionTab>
                )}
             </section>

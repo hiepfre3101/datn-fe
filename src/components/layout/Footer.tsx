@@ -120,7 +120,7 @@ const Footer = () => {
          dispatch(removeFromCart({ id: item.productId._id }));
       }
    };
-   console.log(cartdb);
+
    
    const [subtotal,setSubtotal] = useState<number>(0)
    const [discount,setDiscount] = useState<number>(0)
@@ -494,7 +494,7 @@ const Footer = () => {
 
          <section className='section-mobile-menu max-sm:block hidden  '>
             <div className='mobile-menu-content  pt-[10px] z-[4] flex justify-between fixed bottom-0 left-0 right-0 rounded-t-xl shadow-[0px_4px_16px_rgba(17,17,26,0.1),_0px_8px_24px_rgba(17,17,26,0.1),_0px_16px_56px_rgba(17,17,26,0.1)]  bg-white'>
-               <div className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
+               <div className='mobile-menu-item text-[#939596] p-[5px] text-center flex items-end justify-center w-[20%] '>
                   <Link to='/'>
                      <BiStore className='m-auto' style={{ fontSize: '24px' }} />
                      <p className='  text-[10px] sm:text-[12px]'>Trang chủ</p>
@@ -507,7 +507,7 @@ const Footer = () => {
                   </SearchFilter>
                   <p className='  text-[10px]  sm:text-[12px]'>Tìm kiếm</p>
                </div>
-               <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
+               <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] flex flex-col'>
                   <div className='test relative w-[24px] h-[24px] m-auto '>
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
                      <Badge
@@ -517,7 +517,7 @@ const Footer = () => {
                      >
                         <li
                            onClick={showMiniCart}
-                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] ml-[30px] relative transition-colors  duration-300 cursor-pointer hover:text-[#d2401e]   '
+                           className='max-sm:hidden header-icon-item header-search-icon text-[20px] flex flex-col ml-[30px] relative transition-colors  duration-300 cursor-pointer hover:text-[#d2401e]   '
                         >
                            <HiOutlineShoppingBag></HiOutlineShoppingBag>
                         </li>
@@ -528,7 +528,7 @@ const Footer = () => {
                {auth.user?._id && (
                   <div
                      onClick={showNotificationTag}
-                     className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'
+                     className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] flex flex-col'
                   >
                      <div className='test relative w-[24px] h-[24px] m-auto '>
                         <BsBell style={{ fontSize: '24px' }} />
@@ -541,7 +541,7 @@ const Footer = () => {
                      <p className=' text-[10px] sm:text-[12px] mt-[2px]'>Thông báo</p>
                   </div>
                )}
-               <div onClick={showUserTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%]'>
+               <div onClick={showUserTag} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] '>
                   <UserOutlined style={{ fontSize: '24px' }} />
                   <p className='  text-[10px] sm:text-[12px]'>Tài khoản</p>
                </div>
