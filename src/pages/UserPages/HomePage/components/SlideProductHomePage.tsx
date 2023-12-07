@@ -10,6 +10,7 @@ import { Grid, Autoplay } from 'swiper/modules';
 import { ConfigProvider, Rate } from 'antd';
 import { IProductExpanded } from '../../../../interfaces/product';
 import { Link } from 'react-router-dom';
+import { CountExpirationDate } from '../../../../helper';
 interface IProps{
    slideName:string
    data: IProductExpanded[]|undefined
@@ -29,7 +30,7 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
                   rows: 3
                }}
                autoplay={{
-                   delay: 2000,
+                   delay: 2500,
                    disableOnInteraction: false,
                  }}
                breakpoints={{
@@ -111,6 +112,12 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
                               </span>
                            </p>
                         </div>
+                        {item.isSale==true && <div className='price-box'>
+                           <p className='price  flex items-center md:text-[16px] max-md:text-[14px]  text-gray-500'>
+                            Hạn sử dụng sẽ hết sau: {CountExpirationDate(item.shipments[0].date)} ngày
+                 
+                           </p>
+                        </div>}
                      </div>
                      
                   </div>

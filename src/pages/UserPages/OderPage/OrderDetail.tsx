@@ -33,9 +33,7 @@ const OrderDetail = () => {
      if(temp!==undefined){
       setSubtotal(temp)
      }
-   },[data])
-   console.log(data?.body.data.voucher);
-   
+   },[data])   
    useEffect(()=>{
       if(data?.body.data.voucher){
          if(data?.body.data.voucher?.maxReduce>0){
@@ -52,8 +50,6 @@ const OrderDetail = () => {
          }
       }
    },[data,subtotal])
-   console.log(discount);
-   
    useEffect(() => {
       clientSocket.on('statusNotification', (data) => {
          if (data.status === SUCCESS_ORDER.toLowerCase()) {
