@@ -54,12 +54,16 @@ const DetailOrder = ({ idOrder }: Props) => {
    
    const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
-      if (
-         ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!) !==
-         ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === value)!) - 1
-      ) {
-         message.warning('Cần thay đổi trạng thái theo thứ tự');
-         return Promise.reject();
+      console.log(value);
+      
+      if(value !== 'đã hủy') {
+         if (
+            ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!) !==
+            ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === value)!) - 1
+            ) {
+               message.warning('Cần thay đổi trạng thái theo thứ tự');
+               return Promise.reject();
+            }
       }
       try {
          await handleUpdateOrder({
@@ -99,7 +103,7 @@ const DetailOrder = ({ idOrder }: Props) => {
                <h2 className='text-xl'>{order?.customerName}</h2>
                <span className='text-greenP500'>(#) {order?.invoiceId}</span>
             </div>
-            {statusOrder !== FAIL_ORDER.toLowerCase() && order?.status.toLowerCase() == PENDING_ORDER.toLowerCase() ? (
+            {statusOrder?.toLowerCase() == PENDING_ORDER.toLowerCase() ? (
                <Button size='large' type='text' className='bg-red-500 text-white mx-2' onClick={() => handleChangeStatus('đã hủy')}>Hủy đơn hàng</Button>
             ) : (
                <></>
