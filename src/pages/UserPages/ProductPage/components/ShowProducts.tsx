@@ -99,14 +99,15 @@ const ShowProducts = ({ data }: IProps) => {
                                  {item.discount + '%'}
                               </span>
                            )}
-                           {item.isSale==true && (
-                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'>
-                                 Hàng thành lý
-                              </span>
-                           )}
+                        
                            {item.shipments.length <= 0 && (
                               <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
                                  Hết hàng
+                              </span>
+                           )}
+                              {item.isSale==true && (
+                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'>
+                                 Hàng thành lý
                               </span>
                            )}
                            <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
