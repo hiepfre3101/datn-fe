@@ -86,9 +86,12 @@ const UserInfoPage = () => {
                dispatch(updateInfoUser(data));
             });
          setLoading(false);
-      } catch (error) {
-         setLoading(false);
-         console.log(error);
+      } catch (err:any) {
+         setLoading(false);         
+         message.error(err.data.message)   
+ 
+          
+         
       }
    };
    if (loading) return <Loading sreenSize='lg' />;

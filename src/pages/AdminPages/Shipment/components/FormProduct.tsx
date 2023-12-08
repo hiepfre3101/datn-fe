@@ -20,6 +20,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
    const [isSave, setIsSave] = useState<boolean>(false);
    const [formProduct] = useForm<ProductInput>();
    const [productName, setProductName] = useState<string>('');
+   console.log(productName);
    const checkDuplicateItemInArray = (idProduct: string) => {
       return productData.filter((item) => item.idProduct === idProduct);
    };
@@ -53,6 +54,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
       return () => clearTimeout(timeId);
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [isSave]);
+
    const handleConfirm = (id: string) => {
       removeProduct(id);
    };
@@ -87,11 +89,16 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
                      setProductName(productSelected.productName!);
                      setIsSave(false);
                   }}
+                  disabled={productName !== '' || isSave === true}
                >
                   {products.map((product) => (
-                     <Option key={product._id} value={product._id} >
+                     <Option key={product._id} value={product._id}>
                         {product.productName}
-                        {!product.shipments[0] && <Tag className='ml-2' color='red'>Đã hết hàng</Tag>}
+                        {!product.shipments[0] && (
+                           <Tag className='ml-2' color='red'>
+                              Đã hết hàng
+                           </Tag>
+                        )}
                      </Option>
                   ))}
                </Select>

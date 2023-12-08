@@ -9,8 +9,7 @@ import { useGetAllunsoldproductQuery } from '../../../services/unsoldproduct.ser
 import { formatStringToDate } from '../../../helper';
 
 const UnSoldProduct = () => {
-   const { data, isLoading } = useGetAllunsoldproductQuery();
-   console.log(data?.body?.data);
+   const { data, isLoading } = useGetAllunsoldproductQuery(undefined, { refetchOnMountOrArgChange: true });
 
    // const [updateEvaluationMutation] = useUpdateEvaluationMutation()
    if (isLoading) return <Loading sreenSize='lg' />;
@@ -36,13 +35,28 @@ const UnSoldProduct = () => {
                         pagination={{ pageSize: 5 }}
                         scroll={{ y: 1000, x: 800 }}
                      >
-                        <Column fixed='left' title='Sản phẩm' dataIndex='productName' key='productName' width={20} />
+                        <Column fixed='left' title='Sản phẩm' dataIndex='productName' key='productName' width={30} />
+                        <Column
+                           title='Ngày nhập kho thất thoát'
+                           width={40}
+                           render={(_, record: any) => {
+                              return <p>{record.createdAt}</p>;
+                           }}
+                        />
                         <Column
                            title='Ngày hết hạn'
                            width={40}
                            render={(_, record: any) => <p>{formatStringToDate(record.shipments[0].date)}</p>}
                         />
 
+                        <Column
+                           title='Lô hàng ngày'
+                           key='conte'
+                           width={30}
+                           render={(_, record: any) => (
+                              <p>{formatStringToDate(record.shipments[0].shipmentId.createdAt)}</p>
+                           )}
+                        />
                         <Column
                            title='Số lượng'
                            key='content'
@@ -54,7 +68,15 @@ const UnSoldProduct = () => {
                            title='Giá'
                            key='userName'
                            width={30}
-                           render={(_, record: any) => <p>{record.shipments[0].purchasePrice} (VND)</p>}
+                           render={(_, record: any) => (
+                              <p>
+                                 {record.shipments[0].purchasePrice.toLocaleString('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                 })}{' '}
+                                 (VND)
+                              </p>
+                           )}
                         />
 
                         <Column
@@ -66,7 +88,12 @@ const UnSoldProduct = () => {
                            render={(_, record: any) => {
                               return (
                                  <p>
-                                    {Number(record.shipments[0].purchasePrice) * Number(record.shipments[0].weight)}{' '}
+                                    {(
+                                       Number(record.shipments[0].purchasePrice) * Number(record.shipments[0].weight)
+                                    ).toLocaleString('vi-VN', {
+                                       style: 'currency',
+                                       currency: 'VND'
+                                    })}{' '}
                                     (VND)
                                  </p>
                               );

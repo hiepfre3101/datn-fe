@@ -209,7 +209,7 @@ const FillterProducts = () => {
             >
                HUỶ
             </button>
-            <button className='text-[13px] text-white font-[500] bg-[#51A55C]  border-[1px] border-[#e5e7eb] text-center py-[10px] px-[15px] cursor-pointer block rounded-[2px] outline-none w-[calc(50%-12px)] bg-[] '>
+            <button   onClick={showFilter} className='text-[13px] text-white font-[500] bg-[#51A55C]  border-[1px] border-[#e5e7eb] text-center py-[10px] px-[15px] cursor-pointer block rounded-[2px] outline-none w-[calc(50%-12px)] bg-[] '>
                ÁP DỤNG
             </button>
          </div>
