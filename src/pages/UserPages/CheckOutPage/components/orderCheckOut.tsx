@@ -17,7 +17,7 @@ interface Iprops {
 }
 export type paymentMethod = {
    name: string;
-   value: 'cod' | 'momo' | 'vnpay';
+   value: 'cod' | 'vnpay';
    type: 'text' | 'logo';
    srcLogo?: string;
 };
@@ -26,7 +26,7 @@ const PAYMENT_METHODS: paymentMethod[] = [
    { name: 'VNpay', value: 'vnpay', type: 'logo', srcLogo: vnpayUrl }
 ];
 const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
-   const [PayValue, setPayValue] = useState<'cod' | 'momo'>('cod');
+   const [PayValue, setPayValue] = useState<'cod' | 'vnpay'>('cod');
    const onChange = (e: RadioChangeEvent) => {
       setPayValue(e.target.value);
    };
