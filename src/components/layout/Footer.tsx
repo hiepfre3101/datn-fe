@@ -162,6 +162,9 @@ const Footer = () => {
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
+            if(audioPlayer?.current) {
+               audioPlayer.current.play()
+            }
             refetch();
          }
       };
@@ -244,7 +247,7 @@ const Footer = () => {
                      src={'https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png'}
                      alt=''
                   />
-                  <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
+                  <span className='user-name text-black font-bold '>Admin - Fresh Mart</span>
                </div>
                <button type='button' onClick={() => setOpenChat(!openChat)}>
                   <MdOutlineCancel className='text-[#0A7CFF] text-[30px] mr-[10px]' />
