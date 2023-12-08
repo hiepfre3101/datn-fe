@@ -111,7 +111,7 @@ const FillterProducts = () => {
                      className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-cente hover:text-[#51A55C] py-2 px-3'
                   >
                      <button type='button'>
-                        <img className='w-[48px] h-[48px] cate-img hidden max-lg:block' src={'sdasd'} alt='' />
+                        <img className='w-[48px] h-[48px] cate-img hidden m-auto max-lg:block' src={'sdasd'} alt='' />
                         <span className='max-lg:text-[12px] text-center '>Tất cả</span>
                      </button>
                   </div>

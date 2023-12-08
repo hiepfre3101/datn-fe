@@ -11,10 +11,9 @@ import { useAddVoucherMutation } from '../../../services/voucher.service';
 const AddVoucher = () => {
    const [voucherTitle, setVoucherTitle] = useState<string>('');
    const [loading, setLoading] = useState<boolean>(false);
-   // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [form] = Form.useForm<any>();
    const navigate = useNavigate();
-   const [handleAddVoucher, { error }] = useAddVoucherMutation();
+   const [handleAddVoucher] = useAddVoucherMutation();
    const { RangePicker } = DatePicker;
    const handleSubmit = async (values: any) => {
       const dataSubmit = {
@@ -25,17 +24,18 @@ const AddVoucher = () => {
       };
       try {
          setLoading(true);
-         await handleAddVoucher(dataSubmit);
-         if (error) {
-            console.log(error);
-            return;
-         }
-         
-         message.success('Tạo voucher thành công !');
-         setLoading(false);
-         navigate('/manage/vouchers');
+         await handleAddVoucher(dataSubmit).unwrap().then(res=>{
+            res
+            message.success('Tạo voucher thành công !');
+            setLoading(false);
+            navigate('/manage/vouchers');
+         }).catch(error=>{
+            error
+            message.error('Mã code đã tồn tại');
+            setLoading(false);
+         })    
       } catch (error) {
-         message.success('Tạo voucher thất bại !');
+         message.error('Tạo voucher thất bại !');
          setLoading(false);
          console.log(error);
       }

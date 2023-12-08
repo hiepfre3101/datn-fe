@@ -134,22 +134,31 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                         {product_info[0]?.productName}
                      </div>
                      <span className='product-origin text-[14px]'>
-                        Xuất sứ: 
-                        <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
+                        Xuất sứ:   <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>  
                      </span>
                   </div>
                   {product_info[0]?.shipments.length > 0 && (
                      <div className='product-price flex w-full items-center'>
                         <div className='product-price-title min-w-[28%] text-[14px] font-[600]'>Giá:</div>
-                        <div className='product-price-content text-[18px] text-red-500 pr-[10px] font-bold'>
+                        <div className='product-price-content text-[18px] text-red-500 pr-[10px] font-bold flex items-center'>
                            {(
                               product_info[0]?.price -
                               (product_info[0]?.price * product_info[0]?.discount) / 100
                            ).toLocaleString('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
-                           })}{' '}
+                           })}
                            (/kg)
+                           {product_info[0]?.discount>0 &&<>
+                              <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                    {product_info[0]?.price?.toLocaleString('vi-VN', {
+                                       style: 'currency',
+                                       currency: 'VND'
+                                    })}
+                                 </span>
+                                 <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>-{product_info[0].discount}%</div>
+                            </>
+                                 }
                         </div>
                      </div>
                   )}
@@ -212,7 +221,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                <button
                   onClick={closeModal}
                   type='button'
-                  className='group/close-modal absolute right-4 z-[10] max-lg:top-0 max-lg:right-[10px]'
+                  className='group/close-modal absolute right-4 z-[10] max-lg:top-[100px] max-lg:right-[10px] max-lg:fixed'
                >
                   <AiOutlineCloseCircle className=' text-[30px] max-lg:text-[40px]  group-hover/close-modal:fill-[#51A55C]'></AiOutlineCloseCircle>
                </button>
