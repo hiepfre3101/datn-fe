@@ -1,10 +1,10 @@
 import { FilterOutlined } from '@ant-design/icons';
 import { AiOutlineSortAscending } from 'react-icons/ai';
-interface IProps{
-   setSortState: (sort?:string,order?:'asc' | 'desc')=>void;
-   setIsSale:(calue:boolean)=>void
+interface IProps {
+   setSortState: (sort?: string, order?: 'asc' | 'desc') => void;
+   setIsSale: (calue: boolean) => void;
 }
-const SorterProduct = ({setSortState,setIsSale}:IProps) => {
+const SorterProduct = ({ setSortState, setIsSale }: IProps) => {
    const showSuccessSort = (index: number) => {
       const sortby_option_item = document.querySelectorAll('.collection-sortby-option-item');
       for (let i = 0; i < sortby_option_item.length; i++) {
@@ -44,8 +44,8 @@ const SorterProduct = ({setSortState,setIsSale}:IProps) => {
                   <ul className='collection-sortby-option-list py-[5px] px-[10px] z-[10]'>
                      <li
                         onClick={() => {
-                           setSortState()
-                           showSuccessSort(0)
+                           setSortState();
+                           showSuccessSort(0);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-1  before:rotate-[-45deg]'
                      >
@@ -53,8 +53,8 @@ const SorterProduct = ({setSortState,setIsSale}:IProps) => {
                      </li>
                      <li
                         onClick={() => {
-                           setIsSale(true)
-                           showSuccessSort(1)
+                           setIsSale(true);
+                           showSuccessSort(1);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
@@ -62,17 +62,17 @@ const SorterProduct = ({setSortState,setIsSale}:IProps) => {
                      </li>
                      <li
                         onClick={() => {
-                           setSortState("isSale","asc")
-                           showSuccessSort(2)
+                           setSortState('price', 'asc');
+                           showSuccessSort(2);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Giá: Tăng dần</span>
                      </li>
                      <li
-                         onClick={() => {
-                           setSortState("isSale","desc")
-                           showSuccessSort(3)
+                        onClick={() => {
+                           setSortState('price', 'desc');
+                           showSuccessSort(3);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
@@ -80,44 +80,44 @@ const SorterProduct = ({setSortState,setIsSale}:IProps) => {
                      </li>
                      <li
                         onClick={() => {
-                           setSortState("productName","asc")
-                           showSuccessSort(4)
+                           setSortState('productName', 'asc');
+                           showSuccessSort(4);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Tên: A-Z</span>
                      </li>
                      <li
-                          onClick={() => {
-                           setSortState("productName","desc")
-                           showSuccessSort(5)
+                        onClick={() => {
+                           setSortState('productName', 'desc');
+                           showSuccessSort(5);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
-                     > 
+                     >
                         <span className='text-[14px] hover:text-[#51A55C]'>Tên: Z-A</span>
                      </li>
                      <li
-                     onClick={() => {
-                        setSortState("createdAt","asc")
-                        showSuccessSort(6)
-                     }}
+                        onClick={() => {
+                           setSortState('createdAt', 'asc');
+                           showSuccessSort(6);
+                        }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Cũ nhất</span>
                      </li>
                      <li
-                onClick={() => {
-                  setSortState("createdAt","desc")
-                  showSuccessSort(7)
-               }}
+                        onClick={() => {
+                           setSortState('createdAt', 'desc');
+                           showSuccessSort(7);
+                        }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Mới nhất</span>
                      </li>
                      <li
                         onClick={() => {
-                           setSortState("sold","desc")
-                           showSuccessSort(8)
+                           setSortState('sold', 'desc');
+                           showSuccessSort(8);
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >

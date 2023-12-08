@@ -8,6 +8,7 @@ type Props = {
 
 const useFormProductInShipment = ({ defaultProductData }: Props) => {
    const [productDataSubmit, setProductData] = useState<ProductInput[]>([]);
+   console.log(productDataSubmit);
    useEffect(() => {
       if (!defaultProductData) return;
       setProductData(defaultProductData!);
@@ -17,8 +18,13 @@ const useFormProductInShipment = ({ defaultProductData }: Props) => {
    };
    const dataSubmitFactory = (data: ProductInput) => {
       if (checkDuplicateItemInArray(data.idProduct).length === 1) {
+         message.warning('Hãy hoàn thành sản phẩm hiện tại');
          setProductData((prev) => {
-            prev.splice(productDataSubmit.indexOf(productDataSubmit.find((item) => item.idProduct === data.idProduct)!), 1, data);
+            prev.splice(
+               productDataSubmit.indexOf(productDataSubmit.find((item) => item.idProduct === data.idProduct)!),
+               1,
+               data
+            );
             return prev;
          });
          return;
