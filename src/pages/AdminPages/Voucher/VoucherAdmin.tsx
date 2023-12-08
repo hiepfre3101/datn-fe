@@ -56,7 +56,7 @@ const VoucherAdmin = () => {
                            title='Mã giảm giá'
                            dataIndex='code'
                            key='code'
-                           width={80}
+                           width={200}
                            render={(value, record: IVoucher) => (
                               <span>
                                  {value} {!record.status && <Tag color='red'>Ngừng sử dụng</Tag>}
@@ -90,7 +90,7 @@ const VoucherAdmin = () => {
                         <Column title='Tiêu đề' dataIndex='title' key='title' width={80} />
                         <Column
                            fixed='right'
-                           width={80}
+                           width={100}
                            title='Chức năng '
                            key='_id'
                            dataIndex='_id'
