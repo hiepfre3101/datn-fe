@@ -62,17 +62,17 @@ const SorterProduct = ({ setSortState, setIsSale }: IProps) => {
                      </li>
                      <li
                         onClick={() => {
-                           setSortState('price', 'asc');
-                           showSuccessSort(2);
+                           setSortState("price","asc")
+                           showSuccessSort(2)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >
                         <span className='text-[14px] hover:text-[#51A55C]'>Giá: Tăng dần</span>
                      </li>
                      <li
-                        onClick={() => {
-                           setSortState('price', 'desc');
-                           showSuccessSort(3);
+                         onClick={() => {
+                           setSortState("price","desc")
+                           showSuccessSort(3)
                         }}
                         className='collection-sortby-option-item relative cursor-pointer py-[4px] pr-[10px] pl-[25px] before:absolute before:left-[5px] before:top-[10px] before:w-[12px] before:h-[6px] before:border-[1.5px] before:border-[#51A55C] before:border-t-0 before:border-r-0 before:transition-all before:duration-300 before:scale-0  before:rotate-[-45deg]'
                      >

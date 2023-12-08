@@ -52,7 +52,6 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    }, [product_info]);
    const dispatch = useDispatch();
    const add_to_cart = async () => {
-      console.log(inputWeight);
       if (inputWeight === '' || inputWeight === '0') {
          message.warning('Vui lòng nhập đúng định dạng số lượng');
          return;
@@ -64,10 +63,12 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                productName: product_info?.productName,
                weight: inputWeight
             };
-            await addCart(product)
-               .unwrap()
-               .catch((res) => {
-                  res;
+            await addCart(product).unwrap().then(res=>{
+               res
+               message.success('Thêm sản phẩm vào lô hàng thành công');
+            })
+               .catch((err) => {
+                  err;
                   message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có');
                });
          } else {

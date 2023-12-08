@@ -38,7 +38,7 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale, hasSal
                </button>
             </Link>
          </Tooltip>
-         {hasSale==false &&  <Tooltip title='Xóa sản phẩm' placement='bottom'>
+         <Tooltip title='Xóa sản phẩm' placement='bottom'>
             <Popconfirm
                open={open}
                title='Bạn có chắc chắn xóa không ?'
@@ -56,7 +56,7 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale, hasSal
                   <EraserIcon className='text-greenPrimary w-4' />
                </button>
             </Popconfirm>
-         </Tooltip>}
+         </Tooltip>
 
        
          {!hasSale && isSale && (
