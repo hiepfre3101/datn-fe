@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { ORDER_STATUS_FULL } from '../constants/orderStatus';
 
 export const formatStringToDate = (isoString: string) => {
@@ -62,4 +63,4 @@ export const CountExpirationDate = (value: string) => {
    const day: number = 24 * 60 * 60 * 1000;
    const formatDay: number = Math.floor(remainingTime / day);
    return formatDay;
-}
+};

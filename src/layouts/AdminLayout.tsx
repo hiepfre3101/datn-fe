@@ -39,34 +39,39 @@ function getItem(label: React.ReactNode, key: React.Key, icon?: React.ReactNode,
    } as MenuItem;
 }
 
-
 const AdminLayout = () => {
    const [collapsed, setCollapsed] = useState(false);
    const [checking, setChecking] = useState(true);
    const [open, setOpen] = useState(false);
-   const reload = useSelector((state: { noticeReducer: { reload: boolean } }) => state.noticeReducer.reload)
+   const reload = useSelector((state: { noticeReducer: { reload: boolean } }) => state.noticeReducer.reload);
    const { data, isLoading } = useGetTokenQuery();
    const auth = useSelector((state: any) => state.userReducer);
    const navigate = useNavigate();
    const dispatch = useDispatch();
-   const { data: allChat, isLoading: chatLoading, refetch: getAllRefetch } = useGetAllChatQuery({}, { skip: auth?.user?.id });
-   const [messagesCount, setMessagesCount] = useState<number>(0)
+   const {
+      data: allChat,
+      isLoading: chatLoading,
+      refetch: getAllRefetch
+   } = useGetAllChatQuery({}, { skip: auth?.user?.id });
+   const [messagesCount, setMessagesCount] = useState<number>(0);
    useEffect(() => {
-      getAllRefetch()
+      getAllRefetch();
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [reload])
+   }, [reload]);
 
    useEffect(() => {
       if (!chatLoading && allChat) {
-         let count: number = 0
-         allChat?.body.data.map((room: any) => room.messages.filter((message: any) => {
-            if (message.isRead == false && message.sender == 'client') {
-               count += 1;
-            }
-         }))
-         setMessagesCount(count)
+         let count: number = 0;
+         allChat?.body.data.map((room: any) =>
+            room.messages.filter((message: any) => {
+               if (message.isRead == false && message.sender == 'client') {
+                  count += 1;
+               }
+            })
+         );
+         setMessagesCount(count);
       }
-   }, [allChat, chatLoading])
+   }, [allChat, chatLoading]);
 
    const items: MenuItem[] = [
       getItem(<Link to='/manage/dashboard'>Trang chủ</Link>, '1', <PieChartOutlined />),
@@ -135,7 +140,7 @@ const AdminLayout = () => {
       <>
          <div className='w-full md:hidden'>
             <ReSizePage />
-            <ScrollToTop/>
+            <ScrollToTop />
          </div>
          <Layout>
             <Sider
