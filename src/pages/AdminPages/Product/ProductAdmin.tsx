@@ -22,8 +22,11 @@ const ProductAdmin = () => {
 
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [expiredProducts, setExpiredProducts] = useState<any>([]);
-   const searchDebounce = useDebounce(valueSearch, 500)
-   const { data, isLoading } = useGetAllExpandQuery({ ...filterProducts, expand: true, q: searchDebounce });
+   const searchDebounce = useDebounce(valueSearch, 500);
+   const { data, isLoading } = useGetAllExpandQuery(
+      { ...filterProducts, expand: true, q: searchDebounce },
+      { refetchOnMountOrArgChange: true }
+   );
    const [handleRemoveProduct] = useRemoveProductMutation();
    const products = data && productData(data);
    const lastEventId = useRef<null | string>(null);
