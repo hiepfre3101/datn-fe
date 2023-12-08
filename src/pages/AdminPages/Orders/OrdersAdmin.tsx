@@ -122,8 +122,42 @@ const OrdersAdmin = () => {
                         key='phoneNumber'
                      />
                      <Column
+                        align='center'
+                        width={200}
+                        title='Phương thức thanh toán'
+                        dataIndex='paymentMethod'
+                        key='paymentMethod'
+                        render={(_: IOrderFull, record: IOrderFull) => (
+                           <Space size='middle'>
+                              <Tag
+                                 className={` py-2 px-3 text-white border-none`}
+                                 style={{ background: record.paymentMethod === 'vnpay' ? 'linear-gradient(rgb(0, 161, 230), rgb(0, 82, 205))' : '#45bd62' }}
+                              >
+                                 {record.paymentMethod === 'vnpay' ? 'Thanh toán vnpay' : "Thánh toán khi nhận hàng"}
+                              </Tag>
+                           </Space>
+                        )}
+                     />
+                     <Column
+                        align='center'
+                        width={150}
+                        title='Trạng thái thanh toán'
+                        dataIndex='pay'
+                        key='pay'
+                        render={(_: IOrderFull, record: IOrderFull) => (
+                           <Space size='middle'>
+                              <Tag
+                                 className={` py-2 px-3 text-white border-none`}
+                                 style={{ background: record.pay ? 'linear-gradient(rgb(0, 82, 205), rgb(0, 161, 230))' : '#f7b928' }}
+                              >
+                                 {record.pay  ? 'Đã thanh toán' : "Chưa thanh toán"}
+                              </Tag>
+                           </Space>
+                        )}
+                     />
+                     <Column
                         fixed='right'
-                        width={120}
+                        width={200}
                         title='Trạng thái'
                         key='status'
                         render={(_: IOrderFull, record: IOrderFull) => (

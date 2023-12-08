@@ -72,7 +72,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
          const temp =
             auth.user._id && cart?.products
                ? cart?.products.reduce(
-                    (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
+                    (accumulator: number, product: any) => accumulator + (product.productId.price-(product.productId.price * product.productId.discount/100)) * product.weight,
                     0
                  )
                : cart?.totalPrice;
@@ -237,7 +237,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                      <Button
                         disabled={cart == undefined ? true : false}
                         onClick={methods.handleSubmit((data) => {
-                           console.log(data);
+                  
                            onSubmit({ ...data, paymentMethod: PayValue, note: data.note ? data.note : '' });
                         })}
                         className='w-full h-full py-[12px] border-none hover:!text-white px-[30px] font-bold text-white'

@@ -64,9 +64,9 @@ const ChatAdmin = () => {
    };
    return (
       <>
-         <section className='list-Chat bg-white flex w-full'>
+         <section className='list-Chat bg-white flex w-full items-start'>
             <audio ref={audioPlayer} src={NotificationSound} />
-            <div className='left border-[#E5E5E5] border-[1px] px-[5px] w-[30%] relative'>
+            <div className='left overflow-scroll max-h-[580px] min-h-[580px] pt-[10~px] border-[#E5E5E5] border-[1px] px-[5px] w-[30%] sm:w-[50%] relative'>
                {data?.body.data.map((item: any) => {
                   if (item.roomChatId?.role == 'member') {
                      return (
@@ -125,8 +125,9 @@ const ChatAdmin = () => {
                   }
                })}
             </div>
+            
             {messagesInARoom && (
-               <div className='right w-[70%] h-[100%] relative  overflow-scroll'>
+               <div className='right w-[70%] max-h-[600px] relative  overflow-scroll'>
                   <div className='header-right sticky top-[0] pl-[10px] flex items-center gap-x-[10px] shadow-[0_0_4px_rgba(0,0,0,0.2)] py-[5px]'>
                      <img
                         className='avatar w-[48px] h-[48px] rounded-[100%]'

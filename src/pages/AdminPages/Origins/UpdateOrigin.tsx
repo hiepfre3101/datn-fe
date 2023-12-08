@@ -1,4 +1,4 @@
-import { Divider, Form, Input, Layout } from 'antd';
+import { Divider, Form, Input, Layout, message } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
@@ -46,9 +46,14 @@ const UpdateOrigin = () => {
       try {
          const newFormData = form.getFieldsValue(true);
 
-         await handleUpdateOrigin({ id: id!, ...newFormData, name: OriginName });
-         setLoading(false);
-         navigate('/manage/origin');
+         await handleUpdateOrigin({ id: id!, ...newFormData, name: OriginName }).unwrap().then(() => {
+            setLoading(false);
+            message.success('Cập nhật thành công')
+            navigate('/manage/origin');
+         }).catch(error => {
+            message.error(error.data.message);
+            setLoading(false)
+         });
       } catch (error) {
          setLoading(false);
          console.log(error);
