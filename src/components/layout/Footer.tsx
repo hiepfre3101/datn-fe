@@ -162,6 +162,9 @@ const Footer = () => {
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
+            if(audioPlayer?.current) {
+               audioPlayer.current.play()
+            }
             refetch();
          }
       };
