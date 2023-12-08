@@ -46,15 +46,16 @@ const ProductsInCart = () => {
    }, [cart]);
    if (!debouncedUpdateCartDBRef.current) {
       debouncedUpdateCartDBRef.current = debounce(async (temp: any) => {
-         await updateCartDB(temp).unwrap().then(res => {
-            res
-           message.success('Cập nhật sản phẩm thành công');
-         })
-         .catch(error => {
-         message.error('Số lượng vượt quá sản phẩm đang có trong kho');
-         setCartState(error.data.body.data.products)
-         
-         });
+         await updateCartDB(temp)
+            .unwrap()
+            .then((res) => {
+               res;
+               message.success('Cập nhật sản phẩm thành công');
+            })
+            .catch((error) => {
+               message.error('Số lượng vượt quá sản phẩm đang có trong kho');
+               setCartState(error.data.body.data.products);
+            });
       }, 1000);
    }
    const updateCart = async (item: ICartDataBaseItem | ICartItems, index: number, cal: boolean) => {
@@ -160,7 +161,7 @@ const ProductsInCart = () => {
       }
    };
    console.log(cart?.length);
-   
+
    return (
       <div>
          {cart?.length === 0 || cart?.length === undefined ? (
@@ -196,23 +197,31 @@ const ProductsInCart = () => {
                      >
                         <div className='cart-item-info lg:w-[60%] max-lg:w-full flex items-center h-auto'>
                            <div className='item-img w-[100px]'>
-                              <a
-                                 href='#'
+                              <Link
+                                 to={'#'}
                                  className=' border-[1px] border-[#e2e2e2] block overflow-hidden rounded-[5px]'
                               >
                                  <img src={item.productId?.images[0]?.url} className='max-w-[100%]' alt='' />
-                              </a>
+                              </Link>
                            </div>
                            <div className='item-title px-[15px]'>
-                              <a href='' className='product-name ư font-bold'>
+                              <Link to={'#'} className='product-name ư font-bold'>
                                  {item.productId?.productName}
-                              </a>
+                              </Link>
                               <div className='origin flex'>
                                  <span className='origin-title  font-bold'>Xuất sứ:</span>
                                  <span className='origin-name ml-[5px]'>{item.productId.originId.name}</span>
                               </div>
                               <span className='price'>
-                                 {item.productId.discount?(item.productId?.price-(item.productId?.price*item.productId?.discount/100)).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }):item.productId.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 {item.productId.discount
+                                    ? (
+                                         item.productId?.price -
+                                         (item.productId?.price * item.productId?.discount) / 100
+                                      ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                    : item.productId.price.toLocaleString('vi-VN', {
+                                         style: 'currency',
+                                         currency: 'VND'
+                                      })}
                               </span>
                            </div>
                         </div>
@@ -284,13 +293,19 @@ const ProductsInCart = () => {
                         </div>
                         <div className='cart-item-price sm:text-right max-sm:mt-[10px] w-[20%] max-lg:w-[50%]'>
                            <span className='full-price font-bold'>
-                              {item.productId.discount?((item.productId?.price-(item.productId?.price*item.productId?.discount/100)) * item.weight).toLocaleString('vi-VN', {
-                                 style: 'currency',
-                                 currency: 'VND'
-                              }):(item.productId.price*item.weight).toLocaleString('vi-VN', {
-                                 style: 'currency',
-                                 currency: 'VND'
-                              })}
+                              {item.productId.discount
+                                 ? (
+                                      (item.productId?.price -
+                                         (item.productId?.price * item.productId?.discount) / 100) *
+                                      item.weight
+                                   ).toLocaleString('vi-VN', {
+                                      style: 'currency',
+                                      currency: 'VND'
+                                   })
+                                 : (item.productId.price * item.weight).toLocaleString('vi-VN', {
+                                      style: 'currency',
+                                      currency: 'VND'
+                                   })}
                            </span>
                         </div>
                      </div>

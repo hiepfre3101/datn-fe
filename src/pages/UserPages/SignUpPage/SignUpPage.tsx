@@ -52,7 +52,7 @@ const SignUpPage = () => {
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
-                     <a href=''>Trang chủ </a> / Đăng nhập
+                     <Link to={'#'}>Trang chủ </Link> / Đăng nhập
                   </span>
                </div>
             </section>
@@ -72,7 +72,7 @@ const SignUpPage = () => {
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
-                              placeholder='userName'
+                              placeholder='Vui lòng nhập Tên'
                               id='userName'
                               type='text'
                               value={userName}
@@ -86,7 +86,7 @@ const SignUpPage = () => {
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
-                              placeholder='Email address'
+                              placeholder='Vui lòng nhập Email '
                               id='mail'
                               type='email'
                               value={email}
@@ -100,7 +100,7 @@ const SignUpPage = () => {
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
-                              placeholder='Điện thoại'
+                              placeholder='Vui lòng nhập Điện thoại'
                               id='phoneNumber'
                               type='text'
                               value={phoneNumber}
@@ -114,7 +114,7 @@ const SignUpPage = () => {
                            </label>
                            <input
                               className='input-mail w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px] placeholder:text-[#6f6f6f]'
-                              placeholder='Địa chỉ'
+                              placeholder='Vui lòng nhập Địa chỉ'
                               id='address'
                               type='text'
                               value={address}
@@ -128,7 +128,7 @@ const SignUpPage = () => {
                            </label>
                            <input
                               className='input-password w-full outline-none bg-[#f7f7f7] rounded-[5px] px-[15px] py-[10px] border-[#e2e2e2] border-[1px]  placeholder:text-[#6f6f6f]'
-                              placeholder='Password'
+                              placeholder='Vui lòng nhập Mật khẩu'
                               id='password'
                               type='password'
                               value={password}
@@ -168,12 +168,12 @@ const SignUpPage = () => {
                      </form>
                      <div className='link-to-log-in mt-[30px] py-[30px] px-[15px] bg-[#333333] text-white text-[18px] text-center rounded-[5px]'>
                         Bạn đã có tài khoản?{' '}
-                        <a
-                           href='/login'
+                        <Link
+                           to={'/login'}
                            className='underline max-sm:block text-[rgba(255,255,255,0.5)] hover:text-[rgba(255,255,255,0.8)] ml-[5px]'
                         >
                            Đăng nhập
-                        </a>
+                        </Link>
                      </div>
                   </div>
                </div>
