@@ -32,9 +32,9 @@ const WishListPage = () => {
                   </div>
                </div>
             ) : (
-               <div className='flex  flex-col  items-center  w-full p-6 space-y-4 sm:p-10 dark:bg-gray-900 dark:text-gray-100'>
+               <div className='flex  flex-col  items-center w-full p-6 space-y-4 sm:p-10 dark:bg-gray-900 dark:text-gray-100'>
                   <h2 className='text-xl font-semibold'> {totalProductInWishList} sản phẩm yêu thích</h2>
-                  <div className='flex gap-x-[100px] flex-wrap '>
+                  <div className='flex gap-x-[63px] items-center flex-wrap '>
                      {wishList?.items?.map((item: any, index: number) => (
                         <ul
                            key={index}
@@ -44,13 +44,15 @@ const WishListPage = () => {
                               <div className='flex w-full space-x-2 sm:space-x-4 max-sm:items-center max-sm:flex-wrap '>
                                  <img
                                     className='flex-shrink-0 max-sm:m-auto  max-sm:w-[300px] max-sm:h-[200px] object-cover w-20 h-20 dark:border-transparent rounded outline-none sm:w-32 sm:h-32 dark:bg-gray-500'
-                                    src={item.images}
+                                    src={Array.isArray(item.images) ? item.images[0].url : item.images}
                                     alt='Polaroid camera'
                                  />
                                  <div className='flex flex-col justify-between w-full pb-4 '>
                                     <div className='flex max-sm:flex-col justify-between w-full pb-2 space-x-2 '>
                                        <div className='space-y-1'>
-                                          <h3 className='text-lg font-semibold leadi sm:pr-8'>{item.productName}</h3>
+                                          <h3 className='text-lg font-semibold leadi sm:pr-8'>
+                                             {item.productName ? item.productName : item.name}
+                                          </h3>
                                           <p className='text-sm dark:text-gray-400'>{item.originId.name}</p>
                                        </div>
                                        <div className='sm:text-right max-sm:flex max-sm:items-center max-sm:gap-x-[20px] max-sm:!ml-[0px]'>

@@ -19,7 +19,7 @@ export interface IOrder {
    products: IProductOrder[];
    note: string | undefined;
    userId: string | undefined;
-   paymentMethod: 'cod' | 'momo';
+   paymentMethod: 'cod' | 'vnpay';
    status?: string;
    voucherCode?: string;
    code?: string;
@@ -43,7 +43,7 @@ export type IOrderFull = {
    status: string;
    createdAt: string;
    invoiceId: string;
-   paymentMethod: 'cod' | 'momo';
+   paymentMethod: 'cod' | 'vnpay';
    voucher?:{
       code:string;
       miniMumOrder:number;

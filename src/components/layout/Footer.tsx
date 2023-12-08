@@ -55,7 +55,7 @@ const Footer = () => {
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
    const [clearToken] = useClearTokenMutation();
-   const audioPlayer = useRef<HTMLAudioElement | null>(null)
+   const audioPlayer = useRef<HTMLAudioElement | null>(null);
    const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
@@ -123,38 +123,33 @@ const Footer = () => {
       }
    };
 
-
-   const [subtotal, setSubtotal] = useState<number>(0)
-   const [discount, setDiscount] = useState<number>(0)
+   const [subtotal, setSubtotal] = useState<number>(0);
+   const [discount, setDiscount] = useState<number>(0);
    useEffect(() => {
       if (auth.user._id) {
          const temp = cartdb?.body.data.products?.reduce((cal: any, product: any) => {
             console.log(product);
-            return cal + (product.weight * product.productId.price);
+            return cal + product.weight * product.productId.price;
          }, 0);
 
-
          if (temp !== undefined) {
-            setSubtotal(temp)
+            setSubtotal(temp);
          }
       }
-
-   }, [data, voucher, cartdb])
+   }, [data, voucher, cartdb]);
    useEffect(() => {
       if (voucher && auth.user._id) {
          if (voucher?.maxReduce) {
             if (voucher.maxReduce < subtotal) {
-               setDiscount(voucher.maxReduce)
+               setDiscount(voucher.maxReduce);
             } else {
-               setDiscount((subtotal * voucher.percent / 100))
+               setDiscount((subtotal * voucher.percent) / 100);
             }
-
-         }
-         else {
-            setDiscount((subtotal * voucher.percent / 100))
+         } else {
+            setDiscount((subtotal * voucher.percent) / 100);
          }
       }
-   }, [data, subtotal, voucher])
+   }, [data, subtotal, voucher]);
    const [messages, setMesssages] = useState<string>();
    const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
@@ -164,7 +159,7 @@ const Footer = () => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
             if (audioPlayer.current !== null) {
-               audioPlayer.current.play()
+               audioPlayer.current.play();
             }
             refetch();
          }
@@ -191,18 +186,17 @@ const Footer = () => {
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
-     if(messages?.trim()!=""){
-      const data = {
-         roomChatId: auth.user?._id,
-         content: messages,
-         sender: 'client'
-      };
-      await sendMessage(data);
-      const jsonData = JSON.stringify(data);
-      clientSocket.emit('ClientSendMessage', jsonData);
- 
-     }
-     setMesssages('');
+      if (messages?.trim() != '') {
+         const data = {
+            roomChatId: auth.user?._id,
+            content: messages,
+            sender: 'client'
+         };
+         await sendMessage(data);
+         const jsonData = JSON.stringify(data);
+         clientSocket.emit('ClientSendMessage', jsonData);
+      }
+      setMesssages('');
    };
    return (
       <>
@@ -390,12 +384,12 @@ const Footer = () => {
                      </div>
                      <div className='list-img flex flex-wrap'>
                         <div className='list-img-item relative mr-[15px] mt-[15px] h-[calc(50%-15px)] w-[calc(33%-15px)]  object-cover '>
-                           <a
-                              href='#'
+                           <Link
+                              to={'#'}
                               className='ft-img-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[5px] bg-[#00000033] h-full absolute top-0 left-0 right-0 flex items-center justify-center'
                            >
                               <FaInstagram className='text-white text-[18px]'></FaInstagram>
-                           </a>
+                           </Link>
                            <img
                               className='w-full h-full rounded-[5px]'
                               src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/footer/f-1.jpg'
@@ -403,12 +397,12 @@ const Footer = () => {
                            />
                         </div>
                         <div className='list-img-item relative mr-[15px] mt-[15px] h-[calc(50%-15px)]  w-[calc(33%-15px)] object-cover '>
-                           <a
-                              href='#'
+                           <Link
+                              to={'#'}
                               className='ft-img-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[5px] bg-[#00000033] h-full absolute top-0 left-0 right-0 flex items-center justify-center'
                            >
                               <FaInstagram className='text-white text-[18px]'></FaInstagram>
-                           </a>
+                           </Link>
                            <img
                               className='w-full h-full rounded-[5px]'
                               src='	https://spacingtech.com/html/tm/freozy/freezy-ltr/image/footer/f-2.jpg'
@@ -416,12 +410,12 @@ const Footer = () => {
                            />
                         </div>
                         <div className='list-img-item relative mr-[15px] mt-[15px] h-[calc(50%-15px)] w-[calc(33%-15px)] object-cover '>
-                           <a
-                              href='#'
+                           <Link
+                              to={'#'}
                               className='ft-img-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[5px] bg-[#00000033] h-full absolute top-0 left-0 right-0 flex items-center justify-center'
                            >
                               <FaInstagram className='text-white text-[18px]'></FaInstagram>
-                           </a>
+                           </Link>
                            <img
                               className='w-full h-full rounded-[5px]'
                               src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/footer/f-3.jpg'
@@ -429,12 +423,12 @@ const Footer = () => {
                            />
                         </div>
                         <div className='list-img-item relative mr-[15px] mt-[15px] h-[calc(50%-15px)] w-[calc(33%-15px)]  object-cover '>
-                           <a
-                              href='#'
+                           <Link
+                              to={'#'}
                               className='ft-img-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[5px] bg-[#00000033] h-full absolute top-0 left-0 right-0 flex items-center justify-center'
                            >
                               <FaInstagram className='text-white text-[18px]'></FaInstagram>
-                           </a>
+                           </Link>
                            <img
                               className='w-full h-full rounded-[5px]'
                               src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/footer/f-4.jpg'
@@ -442,12 +436,12 @@ const Footer = () => {
                            />
                         </div>
                         <div className='list-img-item relative mr-[15px] mt-[15px] h-[calc(50%-15px)]  w-[calc(33%-15px)] object-cover '>
-                           <a
-                              href='#'
+                           <Link
+                              to={'#'}
                               className='ft-img-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[5px] bg-[#00000033] h-full absolute top-0 left-0 right-0 flex items-center justify-center'
                            >
                               <FaInstagram className='text-white text-[18px]'></FaInstagram>
-                           </a>
+                           </Link>
                            <img
                               className='w-full h-full rounded-[5px]'
                               src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/footer/f-5.jpg'
@@ -455,12 +449,12 @@ const Footer = () => {
                            />
                         </div>
                         <div className='list-img-item relative mr-[15px] mt-[15px] h-[calc(50%-15px)] w-[calc(33%-15px)] object-cover '>
-                           <a
-                              href='#'
+                           <Link
+                              to={'#'}
                               className='ft-img-overlay opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-[5px] bg-[#00000033] h-full absolute top-0 left-0 right-0 flex items-center justify-center'
                            >
                               <FaInstagram className='text-white text-[18px]'></FaInstagram>
-                           </a>
+                           </Link>
                            <img
                               className='w-full h-full rounded-[5px]'
                               src='https://spacingtech.com/html/tm/freozy/freezy-ltr/image/footer/f-6.jpg'
@@ -513,7 +507,10 @@ const Footer = () => {
                   </SearchFilter>
                   <p className='  text-[10px]  sm:text-[12px]'>Tìm kiếm</p>
                </div>
-               <div onClick={showMiniCart} className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] flex flex-col'>
+               <div
+                  onClick={showMiniCart}
+                  className='mobile-menu-item text-[#939596] p-[5px] text-center w-[20%] flex flex-col'
+               >
                   <div className='test relative w-[24px] h-[24px] m-auto '>
                      <HiOutlineShoppingBag style={{ fontSize: '24px' }} />
                      <Badge
@@ -637,36 +634,36 @@ const Footer = () => {
                                  className='cart-product p-[15px] flex border-[#e2e2e2] border-t-[1px] relative first:border-none '
                               >
                                  <div className='cart-img w-[65px]'>
-                                    <a href=''>
+                                    <Link to={'#'}>
                                        <img
                                           className='m-w-full h-[69px]  border-[#e2e2e2] border-[1px]'
                                           src={item.productId?.images[0]?.url}
                                           alt=''
                                        />
-                                    </a>
+                                    </Link>
                                  </div>
                                  <div className='cart-content w-[calc(100%-65px)] pl-[15px] flex flex-col justify-center'>
-                                    <a
-                                       href=''
+                                    <Link
+                                       to={'#'}
                                        className='product-name font-bold text-[16px] text-[#6f6f6f] overflow-ellipsis whitespace-nowrap'
                                     >
                                        {item.productId?.productName}
-                                    </a>
+                                    </Link>
                                     <div className='product-info mt-[9px] flex'>
                                        <span className='product-qt text-[16px]'>{item?.weight}kg ×</span>
                                        <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
                                           {item.productId?.discount
                                              ? (
-                                                item?.productId?.price -
-                                                (item?.productId?.price * item?.productId?.discount) / 100
-                                             ).toLocaleString('vi-VN', {
-                                                style: 'currency',
-                                                currency: 'VND'
-                                             })
+                                                  item?.productId?.price -
+                                                  (item?.productId?.price * item?.productId?.discount) / 100
+                                               ).toLocaleString('vi-VN', {
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })
                                              : item.productId?.price.toLocaleString('vi-VN', {
-                                                style: 'currency',
-                                                currency: 'VND'
-                                             })}
+                                                  style: 'currency',
+                                                  currency: 'VND'
+                                               })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
@@ -696,8 +693,7 @@ const Footer = () => {
                            <div className='subtotal flex justify-between px-[15px] py-[10px] border-t-[#e2e2e2] border-[1px]'>
                               <span className='subtotal-title text-[16px] '>Giảm giá:</span>
                               <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
-                                 -
-                                 {discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 -{discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
                         )}
@@ -706,29 +702,29 @@ const Footer = () => {
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                               {auth.user._id
                                  ? (
-                                    cart?.reduce(
-                                       (accumulator: number, product: any) =>
-                                          accumulator +
-                                          (product.productId.price -
-                                             (product.productId.price * product.productId.discount) / 100) *
-                                          product.weight,
-                                       0
-                                    ) -
-                                    (voucher.maxReduce
-                                       ? voucher.maxReduce
-                                       : auth.user._id
-                                          ? (cart?.reduce(
-                                             (accumulator: number, product: any) =>
-                                                accumulator +
-                                                (product.productId.price -
-                                                   (product.productId.price * product.productId.discount) / 100) *
-                                                product.weight,
-                                             0
-                                          ) *
-                                             voucher.percent) /
-                                          100
-                                          : totalPrice - (totalPrice * voucher.percent) / 100)
-                                 ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                      cart?.reduce(
+                                         (accumulator: number, product: any) =>
+                                            accumulator +
+                                            (product.productId.price -
+                                               (product.productId.price * product.productId.discount) / 100) *
+                                               product.weight,
+                                         0
+                                      ) -
+                                      (voucher.maxReduce
+                                         ? voucher.maxReduce
+                                         : auth.user._id
+                                         ? (cart?.reduce(
+                                              (accumulator: number, product: any) =>
+                                                 accumulator +
+                                                 (product.productId.price -
+                                                    (product.productId.price * product.productId.discount) / 100) *
+                                                    product.weight,
+                                              0
+                                           ) *
+                                              voucher.percent) /
+                                           100
+                                         : totalPrice - (totalPrice * voucher.percent) / 100)
+                                   ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>

@@ -7,27 +7,40 @@ import BannerSales from './components/BannerSales';
 import BestSellerProducts from './components/BestSellerProducts';
 import HappyClient from './components/HappyClient';
 import { useGetAllLiquidationProductQuery, useGetNewProductInStorageQuery, useGetProductSoldDescLimitQuery } from '../../../services/product.service';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { message } from 'antd';
 
 const HomePage = () => {
    const { data: liquidationProducts } = useGetAllLiquidationProductQuery()
    const { data: ProductSoldBest } = useGetProductSoldDescLimitQuery()
    const { data: NewProduct } = useGetNewProductInStorageQuery()
-   console.log(liquidationProducts);
-   
+   const [error, setError] = useState(false)
+
    const navigate = useNavigate()
    const location = useLocation();
+
+   useEffect(() => {
+      if(error) {
+         message.error('Email này đã bị vô hiệu hóa')
+      }
+   }, [error])
+
    useEffect(() => {
       const searchParams = new URLSearchParams(location.search);
       if (searchParams.toString()) {
-         const queryString = [...searchParams.entries()]
-         .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-         .join('&');
-         
-         // Kết quả
-         const result = `?${queryString}`;
-         navigate('/vnpay_return' + result)
+         if (searchParams.has('err')) {
+            setError(true)
+            navigate('/')
+         } else {
+            const queryString = [...searchParams.entries()]
+            .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+            .join('&');
+            
+            // Kết quả
+            const result = `?${queryString}`;
+            navigate('/vnpay_return' + result)
+         }
       }
    }, [location, navigate]);
    return (
