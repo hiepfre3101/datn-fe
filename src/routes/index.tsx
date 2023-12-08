@@ -35,223 +35,225 @@ import Evaluation from '../pages/AdminPages/Evaluation/Evaluation';
 import OriginAdmin from '../pages/AdminPages/Origins/OriginAdmin';
 import AddOrigin from '../pages/AdminPages/Origins/AddOrigin';
 import UpdateOrigin from '../pages/AdminPages/Origins/UpdateOrigin';
-import Account from '../pages/AdminPages/Account/Account';
 import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
 import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
 import ForgetPassword from '../pages/UserPages/ForgetPassword/ForgetPassword';
 import WishListPage from '../pages/UserPages/WishListPage/WishListPage';
+import Account from '../pages/AdminPages/Account/AccountPage';
 
-const router = createBrowserRouter([
-   {
-      path: '/',
-      element: <DefaultLayout />,
-      children: [
-         {
-            path: '/',
-            element: <HomePage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: '/collections',
-            element: <ProductPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: '/login',
-            element: <LoginPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: '/signup',
-            element: <SignUpPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: '/cart',
-            element: <CartPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: '/orders',
-            element: <OrderPage />
-         },
-         {
-            path: '/products/:id',
-            element: <ProductDetail />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: '/checkout',
-            element: <CheckOutPage />
-         },
-         {
-            path: '/orderComplete',
-            element: <OrderCompletePage />
-         },
-         {
-            path: 'my-order/:id',
-            element: <OrderDetail />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'vnpay_return',
-            element: <VNPayIpn />
-         },
-         {
-            path: 'contact',
-            element: <ContactPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'introduct',
-            element: <IntroducePage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'userInformation',
-            element: <UserInfoPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'forgetPassword',
-            element: <ForgetPassword />
-         },
-         {
-            path: 'wishList',
-            element: <WishListPage />,
-            errorElement: <NotFoundPage />
-         }
-      ]
-   },
-   {
-      path: '*',
-      element: <NotFoundPage />,
-      errorElement: <NotFoundPage />
-   },
-   {
-      path: '/manage',
-      element: <AdminLayout />,
-      errorElement: <NotFoundPage />,
-      children: [
-         {
-            path: '',
-            element: <Dashboard />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'dashboard',
-            element: <Dashboard />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'products',
-            element: <ProductAdmin />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'add-product',
-            element: <AddProduct />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'categories',
-            element: <CategoryAdmin />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'add-category',
-            element: <AddCategory />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'update-category/:id',
-            element: <UpdateCategory />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'products/:id',
-            element: <UpdateProduct />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'shipments',
-            element: <ShipmentPage />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'add-shipment',
-            element: <AddShipment />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'orders',
-            element: <OrdersAdmin />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'vouchers',
-            element: <VoucherAdmin />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'add-voucher',
-            element: <AddVoucher />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'update-voucher/:id',
-            element: <UpdateVoucher />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'chat',
-            element: <ChatAdmin />
-         },
-         {
-            path: 'evaluation',
-            element: <Evaluation />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'origin',
-            element: <OriginAdmin />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'add-origin',
-            element: <AddOrigin />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'update-origin/:id',
-            element: <UpdateOrigin />,
+const router = createBrowserRouter(
+   [
+      {
+         path: '/',
+         element: <DefaultLayout />,
+         children: [
+            {
+               path: '/',
+               element: <HomePage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: '/collections',
+               element: <ProductPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: '/login',
+               element: <LoginPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: '/signup',
+               element: <SignUpPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: '/cart',
+               element: <CartPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: '/orders',
+               element: <OrderPage />
+            },
+            {
+               path: '/products/:id',
+               element: <ProductDetail />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: '/checkout',
+               element: <CheckOutPage />
+            },
+            {
+               path: '/orderComplete',
+               element: <OrderCompletePage />
+            },
+            {
+               path: 'my-order/:id',
+               element: <OrderDetail />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'vnpay_return',
+               element: <VNPayIpn />
+            },
+            {
+               path: 'contact',
+               element: <ContactPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'introduct',
+               element: <IntroducePage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'userInformation',
+               element: <UserInfoPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'forgetPassword',
+               element: <ForgetPassword />
+            },
+            {
+               path: 'wishList',
+               element: <WishListPage />,
+               errorElement: <NotFoundPage />
+            }
+         ]
+      },
+      {
+         path: '*',
+         element: <NotFoundPage />,
+         errorElement: <NotFoundPage />
+      },
+      {
+         path: '/manage',
+         element: <AdminLayout />,
+         errorElement: <NotFoundPage />,
+         children: [
+            {
+               path: '',
+               element: <Dashboard />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'dashboard',
+               element: <Dashboard />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'products',
+               element: <ProductAdmin />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'add-product',
+               element: <AddProduct />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'categories',
+               element: <CategoryAdmin />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'add-category',
+               element: <AddCategory />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'update-category/:id',
+               element: <UpdateCategory />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'products/:id',
+               element: <UpdateProduct />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'shipments',
+               element: <ShipmentPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'add-shipment',
+               element: <AddShipment />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'orders',
+               element: <OrdersAdmin />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'vouchers',
+               element: <VoucherAdmin />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'add-voucher',
+               element: <AddVoucher />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'update-voucher/:id',
+               element: <UpdateVoucher />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'chat',
+               element: <ChatAdmin />
+            },
+            {
+               path: 'evaluation',
+               element: <Evaluation />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'origin',
+               element: <OriginAdmin />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'add-origin',
+               element: <AddOrigin />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'update-origin/:id',
+               element: <UpdateOrigin />,
 
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'unsoldproduct',
-            element: <UnSoldProduct />,
-            errorElement: <NotFoundPage />
-         },
-         {
-            path: 'account',
-            element: <Account />,
-            errorElement: <NotFoundPage />
-         },
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'unsoldproduct',
+               element: <UnSoldProduct />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'account',
+               element: <Account />,
+               errorElement: <NotFoundPage />
+            },
 
-         // {
-         //    path: 'accounts',
-         //    element: <AccountManager />
-         // },
-         // {
-         //    path: 'accounts/:id/view',
-         //    element: <AccountDetail />
-         // }
-      ]
-   }
-],
+            {
+               path: 'accounts',
+               element: <Account />
+            }
+            // {
+            //    path: 'accounts/:id/view',
+            //    element: <AccountDetail />
+            // }
+         ]
+      }
+   ],
    {
       basename: '/'
-   });
+   }
+);
 
 export default router;

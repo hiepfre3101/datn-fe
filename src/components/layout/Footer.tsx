@@ -10,7 +10,7 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartItems, ICartSlice, removeFromCart, setItem } from '../../slices/cartSlice';
 import { Link, useNavigate } from 'react-router-dom';
-
+import NotificationSound from '../../assets/notification-sound.mp3';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
@@ -54,6 +54,7 @@ const Footer = () => {
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
    const [clearToken] = useClearTokenMutation();
+   const audioPlayer = useRef<HTMLAudioElement | null>(null)
    const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
@@ -121,38 +122,38 @@ const Footer = () => {
       }
    };
 
-   
-   const [subtotal,setSubtotal] = useState<number>(0)
-   const [discount,setDiscount] = useState<number>(0)
-   useEffect(()=>{
-      if(auth.user._id) {
-         const temp = cartdb?.body.data.products?.reduce((cal:any, product:any) => {
+
+   const [subtotal, setSubtotal] = useState<number>(0)
+   const [discount, setDiscount] = useState<number>(0)
+   useEffect(() => {
+      if (auth.user._id) {
+         const temp = cartdb?.body.data.products?.reduce((cal: any, product: any) => {
             console.log(product);
             return cal + (product.weight * product.productId.price);
-        }, 0);
-       
-        
-        if(temp!==undefined){
-         setSubtotal(temp)
-        }
+         }, 0);
+
+
+         if (temp !== undefined) {
+            setSubtotal(temp)
+         }
       }
-    
-   },[data,voucher,cartdb])
-   useEffect(()=>{
-      if(voucher && auth.user._id){
-         if(voucher?.maxReduce){
-            if(voucher.maxReduce<subtotal){
+
+   }, [data, voucher, cartdb])
+   useEffect(() => {
+      if (voucher && auth.user._id) {
+         if (voucher?.maxReduce) {
+            if (voucher.maxReduce < subtotal) {
                setDiscount(voucher.maxReduce)
-            }else{
-               setDiscount((subtotal*voucher.percent/100))
+            } else {
+               setDiscount((subtotal * voucher.percent / 100))
             }
-            
+
          }
-         else{
-            setDiscount((subtotal*voucher.percent/100))
+         else {
+            setDiscount((subtotal * voucher.percent / 100))
          }
       }
-   },[data,subtotal,voucher])
+   }, [data, subtotal, voucher])
    const [messages, setMesssages] = useState<string>();
    const { data: chat, refetch } = useGetOneChatUserQuery(auth.user._id!, {
       skip: !auth.user._id || auth.user.role == 'admin'
@@ -161,6 +162,9 @@ const Footer = () => {
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
+            if (audioPlayer.current !== null) {
+               audioPlayer.current.play()
+            }
             refetch();
          }
       };
@@ -244,7 +248,7 @@ const Footer = () => {
                      src={'https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png'}
                      alt=''
                   />
-                  <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
+                  <span className='user-name text-black font-bold '>Admin - Fresh Mart</span>
                </div>
                <button type='button' onClick={() => setOpenChat(!openChat)}>
                   <MdOutlineCancel className='text-[#0A7CFF] text-[30px] mr-[10px]' />
@@ -652,16 +656,16 @@ const Footer = () => {
                                        <span className='product-price text-[#d2401e] text-[16px] ml-[5px]'>
                                           {item.productId?.discount
                                              ? (
-                                                  item?.productId?.price -
-                                                  (item?.productId?.price * item?.productId?.discount) / 100
-                                               ).toLocaleString('vi-VN', {
-                                                  style: 'currency',
-                                                  currency: 'VND'
-                                               })
+                                                item?.productId?.price -
+                                                (item?.productId?.price * item?.productId?.discount) / 100
+                                             ).toLocaleString('vi-VN', {
+                                                style: 'currency',
+                                                currency: 'VND'
+                                             })
                                              : item.productId?.price.toLocaleString('vi-VN', {
-                                                  style: 'currency',
-                                                  currency: 'VND'
-                                               })}
+                                                style: 'currency',
+                                                currency: 'VND'
+                                             })}
                                        </span>
                                     </div>
                                     <div className='delete-cart'>
@@ -692,7 +696,7 @@ const Footer = () => {
                               <span className='subtotal-title text-[16px] '>Giảm giá:</span>
                               <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                                  -
-                                {discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                 {discount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                               </span>
                            </div>
                         )}
@@ -701,29 +705,29 @@ const Footer = () => {
                            <span className='subtotal-price text-[#d2401e] font-bold text-[16px]'>
                               {auth.user._id
                                  ? (
-                                      cart?.reduce(
-                                         (accumulator: number, product: any) =>
-                                            accumulator +
-                                            (product.productId.price -
-                                               (product.productId.price * product.productId.discount) / 100) *
-                                               product.weight,
-                                         0
-                                      ) -
-                                      (voucher.maxReduce
-                                         ? voucher.maxReduce
-                                         : auth.user._id
-                                         ? (cart?.reduce(
-                                              (accumulator: number, product: any) =>
-                                                 accumulator +
-                                                 (product.productId.price -
-                                                    (product.productId.price * product.productId.discount) / 100) *
-                                                    product.weight,
-                                              0
-                                           ) *
-                                              voucher.percent) /
-                                           100
-                                         : totalPrice - (totalPrice * voucher.percent) / 100)
-                                   ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                                    cart?.reduce(
+                                       (accumulator: number, product: any) =>
+                                          accumulator +
+                                          (product.productId.price -
+                                             (product.productId.price * product.productId.discount) / 100) *
+                                          product.weight,
+                                       0
+                                    ) -
+                                    (voucher.maxReduce
+                                       ? voucher.maxReduce
+                                       : auth.user._id
+                                          ? (cart?.reduce(
+                                             (accumulator: number, product: any) =>
+                                                accumulator +
+                                                (product.productId.price -
+                                                   (product.productId.price * product.productId.discount) / 100) *
+                                                product.weight,
+                                             0
+                                          ) *
+                                             voucher.percent) /
+                                          100
+                                          : totalPrice - (totalPrice * voucher.percent) / 100)
+                                 ).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                                  : totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                            </span>
                         </div>
@@ -862,6 +866,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
+               <audio ref={audioPlayer} src={NotificationSound} />
             </section>
          )}
       </>

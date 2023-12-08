@@ -20,9 +20,13 @@ const ChatAdmin = () => {
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const { data: messagesInARoom, refetch } = useGetOneChatQuery(room, { skip: room == '0' });
    const audioPlayer = useRef<HTMLAudioElement | null>(null)
+   const handleRefetch = async () => {
+      await refetch();
+      await getAllRefetch();
+   }
    useEffect(() => {
       if (room != '0') {
-         refetch();
+         handleRefetch()
       }
    }, [room]);
    useEffect(() => {
@@ -31,9 +35,8 @@ const ChatAdmin = () => {
          if (audioPlayer.current !== null) {
             audioPlayer.current.play()
          }
-         getAllRefetch();
          dispatch(setState())
-         refetch();
+         handleRefetch()
       };
       adminSocket.on('updatemess', handleUpdateChat);
    }, [auth]);
