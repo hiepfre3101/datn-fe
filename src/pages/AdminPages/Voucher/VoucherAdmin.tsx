@@ -52,19 +52,20 @@ const VoucherAdmin = () => {
                         scroll={{ y: 800, x: 1000 }}
                         loading={isLoading}
                      >
-                        <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
-                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
                         <Column
                            title='Mã giảm giá'
                            dataIndex='code'
                            key='code'
-                           width={80}
+                           width={200}
                            render={(value, record: IVoucher) => (
                               <span>
                                  {value} {!record.status && <Tag color='red'>Ngừng sử dụng</Tag>}
                               </span>
                            )}
                         />
+                        <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
+                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
+
                         <Column
                            title='Số lượng'
                            dataIndex='quantity'
@@ -89,7 +90,7 @@ const VoucherAdmin = () => {
                         <Column title='Tiêu đề' dataIndex='title' key='title' width={80} />
                         <Column
                            fixed='right'
-                           width={80}
+                           width={100}
                            title='Chức năng '
                            key='_id'
                            dataIndex='_id'

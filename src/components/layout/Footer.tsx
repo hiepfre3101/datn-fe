@@ -866,6 +866,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
+               <audio ref={audioPlayer} src={NotificationSound} />
             </section>
          )}
       </>
