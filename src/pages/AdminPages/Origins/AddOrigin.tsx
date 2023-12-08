@@ -13,12 +13,10 @@ const AddOrigin = () => {
    const [form] = Form.useForm<IOrigin>();
    const navigate = useNavigate();
    const [OriginName, setOriginName] = useState<string>('');
-   const [handleAddCategory, { error }] = useAddOriginMutation();
+   const [handleAddCategory] = useAddOriginMutation();
    const handleSubmit = async () => {
       try {
          setLoading(true);
-
-
          form.setFieldValue('name', OriginName);
          const newFormData = form.getFieldsValue(true);
          await handleAddCategory(newFormData).unwrap().then(() => {

@@ -34,6 +34,7 @@ const OrdersAdmin = () => {
       adminSocket.on('purchaseNotification', () => refetch());
       adminSocket.on('adminStatusNotification', () => refetch());
       return () => {};
+   // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
 
    if (isLoading) return <Loading sreenSize='lg' />;
