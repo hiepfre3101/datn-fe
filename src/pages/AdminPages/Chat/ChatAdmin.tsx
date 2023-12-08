@@ -23,6 +23,7 @@ const ChatAdmin = () => {
    useEffect(() => {
       if (room != '0') {
          refetch();
+         getAllRefetch();
       }
    }, [room]);
    useEffect(() => {
