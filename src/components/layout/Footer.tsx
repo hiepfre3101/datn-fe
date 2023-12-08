@@ -10,7 +10,7 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartItems, ICartSlice, removeFromCart, setItem } from '../../slices/cartSlice';
 import { Link, useNavigate } from 'react-router-dom';
-
+import NotificationSound from '../../assets/notification-sound.mp3';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
@@ -54,6 +54,7 @@ const Footer = () => {
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
    const [clearToken] = useClearTokenMutation();
+   const audioPlayer = useRef<HTMLAudioElement | null>(null)
    const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
@@ -275,6 +276,7 @@ const Footer = () => {
                   );
                })}
                <div ref={scrollRef!}></div>
+               <audio ref={audioPlayer} src={NotificationSound} />
             </div>
             <form
                action=''
