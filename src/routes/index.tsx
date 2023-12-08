@@ -39,7 +39,7 @@ import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
 import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
 import ForgetPassword from '../pages/UserPages/ForgetPassword/ForgetPassword';
 import WishListPage from '../pages/UserPages/WishListPage/WishListPage';
-import Account from '../pages/AdminPages/Account/AccountPage';
+import Account from '../pages/AdminPages/Account/Account';
 
 const router = createBrowserRouter(
    [
@@ -239,15 +239,6 @@ const router = createBrowserRouter(
                element: <Account />,
                errorElement: <NotFoundPage />
             },
-
-            {
-               path: 'accounts',
-               element: <Account />
-            }
-            // {
-            //    path: 'accounts/:id/view',
-            //    element: <AccountDetail />
-            // }
          ]
       }
    ],
