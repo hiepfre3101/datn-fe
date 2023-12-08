@@ -61,18 +61,20 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
          const product = {
-            productName:data.productName,
+            productName: data.productName,
             productId: data?._id,
             weight: 1
          };
-         await addCart(product).unwrap().then(res => {
-            res
-           message.success('Thêm sản phẩm vào giỏ hàng thành công');
-         })
-         .catch(error => {
-            error 
-         message.error('Số lượng vượt quá sản phẩm đang có trong kho');         
-         });
+         await addCart(product)
+            .unwrap()
+            .then((res) => {
+               res;
+               message.success('Thêm sản phẩm vào giỏ hàng thành công');
+            })
+            .catch((error) => {
+               error;
+               message.error('Số lượng vượt quá sản phẩm đang có trong kho');
+            });
       } else {
          const totalWeight = data?.shipments.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
             return accumulator + shipmentWeight.weight;
@@ -113,23 +115,23 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                   1200: {
                      slidesPerView: 3
                   },
-                  991:{
-                     spaceBetween:10
+                  991: {
+                     spaceBetween: 10
                   },
                   767: {
-                     slidesPerView: 3,
+                     slidesPerView: 3
                   },
                   766: {
                      slidesPerView: 2,
-                     spaceBetween:10
+                     spaceBetween: 10
                   },
                   400: {
                      slidesPerView: 2,
-                     spaceBetween:10
+                     spaceBetween: 10
                   },
                   1: {
                      slidesPerView: 1,
-                     spaceBetween:10
+                     spaceBetween: 10
                   }
                }}
                modules={[Navigation, Autoplay]}
@@ -185,11 +187,11 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                        </button>
                                     </div>
                                  </div>
-                                 <a href=''>
+                                 <Link to={'#'}>
                                     <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
                                        <Link to={'/products/' + item._id}>{item?.productName}</Link>
                                     </p>
-                                 </a>
+                                 </Link>
                                  <div className='rate text-center'>
                                     <ConfigProvider
                                        theme={{
