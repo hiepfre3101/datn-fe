@@ -43,7 +43,7 @@ export type IOrderFull = {
    status: string;
    createdAt: string;
    invoiceId: string;
-   paymentMethod: 'cod' | 'momo';
+   paymentMethod: 'cod' | 'vnpay';
    voucher?:{
       code:string;
       miniMumOrder:number;
