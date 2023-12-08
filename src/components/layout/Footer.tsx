@@ -186,17 +186,18 @@ const Footer = () => {
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
+     if(messages?.trim()!=""){
       const data = {
          roomChatId: auth.user?._id,
          content: messages,
          sender: 'client'
       };
-      console.log(data);
-
       await sendMessage(data);
       const jsonData = JSON.stringify(data);
       clientSocket.emit('ClientSendMessage', jsonData);
-      setMesssages('');
+ 
+     }
+     setMesssages('');
    };
    return (
       <>
