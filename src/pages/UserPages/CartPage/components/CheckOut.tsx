@@ -367,7 +367,7 @@ const CheckOut = () => {
                      : cart?.totalPrice?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                </span>
             </div>
-            <div className='discount-action mt-[30px] text-center'>
+            {!voucher._id ? <div className='discount-action mt-[30px] text-center'>
                <input
                   type='text'
                   value={inputVoucher}
@@ -389,7 +389,18 @@ const CheckOut = () => {
                >
                   Sử dụng
                </button>
-            </div>
+            </div>: <div className='discount-action mt-[30px] text-center'>
+
+               <button
+                  type='button'
+                  className='block mt-[10px] hover:text-[#51A55C] cursor-pointer'
+                  onClick={handleGetListVoucher}
+               >
+                  Xem tất cả mã giảm giá
+               </button>
+            
+            </div>}
+           
             <div className='btn-checkout'>
                <button
                   onClick={goCheckOut}

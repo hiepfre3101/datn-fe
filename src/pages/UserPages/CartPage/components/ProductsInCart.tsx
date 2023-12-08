@@ -278,7 +278,7 @@ const ProductsInCart = () => {
                                  type='button'
                                  onClick={() => handleRemoveProductInCart(item)}
                               >
-                                 Remove
+                                 Xoá
                               </button>
                            </div>
                         </div>

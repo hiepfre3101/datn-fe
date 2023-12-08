@@ -20,6 +20,7 @@ import { INotification } from '../../interfaces/notification';
 import { formatStringToDate } from '../../helper';
 import { setItem } from '../../slices/cartSlice';
 import NotificationSound from '../../assets/notification-sound.mp3';
+import { setState } from '../../slices/notice';
 
 const pagePaths = [
    {
@@ -72,7 +73,6 @@ const HeaderAdmin = () => {
    };
    useEffect(() => {
       adminSocket.open();
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const handlePurchaseNotification = (data: any) => {
          refetch();
@@ -91,6 +91,7 @@ const HeaderAdmin = () => {
       adminSocket.on('updatemess', () => {
          if (audioPlayer.current !== null) {
             audioPlayer.current.play()
+            dispatch(setState())
          }
       });
       return () => {
@@ -187,7 +188,6 @@ const HeaderAdmin = () => {
                   <div className='hidden xl:flex-1 xl:flex xl:justify-start xl:gap-2 xl:items-center cursor-pointer p-1 text-center '>
                      <span className='font-medium text-sm text-[#6b6765] '>{auth.user.userName}</span>
                      <div className={triggerDrop ? 'round-up' : 'round-down'}>
-                        {' '}
                         <DownOutlined color='#6b6765' size={1} />
                      </div>
                   </div>

@@ -37,7 +37,9 @@ const ProductEvaluate = ({ productId }: IProps) => {
                </div>
                         </div>
          <div className='list-review'>
-            {data.body.data.map((evaluation: IEvaluationFull, index: number ) =>(
+            {data.body.data.map((evaluation: IEvaluationFull, index: number ) =>{ 
+               if(evaluation.isReviewVisible){
+               return ( 
 
             <div key={index} className='revite-item pt-[30px] pb-[30px] border-t-[1px]'>
                <div className='rate flex items-center'>
@@ -58,7 +60,7 @@ const ProductEvaluate = ({ productId }: IProps) => {
                </p>
             </div>
            
-            )) }
+            )}}) }
          </div>
                </>
             ): (

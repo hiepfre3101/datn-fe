@@ -234,6 +234,11 @@ const router = createBrowserRouter(
                element: <UnSoldProduct />,
                errorElement: <NotFoundPage />
             },
+            {
+               path: 'account',
+               element: <Account />,
+               errorElement: <NotFoundPage />
+            },
 
             {
                path: 'accounts',

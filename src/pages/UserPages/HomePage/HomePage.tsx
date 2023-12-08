@@ -18,7 +18,6 @@ const HomePage = () => {
    const location = useLocation();
    useEffect(() => {
       const searchParams = new URLSearchParams(location.search);
-      // Chuyển đổi đối tượng thành chuỗi query URL
       if (searchParams.toString()) {
          const queryString = [...searchParams.entries()]
          .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)

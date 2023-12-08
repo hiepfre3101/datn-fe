@@ -34,21 +34,26 @@ const OrderDetail = () => {
       setSubtotal(temp)
      }
    },[data])
+   console.log(data?.body.data.voucher);
+   
    useEffect(()=>{
-      if(data?.body.voucher){
-         if(data?.body.voucher?.maxReduce){
-            if(data?.body.voucher.maxReduce<subtotal){
-               setDiscount(data?.body.voucher.maxReduce)
+      if(data?.body.data.voucher){
+         if(data?.body.data.voucher?.maxReduce>0){
+            if(data?.body.data.voucher.maxReduce<subtotal){
+               console.log("1");
+               setDiscount(data?.body.data.voucher.maxReduce)
             }else{
-               setDiscount((subtotal*data?.body.voucher.percent/100))
+               setDiscount((subtotal*data?.body.data?.voucher?.percent/100))
             }
             
          }
          else{
-            setDiscount((subtotal*data?.body.voucher.percent/100))
+            setDiscount((subtotal*data?.body.data?.voucher?.percent/100))
          }
       }
    },[data,subtotal])
+   console.log(discount);
+   
    useEffect(() => {
       clientSocket.on('statusNotification', (data) => {
          if (data.status === SUCCESS_ORDER.toLowerCase()) {
@@ -92,21 +97,19 @@ const OrderDetail = () => {
          console.log(error);
       }
    };
-   if (isLoading) return <Loading sreenSize='lg' />;
-   console.log(data);
-   
+   if (isLoading) return <Loading sreenSize='lg' />;   
    return (
-      <div className=' flex flex-col items-start gap-[30px] max-w-[1520px] m-auto p-10'>
+      <div className=' flex flex-col items-start gap-[30px] max-w-[1520px] m-auto sm:p-10 max-sm:p-[10px]'>
 
          <Link to='/orders' className='flex justify-start items-center gap-[10px] text-black'>
             <BiChevronLeft className='text-[1.5rem]' />
             <span className='text-lg hover:font-semibold duration-200'>Tất cả đơn hàng</span>
          </Link>
-         <div className='bg-[rgba(182,180,180,0.1)] w-full min-h-[300px] rounded-2xl p-10 relative'>
-            <span className='text-xl font-semibold text-black'>
-               Cảm ơn quý khách, <span className='text-greenPrimary'>{data?.body.data?.customerName}!</span>
+         <div className='bg-[rgba(182,180,180,0.1)] w-full min-h-[300px] rounded-2xl max-sm:p-[20px] sm:p-10 relative'>
+            <span className='text-xl font-semibold text-black max-sm:text-[16px]'>
+               Cảm ơn quý khách, <span className='text-greenPrimary max-sm:text-[14px]'>{data?.body.data?.customerName}!</span>
             </span>
-            <p className='mt-2 text-black font-bold text-lg'>Đơn hàng (#) {data?.body.data?.invoiceId}</p>
+            <p className='mt-2 text-black font-bold text-lg max-sm:text-[16px]'>Đơn hàng (#) {data?.body.data?.invoiceId}</p>
             {isShowConfirm ||
                (data?.body.data?.status === SUCCESS_ORDER.toLowerCase() && (
                   <Button
@@ -119,7 +122,7 @@ const OrderDetail = () => {
                   </Button>
                ))}
             {data?.body.data?.status === FAIL_ORDER.toLowerCase() && (
-               <Tag className='py-2 px-5 absolute right-10 top-10' color='red'>
+               <Tag className='py-2 px-5  absolute right-10 top-10' color='red'>
                   {FAIL_ORDER}
                </Tag>
             )}{' '}
@@ -135,7 +138,7 @@ const OrderDetail = () => {
                   }}
                >
                   <Steps
-                     className={`mt-10 ${style['ant-steps-item-finish']} max-w-[80%]`}
+                     className={`mt-10 ${style['ant-steps-item-finish']} max-w-[80%] flex flex-wrap`}
                      current={getStatusOfOrder()}
                      items={[
                         {
@@ -156,15 +159,15 @@ const OrderDetail = () => {
             )}
             <Divider />
             <div className='w-full flex justify-start gap-5 flex-wrap'>
-               <div className='w-[40%]'>
-                  <div className='flex justify-between w-[60%]'>
-                     <div className='flex flex-col items-start'>
+               <div className='w-[40%] max-md:w-full'>
+                  <div className='flex justify-between w-[60%] max-md:w-full max-sm:flex-wrap'>
+                     <div className='flex flex-col items-start max-sm:w-full max-sm:mb-[10px]'>
                         <span className='text-md'>Ngày đặt hàng</span>
                         <strong className='text-md text-black'>
                            {formatStringToDate(data?.body.data ? data?.body.data?.createdAt : '')}
                         </strong>
                      </div>
-                     <div className='flex flex-col items-start'>
+                     <div className='flex flex-col items-start  max-sm:w-full'>
                         <span className='text-md'>Phương thức thanh toán</span>
                         <strong className='text-md text-black'>
                            {data?.body.data
@@ -184,9 +187,9 @@ const OrderDetail = () => {
                      <strong className='text-md text-black'>{data?.body.data?.note}</strong>
                   </div>
                </div>
-               <Divider type='vertical' className='h-[200px]' />
-               <div className='w-[50%]'>
-                  <div className=' flex flex-col items-start gap-4 max-h-[350px] overflow-auto px-10'>
+               <Divider type='vertical' className='h-[200px] max-md:hidden' />
+               <div className='w-[50%] max-md:w-full'>
+                  <div className=' flex flex-col items-start gap-4 max-h-[350px]  px-10 max-md:px-[10px]'>
                      {data?.body.data &&
                         data?.body.data.products.map((product) => (
                            <ProductInOrder
@@ -198,7 +201,7 @@ const OrderDetail = () => {
                         ))}
                   </div>
                   <Divider />
-                  <div className='flex justify-between items-center text-black px-10'>
+            {data?.body?.data?.voucher?.code && <div className='flex justify-between items-center text-black px-10 max-sm:px-[10px]'>
                      <strong>Tính tạm</strong>
                      <span className='font-semibold'>
                         {subtotal.toLocaleString('vi-VN', {
@@ -206,8 +209,8 @@ const OrderDetail = () => {
                                  currency: 'VND'
                               })}
                      </span>
-                  </div>
-                {data?.body.voucher &&  <div className='mt-3 flex justify-between items-center text-black px-10'>
+                  </div>}
+                {data?.body.data?.voucher?.code &&  <div className='mt-3 flex justify-between items-center text-black px-10 max-sm:px-[10px]'>
                      <strong>Khuyến mãi</strong>
                      <span className='font-semibold'>
                     - {discount.toLocaleString('vi-VN', {
@@ -217,7 +220,7 @@ const OrderDetail = () => {
                      
                      </span>
                   </div>}
-                  <div className='mt-3 flex justify-between items-center text-black px-10 text-xl '>
+                  <div className='mt-3 flex justify-between items-center text-black px-10 text-xl max-sm:px-[10px]'>
                      <strong className='font-bold'>Tổng tiền</strong>
                      <span className='font-bold'>
                         {transformCurrency(data?.body.data ? data?.body.data?.totalPayment : 0)}

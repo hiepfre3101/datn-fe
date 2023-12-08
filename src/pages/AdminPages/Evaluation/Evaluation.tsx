@@ -15,13 +15,13 @@ import Loading from '../../../components/Loading/Loading';
 
 const Evaluation = () => {
     // const [evaluation, setEvaluation] = useState<any>({});
-    const { data, isLoading } = useGetAllEvaluationQuery()
+    const { data, isLoading, refetch } = useGetAllEvaluationQuery()
     const [updateEvaluationMutation] = useUpdateEvaluationMutation()
 
     const handleUPdateEvaluationMutation = (id: string) => {
-        // console.log(id);
 
         updateEvaluationMutation({ id });
+        refetch()
     };
 
     if (isLoading) return <Loading sreenSize='lg' />;
@@ -62,7 +62,7 @@ const Evaluation = () => {
                                     render={(_: IEvaluationFull, record: IEvaluationFull) => {
                                         console.log(record.productId?.images[0].url);
 
-                                        return <img src={record.productId != null ? record.productId?.images[0].url :''  } className='w-[3rem] h-[3rem]' />
+                                        return <img src={record.productId != null ? record.productId?.images[0].url : ''} className='w-[3rem] h-[3rem]' />
                                     }}
 
 
@@ -127,16 +127,19 @@ const Evaluation = () => {
                                     key='_id'
                                     dataIndex={'_id'}
                                     render={(_: IEvaluationFull, record: IEvaluationFull) => {
-                                        return <Popconfirm
-                                            description='Bạn chắc chắn muốn ẩn đánh giá này chứ?'
-                                            okText='Đồng ý'
-                                            cancelText='Hủy bỏ'
-                                            title='Bạn có muốn ẩn?'
-                                            onConfirm={() => handleUPdateEvaluationMutation(record._id)}
-                                        >
-                                            <button type='button'
-                                                className='bg-red-400 focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>Ẩn bài đánh giá </button>
-                                        </Popconfirm>
+                                        if (record.isReviewVisible) {
+
+                                            return <Popconfirm
+                                                description='Bạn chắc chắn muốn ẩn đánh giá này chứ?'
+                                                okText='Đồng ý'
+                                                cancelText='Hủy bỏ'
+                                                title='Bạn có muốn ẩn?'
+                                                onConfirm={() => handleUPdateEvaluationMutation(record._id)}
+                                            >
+                                                <button type='button'
+                                                    className='bg-red-400 focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>Ẩn bài đánh giá </button>
+                                            </Popconfirm>
+                                        }
                                     }}
                                 />
                             </Table>

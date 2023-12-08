@@ -23,6 +23,9 @@ export interface IOrder {
    status?: string;
    voucherCode?: string;
    code?: string;
+   districtCode?:number,
+   districtName?:string,
+   ward?:string;
 }
 
 export type IOrderFull = {
@@ -41,4 +44,10 @@ export type IOrderFull = {
    createdAt: string;
    invoiceId: string;
    paymentMethod: 'cod' | 'momo';
+   voucher?:{
+      code:string;
+      miniMumOrder:number;
+      maxReduce:number;
+      percent:number;
+   }
 };

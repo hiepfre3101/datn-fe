@@ -4,16 +4,18 @@ import { useGetAllChatQuery, useGetOneChatQuery, useSendMessageMutation } from '
 import { useState, useEffect, useRef } from 'react';
 import { adminSocket } from '../../../config/socket';
 import { IAuth } from '../../../slices/authSlice';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { formatStringToDate } from '../../../helper';
 import { Badge } from 'antd';
 import NotificationSound from '../../../assets/notification-sound.mp3';
+import { setState } from '../../../slices/notice';
 
 const ChatAdmin = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, refetch: getAllRefetch } = useGetAllChatQuery();
+   const { data, refetch: getAllRefetch } = useGetAllChatQuery({});
    const [room, setRoom] = useState('0');
    const [sendMessage] = useSendMessageMutation();
+   const dispatch = useDispatch();
    const [message, setMesssage] = useState<string>();
    const scrollRef = useRef<HTMLDivElement | null>(null);
    const { data: messagesInARoom, refetch } = useGetOneChatQuery(room, { skip: room == '0' });
@@ -30,6 +32,7 @@ const ChatAdmin = () => {
             audioPlayer.current.play()
          }
          getAllRefetch();
+         dispatch(setState())
          refetch();
       };
       adminSocket.on('updatemess', handleUpdateChat);
@@ -39,6 +42,7 @@ const ChatAdmin = () => {
          scrollRef.current.scrollIntoView({ block: 'end' });
       }
       getAllRefetch();
+      dispatch(setState())
    }, [messagesInARoom]);
    const handleChangeMessage = (e: any) => {
       setMesssage(e.target.value);
