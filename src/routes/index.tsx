@@ -39,7 +39,12 @@ import UserInfoPage from '../pages/UserPages/UserInfoPage/UserInforPage';
 import UnSoldProduct from '../pages/AdminPages/UnSoldProduct/UnSoldProduct';
 import ForgetPassword from '../pages/UserPages/ForgetPassword/ForgetPassword';
 import WishListPage from '../pages/UserPages/WishListPage/WishListPage';
+<<<<<<< HEAD
+import Account from '../pages/AdminPages/Account/AccountPage';
+import ChangePassword from '../pages/UserPages/ChangePassword/ChangePassword';
+=======
 import Account from '../pages/AdminPages/Account/Account';
+>>>>>>> cf5ddb6b4525937b1ab96a843ccb2b55c47ce1bd
 
 const router = createBrowserRouter(
    [
@@ -120,6 +125,11 @@ const router = createBrowserRouter(
             {
                path: 'wishList',
                element: <WishListPage />,
+               errorElement: <NotFoundPage />
+            },
+            {
+               path: 'changePassword',
+               element: <ChangePassword />,
                errorElement: <NotFoundPage />
             }
          ]

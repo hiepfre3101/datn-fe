@@ -13,6 +13,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import NotificationSound from '../../assets/notification-sound.mp3';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
+import { LuUser2 } from 'react-icons/lu';
 import { MdOutlineLockReset } from 'react-icons/md';
 import { logoUrl } from '../../constants/imageUrl';
 import { useGetAllCateQuery } from '../../services/cate.service';
@@ -791,17 +792,26 @@ const Footer = () => {
                   )}
                   {auth.accessToken && (
                      <>
+                        {auth.user.role=="admin" && <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='/manage' className='flex items-center gap-[5px] py-[5px]'>
+                              <PiUserListBold></PiUserListBold> Quản lý cửa hàng
+                           </Link>
+                        </li>}
                         <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
                            <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
-                              <PiUserListBold></PiUserListBold> Hồ sơ của bạn
+                              <LuUser2></LuUser2> Hồ sơ của bạn
                            </Link>
                         </li>
                         <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                           <Link to='' className='flex items-center gap-[5px] py-[5px]'>
+                           <Link to='orders' className='flex items-center gap-[5px] py-[5px]'>
                               <RiBillLine></RiBillLine> Lịch sử mua hàng
                            </Link>
                         </li>
-
+                        <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
+                           <Link to='changePassword' className='flex items-center gap-[5px] py-[5px]'>
+                              <MdOutlineLockReset></MdOutlineLockReset> Đổi mật khẩu
+                           </Link>
+                        </li>
                         <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
                            <button onClick={() => onHandleLogout()} className='flex items-center gap-[5px] py-[5px]'>
                               <FiLogOut></FiLogOut> Đăng xuất
