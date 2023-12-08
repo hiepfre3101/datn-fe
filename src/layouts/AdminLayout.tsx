@@ -82,19 +82,21 @@ const AdminLayout = () => {
       getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
       getItem(<Link to='/manage/account'>Quản lý tài khoản</Link>, 'sub5', <UserOutlined />),
       getItem(<Link to='/manage/chat' className='block w-full h-full'>
-         <Badge
+          Tư vấn mua hàng
+         {messagesCount>0 && <Badge
             color='red'
             count={
-               <p className='!bg-red-400 text-white w-6 h-6 flex justify-center items-center rounded-full text-xs'>
+               <p className='!bg-red-400 text-white text-center w-6 h-6 flex flex-col justify-center leading-6 rounded-full text-xs'>
                   {messagesCount}
                </p>
             }
             showZero={false}
-            offset={[50, 0]}
+            offset={[20, 0]}
          >
-            Tư vấn mua hàng
-         </Badge>
-      </Link>, 'sub5', <NotificationOutlined />)
+          
+         </Badge>}
+         
+        </Link>, 'sub6', <NotificationOutlined />)
    ];
 
    const ButtonTrigger = (

@@ -320,7 +320,8 @@ const CheckOutPage = () => {
    const items = steps.map((item) => ({ key: item.title, title: item.title }));
    return (
       <>
-         <div className='main'>
+      {cart?.length>0? <div>
+     <div className='main'>
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
@@ -392,6 +393,15 @@ const CheckOutPage = () => {
                })}
             </Modal>
          </div>
+     </div>: <section className='section-chekout lg:my-[100px] md:my-[80px] max-md:my-[60px] '>
+               <div className='cont  mx-auto flex-col px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
+                  <h1 className='text-red-500 text-[20px] max-sm:text-[16px] max-sm:text-center font-bold m-auto block mb-[10px]'>Bạn chưa có sản phẩm nào trong giỏ hàng</h1>
+                  <Link to={"/collections"} className='block bg-[#51A55C] text-white p-[10px] rounded-md m-auto'>
+                     <p>Tiếp  tục mua hàng</p>
+                  </Link>
+                  </div>  
+      </section>}
+    
       </>
    );
 };

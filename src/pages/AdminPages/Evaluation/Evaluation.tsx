@@ -1,5 +1,5 @@
 
-import { Layout, Popconfirm, Rate, Table } from 'antd';
+import { Layout, Popconfirm, Rate, Table, message } from 'antd';
 import Column from 'antd/es/table/Column';
 
 import { Helmet } from 'react-helmet';
@@ -18,9 +18,21 @@ const Evaluation = () => {
     const { data, isLoading, refetch } = useGetAllEvaluationQuery()
     const [updateEvaluationMutation] = useUpdateEvaluationMutation()
 
-    const handleUPdateEvaluationMutation = (id: string) => {
+    const handleUPdateEvaluationMutation = (item:{_id:string,isReviewVisible:boolean}) => {
 
-        updateEvaluationMutation({ id });
+        updateEvaluationMutation(item).unwrap().then(res=>{
+            res
+            if(item.isReviewVisible==false) {
+                message.success("Hiện đánh giá thành công")
+            }
+            else{
+
+                message.success("Ẩn đánh giá thành công")
+            }
+        }).catch(error=>{
+            error
+            message.success("Hành động thất bại")
+        })
         refetch()
     };
 
@@ -127,18 +139,32 @@ const Evaluation = () => {
                                     key='_id'
                                     dataIndex={'_id'}
                                     render={(_: IEvaluationFull, record: IEvaluationFull) => {
-                                        if (record.isReviewVisible) {
 
+                                        if (record.isReviewVisible==true) {
+                                            const item={
+                                                _id: record._id,
+                                                isReviewVisible:false
+                                            }
                                             return <Popconfirm
                                                 description='Bạn chắc chắn muốn ẩn đánh giá này chứ?'
                                                 okText='Đồng ý'
                                                 cancelText='Hủy bỏ'
                                                 title='Bạn có muốn ẩn?'
-                                                onConfirm={() => handleUPdateEvaluationMutation(record._id)}
+                                                onConfirm={() => handleUPdateEvaluationMutation(item)}
                                             >
                                                 <button type='button'
                                                     className='bg-red-400 focus:outline-none text-black  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>Ẩn bài đánh giá </button>
                                             </Popconfirm>
+                                        }
+                                        else{
+                                            const item={
+                                                _id: record._id,
+                                                isReviewVisible:true
+                                            }
+                                            return<>
+                                            <button onClick={() => handleUPdateEvaluationMutation(item)} type='button'
+                                            className='bg-blue-500 focus:outline-none text-white  focus:ring-4 font-medium rounded-lg text-sm px-5 py-2.5  dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900'>Hiện bài đánh giá </button>
+                                            </>
                                         }
                                     }}
                                 />

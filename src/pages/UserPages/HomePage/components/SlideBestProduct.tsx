@@ -206,9 +206,9 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}
-                                    {item.discount > 0 && item.shipments.length > 0 && (
+                                    {item.discount > 0 && (
                                        <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                          {((item?.price * item.discount) / 100).toLocaleString('vi-VN', {
+                                          {item?.price.toLocaleString('vi-VN', {
                                              style: 'currency',
                                              currency: 'VND'
                                           })}

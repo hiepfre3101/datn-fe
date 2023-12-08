@@ -54,3 +54,12 @@ export const formatMstoDate = (ms: number) => {
 
    return { dayOfWeek, day, month, year, hours, minutes };
 };
+
+export const CountExpirationDate = (value: string) => {
+   const expired: Date = new Date(value);
+   const now: Date = new Date();
+   const remainingTime: number = expired.getTime() - now.getTime();
+   const day: number = 24 * 60 * 60 * 1000;
+   const formatDay: number = Math.floor(remainingTime / day);
+   return formatDay;
+}

@@ -23,7 +23,7 @@ export interface IProduct {
            name: string;
            _id: string;
         };
-   isSale: boolean;
+   isSale: any;
 }
 
 export type InputProduct = Omit<IProduct, '_id' | 'createAt' | 'commentId' | 'shipments'>;
