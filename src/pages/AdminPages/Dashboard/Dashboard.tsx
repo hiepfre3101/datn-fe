@@ -189,30 +189,54 @@ const Dashboard = () => {
          </div>
          <div className='w-full xl:flex gap-5 mt-4 items-center bg-white'>
             <div className='flex-1'>
-               <Title className=' text-center' level={2}>Sản phẩm có đánh giá tốt nhất</Title>
-               <div className='xl:flex justify-center gap-3'>
-                  <div>
-                     <h2>{statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.productName}</h2>
-                     <img className='w-[200px] h-[200px]' src={statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.image} alt="" />
+               <Title className=' text-center' level={4}>
+                  Sản phẩm có đánh giá tốt nhất
+               </Title>
+               <div className='flex justify-start gap-3 p-3'>
+                  <div className='rounded-lg  w-[150px] h-[150px]'>
+                     <img
+                        className=' rounded-lg object-cover'
+                        src={statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.image}
+                        alt=''
+                     />
                   </div>
                   <div>
+                     <h1 className='text-black'>
+                        {statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.productName}
+                     </h1>
                      <h1>Trung bình số sao</h1>
-                     <Rate allowHalf disabled defaultValue={statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.starCount} />
+                     <Rate
+                        allowHalf
+                        disabled
+                        defaultValue={statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.starCount}
+                     />
                      <span>{statisticData?.favoriteProductAndLessFavoriteProduct?.favoriteProduct.starCount}</span>
                   </div>
                </div>
             </div>
             <Divider type='vertical' className='h-[200px]' />
             <div className='flex-1'>
-               <Title className=' text-center' level={2}>Sản phẩm có đánh giá tệ nhất</Title>
-               <div  className='xl:flex justify-center gap-3'>
-                  <div>
-                     <h1>{statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.productName}</h1>
-                     <img className='w-[200px] h-[200px]' src={statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.image} alt="" />
+               <Title className=' text-center' level={4}>
+                  Sản phẩm có đánh giá tệ nhất
+               </Title>
+               <div className='flex justify-start gap-3 p-3'>
+                  <div className='rounded-lg  w-[150px] h-[150px]'>
+                     <img
+                        className='rounded-lg object-cover'
+                        src={statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.image}
+                        alt=''
+                     />
                   </div>
                   <div>
+                     <h1>{statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.productName}</h1>
                      <h2>Trung bình số sao</h2>
-                     <Rate allowHalf disabled defaultValue={statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.starCount} />
+                     <Rate
+                        allowHalf
+                        disabled
+                        defaultValue={
+                           statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.starCount
+                        }
+                     />
                      <span>{statisticData?.favoriteProductAndLessFavoriteProduct?.lessFavoriteProduct.starCount}</span>
                   </div>
                </div>

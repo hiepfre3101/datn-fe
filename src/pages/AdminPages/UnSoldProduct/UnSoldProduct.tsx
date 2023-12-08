@@ -35,7 +35,14 @@ const UnSoldProduct = () => {
                         pagination={{ pageSize: 5 }}
                         scroll={{ y: 1000, x: 800 }}
                      >
-                        <Column fixed='left' title='Sản phẩm' dataIndex='productName' key='productName' width={20} />
+                        <Column fixed='left' title='Sản phẩm' dataIndex='productName' key='productName' width={30} />
+                        <Column
+                           title='Ngày nhập kho thất thoát'
+                           width={40}
+                           render={(_, record: any) => {
+                              return <p>{record.createdAt}</p>;
+                           }}
+                        />
                         <Column
                            title='Ngày hết hạn'
                            width={40}

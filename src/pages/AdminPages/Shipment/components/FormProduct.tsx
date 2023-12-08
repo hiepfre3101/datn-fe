@@ -89,7 +89,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
                      setProductName(productSelected.productName!);
                      setIsSave(false);
                   }}
-                  disabled={productName !== '' || formProduct.getFieldValue('idProduct') != ''}
+                  disabled={productName !== '' || isSave === true}
                >
                   {products.map((product) => (
                      <Option key={product._id} value={product._id}>
