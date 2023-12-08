@@ -84,6 +84,14 @@ const userApi = createApi({
             credentials: 'include'
          }),
       }),
+      ChangePasswordPage: builder.mutation<IResponse<IUser>, object>({
+         query: (item) => ({
+            url: '/changePassword' ,
+            method: 'PATCH',
+            body: item,
+            credentials: 'include'
+         }),
+      }),
    })
 });
 
@@ -92,6 +100,7 @@ export const {
    useGetAllQuery,
    useGetOneQuery,
    useUpdateUserMutation,
+   useChangePasswordPageMutation,
    useRemoveUserMutation,
    useSendCodeToChangePasswordMutation,
    useChangePasswordMutation,

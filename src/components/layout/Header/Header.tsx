@@ -344,12 +344,20 @@ const Header = () => {
                                                       to='/userinformation'
                                                       className='flex items-center gap-[5px] py-[5px]'
                                                    >
-                                                      <LuUser2></LuUser2> Thông tin tài khoản
+                                                      <LuUser2></LuUser2> Hồ sơ của bạn
                                                    </Link>
                                                 </div>
+                                               
                                              </>
                                           )}
-
+                                                         <div>
+                                                   <Link
+                                                      to='/changePassword'
+                                                      className='flex items-center gap-[5px] py-[5px]'
+                                                   >
+                                                        <MdOutlineLockReset></MdOutlineLockReset> Đổi mật khẩu
+                                                   </Link>
+                                                </div>
                                           <div>
                                              <Link to='/orders' className='flex items-center gap-[5px] py-[5px]'>
                                                 <RiBillLine></RiBillLine> Lịch sử mua hàng
