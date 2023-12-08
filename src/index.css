@@ -13,7 +13,11 @@
 body {
    font-family: Quicksand;
    font-weight: 500;
+   height:100%;
    color: #6f6f6f;
+}
+html{
+   height:100%; 
 }
 input[type='number']::-webkit-inner-spin-button {
    -webkit-appearance: none;
