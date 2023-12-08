@@ -10,7 +10,7 @@ import { AiOutlineUserAdd } from 'react-icons/ai';
 import { useDispatch, useSelector } from 'react-redux';
 import { ICartItems, ICartSlice, removeFromCart, setItem } from '../../slices/cartSlice';
 import { Link, useNavigate } from 'react-router-dom';
-
+import NotificationSound from '../../assets/notification-sound.mp3';
 import { PiUserListBold } from 'react-icons/pi';
 import { RiBillLine } from 'react-icons/ri';
 import { MdOutlineLockReset } from 'react-icons/md';
@@ -54,6 +54,7 @@ const Footer = () => {
    const [updateNotification] = useUpdateNotificationMutation();
    const [deleteNotification] = useDeleteNotificationMutation();
    const [clearToken] = useClearTokenMutation();
+   const audioPlayer = useRef<HTMLAudioElement | null>(null);
    const navigate = useNavigate();
    const onHandleLogout = () => {
       dispatch(deleteTokenAndUser());
@@ -156,6 +157,9 @@ const Footer = () => {
    useEffect(() => {
       const handleUpdateChat = () => {
          if (auth?.user?.role == 'member') {
+            if (audioPlayer.current !== null) {
+               audioPlayer.current.play();
+            }
             refetch();
          }
       };
@@ -181,16 +185,16 @@ const Footer = () => {
    };
    const handleSubmitChat = async (e: React.FormEvent) => {
       e.preventDefault();
-      const data = {
-         roomChatId: auth.user?._id,
-         content: messages,
-         sender: 'client'
-      };
-      console.log(data);
-
-      await sendMessage(data);
-      const jsonData = JSON.stringify(data);
-      clientSocket.emit('ClientSendMessage', jsonData);
+      if (messages?.trim() != '') {
+         const data = {
+            roomChatId: auth.user?._id,
+            content: messages,
+            sender: 'client'
+         };
+         await sendMessage(data);
+         const jsonData = JSON.stringify(data);
+         clientSocket.emit('ClientSendMessage', jsonData);
+      }
       setMesssages('');
    };
    return (
@@ -238,7 +242,7 @@ const Footer = () => {
                      src={'https://res.cloudinary.com/diqyzhuc2/image/upload/v1700971559/logo_ssgtuy_1_dktoff.png'}
                      alt=''
                   />
-                  <span className='user-name text-black font-bold '>Tổng giám đốc Nam Lê</span>
+                  <span className='user-name text-black font-bold '>Admin - Fresh Mart</span>
                </div>
                <button type='button' onClick={() => setOpenChat(!openChat)}>
                   <MdOutlineCancel className='text-[#0A7CFF] text-[30px] mr-[10px]' />
@@ -858,6 +862,7 @@ const Footer = () => {
                      </li>
                   </ul>
                </div>
+               <audio ref={audioPlayer} src={NotificationSound} />
             </section>
          )}
       </>

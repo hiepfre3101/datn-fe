@@ -43,6 +43,7 @@ const CheckOutPage = () => {
    }, [auth.user._id]);
    const handleOk = () => {
       setIsModalOpen(false);
+      refetch()
       setError([]);
    };
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
@@ -98,33 +99,39 @@ const CheckOutPage = () => {
                   }
                });
          }
-         await refetch().then((res) => {
-            if (res?.data?.body?.errors as any) {
-               setIsModalOpen(true);
-               res.data &&
-                  res.data.body.errors.map((item: any) => {
-                     if (item.message == 'The remaining quantity is not enough!') {
-                        setError((prevError: string[]) => [
-                           ...prevError,
-                           '- Số lượng trong kho của sản phẩm' +
-                              item.productName +
-                              ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
-                        ]);
-                     } else if (item.message == 'Product is currently out of stock!') {
-                        setError((prevError: string[]) => [
-                           ...prevError,
-                           '- Sản phẩm' + item.productName + ' đã hết hàng'
-                        ]);
-                     } else if (item.message == 'Product is no longer available!') {
-                        setError((prevError: string[]) => [
-                           ...prevError,
-                           '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
-                        ]);
-                     }
-                  });
-            } else {
-               temp = status ? true : false;
-            }
+      
+         await refetch().unwrap().then((res) => {
+            res
+
+            temp = status == true?true:false
+       
+         }).catch(err => {
+            setIsModalOpen(true);
+            if (err?.data?.body?.errors as any) {
+               err.data.body.errors.map((item: any) => {
+      
+                  if (item.message == 'The remaining quantity is not enough!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Số lượng trong kho của sản phẩm ' +
+                           item.productName +
+                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng.'
+                     ]);
+                  } else if (item.message == 'Product is currently out of stock!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm ' + item.productName + ' đã hết hàng'
+                     ]);
+                  } else if (item.message == 'Product is no longer available!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
+                     ]);
+                  }
+               });
+            
+         }
+         temp =  false;  
          });
       } else {
          const cartLocal = {
@@ -137,10 +144,13 @@ const CheckOutPage = () => {
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
-         await checkCartLocal(cartLocal).then((res: any) => {
-            if (res.error) {
+         await checkCartLocal(cartLocal).unwrap().then(res=>{
+            res  
+            temp = true;
+         }).catch((err: any) => {
+            temp = false;
                setIsModalOpen(true);
-               res.error.data.body?.error.map((item: any) => {
+               err.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -197,9 +207,7 @@ const CheckOutPage = () => {
                      ]);
                   }
                });
-            } else {
-               temp = true;
-            }
+           
          });
       }
       return temp;
@@ -261,9 +269,7 @@ const CheckOutPage = () => {
                }
                if (voucher._id) {
                   data.code = voucher.code;
-               }
-               console.log(data);
-               
+               }  
                await handleAddOrder(data)
                   .unwrap()
                   .then((res) => {
@@ -276,7 +282,6 @@ const CheckOutPage = () => {
                      });
                      clientSocket.emit('purchase', value);
                      if (res.body.data.url === '') {
-                        console.log('success');
                         navigate('/ordercomplete');
                      } else {
                         window.location.href = res.body.data.url;
@@ -314,13 +319,13 @@ const CheckOutPage = () => {
       },
       {
          title: 'Thanh toán',
-         content: <OrderCheckOut loadingState={loadingState} methods={methods} onSubmit={onSubmit}></OrderCheckOut>
+         content: <OrderCheckOut loadingState={loadingState} methods={methods}  onSubmit={onSubmit}></OrderCheckOut>
       }
    ];
    const items = steps.map((item) => ({ key: item.title, title: item.title }));
    return (
       <>
-      {cart?.length>0? <div>
+      {cart?.products?.length>0? <div>
      <div className='main'>
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
@@ -376,7 +381,16 @@ const CheckOutPage = () => {
                </section>
             </FormProvider>
          </div>
-         <div>
+        
+     </div>: <section className='section-chekout lg:my-[100px] md:my-[80px] max-md:my-[60px] '>
+               <div className='cont  mx-auto flex-col px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
+                  <h1 className='text-red-500 text-[20px] max-sm:text-[16px] max-sm:text-center font-bold m-auto block mb-[10px]'>Bạn chưa có sản phẩm nào trong giỏ hàng</h1>
+                  <Link to={"/collections"} className='block bg-[#51A55C] text-white p-[10px] rounded-md m-auto'>
+                     <p>Tiếp  tục mua hàng</p>
+                  </Link>
+                  </div>  
+      </section>}
+      <div>
             <Modal
                title='Cập nhật lại giỏ hàng'
                open={isModalOpen}
@@ -393,16 +407,8 @@ const CheckOutPage = () => {
                })}
             </Modal>
          </div>
-     </div>: <section className='section-chekout lg:my-[100px] md:my-[80px] max-md:my-[60px] '>
-               <div className='cont  mx-auto flex-col px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
-                  <h1 className='text-red-500 text-[20px] max-sm:text-[16px] max-sm:text-center font-bold m-auto block mb-[10px]'>Bạn chưa có sản phẩm nào trong giỏ hàng</h1>
-                  <Link to={"/collections"} className='block bg-[#51A55C] text-white p-[10px] rounded-md m-auto'>
-                     <p>Tiếp  tục mua hàng</p>
-                  </Link>
-                  </div>  
-      </section>}
-    
       </>
+      
    );
 };
 export default CheckOutPage;
