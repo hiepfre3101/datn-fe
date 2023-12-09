@@ -134,11 +134,11 @@ const Dashboard = () => {
             <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
-                  value={statisticData?.salesRevenue}
+                  value={statisticData?.salesRevenueOfCurrentDay}
                   formatter={formatter as Formatter}
                   prefix={<span className='text-greenDashboard text-xl'>VND</span>}
                />
-               <span className='text-[#666666] font-bold text-xl'>Tổng doanh thu</span>
+               <span className='text-[#666666] font-bold text-xl'>Doanh thu hôm nay</span>
             </div>
             <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9]'>
                <Statistic
@@ -152,7 +152,7 @@ const Dashboard = () => {
             <div className='item p-2 flex justify-center items-center flex-col  xl:border-r-[2px] xl:border-[#e8e8e9] ]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
-                  value={statisticData?.averageTransactionPrice}
+                  value={statisticData?.averageTransactionPriceOfCurrentDay}
                   formatter={formatter as Formatter}
                   prefix={<span className='text-greenDashboard text-xl'>VND</span>}
                />
@@ -161,11 +161,11 @@ const Dashboard = () => {
             <div className='item p-2 flex justify-center items-center flex-col   ]'>
                <Statistic
                   valueStyle={{ color: '#6a8d92', fontSize: '30px' }}
-                  value={statisticData?.profit}
+                  value={statisticData?.profitOfCurrentDay}
                   formatter={formatter as Formatter}
                   prefix={<span className='text-greenDashboard text-xl'>VND</span>}
                />
-               <span className='text-[#666666] font-bold text-xl'>Tổng lợi nhuận</span>
+               <span className='text-[#666666] font-bold text-xl'>Lợi nhuận</span>
             </div>
          </div>
          <div className='mt-4'>
