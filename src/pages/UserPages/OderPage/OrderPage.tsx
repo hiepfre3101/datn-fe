@@ -139,24 +139,25 @@ const OrderPage = () => {
                         key='action'
                         render={(_: IOrderFull, record: IOrderFull) => (
                            <Space size='middle'>
-                              {record.status == 'chờ xác nhận' && record.status !== FAIL_ORDER.toLowerCase() && (
-                                 <Popconfirm
-                                    className={``}
-                                    description='Bạn chắc chắn muốn huỷ đơn hàng chứ?'
-                                    okText='Đồng ý'
-                                    cancelText='Hủy bỏ'
-                                    title='Bạn có muốn xóa?'
-                                    onConfirm={() => canceledOrder(record?._id)}
-                                 >
-                                    <Button
-                                       disabled={loadingCancel}
-                                       className='bg-red-500 text-white hover:!text-white hover:!border-none'
+                              {record.products.every((item) => item.isSale === false) &&
+                                 record.status === 'chờ xác nhận' &&
+                                 record.status !== FAIL_ORDER.toLowerCase() && (
+                                    <Popconfirm
+                                       className={``}
+                                       description='Bạn chắc chắn muốn huỷ đơn hàng chứ?'
+                                       okText='Đồng ý'
+                                       cancelText='Hủy bỏ'
+                                       title='Bạn có muốn xóa?'
+                                       onConfirm={() => canceledOrder(record?._id)}
                                     >
-                                       Huỷ đơn hàng
-                                    </Button>
-                                 </Popconfirm>
-                              )}
-
+                                       <Button
+                                          disabled={loadingCancel}
+                                          className='bg-red-500 text-white hover:!text-white hover:!border-none'
+                                       >
+                                          Huỷ đơn hàng
+                                       </Button>
+                                    </Popconfirm>
+                                 )}
                               <Link to={'/my-order/' + record?._id}>
                                  <Button className='bg-greenPrimary text-white hover:!text-white hover:!border-none'>
                                     Chi tiết

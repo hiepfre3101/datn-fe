@@ -166,7 +166,7 @@ const CheckOutPage = () => {
                      dispatch(updateNameProductInCartLocal({ id: item.productId, name: item.productName }));
                      setError((prevError: string[]) => [
                         ...prevError,
-                        '- Tên của sản phẩm ' + item.productName + ' đã được cập nhật thành ' + item.productName
+                        '- Tên của sản phẩm ' + item.invalid + ' đã được cập nhật thành ' + item.productName
                      ]);
                   } else if (item.message == 'Invalid price for product!') {
                      dispatch(updatePriceProductInCartLocal({ id: item.productId, price: item.price }));

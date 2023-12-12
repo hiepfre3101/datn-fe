@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { Modal, message } from 'antd';
 import { useCheckVoucherMutation, useGetVoucherUsefulMutation } from '../../../../services/voucher.service';
 import { IVoucher, remoteVoucher, saveVoucher } from '../../../../slices/voucherSlice';
+import {  formatStringToDate } from '../../../../helper';
 
 const CheckOut = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -133,7 +134,7 @@ const CheckOut = () => {
                   } else if (error.data.message == 'Orders are not satisfactory!') {
                      setError((prevError: string[]) => [
                         ...prevError,
-                        'Đơn hàng của bạn phải có tổng giá trị trên ' +
+                        'Đơn hàng của bạn phải có tổng giá trị trên' +
                            error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                      ]);
                      dispatch(remoteVoucher());
@@ -182,11 +183,21 @@ const CheckOut = () => {
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
-
-         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-         await checkCartLocal(cartLocal).then((res: any) => {
+         await checkCartLocal(cartLocal).then((res: any) => {     
+            console.log(res);
+            
             if (res.error) {
+
+       
                setIsModalOpen(true);
+               if(res.error.data.message.indexOf("must be a number")==1){                  
+                  setIsModalOpen(false);
+                  const number = parseInt(res.error.data.message.toString().split("[")[1]);
+                  console.log("Vào đây ");    
+                  
+                  dispatch(updateItem({ id: cartLocal.products[number]?.productId._id, weight: 0.5}));
+               }
+             
                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                res.error.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
@@ -200,11 +211,15 @@ const CheckOut = () => {
                         ...prevError,
                         '- Xuất sứ của sản phẩm ' + item.productName + ' đã được cập nhật'
                      ]);
-                  } else if (item.message == 'Invalid product name!') {
+                  } else if (item.message == 'Invalid product weight!') {
+                     setIsModalOpen(false);
+                     dispatch(updateItem({ id: item.productId, weight: 0.5}));
+                  } 
+                  else if (item.message == 'Invalid product name!') {
                      dispatch(updateNameProductInCartLocal({ id: item.productId, name: item.productName }));
                      setError((prevError: string[]) => [
                         ...prevError,
-                        '- Tên của sản phẩm ' + item.productName + ' đã được cập nhật thành ' + item.productName
+                        '- Tên của sản phẩm ' + item.invalid + ' đã được cập nhật thành ' + item.productName
                      ]);
                   } else if (item.message == 'Invalid price for product!') {
                      dispatch(updatePriceProductInCartLocal({ id: item.productId, price: item.price }));
@@ -460,14 +475,16 @@ const CheckOut = () => {
 
                                  {item.miniMumOrder > 0 && (
                                     <li>
-                                       Đơn hàng phải có giá trị trên
-                                       {item.miniMumOrder > 0 &&
+                                       Đơn hàng phải có giá trị trên {item.miniMumOrder > 0 &&
                                           item.miniMumOrder?.toLocaleString('vi-VN', {
                                              style: 'currency',
                                              currency: 'VND'
                                           })}
                                     </li>
                                  )}
+                                  <li>
+                                       Mã giảm giá có giá trị từ {formatStringToDate(item.dateStart)} đến {formatStringToDate(item.dateEnd)} 
+                                    </li>
                               </ul>
                               {item.active === false && (
                                  <span className='text-red-500'>*Bạn phải đăng nhập để sử dụng mã khuyễn mãi</span>

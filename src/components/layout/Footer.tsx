@@ -73,7 +73,6 @@ const Footer = () => {
          clientSocket.on('purchaseNotification', handlePurchaseNotification);
          clientSocket.on('statusNotification', handlePurchaseNotification);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
