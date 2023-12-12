@@ -62,7 +62,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
          const product = {
-            productName: data.productName,
+            productName: data?.productName,
             productId: data?._id,
             weight: 1
          };
@@ -73,7 +73,10 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                message.success('Thêm sản phẩm vào giỏ hàng thành công');
             })
             .catch((error) => {
-               error;
+               if(error.data.message=="Product not found"){
+                  message.error('Sản phẩm đã bị xoá khỏi hệ thống');
+                  return
+               }
                message.error('Số lượng vượt quá sản phẩm đang có trong kho');
             });
       } else {
@@ -156,7 +159,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                     </span>
                                  )}
                                     {item.isSale==true && (
-                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'>
+                              <span style={{top:item.discount > 0 || item.shipments.length == 0?"40px":"7px"}} className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'>
                                  Hàng thành lý
                               </span>
                                  )}

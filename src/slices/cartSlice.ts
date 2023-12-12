@@ -122,6 +122,7 @@ const cartSlice = createSlice({
          localStorage.setItem("cart", JSON.stringify(state.products));
       },
       updateItem: (state, action) => {
+         
          const nextCartproducts = state.products.map((cartItem: any) => {
             if (cartItem.productId._id === action.payload.id) {
                if (action.payload.weight >= 0) {

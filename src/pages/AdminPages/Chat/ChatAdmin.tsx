@@ -96,16 +96,16 @@ const ChatAdmin = () => {
                                           WebkitBoxOrient: 'vertical'
                                        }}
                                     >
-                                       {item.messages[item.messages.length - 1].sender == 'admin'
+                                       {item.messages[item.messages.length - 1]?.sender == 'admin'
                                           ? 'Bạn:' + item.messages[item.messages.length - 1].content.trim()
-                                          : item.messages[item.messages.length - 1].content.trim()}
+                                          :item.roomChatId.userName + ": " + item.messages[item.messages.length - 1]?.content.trim()}
                                     </div>
                                     <div className='flex items-center gap-x-[5px]'>
                                        <Badge
                                           color='red'
                                           count={
                                              item.messages.filter((item: any) => {
-                                                if (item.isRead == false && item.sender == 'client') {
+                                                if (item.isRead == false && item?.sender == 'client') {
                                                    return item;
                                                 }
                                              }).length
@@ -115,7 +115,7 @@ const ChatAdmin = () => {
                                        >
                                           <></>
                                        </Badge>
-                                       {formatStringToDate(item.messages[item.messages.length - 1].day)}
+                                       {formatStringToDate(item.messages[item.messages.length - 1]?.day)}
                                     </div>
                                  </p>
                               </div>
@@ -138,7 +138,7 @@ const ChatAdmin = () => {
                         {messagesInARoom?.body?.data.roomChatId.userName}
                      </span>
                   </div>
-                  <div className='content-right px-[10px] '>
+                  <div className='content-right px-[10px] pt-[10px]'>
                      <div className='list-chat overflow-scroll h-[480px] '>
                         {messagesInARoom?.body?.data.messages.map((item: any) => {
                            return (
