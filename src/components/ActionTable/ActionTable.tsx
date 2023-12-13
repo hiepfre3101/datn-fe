@@ -23,6 +23,8 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale, hasSal
    const handleSubmit = async (value: InputSaleProduct) => {
       try {
          await handleCreateSaleProduct(value);
+         notification.success({ message: 'Tạo sản phẩm thanh lý thành công' });
+         setOpenModal(false);
       } catch (error) {
          notification.error({ message: 'Lỗi hệ thống!' });
          console.log(error);
@@ -58,7 +60,6 @@ const ActionTable = ({ linkToUpdate, getResultConfirm, idProduct, isSale, hasSal
             </Popconfirm>
          </Tooltip>
 
-       
          {!hasSale && isSale && (
             <>
                <Tooltip title='Thanh lý sản phẩm'>

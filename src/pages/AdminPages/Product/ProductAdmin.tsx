@@ -161,7 +161,7 @@ const ProductAdmin = () => {
                         key='productName'
                         width={30}
                         render={(name, product: IProduct & { stock: number }) => (
-                           <div className='flex justify-start items-center gap-2'>
+                           <div className='flex flex-col gap-2 items-start'>
                               <span>{name}</span>
                               <span className='flex flex-col gap-1 items-center'>
                                  {!product.isSale && checkExpireProduct(product?._id) && (
@@ -171,7 +171,7 @@ const ProductAdmin = () => {
                                  )}
                                  {!product.isSale && product.stock <= 30 && (
                                     <Tooltip title='Lô hàng sản phẩm hiện tại sắp hết hàng'>
-                                       <Tag color='red'>sắp hết hàng</Tag>
+                                       <Tag color='red'>Sắp hết hàng</Tag>
                                     </Tooltip>
                                  )}
                               </span>
