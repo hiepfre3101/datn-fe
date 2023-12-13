@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import useFormProductInShipment from '../../../hooks/useFormProductInShipment';
 
 const AddShipment = () => {
-   const { data } = useGetAllWithoutExpandQuery({ limit: 3000 });
+   const { data } = useGetAllWithoutExpandQuery({ limit: 3000 }, { refetchOnMountOrArgChange: true });
    const [handleSubmit, { isLoading, isError }] = useAddShipmentMutation();
    const navigate = useNavigate();
    const { productDataSubmit, dataSubmitFactory, removeProduct } = useFormProductInShipment({});
