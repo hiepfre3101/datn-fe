@@ -21,7 +21,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
    const [totalWeight, setTotalWeight] = useState<number>();
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
-   const navigate = useNavigate()
+   const navigate = useNavigate();
    useEffect(() => {
       setTotalWeight(
          product_info[0]?.shipments?.reduce((accumulator: number, shipmentWeight: IShipmentOfProduct) => {
@@ -33,14 +33,13 @@ const QuickView = ({ product_info }: QuickViewProp) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
          if (value.endsWith('.') && !/\.\d+$/.test(value)) {
-            const count = value.split('.').length - 1
-            if(count<2){
+            const count = value.split('.').length - 1;
+            if (count < 2) {
                setinputWeight(value);
             }
-          
          } else {
-            if(isNaN(Number(e.target.value))){
-               setinputWeight(0.5)
+            if (isNaN(Number(e.target.value))) {
+               setinputWeight(0.5);
             }
             const rounded = Math.floor(Number(e.target.value));
             const result = Number(e.target.value) - rounded;
@@ -70,20 +69,20 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                productName: product_info[0]?.productName,
                weight: inputWeight
             };
-            await addCart(product).unwrap().then(res=>{
-               res
-               message.success('Thêm sản phẩm vào lô hàng thành công');
-            })
+            await addCart(product)
+               .unwrap()
+               .then((res) => {
+                  res;
+                  message.success('Thêm sản phẩm vào lô hàng thành công');
+               })
                .catch((err) => {
-                  if(err.data.message=="Product not found"){
+                  if (err.data.message == 'Product not found') {
                      message.error('Sản phẩm đã bị xoá khỏi hệ thống');
-                     navigate("/products/"+product_info[0]?._id)
-                     return
-                  }
-                 else if(err.data.message=='"weight" must be a number'){
+                     navigate('/products/' + product_info[0]?._id);
+                     return;
+                  } else if (err.data.message == '"weight" must be a number') {
                      message.error('Vui lòng nhập số');
-                  }
-                  else{
+                  } else {
                      message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có');
                   }
                });
@@ -100,7 +99,8 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                   originId: {
                      _id: product_info[0]?.originId._id,
                      name: product_info[0]?.originId.name
-                  }
+                  },
+                  isSale: product_info[0]?.isSale
                },
                weight: inputWeight,
                totalWeight: totalWeight
@@ -159,7 +159,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                         {product_info[0]?.productName}
                      </div>
                      <span className='product-origin text-[14px]'>
-                        Xuất sứ:   <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>  
+                        Xuất sứ: <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
                      </span>
                   </div>
                   {product_info[0]?.shipments.length > 0 && (
@@ -174,16 +174,19 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                               currency: 'VND'
                            })}
                            (/kg)
-                           {product_info[0]?.discount>0 &&<>
-                              <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                           {product_info[0]?.discount > 0 && (
+                              <>
+                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
                                     {product_info[0]?.price?.toLocaleString('vi-VN', {
                                        style: 'currency',
                                        currency: 'VND'
                                     })}
                                  </span>
-                                 <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>-{product_info[0].discount}%</div>
-                            </>
-                                 }
+                                 <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>
+                                    -{product_info[0].discount}%
+                                 </div>
+                              </>
+                           )}
                         </div>
                      </div>
                   )}
