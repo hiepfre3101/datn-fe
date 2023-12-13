@@ -34,8 +34,8 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    const [showfetch, setShowFetch] = useState(false);
    const { data: cartdb } = useGetCartQuery(undefined, { skip: showfetch == false });
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
-   const [haveIsSale,setHaveIsSale] = useState<boolean>(false)
-   const [confirm,setConfirm] = useState<boolean>(true)
+   const [haveIsSale, setHaveIsSale] = useState<boolean>(false);
+   const [confirm, setConfirm] = useState<boolean>(true);
    useEffect(() => {
       if (auth.user._id) {
          setShowFetch(true);
@@ -47,24 +47,15 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
    const [total, setTotal] = useState<number>();
    const [subtotal, setSubtotal] = useState<number>(0);
    useEffect(() => {
-      let temp=false
-      cart?.products.map((item:any)=>{
-         if(item.productId.isSale==true){
-            temp=true
-            
-         }else{
-            temp=false
-
-         }
-      })
-      if(temp){
-         setHaveIsSale(true) 
-         setConfirm(false) 
-      }else{
-         setHaveIsSale(false) 
-         setConfirm(true) 
+      // eslint-disable-next-line no-extra-boolean-cast
+      if (!!cart?.products.find((product: any) => product.productId.isSale === true)) {
+         setHaveIsSale(true);
+         setConfirm(false);
+      } else {
+         setHaveIsSale(false);
+         setConfirm(true);
       }
-   }, [cartdb,CartLocal]);
+   }, [cartdb, CartLocal]);
    useEffect(() => {
       const temp =
          auth.user._id && cart?.products
@@ -94,7 +85,10 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
          const temp =
             auth.user._id && cart?.products
                ? cart?.products.reduce(
-                    (accumulator: number, product: any) => accumulator + (product.productId.price-(product.productId.price * product.productId.discount/100)) * product.weight,
+                    (accumulator: number, product: any) =>
+                       accumulator +
+                       (product.productId.price - (product.productId.price * product.productId.discount) / 100) *
+                          product.weight,
                     0
                  )
                : cart?.totalPrice;
@@ -102,7 +96,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
       }
    }, [cart, voucher, subtotal]);
    console.log(haveIsSale);
-   
+
    return (
       <>
          <div className='order-checkout'>
@@ -129,7 +123,8 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                           to={'/products/' + item.productId._id}
                                           className='block font-bold text-[#333333]'
                                        >
-                                          {item.productId?.productName} {item.productId.isSale?"(Sản phẩm thanh lý)":""}
+                                          {item.productId?.productName}{' '}
+                                          {item.productId.isSale ? '(Sản phẩm thanh lý)' : ''}
                                        </Link>
                                        <span className='block font-bold mt-[2px]'>
                                           Xuất sứ: <span className='font-[500]'>{item.productId?.originId?.name}</span>
@@ -256,15 +251,25 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                         </form>
                      </div>
                   </div>
-                  {haveIsSale ==true &&  <div className='mt-[20px]'>
-                     <label className='flex items-center cursor-pointer'><input type="checkbox" onClick={()=>setConfirm(!confirm)}  className='h-[18px] w-[18px] mr-[10px] max-sm:w-[25px] max-sm:h-[25px]' />Đơn hàng có sản phẩm thanh lý sẽ không thể huỷ đơn hàng.</label>
-                  </div>}
-                  <div style={{backgroundColor:confirm==false?"gray":"#d2401e" }} className='wrap-btn-order-detail  mt-[28px] text-center text-[18px]  transition-colors duration-300 hover:bg-black   rounded-[50px] '>
+                  {haveIsSale == true && (
+                     <div className='mt-[20px]'>
+                        <label className='flex items-center cursor-pointer text-red-500'>
+                           <input
+                              type='checkbox'
+                              onClick={() => setConfirm(!confirm)}
+                              className='h-[18px] w-[18px] mr-[10px] max-sm:w-[25px] max-sm:h-[25px]'
+                           />
+                           Đơn hàng có sản phẩm thanh lý sẽ không thể huỷ đơn hàng.
+                        </label>
+                     </div>
+                  )}
+                  <div
+                     style={{ backgroundColor: confirm == false ? 'gray' : '#d2401e' }}
+                     className='wrap-btn-order-detail  mt-[28px] text-center text-[18px]  transition-colors duration-300 hover:bg-black   rounded-[50px] '
+                  >
                      <Button
-                        disabled={confirm==false ? true : false}
-                
+                        disabled={confirm == false ? true : false}
                         onClick={methods.handleSubmit((data) => {
-                  
                            onSubmit({ ...data, paymentMethod: PayValue, note: data.note ? data.note : '' });
                         })}
                         className='w-full h-full py-[12px] border-none hover:!text-white px-[30px] font-bold text-white'

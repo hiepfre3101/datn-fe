@@ -42,8 +42,8 @@ const UpdateProduct = () => {
       }
    };
    const [handleUpdateProduct, { isLoading, error }] = useUpdateProductMutation();
-   const { data } = useGetOneProductQuery(id!, { skip: !id });
-   const { data: categories } = useGetAllCateQuery({});
+   const { data } = useGetOneProductQuery(id!, { skip: !id, refetchOnMountOrArgChange: true });
+   const { data: categories } = useGetAllCateQuery({}, { refetchOnMountOrArgChange: true });
    useEffect(() => {
       (async () => {
          try {

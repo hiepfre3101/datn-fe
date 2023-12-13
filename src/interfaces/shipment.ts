@@ -2,7 +2,7 @@ import { Dayjs } from 'dayjs';
 import { IProduct } from './product';
 
 export interface IShipmentOfProduct {
-   idShipment: string;
+   idShipment: string ;
    weight: number;
    date: string;
    originPrice: string;
