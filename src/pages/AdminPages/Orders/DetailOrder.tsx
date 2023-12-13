@@ -154,11 +154,9 @@ const DetailOrder = ({ idOrder }: Props) => {
                   </span>
                </Col>
                <Col span={6}>
-                  {' '}
                   <span className='font-semibold'>{product.weight}(kg)</span>
                </Col>
                <Col span={6}>
-                  {' '}
                   <span className='font-semibold'>
                      {(Number(product.weight) * product.price).toLocaleString('vi-VN', {
                         style: 'currency',

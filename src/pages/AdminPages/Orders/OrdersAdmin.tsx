@@ -36,8 +36,8 @@ const OrdersAdmin = () => {
       return () => {};
    // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
-
    if (isLoading) return <Loading sreenSize='lg' />;
+
    return (
       <>
          <Helmet>
