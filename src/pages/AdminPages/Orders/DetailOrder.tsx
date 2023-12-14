@@ -51,6 +51,7 @@ const DetailOrder = ({ idOrder }: Props) => {
          }
       }
    },[order,subtotal])
+   console.log(order);
    
    const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
@@ -103,7 +104,7 @@ const DetailOrder = ({ idOrder }: Props) => {
                <h2 className='text-xl'>{order?.customerName}</h2>
                <span className='text-greenP500'>(#) {order?.invoiceId}</span>
             </div>
-            {statusOrder?.toLowerCase() == PENDING_ORDER.toLowerCase() ? (
+            {statusOrder?.toLowerCase() == PENDING_ORDER.toLowerCase() && order?.products.every((item) => item.isSale === false) ? (
                <Button size='large' type='text' className='bg-red-500 text-white mx-2' onClick={() => handleChangeStatus('đã hủy')}>Hủy đơn hàng</Button>
             ) : (
                <></>
@@ -133,15 +134,15 @@ const DetailOrder = ({ idOrder }: Props) => {
             <Col span={6}>
                <span className='text-sm font-semibold text-greenP500'>SỐ LƯỢNG</span>
             </Col>
+
             <Col span={6}>
-               {' '}
                <span className='text-sm font-semibold text-greenP500'>THÀNH TIỀN</span>
             </Col>
          </Row>
          {order?.products.map((product) => (
             <Row key={product._id}>
                <Col span={6}>
-                  <span className='font-semibold'>{product.productName}</span>
+                  <span className='font-semibold'>{product.productName} {product.isSale==true&&"(Sản phẩm thanh lý)"}</span>
                </Col>
                <Col span={6}>
                   <span className='font-semibold'>
@@ -153,11 +154,9 @@ const DetailOrder = ({ idOrder }: Props) => {
                   </span>
                </Col>
                <Col span={6}>
-                  {' '}
                   <span className='font-semibold'>{product.weight}(kg)</span>
                </Col>
                <Col span={6}>
-                  {' '}
                   <span className='font-semibold'>
                      {(Number(product.weight) * product.price).toLocaleString('vi-VN', {
                         style: 'currency',
@@ -172,6 +171,16 @@ const DetailOrder = ({ idOrder }: Props) => {
             <span className='text-sm font-semibold text-greenP500'>GHI CHÚ</span>
             <span className='text-sm max-w-[200px] text-wrap'>{order?.note}</span>
          </div>
+        {order?.voucher?.code!=null && <div className='flex flex-col items-start gap-[5px] mt-5'>
+            <span className='text-sm font-semibold text-greenP500'>Mã giảm giá</span>
+            <span className='text-sm w-full text-wrap'>{order?.voucher?.code}: Giảm {order?.voucher?.percent}% ({order?.voucher?.miniMumOrder>0?"Giá trị đơn hàng tối thiểu trên "+order?.voucher?.miniMumOrder.toLocaleString('vi-VN', {
+                     style: 'currency',
+                     currency: 'VND'
+                  }):""}) ({order?.voucher?.maxReduce>0?"Giảm tối đa: "+order?.voucher?.maxReduce.toLocaleString('vi-VN', {
+                     style: 'currency',
+                     currency: 'VND'
+                  }):""})</span>
+         </div>}
          {order?.voucher?.code &&  <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-10' align={'middle'}>
             <Col span={4}>
                <span className='text-sm  text-greenP800 font-bold'>Tính tạm:</span>

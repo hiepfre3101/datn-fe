@@ -8,7 +8,6 @@ type Props = {
 
 const useFormProductInShipment = ({ defaultProductData }: Props) => {
    const [productDataSubmit, setProductData] = useState<ProductInput[]>([]);
-   console.log(productDataSubmit);
    useEffect(() => {
       if (!defaultProductData) return;
       setProductData(defaultProductData!);

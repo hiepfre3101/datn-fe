@@ -114,7 +114,7 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
                         </div>
                         {item.isSale==true && <div className='price-box'>
                            <p className='price  flex items-center md:text-[16px] max-md:text-[14px]  text-gray-500'>
-                            Hạn sử dụng sẽ hết sau: {CountExpirationDate(item.shipments[0].date)} ngày
+                            Hạn sử dụng sẽ hết sau: {CountExpirationDate(item?.shipments[0]?.date)} ngày
                  
                            </p>
                         </div>}

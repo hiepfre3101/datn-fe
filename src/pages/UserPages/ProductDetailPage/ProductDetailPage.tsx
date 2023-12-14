@@ -1,14 +1,20 @@
 import '../../../css/productdetailpage.css';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useGetOneProductQuery, useGetRelatedProductsQuery } from '../../../services/product.service';
 import ProductDescriptionTab from './components/ProductDescriptionTab';
 import SlideBestProduct from '../HomePage/components/SlideBestProduct';
 import ProductInfo from './components/Productinfo';
+import { useEffect } from 'react';
 
 const ProductDetail = () => {
    const { id } = useParams();
-   const { data: oneProductData } = useGetOneProductQuery(id!, { skip: !id });
-
+   const { data: oneProductData,error } = useGetOneProductQuery(id!, { skip: !id });
+   const navigate =useNavigate()
+   useEffect(()=>{
+      if(error){
+         navigate("/notFound");
+      }
+   },[error])
    const objId = {
       idCategory: oneProductData?.body.data.categoryId._id,
       idProduct: id

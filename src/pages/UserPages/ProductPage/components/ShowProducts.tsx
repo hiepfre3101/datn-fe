@@ -2,7 +2,7 @@
 import { ConfigProvider, Rate, message } from 'antd';
 import { AiOutlineEye, AiOutlineHeart } from 'react-icons/ai';
 import { HiOutlineShoppingBag } from 'react-icons/hi2';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { addToWishList } from '../../../../slices/wishListSlice';
 import { IResponseHasPaginate } from '../../../../interfaces/base';
 import { IProduct, IProductExpanded } from '../../../../interfaces/product';
@@ -27,6 +27,7 @@ const ShowProducts = ({ data }: IProps) => {
    const add_to_wishList = (product: any) => {
       dispatch(addToWishList(product));
    };
+   const navigate = useNavigate();
    const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
       bodyElement?.classList.toggle('overflow-hidden');
@@ -54,10 +55,14 @@ const ShowProducts = ({ data }: IProps) => {
             .unwrap()
             .then((res) => {
                res;
-               message.success('Cập nhật sản phẩm thành công');
+               message.success('Thêm sản phẩm vào giỏ hàng thành công');
             })
             .catch((error) => {
-               error;
+               if (error.data.message == 'Product not found') {
+                  message.error('Sản phẩm đã bị xoá khỏi hệ thống');
+                  navigate('/collections');
+                  return;
+               }
                message.error('Số lượng vượt quá sản phẩm đang có trong kho');
             });
       } else {
@@ -76,7 +81,8 @@ const ShowProducts = ({ data }: IProps) => {
                originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
-               }
+               },
+               isSale: data?.isSale
             },
             weight: 1,
             totalWeight: totalWeight
@@ -84,8 +90,6 @@ const ShowProducts = ({ data }: IProps) => {
          dispatch(addItem(product));
       }
    };
-   console.log(data);
-   
    return (
       <div>
          <div className='list-products grid xl:grid-cols-3 pt-[30px] lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-2 max-sm:grid-cols-2  max-md:gap-[12px]'>
@@ -99,14 +103,16 @@ const ShowProducts = ({ data }: IProps) => {
                                  {item.discount + '%'}
                               </span>
                            )}
-                        
                            {item.shipments.length <= 0 && (
                               <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
                                  Hết hàng
                               </span>
                            )}
-                              {item.isSale==true && (
-                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'>
+                           {item.isSale == true && (
+                              <span
+                                 style={{ top: item.discount > 0 || item.shipments.length == 0 ? '40px' : '7px' }}
+                                 className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px]'
+                              >
                                  Hàng thành lý
                               </span>
                            )}
@@ -151,37 +157,50 @@ const ShowProducts = ({ data }: IProps) => {
                               }}
                            >
                               <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
-                                 {item?.productName} 
-                                 <p className='text-[14px]'>{item.isSale==true?"HSD: còn "+ CountExpirationDate(item?.shipments[0]?.date)+ " ngày":""}</p>
+                                 {item?.productName}
+                                 <p className='text-[14px]'>
+                                    {item.isSale == true
+                                       ? 'HSD: còn ' + CountExpirationDate(item?.shipments[0]?.date) + ' ngày'
+                                       : ''}
+                                 </p>
                               </p>
                            </Link>
-                     <div className=''>
-                           <div className='rate text-center '>
-                              <ConfigProvider
-                                 theme={{
-                                    token: {
-                                       controlHeightLG: 34
-                                    }
-                                 }}
-                              >
-                                 <Rate allowHalf disabled defaultValue={item.evaluated.reduce((current, evaluation) => current += evaluation.evaluatedId.rate  , 0) / item.evaluated.length} />
-                              </ConfigProvider>
+                           <div className=''>
+                              <div className='rate text-center '>
+                                 <ConfigProvider
+                                    theme={{
+                                       token: {
+                                          controlHeightLG: 34
+                                       }
+                                    }}
+                                 >
+                                    <Rate
+                                       allowHalf
+                                       disabled
+                                       defaultValue={
+                                          item.evaluated.reduce(
+                                             (current, evaluation) => (current += evaluation.evaluatedId.rate),
+                                             0
+                                          ) / item.evaluated.length
+                                       }
+                                    />
+                                 </ConfigProvider>
+                              </div>
+                              <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
+                                 {(item?.price - (item?.price * item.discount) / 100).toLocaleString('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                 })}
+                                 {item.discount > 0 && (
+                                    <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                       {item?.price?.toLocaleString('vi-VN', {
+                                          style: 'currency',
+                                          currency: 'VND'
+                                       })}
+                                    </span>
+                                 )}
+                              </p>
                            </div>
-                           <p className='price mt-[9px] flex items-center justify-center  text-center font-bold md:mb-[20px] max-md:mb-[10px] md:text-[18px]  text-[#7aa32a]'>
-                              {(item?.price - (item?.price * item.discount) / 100).toLocaleString('vi-VN', {
-                                 style: 'currency',
-                                 currency: 'VND'
-                              })}
-                              {item.discount > 0 && (
-                                 <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                    {item?.price?.toLocaleString('vi-VN', {
-                                       style: 'currency',
-                                       currency: 'VND'
-                                    })}
-                                 </span>
-                              )}
-                           </p>
-                     </div>
                         </div>
                      </div>
                   </>

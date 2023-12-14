@@ -6,42 +6,42 @@ import ShowProducts from './components/ShowProducts';
 import { useGetAllExpandQuery } from '../../../services/product.service';
 import { IProductExpanded } from '../../../interfaces/product';
 import { IResponseHasPaginate } from '../../../interfaces/base';
-import { Link,useLocation  } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 export interface IFilterFieldProductPage {
    field: {
       page: number;
       minPrice?: number;
       maxPrice?: number;
-      category: string|null;
+      category: string | null;
       origin?: string;
       maxPriceOfAllProducts?: number;
       minPriceOfAllProducts?: number;
       sort?: string;
       order?: 'asc' | 'desc';
-      isSale?:any;
+      isSale?: any;
    };
    setfield?: (value: IFilterFieldProductPage) => void;
 }
-export interface ISort{
+export interface ISort {
    sort?: string;
    order?: 'asc' | 'desc';
 }
 export const FilterFieldContext = createContext<IFilterFieldProductPage>({
-   field: { page: 1,category:"" }
+   field: { page: 1, category: '' }
 });
 
 const ProductPage = () => {
-   const location  = useLocation()
+   const location = useLocation();
    const searchParams = new URLSearchParams(location.search);
-   const cate_id = searchParams.get('cate_id')!=null?searchParams.get('cate_id'):"";
+   const cate_id = searchParams.get('cate_id') != null ? searchParams.get('cate_id') : '';
    const [filter, setFilter] = useState<IFilterFieldProductPage>({
-      field: { page: 1,category:cate_id },
+      field: { page: 1, category: cate_id },
       setfield: (value: IFilterFieldProductPage) => {
          setFilter(value);
       }
    });
    const [products, setProduct] = useState<IResponseHasPaginate<IProductExpanded>>();
-   const [SortState, setSortState] = useState<ISort|undefined>();
+   const [SortState, setSortState] = useState<ISort | undefined>();
    const [isSaleState, setIsSaleState] = useState<any>(true);
    const { data } = useGetAllExpandQuery({
       expand: true,
@@ -53,58 +53,55 @@ const ProductPage = () => {
       originId: filter.field.origin,
       sort: filter.field.sort,
       order: filter.field.order,
-      isSale:isSaleState==true?  filter.field.isSale:""
+      isSale: isSaleState == true ? filter.field.isSale : ''
    });
-console.log(products);
 
-   
-   useEffect(()=>{
-      if (filter.setfield) {
-         filter.setfield({
-           ...filter,
-           field: {
-             ...filter.field,
-             category: cate_id,
-            
-           },
-         });
-       }  
-   },[cate_id])
-   useEffect(()=>{
-      setIsSaleState(false)
-      if (filter.setfield) {
-         filter.setfield({
-           ...filter,
-           field: {
-             ...filter.field,
-             sort: SortState?.sort,
-            order: SortState?.order,
-           },
-         });
-       }  
-   },[SortState])
-   useEffect(()=>{
-      if (filter.setfield) {
-         filter.setfield({
-           ...filter,
-           field: {
-             ...filter.field,
-             isSale: isSaleState,
-           },
-         });
-       }  
-   },[isSaleState])
    useEffect(() => {
-      if(data?.body.data.length==0){
-        if(filter.setfield){
+      if (filter.setfield) {
          filter.setfield({
             ...filter,
             field: {
-              ...filter.field,
-              page: 1,
-            },
-          });
-        }
+               ...filter.field,
+               category: cate_id
+            }
+         });
+      }
+   }, [cate_id]);
+   useEffect(() => {
+      setIsSaleState(false);
+      if (filter.setfield) {
+         filter.setfield({
+            ...filter,
+            field: {
+               ...filter.field,
+               sort: SortState?.sort,
+               order: SortState?.order
+            }
+         });
+      }
+   }, [SortState]);
+   useEffect(() => {
+      if (filter.setfield) {
+         filter.setfield({
+            ...filter,
+            field: {
+               ...filter.field,
+               isSale: isSaleState
+            }
+         });
+      }
+   }, [isSaleState]);
+   useEffect(() => {
+      if (data?.body.data.length == 0) {
+         if (filter.setfield) {
+            filter.setfield({
+               ...filter,
+               field: {
+                  ...filter.field,
+                  page: 1
+               }
+            });
+         }
       }
       setProduct(data);
       setFilter((prevFilter) => ({
@@ -117,10 +114,10 @@ console.log(products);
       }));
    }, [data]);
 
-   const handleChangeSortState = (sort?:string,order?: 'asc' | 'desc') => {
-      setSortState({sort:sort,order:order});
+   const handleChangeSortState = (sort?: string, order?: 'asc' | 'desc') => {
+      setSortState({ sort: sort, order: order });
    };
-   const handleChangeIsSaleState = (value:boolean) => {
+   const handleChangeIsSaleState = (value: boolean) => {
       setIsSaleState(value);
    };
    const handlePageChange = (pageNumber: number) => {
@@ -139,7 +136,7 @@ console.log(products);
                <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                   <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                      <span>
-                        <Link to="/">Trang chủ</Link> / Sản phẩm
+                        <Link to='/'>Trang chủ</Link> / Sản phẩm
                      </span>
                   </div>
                </section>

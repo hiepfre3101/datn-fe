@@ -9,6 +9,7 @@ export interface IProductOrder {
    price: number;
    productId: string;
    evaluation: boolean;
+   isSale: boolean;
 }
 export interface IOrder {
    customerName: string;
@@ -44,6 +45,7 @@ export type IOrderFull = {
    createdAt: string;
    invoiceId: string;
    paymentMethod: 'cod' | 'vnpay';
+
    voucher?:{
       code:string;
       miniMumOrder:number;

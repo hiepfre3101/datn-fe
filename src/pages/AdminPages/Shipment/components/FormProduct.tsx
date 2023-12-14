@@ -20,7 +20,6 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
    const [isSave, setIsSave] = useState<boolean>(false);
    const [formProduct] = useForm<ProductInput>();
    const [productName, setProductName] = useState<string>('');
-   console.log(productName);
    const checkDuplicateItemInArray = (idProduct: string) => {
       return productData.filter((item) => item.idProduct === idProduct);
    };
@@ -34,6 +33,7 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
       }
       const newData = { ...data, date: data.date.toString(), productName };
       setIsSave(true);
+      setProductName(productName);
       submitProduct(newData);
    };
    useEffect(() => {
@@ -43,7 +43,11 @@ const FormProduct = ({ products, submitProduct, data, removeProduct, productData
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [data]);
-
+   useEffect(() => {
+      const currIdProduct = formProduct.getFieldValue('idProduct');
+      setProductName(products.find((product) => product._id === currIdProduct)?.productName || '');
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [products, isSave]);
    useEffect(() => {
       if (isSave === true || data.idProduct === '') return;
       const timeId = setTimeout(() => {

@@ -121,21 +121,27 @@ const ProductsInCart = () => {
          }
          if (/^[\d.]+$/.test(e.target.value)) {
             const value = e.target.value;
-            if (Number(value) <= maxWeight) {
+            if (Number(value) <= maxWeight ) {
                if (value.endsWith('.') && !/\.\d+$/.test(value)) {
                   dispatch(updateItem({ id: id, weight: value }));
                } else {
-                  const rounded = Math.floor(Number(e.target.value));
-                  const result = Number(e.target.value) - rounded;
-                  if (result >= 0.5) {
-                     dispatch(updateItem({ id: id, weight: rounded + 0.5 }));
-                  } else {
-                     dispatch(updateItem({ id: id, weight: rounded }));
+                  if(e.target.value!=""){
+                     const rounded = Math.floor(Number(e.target.value));
+                     const result = Number(e.target.value) - rounded;
+                     if (result >= 0.5) {
+                        dispatch(updateItem({ id: id, weight: rounded + 0.5 }));
+                     } else {
+                        dispatch(updateItem({ id: id, weight: rounded }));
+                     }
                   }
+                 
                }
             }
          } else {
-            dispatch(updateItem({ id: id, weight: Number(e.target.value.replace(/\./g, ',')) }));
+            if (e.target.value != '' && !e.target.value.endsWith('.')) {              
+               dispatch(updateItem({ id: id, weight: Number(e.target.value.replace(/\./g, ',')) }));
+            }
+           
          }
       }
    };
@@ -160,7 +166,6 @@ const ProductsInCart = () => {
          message.success('Xoá giỏ hàng thành công');
       }
    };
-   console.log(cart?.length);
 
    return (
       <div>

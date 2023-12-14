@@ -8,25 +8,30 @@ import { useEffect, useState } from 'react';
 import { IProductInfoProp } from '../../../../interfaces/product';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
 import { AiOutlineHeart } from 'react-icons/ai';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { addToWishList } from '../../../../slices/wishListSlice';
 import { FcLike } from 'react-icons/fc';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
-   console.log(product_info);
-
    const [inputWeight, setinputWeight] = useState<any>(0.5);
    const [totalWeight, setTotalWeight] = useState<number>(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
+   const navigate = useNavigate();
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
          const value = e.target.value;
          if (value.endsWith('.') && !/\.\d+$/.test(value)) {
-            setinputWeight(value);
+            const count = value.split('.').length - 1;
+            if (count < 2) {
+               setinputWeight(value);
+            }
          } else {
+            if (isNaN(Number(e.target.value))) {
+               setinputWeight(0.5);
+            }
             const rounded = Math.floor(Number(e.target.value));
             const result = Number(e.target.value) - rounded;
             if (result >= 0.5) {
@@ -52,7 +57,7 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    }, [product_info]);
    const dispatch = useDispatch();
    const add_to_cart = async () => {
-      if (inputWeight === '' || inputWeight === '0') {
+      if (inputWeight === '' || inputWeight === 0 || inputWeight.toString().endsWith('.')) {
          message.warning('Vui lòng nhập đúng định dạng số lượng');
          return;
       }
@@ -63,13 +68,22 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                productName: product_info?.productName,
                weight: inputWeight
             };
-            await addCart(product).unwrap().then(res=>{
-               res
-               message.success('Thêm sản phẩm vào lô hàng thành công');
-            })
+            await addCart(product)
+               .unwrap()
+               .then((res) => {
+                  res;
+                  message.success('Thêm sản phẩm vào lô hàng thành công');
+               })
                .catch((err) => {
-                  err;
-                  message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có');
+                  if (err.data.message == 'Product not found') {
+                     message.error('Sản phẩm đã bị xoá khỏi hệ thống');
+                     navigate('/products/' + product_info?._id);
+                     return;
+                  } else if (err.data.message == '"weight" must be a number') {
+                     message.error('Vui lòng nhập số');
+                  } else {
+                     message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có');
+                  }
                });
          } else {
             const product = {
@@ -84,7 +98,8 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                   originId: {
                      _id: product_info?.originId._id,
                      name: product_info?.originId.name
-                  }
+                  },
+                  isSale: product_info?.isSale
                },
                weight: inputWeight,
                totalWeight: totalWeight
@@ -108,11 +123,11 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
       dispatch(addToWishList(product));
    };
    const dec = () => {
-      setinputWeight(inputWeight + 0.5);
+      setinputWeight(Number(inputWeight) + 0.5);
    };
    const inc = () => {
       if (inputWeight > 0.5) {
-         setinputWeight(inputWeight - 0.5);
+         setinputWeight(Number(inputWeight) - 0.5);
       }
    };
    const isAdded = useSelector((state: any) =>
@@ -163,16 +178,19 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                                  style: 'currency',
                                  currency: 'VND'
                               })}
-                            {product_info?.discount>0 &&<>
-                              <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
-                                    {product_info?.price?.toLocaleString('vi-VN', {
-                                       style: 'currency',
-                                       currency: 'VND'
-                                    })}
-                                 </span>
-                                 <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>-{product_info.discount}%</div>
-                            </>
-                                 }
+                              {product_info?.discount > 0 && (
+                                 <>
+                                    <span className='discount-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                                       {product_info?.price?.toLocaleString('vi-VN', {
+                                          style: 'currency',
+                                          currency: 'VND'
+                                       })}
+                                    </span>
+                                    <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>
+                                       -{product_info.discount}%
+                                    </div>
+                                 </>
+                              )}
                            </div>
                         ) : (
                            ''
@@ -229,7 +247,6 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                                  <button
                                     type='button'
                                     onClick={add_to_cart}
-                                    disabled={inputWeight <= 0}
                                     className={`${
                                        inputWeight <= 0 ? 'before:bg-gray-300' : ''
                                     } btn-add-cart py-[12px] text-[#333333] w-full transition-colors duration-300 z-[3] before:z-[-1] px-[30px] text-center rounded-[5px] group-hover/btn-add-cart:text-white font-bold bg-[#333333] border-[2px] border-[#333333] before-content-[""] before:absolute relative before:w-full before:h-full overflow-hidden before:bg-white before:transition-all before:duration-300 before:group-hover/btn-add-cart:scale-y-[0] before:origin-right   before:right-0 before:left-[0px] before:top-0`}

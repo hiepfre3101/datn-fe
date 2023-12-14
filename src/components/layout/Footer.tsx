@@ -73,7 +73,6 @@ const Footer = () => {
          clientSocket.on('purchaseNotification', handlePurchaseNotification);
          clientSocket.on('statusNotification', handlePurchaseNotification);
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
       const mini_cart_overlay = document.querySelector('.mini-cart-overlay');
@@ -234,7 +233,7 @@ const Footer = () => {
             style={{
                display: openChat == true ? 'block' : 'none'
             }}
-            className='chat max-sm:max-w-[316px] max-sm:bottom-[71px] max-md:right-[3px] max-w-[350px] rounded-t-md fixed bottom-[0px] right-[100px] shadow-[0_12px_28px_0_rgba(0,0,0,0.1)] z-[8] bg-white h-[455px]'
+            className='chat max-sm:max-w-[316px] max-sm:bottom-[71px] max-md:right-[3px] max-w-[450px] min-w-[300px] rounded-t-md fixed bottom-[0px] right-[100px] shadow-[0_12px_28px_0_rgba(0,0,0,0.1)] z-[8] bg-white h-[455px]'
          >
             <div className='header-right justify-between rounded-t-md mb-[10px] bg-white  sticky top-[0] pl-[10px] flex items-center  shadow-[0_0_4px_rgba(0,0,0,0.2)] py-[5px]'>
                <div className='user ifo flex items-center gap-x-[10px]'>
@@ -793,11 +792,16 @@ const Footer = () => {
                   )}
                   {auth.accessToken && (
                      <>
-                        {auth.user.role=="admin" && <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
-                           <Link to='/manage' className='flex items-center gap-[5px] py-[5px]'>
-                              <PiUserListBold></PiUserListBold> Quản lý cửa hàng
-                           </Link>
-                        </li>}
+                        {auth.user.role == 'admin' && (
+                           <li
+                              onClick={showUserTag}
+                              className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'
+                           >
+                              <Link to='/manage' className='flex items-center gap-[5px] py-[5px]'>
+                                 <PiUserListBold></PiUserListBold> Quản lý cửa hàng
+                              </Link>
+                           </li>
+                        )}
                         <li onClick={showUserTag} className='px-[15px] py-[10px] hover:bg-[#51A55C] hover:text-white'>
                            <Link to='/userInformation' className='flex items-center gap-[5px] py-[5px]'>
                               <LuUser2></LuUser2> Hồ sơ của bạn

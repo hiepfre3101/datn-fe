@@ -62,7 +62,7 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
          const product = {
-            productName: data.productName,
+            productName: data?.productName,
             productId: data?._id,
             weight: 1
          };
@@ -73,7 +73,10 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                message.success('Thêm sản phẩm vào giỏ hàng thành công');
             })
             .catch((error) => {
-               error;
+               if (error.data.message == 'Product not found') {
+                  message.error('Sản phẩm đã bị xoá khỏi hệ thống');
+                  return;
+               }
                message.error('Số lượng vượt quá sản phẩm đang có trong kho');
             });
       } else {
@@ -89,7 +92,8 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                originId: {
                   _id: data?.originId._id,
                   name: data?.originId.name
-               }
+               },
+               isSale: data?.isSale
             },
             weight: 1,
             totalWeight: totalWeight
@@ -149,16 +153,19 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                        {item.discount + '%'}
                                     </span>
                                  )}
-                            
+
                                  {item.shipments.length <= 0 && (
                                     <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-red-500 min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[7px]'>
                                        Hết hàng
                                     </span>
                                  )}
-                                    {item.isSale==true && (
-                              <span className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'>
-                                 Hàng thành lý
-                              </span>
+                                 {item.isSale == true && (
+                                    <span
+                                       style={{ top: item.discount > 0 || item.shipments.length == 0 ? '40px' : '7px' }}
+                                       className='discount z-[1] transition-all duration-300 group-hover/product-wrap:translate-x-[-115%] bg-[#2981e1] min-w-[40px] text-center absolute rounded-[3px] py-[5px] px-[10px] text-[12px] text-white left-[7px] top-[40px]'
+                                    >
+                                       Hàng thành lý
+                                    </span>
                                  )}
                                  <div className='wrap-product-img overflow-hidden xl:relative max-xl:text-center '>
                                     <div className='xl:relative product-img   after:absolute after:top-0 after:left-0 after:right-0 after:bottom-0 bg-[#ffffff] after:opacity-0 after:invisible transition-all duration-300 group-hover/product-wrap:visible xl:group-hover/product-wrap:opacity-[0.4] max-xl:group-hover/product-wrap:opacity-[0.5] '>
@@ -197,7 +204,11 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                                  <Link to={'/products/' + item._id}>
                                     <p className='product-name font-bold md:mt-[10px] text-center md:text-[18px] max-md:text-[16px] line-clamp-2 break-words hover:text-[#51A55C]'>
                                        <Link to={'/products/' + item._id}>{item?.productName}</Link>
-                                       <p className='text-[14px]'>{item.isSale==true?"HSD: còn "+ CountExpirationDate(item?.shipments[0]?.date)+ " ngày":""}</p>
+                                       <p className='text-[14px]'>
+                                          {item.isSale == true
+                                             ? 'HSD: còn ' + CountExpirationDate(item?.shipments[0]?.date) + ' ngày'
+                                             : ''}
+                                       </p>
                                     </p>
                                  </Link>
                                  <div className='rate text-center'>
