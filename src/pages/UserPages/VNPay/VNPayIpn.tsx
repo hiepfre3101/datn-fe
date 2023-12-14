@@ -2,6 +2,7 @@ import { Button } from "antd";
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { baseUrl } from "../../../constants/baseUrl";
+import Loading from "../../../components/Loading/Loading";
 
 function VNPayIpn() {
     const [sucess, setSuccess] = useState<boolean>(false)
@@ -48,7 +49,7 @@ function VNPayIpn() {
         // Sử dụng đối tượng urlVariables theo cách bạn muốn
     }, [location]);
     return (
-        sucess && (
+        sucess ? (
             <div className="min-h-screen flex items-center justify-center bg-gray-100 py-15">
                 <div className="bg-white p-6 rounded-lg shadow-md max-w-md w-full space-y-4">
                     <h1 className="text-2xl font-semibold text-gray-800">VNPAY Response</h1>
@@ -89,6 +90,12 @@ function VNPayIpn() {
                 </div>
             </div>
         )
+            :
+            (
+                <div className='h-screen flex items-center justify-center'>
+                    <Loading sreenSize='lg' />
+                </div>
+            )
     );
 }
 
