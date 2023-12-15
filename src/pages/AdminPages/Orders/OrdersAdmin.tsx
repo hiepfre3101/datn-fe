@@ -34,8 +34,31 @@ const OrdersAdmin = () => {
       adminSocket.on('purchaseNotification', () => refetch());
       adminSocket.on('adminStatusNotification', () => refetch());
       return () => {};
-   // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
+   // useEffect(() => {
+   //    console.log(data?.body?.data);
+
+   //    if (data?.body?.data) {
+   //       const temp = data?.body?.data?.map(item => {
+   //          item.
+   //          const shipment = item.products;
+   //          return shipment.shipmentId.reduce((cal, product) => {
+   //            if (product.productId === item.productId) {
+   //              cal += product.originPrice;
+   //            }
+   //            return cal;
+   //          }, 0);
+   //        });
+   //        setProfit(temp);
+   //    }else{
+   //       console.log("méo có");
+
+   //    }
+
+   // },[orders,data])
+   console.log(data);
+
    if (isLoading) return <Loading sreenSize='lg' />;
 
    return (
@@ -124,6 +147,55 @@ const OrdersAdmin = () => {
                      />
                      <Column
                         align='center'
+                        width={150}
+                        title='Lợi nhuận'
+                        dataIndex='profit'
+                        key='profit'
+                        render={(_: IOrderFull, record: IOrderFull) => (
+                           <Space size='middle'>
+                              <span>
+                                 {record?.products.reduce((cal: number, item: any,) => {
+                                    const id_Product = item.productId;
+                                    const weight = item.weight;
+                                    const price = item.price;
+                                    const voucher = record.voucher
+                                    const sum = item.shipmentId.products.reduce((total: number, item: any) => {
+                                       if (item.idProduct == id_Product) {
+                                          
+                                          let result = price * weight - item.originPrice * weight;
+                                          if(weight==19){
+                                             console.log(result);
+                                             
+                                          }
+                                          if(weight==31){
+                                             console.log(result);
+                                             
+                                          }
+                                          if(voucher?.code != null){
+                                             if(voucher.maxReduce){
+                                                if(voucher.maxReduce < result  ){
+                                                   result = result - (voucher.maxReduce/record.products.length)                                                   
+                                                }
+                                                else{
+                                                   result = result - (result - voucher.percent/100)
+                                                }
+                                             }else{
+                                                result = result - (result - voucher.percent/100)
+                                             }
+                                          }
+                                          return total + Number(result);
+                                       }
+                                       return total
+                                    },0);
+
+                                    return sum + cal;
+                                 }, 0)}
+                              </span>
+                           </Space>
+                        )}
+                     />
+                     <Column
+                        align='center'
                         width={200}
                         title='Phương thức thanh toán'
                         dataIndex='paymentMethod'
@@ -132,9 +204,14 @@ const OrdersAdmin = () => {
                            <Space size='middle'>
                               <Tag
                                  className={` py-2 px-3 text-white border-none`}
-                                 style={{ background: record.paymentMethod === 'vnpay' ? 'linear-gradient(rgb(0, 161, 230), rgb(0, 82, 205))' : '#45bd62' }}
+                                 style={{
+                                    background:
+                                       record.paymentMethod === 'vnpay'
+                                          ? 'linear-gradient(rgb(0, 161, 230), rgb(0, 82, 205))'
+                                          : '#45bd62'
+                                 }}
                               >
-                                 {record.paymentMethod === 'vnpay' ? 'Thanh toán vnpay' : "Thánh toán khi nhận hàng"}
+                                 {record.paymentMethod === 'vnpay' ? 'Thanh toán vnpay' : 'Thánh toán khi nhận hàng'}
                               </Tag>
                            </Space>
                         )}
@@ -149,9 +226,13 @@ const OrdersAdmin = () => {
                            <Space size='middle'>
                               <Tag
                                  className={` py-2 px-3 text-white border-none`}
-                                 style={{ background: record.pay ? 'linear-gradient(rgb(0, 82, 205), rgb(0, 161, 230))' : '#f7b928' }}
+                                 style={{
+                                    background: record.pay
+                                       ? 'linear-gradient(rgb(0, 82, 205), rgb(0, 161, 230))'
+                                       : '#f7b928'
+                                 }}
                               >
-                                 {record.pay  ? 'Đã thanh toán' : "Chưa thanh toán"}
+                                 {record.pay ? 'Đã thanh toán' : 'Chưa thanh toán'}
                               </Tag>
                            </Space>
                         )}

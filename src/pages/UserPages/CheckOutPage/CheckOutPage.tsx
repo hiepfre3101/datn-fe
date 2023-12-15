@@ -43,8 +43,9 @@ const CheckOutPage = () => {
    }, [auth.user._id]);
    const handleOk = () => {
       setIsModalOpen(false);
-      refetch()
       setError([]);
+      refetch()
+
    };
    const CartLocal = useSelector((state: { cart: ICartSlice }) => state?.cart);
    const cart = auth.user._id ? cartdb?.body.data : CartLocal;
@@ -89,7 +90,14 @@ const CheckOutPage = () => {
                   } else if (error.data.message == 'Voucher is out of date') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết hạn']);
                      dispatch(remoteVoucher());
-                  } else if (error.data.message == 'Orders are not satisfactory!') {
+                  } 
+                  else if (
+                     error.data.message == 'Sorry, this voucher is not yet available for use!'
+                  ) {
+                     setError((prevError: string[]) => [...prevError, 'Bạn đã dùng mã giảm giá này trước đó']);
+                     dispatch(remoteVoucher());
+                  }
+                  else if (error.data.message == 'Orders are not satisfactory!') {
                      setError((prevError: string[]) => [
                         ...prevError,
                         'Đơn hàng của bạn phải có tổng giá trị trên ' +

@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddEvaluationMutation } from '../../../../services/evaluation.service';
 import { IEvaluation } from '../../../../interfaces/evaluation';
+import { Link } from 'react-router-dom';
 
 type Props = {
    product: IProductOrder;
@@ -35,8 +36,10 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
       refetch();
       setIsOpen(false);
    };
+
    return (
-      <div className='one-product flex justify-between items-center w-full flex-wrap'>
+ <Link to={"/products/"+ product.productId}>
+        <div className='one-product flex justify-between items-center w-full flex-wrap'>
          <div className='flex justify-start gap-2 md:items-center max-md:flex-col'>
             <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
             <span className='text-black font-semibold max-w-[300px]'>{product.productName}</span>
@@ -143,6 +146,7 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
             </Modal>
          </ConfigProvider>
       </div>
+ </Link>
    );
 };
 
