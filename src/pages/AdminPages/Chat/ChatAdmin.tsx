@@ -83,7 +83,7 @@ const ChatAdmin = () => {
                               <img className='w-[48px] h-[48px] rounded-[100%]' src={item.roomChatId.avatar} alt='' />
                               <div className='userName flex flex-col justify-start items-start flex-1'>
                                  <strong className='text-black'>{item.roomChatId.userName}</strong>
-                                 <p className='message flex justify-between  w-[100%]'>
+                                {item.messages.length> 0&&  <p className='message flex justify-between  w-[100%]'>
                                     <div
                                        className='flex-1 text-left'
                                        style={{
@@ -117,7 +117,7 @@ const ChatAdmin = () => {
                                        </Badge>
                                        {formatStringToDate(item.messages[item.messages.length - 1]?.day)}
                                     </div>
-                                 </p>
+                                 </p>}
                               </div>
                            </button>
                         </>

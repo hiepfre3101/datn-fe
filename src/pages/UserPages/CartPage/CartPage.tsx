@@ -9,7 +9,7 @@ const CartPage = () => {
             <section className='section-breadcrumb py-[15px] bg-[#f7f7f7] border-b-[1px] border-[#e2e2e2]'>
                <div className='cont mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] flex max-lg:flex-wrap items-start relative'>
                   <span>
-                     <Link to='/'>Trang chủ /Trang chủ </Link> / Giỏ hàng
+                     <Link to='/'>Trang chủ </Link> / Giỏ hàng
                   </span>
                </div>
             </section>
