@@ -6,6 +6,7 @@ export interface IResponseHasPaginate<T> {
    [x: string]: any;
    body: {
       data: T[];
+      totalMoney?: number;
       pagination: {
          currentPage: number;
          totalPages: number;
@@ -21,6 +22,7 @@ export interface IResponseHasPaginate<T> {
 export interface IResponse<T> {
    body: {
       data: T;
+      totalMoney?: number;
    };
    message: string;
    status: number;
@@ -46,4 +48,5 @@ export interface IQueryParam {
    shipmentId: string;
    invoiceId: string;
    isSale: boolean;
+   today: boolean;
 }
