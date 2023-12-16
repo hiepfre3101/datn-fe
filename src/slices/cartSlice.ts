@@ -181,8 +181,6 @@ const cartSlice = createSlice({
          localStorage.setItem("cart", JSON.stringify(nextCartproducts));
       },
       updateImgProductInCartLocal:(state,action)=>{
-         console.log(action.payload.img);
-         
          const nextCartproducts = state.products.map((cartItem: any) => {
             if (cartItem.productId._id === action.payload.id) {
                   return {
@@ -202,8 +200,24 @@ const cartSlice = createSlice({
         
          state.totalPrice= action.payload.totalPrice
       },
+      updateOriginProductInCartLocal:(state,action)=>{
+         const nextCartproducts = state.products.map((cartItem: any) => {
+            if (cartItem.productId._id === action.payload.id) {
+                  return {
+                     ...cartItem,
+                     productId: {
+                        ...cartItem.productId,
+                        originId: [{_id:action.payload._id}]
+                      }
+                  };
+            }
+            return cartItem;
+         });
+         state.products = nextCartproducts;
+         localStorage.setItem("cart", JSON.stringify(nextCartproducts));
+      },
    }
 });
-export const { addItem,updateTotalPrice,updateImgProductInCartLocal,updatePriceProductInCartLocal,updateNameProductInCartLocal, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem } =
+export const { addItem,updateTotalPrice,updateOriginProductInCartLocal,updateImgProductInCartLocal,updatePriceProductInCartLocal,updateNameProductInCartLocal, updatePrice, removeFromCart, updateItem, removeAllProductFromCart, setItem } =
    cartSlice.actions;
 export default cartSlice;

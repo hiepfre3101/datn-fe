@@ -51,8 +51,7 @@ const DetailOrder = ({ idOrder }: Props) => {
          }
       }
    },[order,subtotal])
-   console.log(order);
-   
+
    const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
       console.log(value);

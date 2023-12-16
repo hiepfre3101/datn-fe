@@ -131,7 +131,15 @@ const CheckOut = () => {
                   } else if (error.data.message == 'Voucher is out of date') {
                      setError((prevError: string[]) => [...prevError, 'Mã giảm giá đã hết hạn']);
                      dispatch(remoteVoucher());
-                  } else if (error.data.message == 'Orders are not satisfactory!') {
+                     
+                  } 
+                  else if (
+                     error.data.message == 'Sorry, this voucher is not yet available for use!'
+                  ) {
+                     setError((prevError: string[]) => [...prevError, 'Bạn đã dùng mã giảm giá này trước đó']);
+                     dispatch(remoteVoucher());
+                  }
+                  else if (error.data.message == 'Orders are not satisfactory!') {
                      setError((prevError: string[]) => [
                         ...prevError,
                         'Đơn hàng của bạn phải có tổng giá trị trên' +
@@ -193,8 +201,6 @@ const CheckOut = () => {
                if(res.error.data.message.indexOf("must be a number")==1){                  
                   setIsModalOpen(false);
                   const number = parseInt(res.error.data.message.toString().split("[")[1]);
-                  console.log("Vào đây ");    
-                  
                   dispatch(updateItem({ id: cartLocal.products[number]?.productId._id, weight: 0.5}));
                }
              
@@ -300,7 +306,7 @@ const CheckOut = () => {
                      error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                );
             } else if (
-               error.data.message == 'This voucher code has already been used. Please enter a different code!'
+               error.data.message == 'Sorry, this voucher is not yet available for use!'
             ) {
                message.error('Bạn đã dùng mã giảm giá này trước đó');
             }
@@ -490,7 +496,7 @@ const CheckOut = () => {
                                  <span className='text-red-500'>*Bạn phải đăng nhập để sử dụng mã khuyễn mãi</span>
                               )}
                               <button
-                                 disabled={!item.active}
+                                 disabled={!item.active || !item.isValidDate}
                                  style={{
                                     backgroundColor: item.active == false ? 'grey' : ''
                                  }}
