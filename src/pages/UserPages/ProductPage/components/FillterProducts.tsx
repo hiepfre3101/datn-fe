@@ -76,7 +76,7 @@ const FillterProducts = () => {
       }
    };
    return (
-      <div className='main-header-filter lg:mt-[20px] lg:bg-[#f8f8f8] max-lg:!mt-[-120px] max-lg:flex max-lg:flex-col  overflow-y-auto max-lg:bottom-0 max-lg:translate-y-[130%] transition-transform duration-500 max-lg:right-0 max-lg:left-0  lg:mx-[-15px] lg:sticky w-[25%] top-[120px]  max-lg:w-[100%] max-lg:fixed max-lg:z-[13] bg-white  max-md:p-0 '>
+      <div className='main-header-filter lg:mt-[20px] lg:bg-[#f8f8f8] max-lg:!mt-[-120px] max-lg:flex max-lg:flex-col max-lg:pb-[50px]  overflow-y-auto max-lg:bottom-0 max-lg:translate-y-[130%] transition-transform duration-500 max-lg:right-0 max-lg:left-0  lg:mx-[-15px] lg:sticky w-[25%] top-[120px]  max-lg:w-[100%] max-lg:fixed max-lg:z-[13] bg-white  max-md:p-0 '>
          <div className='main-header-title  lg:hidden px-[10px] py-[5px] bg-red-500 flex justify-between items-center'>
             <div>
                <FilterOutlined className='text-white' />
@@ -127,7 +127,7 @@ const FillterProducts = () => {
                               }}
                               className='max-lg:w-[25%] max-lg:flex max-lg:flex-col max-lg:items-center  hover:text-[#51A55C] py-2 px-3'
                            >
-                              <button type='button'>
+                              <button type='button' className='flex items-center flex-col'>
                                  <img
                                     className='w-[48px] h-[48px] cate-img hidden max-lg:block'
                                     src={item.image?.url}

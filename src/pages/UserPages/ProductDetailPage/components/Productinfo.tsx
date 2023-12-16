@@ -81,6 +81,9 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                      return;
                   } else if (err.data.message == '"weight" must be a number') {
                      message.error('Vui lòng nhập số');
+                  }
+                  else if (err.data.message == 'Please check the weight again!') {
+                     message.error('Sản phẩm đã hết hàng');
                   } else {
                      message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng sản phẩm hiện có');
                   }

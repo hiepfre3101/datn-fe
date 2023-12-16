@@ -36,27 +36,6 @@ const OrdersAdmin = () => {
       return () => {};
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, []);
-   // useEffect(() => {
-   //    console.log(data?.body?.data);
-
-   //    if (data?.body?.data) {
-   //       const temp = data?.body?.data?.map(item => {
-   //          item.
-   //          const shipment = item.products;
-   //          return shipment.shipmentId.reduce((cal, product) => {
-   //            if (product.productId === item.productId) {
-   //              cal += product.originPrice;
-   //            }
-   //            return cal;
-   //          }, 0);
-   //        });
-   //        setProfit(temp);
-   //    }else{
-   //       console.log("méo có");
-
-   //    }
-
-   // },[orders,data])
    console.log(data);
 
    if (isLoading) return <Loading sreenSize='lg' />;
@@ -189,7 +168,10 @@ const OrdersAdmin = () => {
                                     },0);
 
                                     return sum + cal;
-                                 }, 0)}
+                                 }, 0).toLocaleString('vi-VN', {
+                                    style: 'currency',
+                                    currency: 'VND'
+                                 })}
                               </span>
                            </Space>
                         )}
