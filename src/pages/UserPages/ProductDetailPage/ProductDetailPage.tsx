@@ -44,7 +44,7 @@ const ProductDetail = () => {
                   ></ProductDescriptionTab>
                )}
             </section>
-            <section className='section-related-product bg-[#f8f8f8]  max-lg:py-[60px] border-b'>
+            {!relatedProductsData?.body?.data?.length||relatedProductsData?.body?.data?.length > 0 &&    <section className='section-related-product bg-[#f8f8f8]  max-lg:py-[60px] border-b'>
                <div className='related-product-header text-center xl:mb-[70px] lg:mb-[40px] max-lg:mb-[30px]'>
                   <p className=' text-[#333333] font-bold  lg:text-[28px] md:text-[23px]  max-md:text-[20px]'>
                      Sản phẩm liên quan
@@ -55,7 +55,8 @@ const ProductDetail = () => {
                      <SlideBestProduct products={relatedProductsData?.body.data}></SlideBestProduct>
                   </div>
                </div>
-            </section>
+            </section>}
+         
          </div>
       </>
    );

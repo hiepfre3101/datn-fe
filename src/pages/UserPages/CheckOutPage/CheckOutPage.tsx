@@ -16,6 +16,7 @@ import {
    updateImgProductInCartLocal,
    updateItem,
    updateNameProductInCartLocal,
+   updateOriginProductInCartLocal,
    updatePriceProductInCartLocal,
    updateTotalPrice
 } from '../../../slices/cartSlice';
@@ -100,7 +101,7 @@ const CheckOutPage = () => {
                   else if (error.data.message == 'Orders are not satisfactory!') {
                      setError((prevError: string[]) => [
                         ...prevError,
-                        'Đơn hàng của bạn phải có tổng giá trị trên ' +
+                        'Mã giảm giá đã bị xoá vì đơn hàng của bạn phải có tổng giá trị trên ' +
                            error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                      ]);
                      dispatch(remoteVoucher());
@@ -110,10 +111,10 @@ const CheckOutPage = () => {
       
          await refetch().unwrap().then((res) => {
             res
-
             temp = status == true?true:false
        
-         }).catch(err => {
+         })
+         .catch(err => {
             setIsModalOpen(true);
             if (err?.data?.body?.errors as any) {
                err.data.body.errors.map((item: any) => {
@@ -166,6 +167,9 @@ const CheckOutPage = () => {
                         '- Sản phẩm ' + item.productName + ' đã bị xoá khỏi hệ thống'
                      ]);
                   } else if (item.message == 'Invalid product origin!') {
+                     console.log(item.originId);
+                     console.log(item.originName);
+                     dispatch(updateOriginProductInCartLocal({ id: item.productId,origin_id: item.originId, name: item.originName }));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Xuất sứ của sản phẩm ' + item.productName + ' đã được cập nhật'

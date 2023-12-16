@@ -203,14 +203,14 @@ const ProductsInCart = () => {
                         <div className='cart-item-info lg:w-[60%] max-lg:w-full flex items-center h-auto'>
                            <div className='item-img w-[100px]'>
                               <Link
-                                 to={'#'}
+                                 to={'/products/'+item.productId._id}
                                  className=' border-[1px] border-[#e2e2e2] block overflow-hidden rounded-[5px]'
                               >
                                  <img src={item.productId?.images[0]?.url} className='max-w-[100%]' alt='' />
                               </Link>
                            </div>
                            <div className='item-title px-[15px]'>
-                              <Link to={'#'} className='product-name ư font-bold'>
+                              <Link to={'/products/'+item.productId._id} className='product-name ư font-bold'>
                                  {item.productId?.productName}
                               </Link>
                               <div className='origin flex'>

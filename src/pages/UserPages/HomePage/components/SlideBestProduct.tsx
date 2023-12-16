@@ -77,6 +77,9 @@ export default function SlideBestProduct({ products }: IRelatedProduct) {
                   message.error('Sản phẩm đã bị xoá khỏi hệ thống');
                   return;
                }
+               else if (error.data.message == 'Please check the weight again!') {
+                  message.error('Sản phẩm đã hết hàng');
+               }
                message.error('Số lượng vượt quá sản phẩm đang có trong kho');
             });
       } else {
