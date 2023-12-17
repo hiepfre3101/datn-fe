@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import { Button, Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
-import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS, PENDING_ORDER } from '../../../constants/orderStatus';
+import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 import { adminSocket } from '../../../config/socket';
