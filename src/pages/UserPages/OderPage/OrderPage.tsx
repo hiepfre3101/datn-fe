@@ -30,7 +30,10 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day }, { refetchOnMountOrArgChange: true });
+   const { data, isLoading } = useGetOrderForMemberQuery(
+      { status: status, day },
+      { refetchOnMountOrArgChange: true, skip: !auth.accessToken }
+   );
    const [handleCancelOrder, { isLoading: loadingCancel }] = useCancelOrderMemberMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
@@ -48,7 +51,8 @@ const OrderPage = () => {
       try {
          setLoading(true);
          const { data } = await getOrderForGuest(invoiceId);
-         setOrders((prev) => [...prev, ...data.body.data]);
+         // eslint-disable-next-line no-extra-boolean-cast
+         setOrders(data.body.data);
          setLoading(false);
       } catch (error) {
          setLoading(false);

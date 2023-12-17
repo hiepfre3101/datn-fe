@@ -160,8 +160,8 @@ const UpdateVoucher = () => {
                         </Form.Item>
                         <Form.Item
                            name={'miniMumOrder'}
-                           label={' Giảm tối đa (VNĐ)'}
-                           rules={[{ required: true, message: 'Vui lòng điền số tiền giảm tối đa !' }]}
+                           label={' Giá tối thiểu đơn hàng (VNĐ)'}
+                           rules={[{ required: true, message: 'Vui lòng điền giá tối thiểu đơn hàng !' }]}
                         >
                            <Input placeholder='Thêm khuyến mãi' type='number' disabled />
                         </Form.Item>
