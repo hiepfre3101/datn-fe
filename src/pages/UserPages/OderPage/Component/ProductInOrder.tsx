@@ -39,10 +39,10 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
 
    return (
  <Link to={"/products/"+ product.productId}>
-        <div className='one-product flex justify-between items-center w-full flex-wrap'>
+        <div className='one-product flex justify-between gap-[5px] items-center w-full flex-wrap'>
          <div className='flex justify-start gap-2 md:items-center max-md:flex-col'>
             <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-            <span className='text-black font-semibold max-w-[300px]'>{product.productName}</span>
+            <span className='text-black font-semibold max-w-[300px]'>{product.productName+" "} </span>
          </div>
          <div className='flex justify-start gap-2 items-center max-md:text-[16px]'>
             <span>{product.weight} x</span>

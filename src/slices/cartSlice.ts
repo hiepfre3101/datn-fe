@@ -207,7 +207,7 @@ const cartSlice = createSlice({
                      ...cartItem,
                      productId: {
                         ...cartItem.productId,
-                        originId: [{_id:action.payload._id}]
+                        originId: {_id:action.payload.origin_id,name:action.payload.name}
                       }
                   };
             }

@@ -7,6 +7,7 @@ import {
    updateImgProductInCartLocal,
    updateItem,
    updateNameProductInCartLocal,
+   updateOriginProductInCartLocal,
    updatePriceProductInCartLocal,
    updateTotalPrice
 } from '../../../../slices/cartSlice';
@@ -150,21 +151,25 @@ const CheckOut = () => {
                });
          }
 
-         await refetch().then((res) => {
-            if (res.data && res.data.body.errors) {
-               setIsModalOpen(true);
-               res.data.body.errors.map((item: any) => {
+         await refetch().unwrap().then((res) => {
+              res
+               status ? navigate('/checkout') : '';
+         }) .catch(err => {
+            setIsModalOpen(true);
+            if (err?.data?.body?.errors as any) {
+               err.data.body.errors.map((item: any) => {
+      
                   if (item.message == 'The remaining quantity is not enough!') {
                      setError((prevError: string[]) => [
                         ...prevError,
-                        '- Số lượng trong kho của sản phẩm' +
+                        '- Số lượng trong kho của sản phẩm ' +
                            item.productName +
-                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng'
+                           ' không đủ đáp ứng nhu cầu của bạn và đã được cập nhật lại số lượng.'
                      ]);
                   } else if (item.message == 'Product is currently out of stock!') {
                      setError((prevError: string[]) => [
                         ...prevError,
-                        '- Sản phẩm' + item.productName + ' đã hết hàng'
+                        '- Sản phẩm ' + item.productName + ' đã hết hàng'
                      ]);
                   } else if (item.message == 'Product is no longer available!') {
                      setError((prevError: string[]) => [
@@ -173,39 +178,30 @@ const CheckOut = () => {
                      ]);
                   }
                });
-            } else {
-               status ? navigate('/checkout') : '';
-            }
+            
+         }
+         status =  false;  
          });
       } else {
          const cartLocal = {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
             products: cart['products'].map((product: any) => {
                let {
                   totalWeight,
                   productId: { originId: { name = undefined, ...originIdRest } = {}, ...productIdRest } = {},
                   ...rest
                } = product;
-               // eslint-disable-next-line @typescript-eslint/no-unused-vars
+       
                name = undefined;
                return { totalWeight, productId: { originId: originIdRest, ...productIdRest }, ...rest };
             })
          };
-         await checkCartLocal(cartLocal).then((res: any) => {     
-            console.log(res);
-            
-            if (res.error) {
-
-       
+         await checkCartLocal(cartLocal).unwrap().then(res=>{
+            res  
+            navigate("/checkout")
+         }).catch((err: any) => {
                setIsModalOpen(true);
-               if(res.error.data.message.indexOf("must be a number")==1){                  
-                  setIsModalOpen(false);
-                  const number = parseInt(res.error.data.message.toString().split("[")[1]);
-                  dispatch(updateItem({ id: cartLocal.products[number]?.productId._id, weight: 0.5}));
-               }
-             
-               // eslint-disable-next-line @typescript-eslint/no-explicit-any
-               res.error.data.body?.error.map((item: any) => {
+               err.data.body?.error.map((item: any) => {
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -213,15 +209,12 @@ const CheckOut = () => {
                         '- Sản phẩm ' + item.productName + ' đã bị xoá khỏi hệ thống'
                      ]);
                   } else if (item.message == 'Invalid product origin!') {
+                     dispatch(updateOriginProductInCartLocal({ id: item.productId,origin_id: item.originId, name: item.originName }));
                      setError((prevError: string[]) => [
                         ...prevError,
                         '- Xuất sứ của sản phẩm ' + item.productName + ' đã được cập nhật'
                      ]);
-                  } else if (item.message == 'Invalid product weight!') {
-                     setIsModalOpen(false);
-                     dispatch(updateItem({ id: item.productId, weight: 0.5}));
-                  } 
-                  else if (item.message == 'Invalid product name!') {
+                  } else if (item.message == 'Invalid product name!') {
                      dispatch(updateNameProductInCartLocal({ id: item.productId, name: item.productName }));
                      setError((prevError: string[]) => [
                         ...prevError,
@@ -266,9 +259,7 @@ const CheckOut = () => {
                      ]);
                   }
                });
-            } else {
-               navigate('/checkout');
-            }
+           
          });
       }
    };
