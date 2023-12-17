@@ -54,7 +54,6 @@ const DetailOrder = ({ idOrder }: Props) => {
 
    const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
-      console.log(value);
       
       if(value !== 'đã hủy') {
          if (
@@ -103,7 +102,7 @@ const DetailOrder = ({ idOrder }: Props) => {
                <h2 className='text-xl'>{order?.customerName}</h2>
                <span className='text-greenP500'>(#) {order?.invoiceId}</span>
             </div>
-            {statusOrder?.toLowerCase() == PENDING_ORDER.toLowerCase() && order?.products.every((item) => item.isSale === false) ? (
+            {statusOrder?.toLowerCase() != DONE_ORDER.toLowerCase() && statusOrder?.toLowerCase() != FAIL_ORDER.toLowerCase() && order?.products.every((item) => item.isSale === false) ? (
                <Button size='large' type='text' className='bg-red-500 text-white mx-2' onClick={() => handleChangeStatus('đã hủy')}>Hủy đơn hàng</Button>
             ) : (
                <></>
