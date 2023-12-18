@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import { Button, Col, Row, message } from 'antd';
 import { getDetailOrder } from '../../../api/order';
-import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS } from '../../../constants/orderStatus';
+import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS, SUCCESS_ORDER } from '../../../constants/orderStatus';
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 import { adminSocket } from '../../../config/socket';
@@ -20,8 +20,8 @@ const DetailOrder = ({ idOrder }: Props) => {
    const [order, setOrder] = useState<IOrderFull>();
    const [statusOrder, setStatusOrder] = useState<string>();
    const [handleUpdateOrder, { isLoading }] = useUpdateOrderMutation();
-   const [subtotal,setSubtotal] = useState<number>(0)
-   const [discount,setDiscount] = useState<number>(0)
+   const [subtotal, setSubtotal] = useState<number>(0);
+   const [discount, setDiscount] = useState<number>(0);
    const [clearToken] = useClearTokenMutation();
    const navigate = useNavigate()
    const dispatch = useDispatch()
@@ -42,41 +42,39 @@ const DetailOrder = ({ idOrder }: Props) => {
          }
       })();
    }, [idOrder]);
-   useEffect(()=>{
+   useEffect(() => {
       const temp = order?.products?.reduce((cal, product) => {
-         return cal + (product.weight * product.price);
-     }, 0);
-     if(temp!==undefined){
-      setSubtotal(temp)
-     }
-   },[order])   
-   useEffect(()=>{
-      if(order?.voucher){
-         if(order?.voucher.maxReduce>0){
-            if(order?.voucher.maxReduce<subtotal){
-               setDiscount(order.voucher.maxReduce)
-            }else{
-               setDiscount((subtotal*order?.voucher?.percent/100))
+         return cal + product.weight * product.price;
+      }, 0);
+      if (temp !== undefined) {
+         setSubtotal(temp);
+      }
+   }, [order]);
+   useEffect(() => {
+      if (order?.voucher) {
+         if (order?.voucher.maxReduce > 0) {
+            if (order?.voucher.maxReduce < subtotal) {
+               setDiscount(order.voucher.maxReduce);
+            } else {
+               setDiscount((subtotal * order?.voucher?.percent) / 100);
             }
-            
-         }
-         else{
-            setDiscount((subtotal*order?.voucher?.percent/100))
+         } else {
+            setDiscount((subtotal * order?.voucher?.percent) / 100);
          }
       }
-   },[order,subtotal])
+   }, [order, subtotal]);
 
    const handleChangeStatus = async (value: string): Promise<void> => {
       if (!order || isLoading) return;
-      
-      if(value !== 'đã hủy') {
+
+      if (value !== 'đã hủy') {
          if (
             ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === statusOrder)!) !==
             ORDER_OF_STATUS.indexOf(ORDER_OF_STATUS.find((status) => status.status.toLowerCase() === value)!) - 1
-            ) {
-               message.warning('Cần thay đổi trạng thái theo thứ tự');
-               return Promise.reject();
-            }
+         ) {
+            message.warning('Cần thay đổi trạng thái theo thứ tự');
+            return Promise.reject();
+         }
       }
       try {
          await handleUpdateOrder({
@@ -120,8 +118,18 @@ const DetailOrder = ({ idOrder }: Props) => {
                <h2 className='text-xl'>{order?.customerName}</h2>
                <span className='text-greenP500'>(#) {order?.invoiceId}</span>
             </div>
-            {statusOrder?.toLowerCase() != DONE_ORDER.toLowerCase() && statusOrder?.toLowerCase() != FAIL_ORDER.toLowerCase() && order?.products.every((item) => item.isSale === false) ? (
-               <Button size='large' type='text' className='bg-red-500 text-white mx-2' onClick={() => handleChangeStatus('đã hủy')}>Hủy đơn hàng</Button>
+            {statusOrder?.toLowerCase() != DONE_ORDER.toLowerCase() &&
+            statusOrder?.toLowerCase() != FAIL_ORDER.toLowerCase() &&
+            statusOrder?.toLowerCase() !== SUCCESS_ORDER.toLowerCase() &&
+            order?.products.every((item) => item.isSale === false) ? (
+               <Button
+                  size='large'
+                  type='text'
+                  className='bg-red-500 text-white mx-2'
+                  onClick={() => handleChangeStatus('đã hủy')}
+               >
+                  Hủy đơn hàng
+               </Button>
             ) : (
                <></>
             )}
@@ -158,7 +166,9 @@ const DetailOrder = ({ idOrder }: Props) => {
          {order?.products.map((product) => (
             <Row key={product._id}>
                <Col span={6}>
-                  <span className='font-semibold'>{product.productName} {product.isSale==true&&"(Sản phẩm thanh lý)"}</span>
+                  <span className='font-semibold'>
+                     {product.productName} {product.isSale == true && '(Sản phẩm thanh lý)'}
+                  </span>
                </Col>
                <Col span={6}>
                   <span className='font-semibold'>
@@ -187,44 +197,63 @@ const DetailOrder = ({ idOrder }: Props) => {
             <span className='text-sm font-semibold text-greenP500'>GHI CHÚ</span>
             <span className='text-sm max-w-[200px] text-wrap'>{order?.note}</span>
          </div>
-        {order?.voucher?.code!=null && <div className='flex flex-col items-start gap-[5px] mt-5'>
-            <span className='text-sm font-semibold text-greenP500'>Mã giảm giá</span>
-            <span className='text-sm w-full text-wrap'>{order?.voucher?.code}: Giảm {order?.voucher?.percent}% ({order?.voucher?.miniMumOrder>0?"Giá trị đơn hàng tối thiểu trên "+order?.voucher?.miniMumOrder.toLocaleString('vi-VN', {
-                     style: 'currency',
-                     currency: 'VND'
-                  }):""}) ({order?.voucher?.maxReduce>0?"Giảm tối đa: "+order?.voucher?.maxReduce.toLocaleString('vi-VN', {
-                     style: 'currency',
-                     currency: 'VND'
-                  }):""})</span>
-         </div>}
-         {order?.voucher?.code &&  <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-10' align={'middle'}>
-            <Col span={4}>
-               <span className='text-sm  text-greenP800 font-bold'>Tính tạm:</span>
-            </Col>
-            <Col span={4}>
-               <span className='text-lg  text-greenP800 font-bold'>
-                  {subtotal.toLocaleString('vi-VN', {
-                     style: 'currency',
-                     currency: 'VND'
-                  })}
-                  (vnd)
+         {order?.voucher?.code != null && (
+            <div className='flex flex-col items-start gap-[5px] mt-5'>
+               <span className='text-sm font-semibold text-greenP500'>Mã giảm giá</span>
+               <span className='text-sm w-full text-wrap'>
+                  {order?.voucher?.code}: Giảm {order?.voucher?.percent}% (
+                  {order?.voucher?.miniMumOrder > 0
+                     ? 'Giá trị đơn hàng tối thiểu trên ' +
+                       order?.voucher?.miniMumOrder.toLocaleString('vi-VN', {
+                          style: 'currency',
+                          currency: 'VND'
+                       })
+                     : ''}
+                  ) (
+                  {order?.voucher?.maxReduce > 0
+                     ? 'Giảm tối đa: ' +
+                       order?.voucher?.maxReduce.toLocaleString('vi-VN', {
+                          style: 'currency',
+                          currency: 'VND'
+                       })
+                     : ''}
+                  )
                </span>
-            </Col>
-         </Row>}
-         {order?.voucher?.code &&  <Row className=' border-t-[1px] pt-[15px] border-[rgba(0,0,0,0.1)] ' align={'middle'}>
-            <Col span={4}>
-               <span className='text-sm  text-greenP800 font-bold'>Giảm giá:</span>
-            </Col>
-            <Col span={4}>
-            <span className='text-lg  text-greenP800 '>
-                  - {discount.toLocaleString('vi-VN', {
-                     style: 'currency',
-                     currency: 'VND'
-                  })}
-                  (vnd)
-               </span>
-            </Col>
-         </Row>}
+            </div>
+         )}
+         {order?.voucher?.code && (
+            <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-10' align={'middle'}>
+               <Col span={4}>
+                  <span className='text-sm  text-greenP800 font-bold'>Tính tạm:</span>
+               </Col>
+               <Col span={4}>
+                  <span className='text-lg  text-greenP800 font-bold'>
+                     {subtotal.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                     })}
+                     (vnd)
+                  </span>
+               </Col>
+            </Row>
+         )}
+         {order?.voucher?.code && (
+            <Row className=' border-t-[1px] pt-[15px] border-[rgba(0,0,0,0.1)] ' align={'middle'}>
+               <Col span={4}>
+                  <span className='text-sm  text-greenP800 font-bold'>Giảm giá:</span>
+               </Col>
+               <Col span={4}>
+                  <span className='text-lg  text-greenP800 '>
+                     -{' '}
+                     {discount.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                     })}
+                     (vnd)
+                  </span>
+               </Col>
+            </Row>
+         )}
          <Row className='py-3 border-t-[1px] border-[rgba(0,0,0,0.1)] mt-5' align={'middle'}>
             <Col span={4}>
                <span className='text-sm  text-greenP800 font-bold'>TỔNG TIỀN:</span>
@@ -256,7 +285,7 @@ const DetailOrder = ({ idOrder }: Props) => {
                               onClick={(value) => handleChangeStatus(value)}
                            />
                         </Col>
-                     )
+                     );
                   }
                })}
          </Row>

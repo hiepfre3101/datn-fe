@@ -13,7 +13,7 @@ import { formatStringToDate } from '../../../helper';
 const VoucherAdmin = () => {
    const { data, isLoading } = useGetAllVoucherQuery(undefined, { refetchOnMountOrArgChange: true });
    const vouchers = data && voucherData(data);
-   console.log(vouchers);
+
    const [handleRemoveVoucher] = useRemoveVoucherMutation();
    const getConfirmResultToDelete = async (result: boolean, _id: string) => {
       if (!result) {
@@ -58,13 +58,28 @@ const VoucherAdmin = () => {
                            key='code'
                            width={200}
                            render={(value, record: IVoucher) => (
-                              <span>
-                                 {value} {!record.status && <Tag color='red'>Ngừng sử dụng</Tag>}
-                              </span>
+                              <>
+                                 <span>
+                                    {value} <br /> {!record.status && <Tag color='red'>Ngừng sử dụng</Tag>}
+                                 </span>
+                                 <span>
+                                    {!record.isValidDateStart && <Tag color='orange'>Chưa bắt đầu</Tag>}
+                                 </span>
+                                 <span>
+                                    {!record.isValidDateEnd && <Tag color='red'>Đã hết hạn</Tag>}
+                                 </span>
+                                 <span>
+                                    {(record.isValidDateEnd && record.isValidDateStart && record.status) && <Tag color='green'>Đang hoạt động</Tag>}
+                                 </span>
+                              </>
+
                            )}
                         />
+
                         <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
-                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
+                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80}
+                         render={(maxReduce) => <span className='w-[3rem] h-[3rem]'>{maxReduce.toLocaleString("vi-VN")}₫</span>}
+                        />
 
                         <Column
                            title='Số lượng'

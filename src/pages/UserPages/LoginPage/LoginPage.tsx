@@ -25,7 +25,7 @@ const LoginPage = () => {
          if (data?.body.data.data.role !== 'admin') {
             navigate('/');
          } else {
-            navigate('/manage/dashboard');
+            navigate('/manage');
          }
       } catch (error: any) {
          message.error(error.data.message);

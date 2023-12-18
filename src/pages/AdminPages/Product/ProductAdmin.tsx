@@ -176,7 +176,7 @@ const ProductAdmin = () => {
                         dataIndex='productName'
                         key='productName'
                         width={30}
-                        render={(name, product: IProduct & { stock: number }) => (
+                        render={(name, product: IProduct & { stock: number, totalWeight: number }) => (
                            <div className='flex flex-col gap-2 items-start'>
                               <span>{name}</span>
                               <span className='flex flex-col gap-1 items-center'>
@@ -187,7 +187,7 @@ const ProductAdmin = () => {
                                           <Tag color='orange'>Sắp hết hạn</Tag>
                                        </Tooltip>
                                     )}
-                                 {!product.isSale && product.stock <= 30 && (
+                                 {!product.isSale && product.totalWeight <= 30 && product.totalWeight > 0  && (
                                     <Tooltip title='Lô hàng sản phẩm hiện tại sắp hết hàng'>
                                        <Tag color='red'>Sắp hết hàng</Tag>
                                     </Tooltip>
@@ -196,7 +196,9 @@ const ProductAdmin = () => {
                            </div>
                         )}
                      />
-                     <Column title='Giá (VND)' dataIndex='price' key='price' width={20} />
+                     <Column title='Giá (VND)' dataIndex='price' key='price' width={20}
+                      render={(price) => <span className='w-[3rem] h-[3rem]'>{price.toLocaleString("vi-VN")}₫</span>}
+                     />
                      <Column
                         title='Số lượng kho hàng (kg)'
                         dataIndex='stock'
