@@ -95,8 +95,12 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
          setTotal(temp);
       }
    }, [cart, voucher, subtotal]);
-   console.log(haveIsSale);
-
+   useEffect(()=>{
+      if(haveIsSale){
+         setPayValue('vnpay')
+      }
+     
+   },[haveIsSale])
    return (
       <>
          <div className='order-checkout'>
@@ -232,20 +236,28 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                  }
                               }}
                            >
+                               
                               <Radio.Group
                                  className='flex flex-col justify-center-center'
                                  onChange={onChange}
                                  value={PayValue}
                               >
-                                 {PAYMENT_METHODS.map((method) => (
+                                 {!haveIsSale?PAYMENT_METHODS.map((method) => (
+                                    
                                     <Radio value={method.value}>
-                                       {method.type === 'logo' ? (
-                                          <img className='w-[60px]' src={method?.srcLogo} alt='' />
-                                       ) : (
-                                          <span className='text-greenPrimary font-semibold'>{method.name}</span>
-                                       )}
-                                    </Radio>
-                                 ))}
+                                         {method.type === 'logo' ? (
+                                            <img className='w-[60px]' src={method?.srcLogo} alt='' />
+                                         ) : (
+                                            <span className='text-greenPrimary font-semibold'>{method.name}</span>
+                                         )}
+                                      </Radio>
+                                   )):<Radio  defaultChecked  value={PAYMENT_METHODS[1].value}>
+                                   {PAYMENT_METHODS[1].type === 'logo' ? (
+                                      <img className='w-[60px]' src={PAYMENT_METHODS[1]?.srcLogo} alt='' />
+                                   ) : (
+                                      <span className='text-greenPrimary font-semibold'>{PAYMENT_METHODS[1].name}</span>
+                                   )}
+                                </Radio>}
                               </Radio.Group>
                            </ConfigProvider>
                         </form>

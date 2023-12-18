@@ -104,12 +104,12 @@ export default function SlideProductHomepage({slideName,data}:IProps) {
                               style: 'currency',
                               currency: 'VND'
                            })}
-                              <span className='old-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
+                            {item.discount>0&&  <span className='old-price text-[#878c8f] line-through text-[13px] ml-[10px] font-normal'>
                                  {item.price.toLocaleString('vi-VN', {
                               style: 'currency',
                               currency: 'VND'
                            })}
-                              </span>
+                              </span>}
                            </p>
                         </div>
                         {item.isSale==true && <div className='price-box'>

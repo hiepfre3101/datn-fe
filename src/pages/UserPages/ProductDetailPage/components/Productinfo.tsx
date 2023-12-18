@@ -13,6 +13,7 @@ import { addToWishList } from '../../../../slices/wishListSlice';
 import { FcLike } from 'react-icons/fc';
 import { IAuth } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
+import { CountExpirationDate } from '../../../../helper';
 
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const [inputWeight, setinputWeight] = useState<any>(0.5);
@@ -167,9 +168,15 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                   </div>
                   <div className='product-info-wrap'>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px]'>
-                        <div className='product-name  lg:text-[28px] max-lg:text-[24px] text-[#333333] font-bold'>
-                           {product_info?.productName}
+                        <div className='product-name  lg:text-[28px] max-lg:text-[24px] text-[#333333] font-bold '>
+                           {product_info?.productName} 
+                           <p className='text-[14px]'>
+                                    {product_info?.isSale == true
+                                       ? 'Hạn sử dụng: còn ' + CountExpirationDate(product_info?.shipments[0]?.date) + ' ngày'
+                                       : ''}
+                                 </p>
                         </div>
+                        
                      </div>
                      <div className='product-info md:mt-[30px] max-md:mt-[20px] '>
                         {product_info?.price ? (
