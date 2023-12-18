@@ -27,7 +27,7 @@ const ShipmentItem = ({ shipment }: Props) => {
             </p>
             <p>
                <strong className='underline mr-3'>Giá nhập: </strong>
-               {product.originPrice}/kg
+               {product.originPrice.toLocaleString("vi-VN")}₫/kg
             </p>
             <p>
                <strong className='underline mr-3'>Số lượng còn lại: </strong>

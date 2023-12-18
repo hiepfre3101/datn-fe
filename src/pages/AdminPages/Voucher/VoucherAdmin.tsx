@@ -77,7 +77,9 @@ const VoucherAdmin = () => {
                         />
 
                         <Column title='Giảm bớt (%)' dataIndex='percent' key='percent' width={80} />
-                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80} />
+                        <Column title='Giảm tối đa (VNĐ)' dataIndex='maxReduce' key='maxReduce' width={80}
+                         render={(maxReduce) => <span className='w-[3rem] h-[3rem]'>{maxReduce.toLocaleString("vi-VN")}₫</span>}
+                        />
 
                         <Column
                            title='Số lượng'
