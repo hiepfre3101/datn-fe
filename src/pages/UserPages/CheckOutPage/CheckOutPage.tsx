@@ -64,7 +64,6 @@ const CheckOutPage = () => {
          let status = true;
          if (voucher._id) {
             const total = cartdb?.body.data.products?.reduce(
-               // eslint-disable-next-line @typescript-eslint/no-explicit-any
                (accumulator: number, product: any) => accumulator + product.productId.price * product.weight,
                0
             );
@@ -93,9 +92,15 @@ const CheckOutPage = () => {
                      dispatch(remoteVoucher());
                   } 
                   else if (
-                     error.data.message == 'Sorry, this voucher is not yet available for use!'
+                     error.data.message == 'This voucher code has already been used. Please enter a different code!'
                   ) {
                      setError((prevError: string[]) => [...prevError, 'Bạn đã dùng mã giảm giá này trước đó']);
+                     dispatch(remoteVoucher());
+                  }
+                  else if (
+                     error.data.message == 'Sorry, this voucher is not yet available for use!'
+                  ) {
+                     setError((prevError: string[]) => [...prevError, 'Mã giảm giá chưa đến ngày bắt đầu sử dụng']);
                      dispatch(remoteVoucher());
                   }
                   else if (error.data.message == 'Orders are not satisfactory!') {

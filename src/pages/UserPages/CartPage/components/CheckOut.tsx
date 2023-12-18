@@ -135,7 +135,7 @@ const CheckOut = () => {
                      
                   } 
                   else if (
-                     error.data.message == 'Sorry, this voucher is not yet available for use!'
+                     error.data.message == 'This voucher code has already been used. Please enter a different code!'
                   ) {
                      setError((prevError: string[]) => [...prevError, 'Bạn đã dùng mã giảm giá này trước đó']);
                      dispatch(remoteVoucher());
@@ -147,6 +147,11 @@ const CheckOut = () => {
                            error.data.miniMumOrder.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
                      ]);
                      dispatch(remoteVoucher());
+                  }
+                  else if (
+                     error.data.message == 'Sorry, this voucher is not yet available for use!'
+                  ) {
+                     message.error('Mã giảm giá chưa đến ngày bắt đầu sử dụng');
                   }
                });
          }
@@ -298,6 +303,11 @@ const CheckOut = () => {
                );
             } else if (
                error.data.message == 'Sorry, this voucher is not yet available for use!'
+            ) {
+               message.error('Mã giảm giá chưa đến ngày bắt đầu sử dụng');
+            }
+            else if (
+               error.data.message == 'This voucher code has already been used. Please enter a different code!'
             ) {
                message.error('Bạn đã dùng mã giảm giá này trước đó');
             }

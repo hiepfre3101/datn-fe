@@ -21,8 +21,8 @@ const MyService = () => {
                         <BsCurrencyDollar></BsCurrencyDollar>
                      </div>
                      <div className='service-text ml-[20px]'>
-                        <p className='service-title text-[#333333] font-bold text-[18px]'>Đảm bảo trở lại</p>
-                        <p className='text-[16px]'>Đảm bảo lại tiền.</p>
+                        <p className='service-title text-[#333333] font-bold text-[18px]'>Giá cả hợp lý</p>
+                        <p className='text-[16px]'>Giá cả phù hợp</p>
                      </div>
                   </div>
                   <div className='service-item max-md:w-full p-[20px] border-[1px] border-[rgba(0,0,0,10%)] lg:w-[calc(25%-30px)]  md:w-[calc(50%-30px)] rounded-[5px] flex items-center'>

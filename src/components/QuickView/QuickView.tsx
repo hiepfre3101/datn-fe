@@ -12,6 +12,7 @@ import { addItem } from '../../slices/cartSlice';
 import { saveProduct } from '../../slices/productSlice';
 import { useAddCartMutation } from '../../services/cart.service';
 import { IAuth } from '../../slices/authSlice';
+import { CountExpirationDate } from '../../helper';
 export interface QuickViewProp {
    product_info: IProductExpanded[];
 }
@@ -162,8 +163,17 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                      <div className='product-name-content  text-[18px] mb-[5px] font-[700]'>
                         {product_info[0]?.productName}
                      </div>
+                     <p className='text-[14px]'>
+                                    {product_info[0]?.isSale == true
+                                       ? 'Hạn sử dụng: còn ' + CountExpirationDate(product_info[0]?.shipments[0]?.date) + ' ngày'
+                                       : ''}
+                                 </p>
                      <span className='product-origin text-[14px]'>
                         Xuất sứ: <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
+                     </span>
+                     <br />
+                     <span className='product-origin text-[14px]'>
+                        Số lượng còn lại: <strong className='text-[#51A55C]'>{totalWeight} kg</strong>
                      </span>
                   </div>
                   {product_info[0]?.shipments.length > 0 && (
@@ -186,9 +196,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                                        currency: 'VND'
                                     })}
                                  </span>
-                                 <div className='text-[14px] text-white bg-red-500 h-[100%] px-[10px] ml-[10px] rounded-sm'>
-                                    -{product_info[0].discount}%
-                                 </div>
+                                 
                               </>
                            )}
                         </div>
@@ -253,7 +261,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                <button
                   onClick={closeModal}
                   type='button'
-                  className='group/close-modal absolute right-4 z-[10] max-lg:top-[100px] max-lg:right-[10px] max-lg:fixed'
+                  className='group/close-modal absolute right-4 z-[10] max-lg:top-[10px] max-lg:right-[10px] max-lg:fixed'
                >
                   <AiOutlineCloseCircle className=' text-[30px] max-lg:text-[40px]  group-hover/close-modal:fill-[#51A55C]'></AiOutlineCloseCircle>
                </button>
