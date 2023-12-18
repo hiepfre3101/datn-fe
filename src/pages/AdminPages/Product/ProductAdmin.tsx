@@ -196,7 +196,9 @@ const ProductAdmin = () => {
                            </div>
                         )}
                      />
-                     <Column title='Giá (VND)' dataIndex='price' key='price' width={20} />
+                     <Column title='Giá (VND)' dataIndex='price' key='price' width={20}
+                      render={(price) => <span className='w-[3rem] h-[3rem]'>{price.toLocaleString("vi-VN")}₫</span>}
+                     />
                      <Column
                         title='Số lượng kho hàng (kg)'
                         dataIndex='stock'
