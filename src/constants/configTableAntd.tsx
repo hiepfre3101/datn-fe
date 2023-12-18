@@ -80,7 +80,9 @@ export const voucherData = (data: IResponseHasPaginate<any>): voucherDataType[] 
       dateEnd: voucher.dateEnd,
       status: voucher.status,
       percent: voucher.percent,
-      maxReduce: voucher.maxReduce
+      maxReduce: voucher.maxReduce,
+      isValidDateStart:voucher.isValidDateStart,
+      isValidDateEnd:voucher.isValidDateEnd,
    }));
 };
 export const userData = (data: IResponseHasPaginate<IUser>): UserDataType[] => {

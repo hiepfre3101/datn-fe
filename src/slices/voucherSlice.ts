@@ -10,7 +10,9 @@ export interface IVoucher{
     dateStart: string,
     status: boolean,
     maxReduce?:number,
-    miniMumOrder?:number
+    miniMumOrder?:number,
+    isValidDateEnd:boolean,
+    isValidDateStart:boolean,
 }
 const initState:  IVoucher ={
       _id:"",
@@ -21,6 +23,8 @@ const initState:  IVoucher ={
     dateEnd: "",
     dateStart: "",
     status: false,
+    isValidDateEnd:true,
+    isValidDateStart:true,
  }
 
 const voucherSlice = createSlice({
