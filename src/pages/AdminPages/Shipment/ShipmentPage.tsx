@@ -20,7 +20,7 @@ const ShipmentPage = () => {
          </Helmet>
          <div className='w-full px-10'>
             <HeadPage title='Lô hàng' linkButton='/manage/add-shipment' titleButton='Tạo lô hàng mới' />
-            <div className='grid  xl:grid-cols-3 gap-4 grid-cols-2 mt-[50px] pb-[100px] grid-cols-2'>
+            <div className='grid  xl:grid-cols-3 gap-4 mt-[50px] pb-[100px] grid-cols-2'>
                {data?.body.data.map((shipment) => (
                   <ConfigProvider
                      key={shipment._id}

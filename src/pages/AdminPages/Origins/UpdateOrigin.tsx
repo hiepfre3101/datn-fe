@@ -9,6 +9,10 @@ import { useGetOneOriginByIdQuery, useUpdateOriginMutation } from '../../../serv
 
 import { IOrigin } from '../../../interfaces/origin';
 import Loading from '../../../components/Loading/Loading';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const UpdateOrigin = () => {
    const [loading, setLoading] = useState<boolean>(false);
@@ -19,7 +23,14 @@ const UpdateOrigin = () => {
    const navigate = useNavigate();
    const [OriginName, setOriginName] = useState<string>('');
    const [handleUpdateOrigin] = useUpdateOriginMutation();
-
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    useEffect(
       () => {
          if (!data) {
@@ -33,7 +44,6 @@ const UpdateOrigin = () => {
             createdAt: undefined,
             updatedAt: undefined
          };
-         // console.log(newbody);
          form.setFieldsValue({ ...newbody });
       },
 
@@ -51,6 +61,9 @@ const UpdateOrigin = () => {
             message.success('Cập nhật thành công')
             navigate('/manage/origin');
          }).catch(error => {
+            if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            }
             message.error(error.data.message);
             setLoading(false)
          });
@@ -64,7 +77,7 @@ const UpdateOrigin = () => {
    return (
       <>
          <Helmet>
-            <title>Chỉnh sửa danh mục</title>
+            <title>Chỉnh sửa nguồn gốc</title>
          </Helmet>
 
          <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
@@ -89,7 +102,7 @@ const UpdateOrigin = () => {
                      <>
                         <Form.Item name={'name'}>
                            <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>
-                              Tên danh mục
+                              Nguồn gốc
                            </label>
 
                            <Input

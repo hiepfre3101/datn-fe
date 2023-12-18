@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
    ICartSlice,
    removeFromCart,
+   setItem,
    updateImgProductInCartLocal,
    updateItem,
    updateNameProductInCartLocal,
@@ -11,7 +12,7 @@ import {
    updatePriceProductInCartLocal,
    updateTotalPrice
 } from '../../../../slices/cartSlice';
-import { IAuth } from '../../../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../../../slices/authSlice';
 import { useCheckCartMutation, useGetCartQuery } from '../../../../services/cart.service';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +20,7 @@ import { Modal, message } from 'antd';
 import { useCheckVoucherMutation, useGetVoucherUsefulMutation } from '../../../../services/voucher.service';
 import { IVoucher, remoteVoucher, saveVoucher } from '../../../../slices/voucherSlice';
 import {  formatStringToDate } from '../../../../helper';
+import { useClearTokenMutation } from '../../../../services/auth.service';
 
 const CheckOut = () => {
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
@@ -268,6 +270,13 @@ const CheckOut = () => {
          });
       }
    };
+   const [clearToken] = useClearTokenMutation();
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    const handleAddVoucher = async (code: string) => {
       if (!auth.user._id) {
          message.error('Bạn cần đăng nhập để sử dụng mã giảm giá');
@@ -311,6 +320,10 @@ const CheckOut = () => {
             ) {
                message.error('Bạn đã dùng mã giảm giá này trước đó');
             }
+            else if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+
+            } 
          });
    };
    const handleGetListVoucher = async () => {

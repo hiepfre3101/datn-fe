@@ -28,7 +28,6 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
       }
    }, [error]);
    const handleFinish = async (values: IEvaluation) => {
-      console.log(values);
       values.userId = Object.keys(user).length > 0 ? user._id : null;
       values.productId = product.productId;
       values.orderId = oderId;

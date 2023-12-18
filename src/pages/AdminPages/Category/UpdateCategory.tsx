@@ -11,6 +11,10 @@ import { useGetOneCateByIdQuery, useUpdateCategoryMutation } from '../../../serv
 import HeadForm from '../../../components/HeadForm/HeadForm';
 import { InputCategories } from '../../../interfaces/category';
 import Loading from '../../../components/Loading/Loading';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { useDispatch } from 'react-redux';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
 
 const UpdateCategory = () => {
    const [loading, setLoading] = useState<boolean>(false);
@@ -24,7 +28,14 @@ const UpdateCategory = () => {
    const [files, setFiles] = useState<File[]>([]);
    const [defaultImages, setDefaultImages] = useState<UploadFile[]>([]);
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    const [handleUpdateCategory] = useUpdateCategoryMutation();
    const handleGetFiles = (files: File[], public_id: string | undefined) => {
       if (!public_id) {
@@ -91,9 +102,15 @@ const UpdateCategory = () => {
 
          const newFormData = form.getFieldsValue(true);
 
-         await handleUpdateCategory({ id: id!, ...newFormData, cateName: categoryName });
+         await handleUpdateCategory({ id: id!, ...newFormData, cateName: categoryName }).unwrap().then(()=>{
+            navigate('/manage/categories');
+         }).catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
+         });
          setLoading(false);
-         navigate('/manage/categories');
+
       } catch (error) {
          setLoading(false);
          console.log(error);
