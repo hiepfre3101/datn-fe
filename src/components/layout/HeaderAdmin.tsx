@@ -10,7 +10,7 @@ import { useClearTokenMutation } from '../../services/auth.service';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 const { Header } = Layout;
 import { deleteTokenAndUser } from '../../slices/authSlice';
-import { adminSocket } from '../../config/socket';
+import { adminSocket, clientSocket } from '../../config/socket';
 import {
    useDeleteNotificationMutation,
    useGetAdminNotificationQuery,
@@ -70,6 +70,10 @@ const HeaderAdmin = () => {
       dispatch(setItem());
       clearToken();
       navigate('/');
+      clientSocket.off('purchaseNotification');
+      clientSocket.off('statusNotification');
+      clientSocket.off('updatemess');
+      clientSocket.disconnect();
    };
    useEffect(() => {
       adminSocket.open();
@@ -94,13 +98,6 @@ const HeaderAdmin = () => {
             dispatch(setState())
          }
       });
-      return () => {
-         adminSocket.off('purchaseNotification', handlePurchaseNotification);
-         adminSocket.off('adminStatusNotification', handlePurchaseNotification);
-         adminSocket.off('expireProduct', handlePurchaseNotification);
-         adminSocket.off('updatemess');
-         adminSocket.disconnect();
-      };
    }, [auth, location.pathname]);
    useEffect(() => {
       if (keyword != '') {

@@ -15,14 +15,16 @@ const HomePage = () => {
    const { data: liquidationProducts } = useGetAllLiquidationProductQuery()
    const { data: ProductSoldBest } = useGetProductSoldDescLimitQuery()
    const { data: NewProduct } = useGetNewProductInStorageQuery()
-   const [error, setError] = useState(false)
+   const [error, setError] = useState<number|null>(null)
 
    const navigate = useNavigate()
    const location = useLocation();
 
    useEffect(() => {
-      if(error) {
+      if(error == 2) {
          message.error('Email này đã bị vô hiệu hóa')
+      } else if (error == 1) {
+         message.warning('Vui lòng đăng nhập để vào trang này')
       }
    }, [error])
 
@@ -30,8 +32,16 @@ const HomePage = () => {
       const searchParams = new URLSearchParams(location.search);
       if (searchParams.toString()) {
          if (searchParams.has('err')) {
-            setError(true)
-            navigate('/')
+            const err: string | null = searchParams.get('err');
+            if (err) {
+               if(parseInt(err) == 2) {
+                  setError(2)
+                  navigate('/')
+               } else if (parseInt(err) == 1) {
+                  setError(1)
+                  navigate('/')
+               }
+            }
          } else {
             const queryString = [...searchParams.entries()]
             .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)

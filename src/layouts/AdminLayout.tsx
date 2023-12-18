@@ -12,19 +12,19 @@ import { Badge, Button, Layout, Menu, message, theme } from 'antd';
 import { Outlet } from 'react-router';
 import { logoUrl } from '../constants/imageUrl';
 import ProductIcon from '../components/Icons/ProductIcon';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import TicketIcon from '../components/Icons/TicketIcon';
 import OrderIcon from '../components/Icons/OrderIcon';
 import HeaderAdmin from '../components/layout/HeaderAdmin';
 import { useNavigate } from 'react-router-dom';
 import { FaTruckRampBox } from 'react-icons/fa6';
 import { useDispatch, useSelector } from 'react-redux';
-import { saveTokenAndUser } from '../slices/authSlice';
-import { useGetTokenQuery } from '../services/auth.service';
 import ReSizePage from '../pages/ReSizePage';
 import Loading from '../components/Loading/Loading';
 import { useGetAllChatQuery } from '../services/chat.service';
 import ScrollToTop from '../components/ScrollToTop/ScrollToTop';
+import { saveTokenAndUser } from '../slices/authSlice';
+import { useGetTokenQuery } from '../services/auth.service';
 
 const { Content, Sider } = Layout;
 
@@ -44,9 +44,10 @@ const AdminLayout = () => {
    const [checking, setChecking] = useState(true);
    const [open, setOpen] = useState(false);
    const reload = useSelector((state: { noticeReducer: { reload: boolean } }) => state.noticeReducer.reload);
-   const { data, isLoading } = useGetTokenQuery();
+   const { data, isLoading, refetch } = useGetTokenQuery();
    const auth = useSelector((state: any) => state.userReducer);
    const navigate = useNavigate();
+   const { pathname } = useLocation();
    const dispatch = useDispatch();
    const {
       data: allChat,
@@ -87,8 +88,8 @@ const AdminLayout = () => {
       getItem(<Link to='/manage/unsoldproduct'>Sản phẩm thất thoát</Link>, 'sub4', <FaTruckRampBox />),
       getItem(<Link to='/manage/account'>Quản lý tài khoản</Link>, 'sub5', <UserOutlined />),
       getItem(<Link to='/manage/chat' className='block w-full h-full'>
-          Tư vấn mua hàng
-         {messagesCount>0 && <Badge
+         Tư vấn mua hàng
+         {messagesCount > 0 && <Badge
             color='red'
             count={
                <p className='!bg-red-400 text-white text-center w-6 h-6 flex flex-col justify-center leading-6 rounded-full text-xs'>
@@ -98,10 +99,10 @@ const AdminLayout = () => {
             showZero={false}
             offset={[20, 0]}
          >
-          
+
          </Badge>}
-         
-        </Link>, 'sub6', <NotificationOutlined />)
+
+      </Link>, 'sub6', <NotificationOutlined />)
    ];
 
    const ButtonTrigger = (
@@ -110,25 +111,35 @@ const AdminLayout = () => {
    const {
       token: { colorBgContainer }
    } = theme.useToken();
+
    useEffect(() => {
-      setChecking(true);
-      if (!isLoading && data?.body?.data && Object.keys(auth.user).length == 0) {
-         if (Object.keys(data.body.data.data).length > 0) {
-            dispatch(saveTokenAndUser({ accessToken: data.body.data.accessToken, user: data.body.data.data }));
-         } else {
-            message.warning('You are not logged in');
-            navigate('/');
-         }
-         setChecking(false);
-      } else if (Object.keys(auth.user).length > 0) {
-         if (auth.user.role !== 'admin') {
-            message.warning('You are not allowed to arrive this');
-            navigate('/');
-         }
-         setChecking(false);
+      if (!isLoading && data?.body?.data) {
+         (async () => await refetch().unwrap().then(async (res: any) => {
+            if (data?.body?.data.accessToken != "" && res?.body?.data.accessToken == "" && Object.keys(auth.user).length > 0) {
+               navigate('/?err=1');
+            } else if (Object.keys(auth.user).length == 0 && checking) {
+               if (Object.keys(res.body.data.data).length > 0) {
+                  dispatch(saveTokenAndUser({ accessToken: res.body.data.accessToken, user: res.body.data.data }));
+                  if (res.body.data.data.role != 'admin') {
+                     message.warning('Bạn không có quyền hạn để truy cập vào trang này');
+                     navigate('/');
+                  }
+               } else {
+                  message.warning('Vui lòng đăng nhập để vào trang này');
+                  navigate('/');
+               }
+            } else if (Object.keys(res.body.data.data).length > 0 && Object.keys(auth.user).length > 0 && !checking) {
+               dispatch(saveTokenAndUser({ accessToken: res.body.data.accessToken, user: res.body.data.data }));
+               if (res.body.data.data.role != 'admin') {
+                  message.warning('Bạn không có quyền hạn để truy cập vào trang này');
+                  navigate('/');
+               }
+            }
+            setChecking(false)
+         }))()
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [data, isLoading, auth.user]);
+   }, [data, isLoading, pathname])
    if (checking) {
       return (
          <div className='h-screen flex items-center justify-center'>
