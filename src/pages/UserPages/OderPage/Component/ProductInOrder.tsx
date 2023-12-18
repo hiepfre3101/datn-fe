@@ -28,7 +28,6 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
       }
    }, [error]);
    const handleFinish = async (values: IEvaluation) => {
-      console.log(values);
       values.userId = Object.keys(user).length > 0 ? user._id : null;
       values.productId = product.productId;
       values.orderId = oderId;
@@ -38,115 +37,117 @@ const ProductInOrder = ({ product, statusOrder, oderId, refetch }: Props) => {
    };
 
    return (
- <Link to={"/products/"+ product.productId}>
-        <div className='one-product flex justify-between gap-[5px] items-center w-full flex-wrap'>
-         <div className='flex justify-start gap-2 md:items-center max-md:flex-col'>
-            <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-            <span className='text-black font-semibold max-w-[300px]'>{product.productName+" "} </span>
-         </div>
-         <div className='flex justify-start gap-2 items-center max-md:text-[16px]'>
-            <span>{product.weight} x</span>
-            <span className='text-lg text-black max-md:text-[16px]'>{product.price.toLocaleString('vi-VN', {
-                                 style: 'currency',
-                                 currency: 'VND'
-                              })}</span>
-            {statusOrder === DONE_ORDER.toLowerCase() && !product?.evaluation ? (
-               <button
-                  onClick={() => setIsOpen(true)}
-                  className='rounded-sm ml-3 hover:bg-[#5ac471] py-2 px-5 text-white bg-greenP500 duration-300'
-               >
-                  Đánh giá
-               </button>
-            ) : (
-               <> </>
-            )}
-         </div>
+      
+    <div className='one-product flex justify-between gap-[5px] items-center w-full flex-wrap'>
+       <Link to={"/products/"+ product.productId}>
+       <div className='flex justify-start gap-2 md:items-center max-md:flex-col'>
+       <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
+       <span className='text-black font-semibold max-w-[300px]'>{product.productName+" "} </span>
+    </div>
+     </Link>
 
-         <ConfigProvider
-            theme={{
-               components: {
-                  Modal: {
-                     colorPrimary: '#80b235',
-                     colorPrimaryBorder: '#80b235'
-                  }
-               }
-            }}
-         >
-            <Modal
-               title='Đánh giá sản phẩm'
-               open={isOpen}
-               width={800}
-               onCancel={() => setIsOpen(false)}
-               footer={[
-                  <Button
-                     className='bg-white'
-                     onClick={() => {
-                        setIsOpen(false);
-                        form.resetFields();
-                     }}
-                  >
-                     Hủy
-                  </Button>,
-                  <Button
-                     type='default'
-                     loading={isLoading}
-                     className='bg-greenPrimary text-white hover:!text-white hover:!border-0'
-                     onClick={() => {
-                        handleFinish(form.getFieldsValue(true));
-                     }}
-                  >
-                     Gửi
-                  </Button>
-               ]}
-            >
-               <div className='one-product w-full'>
-                  <Form form={form} onFinish={handleFinish} layout='vertical' className='w-full'>
-                     <div className='flex justify-start gap-2 items-center'>
-                        <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
-                        <span className='text-black font-semibold '>{product.productName}</span>
-                     </div>
-                     {Object.keys(user).length == 0 && (
-                        <Space className='w-full' size={'large'}>
-                           <Form.Item
-                              label='Tên quý khách'
-                              rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
-                              name='userName'
-                           >
-                              <Input type='text' />
-                           </Form.Item>
-                           <Form.Item
-                              label='Số điện thoại'
-                              rules={[
-                                 { required: true, message: 'Vui lòng điền thông tin' },
-                                 { len: 10, message: 'Vui lòng nhập đúng định dạng số điện thoại (10-11 số)' }
-                              ]}
-                              name='phoneNumber'
-                           >
-                              <Input type='text' />
-                           </Form.Item>
-                        </Space>
-                     )}
+    <div className='flex justify-start gap-2 items-center max-md:text-[16px]'>
+       <span>{product.weight} x</span>
+       <span className='text-lg text-black max-md:text-[16px]'>{product.price.toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                         })}</span>
+       {statusOrder === DONE_ORDER.toLowerCase() && !product?.evaluation ? (
+          <button
+             onClick={() => setIsOpen(true)}
+             className='rounded-sm ml-3 hover:bg-[#5ac471] py-2 px-5 text-white bg-greenP500 duration-300'
+          >
+             Đánh giá
+          </button>
+       ) : (
+          <> </>
+       )}
+    </div>
 
-                     <Form.Item
-                        name='content'
-                        label='Nội dung'
-                        rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
-                     >
-                        <TextQuill getValue={(value) => form.setFieldValue('content', value)} />
-                     </Form.Item>
-                     <Form.Item
-                        name='rate'
-                        label='Đánh giá'
-                        rules={[{ required: true, message: 'Vui lòng đánh giá chất lượng' }]}
-                     >
-                        <Rate />
-                     </Form.Item>
-                  </Form>
-               </div>
-            </Modal>
-         </ConfigProvider>
-      </div>
- </Link>
+    <ConfigProvider
+       theme={{
+          components: {
+             Modal: {
+                colorPrimary: '#80b235',
+                colorPrimaryBorder: '#80b235'
+             }
+          }
+       }}
+    >
+       <Modal
+          title='Đánh giá sản phẩm'
+          open={isOpen}
+          width={800}
+          onCancel={() => setIsOpen(false)}
+          footer={[
+             <Button
+                className='bg-white'
+                onClick={() => {
+                   setIsOpen(false);
+                   form.resetFields();
+                }}
+             >
+                Hủy
+             </Button>,
+             <Button
+                type='default'
+                loading={isLoading}
+                className='bg-greenPrimary text-white hover:!text-white hover:!border-0'
+                onClick={() => {
+                   handleFinish(form.getFieldsValue(true));
+                }}
+             >
+                Gửi
+             </Button>
+          ]}
+       >
+          <div className='one-product w-full'>
+             <Form form={form} onFinish={handleFinish} layout='vertical' className='w-full'>
+                <div className='flex justify-start gap-2 items-center'>
+                   <img src={product.images} alt='product' className='max-w-[100px] aspect-square rounded-lg' />
+                   <span className='text-black font-semibold '>{product.productName}</span>
+                </div>
+                {Object.keys(user).length == 0 && (
+                   <Space className='w-full' size={'large'}>
+                      <Form.Item
+                         label='Tên quý khách'
+                         rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
+                         name='userName'
+                      >
+                         <Input type='text' />
+                      </Form.Item>
+                      <Form.Item
+                         label='Số điện thoại'
+                         rules={[
+                            { required: true, message: 'Vui lòng điền thông tin' },
+                            { len: 10, message: 'Vui lòng nhập đúng định dạng số điện thoại (10-11 số)' }
+                         ]}
+                         name='phoneNumber'
+                      >
+                         <Input type='text' />
+                      </Form.Item>
+                   </Space>
+                )}
+
+                <Form.Item
+                   name='content'
+                   label='Nội dung'
+                   rules={[{ required: true, message: 'Vui lòng điền thông tin' }]}
+                >
+                   <TextQuill getValue={(value) => form.setFieldValue('content', value)} />
+                </Form.Item>
+                <Form.Item
+                   name='rate'
+                   label='Đánh giá'
+                   rules={[{ required: true, message: 'Vui lòng đánh giá chất lượng' }]}
+                >
+                   <Rate />
+                </Form.Item>
+             </Form>
+          </div>
+       </Modal>
+    </ConfigProvider>
+ </div>
    );
 };
 

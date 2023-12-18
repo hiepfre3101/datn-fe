@@ -8,6 +8,10 @@ import BlockForm from '../Product/BlockForm';
 import { Link, useNavigate } from 'react-router-dom';
 import Loading from '../../../components/Loading/Loading';
 import { useAddVoucherMutation } from '../../../services/voucher.service';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 const AddVoucher = () => {
    const [voucherTitle, setVoucherTitle] = useState<string>('');
    const [loading, setLoading] = useState<boolean>(false);
@@ -30,6 +34,10 @@ const AddVoucher = () => {
             setLoading(false);
             navigate('/manage/vouchers');
          }).catch(error=>{
+            if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+               return
+            } 
             error
             message.error('Mã code đã tồn tại');
             setLoading(false);
@@ -40,6 +48,14 @@ const AddVoucher = () => {
          console.log(error);
       }
    };
+   const dispatch = useDispatch()
+   const [clearToken] = useClearTokenMutation();
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    if (loading) return <Loading sreenSize='lg' />;
    return (
       <>

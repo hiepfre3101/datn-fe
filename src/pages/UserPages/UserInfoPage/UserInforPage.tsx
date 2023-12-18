@@ -3,12 +3,14 @@ import { UploadFile } from 'antd/es/upload';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { IAuth, updateInfoUser } from '../../../slices/authSlice';
+import { IAuth, deleteTokenAndUser, updateInfoUser } from '../../../slices/authSlice';
 import { useForm } from 'react-hook-form';
 import Loading from '../../../components/Loading/Loading';
 import { uploadImages } from '../../../api/upload';
 import UploadButton from '../../../components/UploadButton/UploadButton';
 import { useUpdateUserMutation } from '../../../services/user.service';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { setItem } from '../../../slices/cartSlice';
 
 export type IUserInFo = {
    avatar?: string;
@@ -32,11 +34,17 @@ const UserInfoPage = () => {
    const [updateUser] = useUpdateUserMutation();
    const dispatch = useDispatch();
    const navigate = useNavigate();
+   const [clearToken] = useClearTokenMutation();
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    useEffect(() => {
       if (!auth.user || !auth.accessToken) {
          navigate('/');
       }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    useEffect(() => {
       setValue('userName', auth.user.userName);
@@ -84,7 +92,11 @@ const UserInfoPage = () => {
                res;
                message.success('Cập nhật thông tin thành công');
                dispatch(updateInfoUser(data));
-            });
+            }).catch((err) => {
+               if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+                  onHandleLogout()
+               } 
+            })
          setLoading(false);
       } catch (err:any) {
          setLoading(false);         

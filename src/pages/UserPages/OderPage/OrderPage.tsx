@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button, Divider, Popconfirm, Select, Space, Table, Tag, message, notification } from 'antd';
 import { useState, useCallback } from 'react';
 import { IOrderFull } from '../../../interfaces/order';
 import Loading from '../../../components/Loading/Loading';
 import { getOrderForGuest } from '../../../api/order';
-import { useSelector } from 'react-redux';
-import { IAuth } from '../../../slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { IAuth, deleteTokenAndUser } from '../../../slices/authSlice';
 import FormQuery from './Component/FormQuery';
 import { uppercaseFirstLetter } from '../../../helper';
 import { formatStringToDate } from '../../../helper';
@@ -20,6 +20,8 @@ import {
 } from '../../../constants/orderStatus';
 import { clientSocket } from '../../../config/socket';
 import { useCancelOrderMemberMutation, useGetOrderForMemberQuery } from '../../../services/order.service';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { setItem } from '../../../slices/cartSlice';
 
 const { Column } = Table;
 
@@ -30,7 +32,29 @@ const OrderPage = () => {
    const [day, setDay] = useState<string | undefined>(undefined);
    const [status, setStatus] = useState<string | undefined>(undefined);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
-   const { data, isLoading } = useGetOrderForMemberQuery({ status: status, day }, { refetchOnMountOrArgChange: true });
+   const { data, isLoading,error } = useGetOrderForMemberQuery(
+      { status: status, day },
+      { refetchOnMountOrArgChange: true, skip: !auth.accessToken }
+   );
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+   const navigate = useNavigate()
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
+   if (error && 'data' in error) {
+      const errorData = error.data as { message?: string };
+    
+      if (
+        errorData.message === 'Refresh Token is invalid' ||
+        errorData.message === 'Refresh Token is expired ! Login again please !'
+      ) {
+        onHandleLogout();
+      }
+    }
    const [handleCancelOrder, { isLoading: loadingCancel }] = useCancelOrderMemberMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const canceledOrder = async (id: any) => {
@@ -48,7 +72,8 @@ const OrderPage = () => {
       try {
          setLoading(true);
          const { data } = await getOrderForGuest(invoiceId);
-         setOrders((prev) => [...prev, ...data.body.data]);
+         // eslint-disable-next-line no-extra-boolean-cast
+         setOrders(data.body.data);
          setLoading(false);
       } catch (error) {
          setLoading(false);

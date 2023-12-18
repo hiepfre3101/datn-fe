@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useDispatch, useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { ICartItems, ICartSlice } from '../../../../slices/cartSlice';
+import { Link, useNavigate } from 'react-router-dom';
+import { ICartItems, ICartSlice, setItem } from '../../../../slices/cartSlice';
 import { removeFromCart, updateItem, removeAllProductFromCart } from '../../../../slices/cartSlice';
 import { message } from 'antd';
-import { IAuth } from '../../../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../../../slices/authSlice';
 import {
    useDeleteAllProductInCartMutation,
    useDeleteProductInCartMutation,
@@ -13,6 +13,7 @@ import {
 } from '../../../../services/cart.service';
 import { ICartDataBaseItem } from '../../../../interfaces/cart';
 import { useEffect, useRef, useState } from 'react';
+import { useClearTokenMutation } from '../../../../services/auth.service';
 // eslint-disable-next-line @typescript-eslint/ban-types
 const debounce = (func: Function, delay: number) => {
    let timeoutId: NodeJS.Timeout;
@@ -44,6 +45,14 @@ const ProductsInCart = () => {
    useEffect(() => {
       setCartState(cart);
    }, [cart]);
+   const navigate = useNavigate()
+   const [clearToken] = useClearTokenMutation();
+   const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    if (!debouncedUpdateCartDBRef.current) {
       debouncedUpdateCartDBRef.current = debounce(async (temp: any) => {
          await updateCartDB(temp)
@@ -53,8 +62,16 @@ const ProductsInCart = () => {
                message.success('Cập nhật sản phẩm thành công');
             })
             .catch((error) => {
-               message.error('Số lượng vượt quá sản phẩm đang có trong kho');
-               setCartState(error.data.body.data.products);
+               setCartState(error?.data?.body?.data?.products);
+               if(error.data.message=="The remaining quantity is not enough!"){
+                  message.error('Số lượng vượt quá sản phẩm đang có trong kho');
+               }
+               else if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+                  onHandleLogout()
+               } 
+               else if(error.status==500){
+                  message.error('Vui lòng nhập số');
+               }
             });
       }, 1000);
    }
@@ -63,7 +80,7 @@ const ProductsInCart = () => {
       if (auth.user._id) {
          let updatedCartState = [...cartState];
          let updatedItem = { ...updatedCartState[index] };
-         updatedItem.weight = cal ? updatedItem.weight + 0.5 : updatedItem.weight - 0.5;
+         updatedItem.weight = cal ?    Number(updatedItem.weight) + 0.5 :  Number(updatedItem.weight) - 0.5;
          updatedCartState[index] = updatedItem;
          setCartState(updatedCartState);
          const temp = {
@@ -147,20 +164,28 @@ const ProductsInCart = () => {
    };
    const handleRemoveProductInCart = (item: ICartDataBaseItem | ICartItems) => {
       if (auth.user._id) {
-         deleteProductInCartDB(item?.productId?._id).then((res) => {
+         deleteProductInCartDB(item?.productId?._id).unwrap().then((res) => {
             res;
             message.success('Xoá sản phẩm khỏi giỏ hàng thành công');
-         });
+         }).catch(err=>{
+         if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
+         })
       } else {
          dispatch(removeFromCart({ id: item.productId._id }));
       }
    };
    const handleRemoveAllCart = () => {
       if (auth.user._id) {
-         deleteAllProductInCartDB(auth.user._id).then((res) => {
+         deleteAllProductInCartDB(auth.user._id).unwrap().then((res) => {
             res;
             message.success('Xoá giỏ hàng thành công');
-         });
+         }).catch(err=>{
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+                  onHandleLogout()
+               } 
+            });
       } else {
          dispatch(removeAllProductFromCart());
          message.success('Xoá giỏ hàng thành công');

@@ -12,7 +12,7 @@ const ShipmentItem = ({ shipment }: Props) => {
       key: product?.idProduct?._id,
       label: (
          <p className='flex justify-start items-center gap-2 '>
-            {product?.idProduct?.productName}{' '}
+            {product?.productName}{' '}
             {product.weight === 0 && (
                <Tag color='red' className='w-[50%] text-center'>
                   Hết hàng

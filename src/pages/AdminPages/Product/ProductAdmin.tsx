@@ -3,7 +3,7 @@ import { SearchOutlined, PlusCircleOutlined, CloseOutlined } from '@ant-design/i
 import Table from 'antd/es/table';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ProductDataType, productData } from '../../../constants/configTableAntd';
 import { useGetAllExpandQuery, useRemoveProductMutation } from '../../../services/product.service';
 import Column from 'antd/es/table/Column';
@@ -14,12 +14,24 @@ import { adminSocket } from '../../../config/socket';
 import { IProduct } from '../../../interfaces/product';
 import { WILL_EXPIRE } from '../../../constants/statusExpireProduct';
 import useDebounce from '../../../hooks/useDebounce';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 const ProductAdmin = () => {
    const [valueSearch, setValueSearch] = useState<string>('');
    const [collapsed, setCollapsed] = useState(true);
    const [filterProducts, setFilterProducts] = useState<any>({});
    // console.log(filterProducts);
-
+   const [clearToken] = useClearTokenMutation();
+   const navigate = useNavigate()
+   const dispatch = useDispatch()
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
    const [expiredProducts, setExpiredProducts] = useState<any>([]);
    const searchDebounce = useDebounce(valueSearch, 500);
@@ -35,7 +47,11 @@ const ProductAdmin = () => {
          return;
       }
       try {
-         await handleRemoveProduct(id);
+         await handleRemoveProduct(id).unwrap().catch(err=>{
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
+         });
       } catch (error) {
          console.log(error);
       }

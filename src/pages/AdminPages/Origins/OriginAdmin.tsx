@@ -1,14 +1,31 @@
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { Card, Layout, Popconfirm, Popover } from 'antd';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useGetAllOriginQuery, useRemoveOriginByIdMutation } from '../../../services/origin.service';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 const OriginAdmin = () => {
    const { data, isLoading } = useGetAllOriginQuery();
    const [removeCategory] = useRemoveOriginByIdMutation();
    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+   const navigate  = useNavigate()
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    const handleDelete = (id: any) => {
-      removeCategory(id);
+      removeCategory(id).unwrap().catch(err=>{
+         if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+            onHandleLogout()
+         } 
+      });
    };
    return (
       <>
