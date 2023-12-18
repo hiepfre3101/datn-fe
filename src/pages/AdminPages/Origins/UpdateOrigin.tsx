@@ -77,7 +77,7 @@ const UpdateOrigin = () => {
    return (
       <>
          <Helmet>
-            <title>Chỉnh sửa danh mục</title>
+            <title>Chỉnh sửa nguồn gốc</title>
          </Helmet>
 
          <Layout style={{ minHeight: '100vh', display: 'flex', position: 'relative', width: '100%' }}>
@@ -102,7 +102,7 @@ const UpdateOrigin = () => {
                      <>
                         <Form.Item name={'name'}>
                            <label className='block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2'>
-                              Tên danh mục
+                              Nguồn gốc
                            </label>
 
                            <Input
