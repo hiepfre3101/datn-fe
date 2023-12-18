@@ -23,9 +23,14 @@ const ChangePassword = ()=>{
             navigate('/');
         }
     },[])
+    const onHandleLogout = () => {
+         dispatch(deleteTokenAndUser());
+         dispatch(setItem());
+         clearToken();
+         navigate('/login');
+      };
     const handleSubmit = async (e:React.FormEvent)=>{
         e.preventDefault();
-
         if(oldPassword.length<6){
             setLoadingState(false)
             message.error("Mật khẩu hiện tại phải lớn hơn 6 ký tự")
@@ -55,10 +60,12 @@ const ChangePassword = ()=>{
             message.success("Đổi mật khẩu thành công")
            }).catch(err => {
             setLoadingState(false)
-            console.log(err.data.message);
             if(err.data.message == 'Current password does not match'){
                 message.error("Mật khẩu hiện tại không đúng")
             }
+            else if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
            })
             
         

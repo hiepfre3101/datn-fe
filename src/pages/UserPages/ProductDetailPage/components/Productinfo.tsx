@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { ConfigProvider, Rate, message } from 'antd';
 import ProductThumbsGallery from './ProductThumbsGallery';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../../../../slices/cartSlice';
+import { addItem, setItem } from '../../../../slices/cartSlice';
 import { useEffect, useState } from 'react';
 import { IProductInfoProp } from '../../../../interfaces/product';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
@@ -11,15 +11,17 @@ import { AiOutlineHeart } from 'react-icons/ai';
 import { Link, useNavigate } from 'react-router-dom';
 import { addToWishList } from '../../../../slices/wishListSlice';
 import { FcLike } from 'react-icons/fc';
-import { IAuth } from '../../../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 import { CountExpirationDate } from '../../../../helper';
+import { useClearTokenMutation } from '../../../../services/auth.service';
 
 const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const [inputWeight, setinputWeight] = useState<any>(0.5);
    const [totalWeight, setTotalWeight] = useState<number>(0);
    const auth = useSelector((state: { userReducer: IAuth }) => state.userReducer);
    const [addCart] = useAddCartMutation();
+   const [clearToken] = useClearTokenMutation();
    const navigate = useNavigate();
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
@@ -57,6 +59,12 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
       );
    }, [product_info]);
    const dispatch = useDispatch();
+   const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    const add_to_cart = async () => {
       if (inputWeight === '' || inputWeight === 0 || inputWeight.toString().endsWith('.')) {
          message.warning('Vui lòng nhập đúng định dạng số lượng');
@@ -75,12 +83,17 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
                   res;
                   message.success('Thêm sản phẩm vào lô hàng thành công');
                })
-               .catch((err) => {
+               .catch((err) => {            
                   if (err.data.message == 'Product not found') {
                      message.error('Sản phẩm đã bị xoá khỏi hệ thống');
                      navigate('/products/' + product_info?._id);
                      return;
-                  } else if (err.data.message == '"weight" must be a number') {
+                  }
+                  else if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+                     onHandleLogout()
+
+                  } 
+                  else if (err.data.message == '"weight" must be a number') {
                      message.error('Vui lòng nhập số');
                   }
                   else if (err.data.message == 'Please check the weight again!') {

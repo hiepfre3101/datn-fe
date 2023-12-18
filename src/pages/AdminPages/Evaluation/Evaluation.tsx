@@ -8,6 +8,11 @@ import { IEvaluationFull } from '../../../interfaces/evaluation'
 import { useGetAllEvaluationQuery, useUpdateEvaluationMutation } from '../../../services/evaluation.service';
 import { formatStringToDate } from '../../../helper';
 import Loading from '../../../components/Loading/Loading';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 
 
@@ -17,7 +22,15 @@ const Evaluation = () => {
     // const [evaluation, setEvaluation] = useState<any>({});
     const { data, isLoading, refetch } = useGetAllEvaluationQuery()
     const [updateEvaluationMutation] = useUpdateEvaluationMutation()
-
+    const [clearToken] = useClearTokenMutation();
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const onHandleLogout = () => {
+         dispatch(deleteTokenAndUser());
+         dispatch(setItem());
+         clearToken();
+         navigate('/login');
+      };
     const handleUPdateEvaluationMutation = (item:{_id:string,isReviewVisible:boolean}) => {
 
         updateEvaluationMutation(item).unwrap().then(res=>{
@@ -31,6 +44,9 @@ const Evaluation = () => {
             }
         }).catch(error=>{
             error
+            if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+                onHandleLogout()
+             } 
             message.success("Hành động thất bại")
         })
         refetch()
