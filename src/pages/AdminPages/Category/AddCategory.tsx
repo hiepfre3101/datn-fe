@@ -13,6 +13,10 @@ import HeadForm from '../../../components/HeadForm/HeadForm';
 import { ICategories } from '../../../interfaces/category';
 
 import Loading from '../../../components/Loading/Loading';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const AddCategory = () => {
    const [loading, setLoading] = useState<boolean>(false);
@@ -20,13 +24,14 @@ const AddCategory = () => {
    const [categoryName, setCategoryName] = useState<string>('');
    const [form] = Form.useForm<ICategories>();
    const navigate = useNavigate();
-
-   // const handleChange = (value: string) => {
-   //   // console.log(`selected ${value}`);
-   // };
-
-   // console.log(data);
-
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    const handleGetFiles = (files: File[]) => {
       form.setFieldValue('image', files);
       setFiles(files);
@@ -46,13 +51,19 @@ const AddCategory = () => {
          form.setFieldValue('image', body.data[0]);
          form.setFieldValue('cateName', categoryName);
          const newFormData = form.getFieldsValue(true);
-         await handleAddCategory(newFormData);
+         await handleAddCategory(newFormData).unwrap().then(()=>{
+            navigate('/manage/categories');
+         }).catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
+         });
          if (error) {
             console.log(error);
             return;
          }
          setLoading(false);
-         navigate('/manage/categories');
+
       } catch (error) {
          setLoading(false);
          console.log(error);

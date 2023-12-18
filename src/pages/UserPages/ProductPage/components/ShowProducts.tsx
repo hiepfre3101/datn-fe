@@ -10,11 +10,12 @@ import QuickView from '../../../../components/QuickView/QuickView';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../../store';
 import { saveProduct } from '../../../../slices/productSlice';
-import { addItem } from '../../../../slices/cartSlice';
+import { addItem, setItem } from '../../../../slices/cartSlice';
 import { IShipmentOfProduct } from '../../../../interfaces/shipment';
-import { IAuth } from '../../../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../../../slices/authSlice';
 import { useAddCartMutation } from '../../../../services/cart.service';
 import { CountExpirationDate } from '../../../../helper';
+import { useClearTokenMutation } from '../../../../services/auth.service';
 
 interface IProps {
    data: IResponseHasPaginate<IProductExpanded> | undefined;
@@ -27,6 +28,7 @@ const ShowProducts = ({ data }: IProps) => {
    const add_to_wishList = (product: any) => {
       dispatch(addToWishList(product));
    };
+   const [clearToken] = useClearTokenMutation();
    const navigate = useNavigate();
    const openQuickViewModal = (data: IProduct) => {
       const bodyElement = document.querySelector('body');
@@ -43,6 +45,12 @@ const ShowProducts = ({ data }: IProps) => {
          modal_product_content?.classList.toggle('max-lg:!translate-y-[0%]');
       }, 300);
       dispatch(saveProduct(data));
+   };
+   const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
    };
    const add_to_cart = async (data: IProductExpanded) => {
       if (auth.user._id) {
@@ -62,6 +70,14 @@ const ShowProducts = ({ data }: IProps) => {
                   message.error('Sản phẩm đã bị xoá khỏi hệ thống');
                   navigate('/collections');
                   return;
+               }
+               else if (error.data.message == 'Please check the weight again!') {
+                  message.error('Sản phẩm đã hết hàng');
+                  return
+               } 
+               else if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+                  onHandleLogout()
+                  return
                }
                message.error('Số lượng vượt quá sản phẩm đang có trong kho');
             });

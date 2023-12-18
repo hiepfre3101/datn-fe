@@ -2,15 +2,34 @@ import { Layout, Popconfirm, Table } from 'antd';
 import { useGetAllQuery, useUpdateUserMutation } from '../../../services/user.service';
 import { Helmet } from 'react-helmet';
 import Column from 'antd/es/table/Column';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
 
 
 const Account = () => {
     const { data, refetch, isLoading } = useGetAllQuery({});
 
     const [update] = useUpdateUserMutation();
+    const [clearToken] = useClearTokenMutation();
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const onHandleLogout = () => {
+         dispatch(deleteTokenAndUser());
+         dispatch(setItem());
+         clearToken();
+         navigate('/login');
+      };
     const onHandleUpdate = async (item: any) => {
 
-        await update({ id: item._id, data: { userName: item.userName, email: item.email, state: !item.state } });
+        await update({ id: item._id, data: { userName: item.userName, email: item.email, state: !item.state } }).unwrap()
+        .catch((err) => {
+         if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+                  onHandleLogout()
+               } 
+        });
         refetch()
     };
 

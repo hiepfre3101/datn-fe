@@ -6,6 +6,11 @@ import { DONE_ORDER, FAIL_ORDER, ORDER_OF_STATUS } from '../../../constants/orde
 import ButtonCheck from './components/ButtonCheck';
 import { useUpdateOrderMutation } from '../../../services/order.service';
 import { adminSocket } from '../../../config/socket';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 type Props = {
    idOrder: string;
@@ -17,6 +22,15 @@ const DetailOrder = ({ idOrder }: Props) => {
    const [handleUpdateOrder, { isLoading }] = useUpdateOrderMutation();
    const [subtotal,setSubtotal] = useState<number>(0)
    const [discount,setDiscount] = useState<number>(0)
+   const [clearToken] = useClearTokenMutation();
+   const navigate = useNavigate()
+   const dispatch = useDispatch()
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    useEffect(() => {
       (async () => {
          try {
@@ -77,6 +91,10 @@ const DetailOrder = ({ idOrder }: Props) => {
             phoneNumber: order.phoneNumber!,
             totalPayment: order.totalPayment!,
             status: value.toLowerCase()
+         }).unwrap().catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
          });
          // phai https thanh cong thi moi emot socket
          adminSocket.emit(

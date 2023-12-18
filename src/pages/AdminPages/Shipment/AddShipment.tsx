@@ -10,6 +10,10 @@ import { useAddShipmentMutation } from '../../../services/shipment.service';
 import Loading from '../../../components/Loading/Loading';
 import { useNavigate } from 'react-router-dom';
 import useFormProductInShipment from '../../../hooks/useFormProductInShipment';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const AddShipment = () => {
    const { data } = useGetAllWithoutExpandQuery({ limit: 3000 }, { refetchOnMountOrArgChange: true });
@@ -28,13 +32,28 @@ const AddShipment = () => {
       }, 0);
       const dataForm: InputShipment = { totalMoney, products: productDataSubmit };
       try {
-         await handleSubmit(dataForm);
+         await handleSubmit(dataForm).unwrap().then(res=>{
+            res
+            navigate('/manage/shipments');
+         }).catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            }
+         });
          if (isError) return;
-         navigate('/manage/shipments');
+         
       } catch (error) {
          console.log(error);
       }
    };
+   const dispatch = useDispatch()
+   const [clearToken] = useClearTokenMutation();
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    if (isLoading) return <Loading sreenSize='lg' />;
    return (
       <>

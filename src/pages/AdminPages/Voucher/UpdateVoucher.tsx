@@ -8,6 +8,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import Loading from '../../../components/Loading/Loading';
 import { useGetOneVoucherByIdQuery, useUpdateVoucherMutation } from '../../../services/voucher.service';
 import dayjs from 'dayjs';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 const UpdateVoucher = () => {
    const [voucherTitle, setVoucherTitle] = useState<string>('');
    const [loading, setLoading] = useState<boolean>(false);
@@ -34,6 +38,14 @@ const UpdateVoucher = () => {
          });
       }
    }, [data, isLoading, form]);
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    const validateDateStartRange = (_: any, values: any) => {
       const { dateEnd } = form.getFieldsValue(true);
 
@@ -55,13 +67,20 @@ const UpdateVoucher = () => {
    const handleSubmit = async (values: any) => {
       try {
          setLoading(true);
-         await handleUpdateProduct({ idVoucher: id, ...values });
+         await handleUpdateProduct({ idVoucher: id, ...values }).unwrap().then(res=>{
+            res
+            navigate('/manage/vouchers');
+         }).catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
+         });
          if (error) {
             console.log(error);
             return;
          }
          setLoading(false);
-         navigate('/manage/vouchers');
+         
       } catch (error) {
          setLoading(false);
          console.log(error);

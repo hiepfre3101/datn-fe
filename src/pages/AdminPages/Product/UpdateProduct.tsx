@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Form, Space, Input, Radio, Divider, UploadFile, Descriptions, message } from 'antd';
+import { Form, Space, Input, Radio, Divider, UploadFile, Descriptions } from 'antd';
 import HeadForm from '../../../components/HeadForm/HeadForm';
 import { InputProduct } from '../../../interfaces/product';
 import UploadButton from '../../../components/UploadButton/UploadButton';
@@ -16,6 +16,10 @@ import Loading from '../../../components/Loading/Loading';
 // import { IImage } from '../../../interfaces/image';
 import { IOrigin } from '../../../interfaces/origin';
 import { getOriginData } from '../../../api/origin';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { setItem } from '../../../slices/cartSlice';
+import { useDispatch } from 'react-redux';
 
 const UpdateProduct = () => {
    const [form] = Form.useForm<InputProduct>();
@@ -41,7 +45,7 @@ const UpdateProduct = () => {
          setFiles(files);
       }
    };
-   const [handleUpdateProduct, { isLoading, error }] = useUpdateProductMutation();
+   const [handleUpdateProduct, { isLoading }] = useUpdateProductMutation();
    const { data } = useGetOneProductQuery(id!, { skip: !id, refetchOnMountOrArgChange: true });
    const { data: categories } = useGetAllCateQuery({}, { refetchOnMountOrArgChange: true });
    useEffect(() => {
@@ -54,6 +58,14 @@ const UpdateProduct = () => {
          }
       })();
    }, []);
+   const dispatch = useDispatch()
+   const [clearToken] = useClearTokenMutation();
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    useEffect(() => {
       const formatedFiles: UploadFile[] = [] as UploadFile[];
       data?.body.data.images.forEach((img) => {
@@ -106,13 +118,16 @@ const UpdateProduct = () => {
          }
          const newFormData = form.getFieldsValue(true);
          newFormData.shipments = undefined;
-         await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } });
-         if (error) {
-            message.error('Lỗi hệ thống !');
-            console.log(error);
-            return;
-         }
-         navigate('/manage/products');
+         await handleUpdateProduct({ idProduct: id!, ...{ ...newFormData, productName } }).unwrap().then(res=>{
+            res
+            navigate('/manage/products');
+         })
+         .catch((error) => {
+            if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+                  onHandleLogout()
+                  return
+               } 
+         });  
       } catch (error) {
          console.log(error);
       }

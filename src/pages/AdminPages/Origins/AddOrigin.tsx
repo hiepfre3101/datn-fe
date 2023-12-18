@@ -7,6 +7,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { IOrigin } from '../../../interfaces/origin'
 import { useAddOriginMutation } from '../../../services/origin.service'
 import Loading from '../../../components/Loading/Loading'
+import { useClearTokenMutation } from '../../../services/auth.service'
+import { deleteTokenAndUser } from '../../../slices/authSlice'
+import { setItem } from '../../../slices/cartSlice'
+import { useDispatch } from 'react-redux'
 
 const AddOrigin = () => {
    const [loading, setLoading] = useState<boolean>(false);
@@ -14,6 +18,14 @@ const AddOrigin = () => {
    const navigate = useNavigate();
    const [OriginName, setOriginName] = useState<string>('');
    const [handleAddCategory] = useAddOriginMutation();
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch()
+   const onHandleLogout = () => {
+        dispatch(deleteTokenAndUser());
+        dispatch(setItem());
+        clearToken();
+        navigate('/login');
+     };
    const handleSubmit = async () => {
       try {
          setLoading(true);
@@ -24,6 +36,9 @@ const AddOrigin = () => {
             message.success('Thêm thành công')
             navigate('/manage/origin');
          }).catch(error => {
+            if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            } 
             message.error(error.data.message);
             setLoading(false)
          });

@@ -13,6 +13,7 @@ import {
    ICartSlice,
    removeAllProductFromCart,
    removeFromCart,
+   setItem,
    updateImgProductInCartLocal,
    updateItem,
    updateNameProductInCartLocal,
@@ -24,10 +25,11 @@ import { useAddOrderMutation } from '../../../services/order.service';
 import { IOrder } from '../../../interfaces/order';
 import { clientSocket } from '../../../config/socket';
 import { useCheckCartMutation, useGetCartQuery } from '../../../services/cart.service';
-import { IAuth } from '../../../slices/authSlice';
+import { IAuth, deleteTokenAndUser } from '../../../slices/authSlice';
 import { formatCharacterWithoutUTF8 } from '../../../helper';
 import { IVoucher, remoteVoucher } from '../../../slices/voucherSlice';
 import { useCheckVoucherMutation } from '../../../services/voucher.service';
+import { useClearTokenMutation } from '../../../services/auth.service';
 const CheckOutPage = () => {
    const navigate = useNavigate();
    const methods = useForm<IOrder>();
@@ -57,7 +59,13 @@ const CheckOutPage = () => {
    const [error, setError] = useState<string[]>([]);
    const voucher = useSelector((state: { vouchersReducer: IVoucher }) => state.vouchersReducer);
 
-
+   const [clearToken] = useClearTokenMutation();
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    const CheckCart = async () => {
       let temp = false;
       if (auth.user._id) {
@@ -111,6 +119,11 @@ const CheckOutPage = () => {
                      ]);
                      dispatch(remoteVoucher());
                   }
+                  
+                    else if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
+                        onHandleLogout()
+                     } 
+               
                });
          }
       
@@ -120,6 +133,10 @@ const CheckOutPage = () => {
        
          })
          .catch(err => {
+            console.log(err);
+             if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               onHandleLogout()
+            }
             setIsModalOpen(true);
             if (err?.data?.body?.errors as any) {
                err.data.body.errors.map((item: any) => {
@@ -141,7 +158,7 @@ const CheckOutPage = () => {
                         ...prevError,
                         '- Sản phẩm' + item.productName + ' đã  bị xoá khỏi hệ thống'
                      ]);
-                  }
+                  }   
                });
             
          }
@@ -238,7 +255,6 @@ const CheckOutPage = () => {
          if (data.note !== '') {
             data.note = formatCharacterWithoutUTF8(data.note || '');
          } else {
-            //dung dong vao cho nay
             data.note = ' ';
          }
          data.shippingAddress = "Thành phố Hà Nội"+", "+data.districtName+", "+data.ward+", "+data.shippingAddress
@@ -303,6 +319,10 @@ const CheckOutPage = () => {
                      } else {
                         window.location.href = res.body.data.url;
                      }
+                  }).catch((err) => {
+                     if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+                        onHandleLogout()
+                     } 
                   })
                   .finally(() => {
                      setLoadingState(false);

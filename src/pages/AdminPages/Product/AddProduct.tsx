@@ -13,6 +13,10 @@ import Loading from '../../../components/Loading/Loading';
 import HeadForm from '../../../components/HeadForm/HeadForm';
 import { IOrigin } from '../../../interfaces/origin';
 import { getOriginData } from '../../../api/origin';
+import { useClearTokenMutation } from '../../../services/auth.service';
+import { setItem } from '../../../slices/cartSlice';
+import { deleteTokenAndUser } from '../../../slices/authSlice';
+import { useDispatch } from 'react-redux';
 
 const AddProduct = () => {
    const [loading, setLoading] = useState<boolean>(false);
@@ -42,7 +46,14 @@ const AddProduct = () => {
          }
       })();
    }, []);
-
+   const [clearToken] = useClearTokenMutation();
+   const dispatch = useDispatch();
+ const onHandleLogout = () => {
+      dispatch(deleteTokenAndUser());
+      dispatch(setItem());
+      clearToken();
+      navigate('/login');
+   };
    const handleSubmit = async () => {
       try {
          setLoading(true);
@@ -53,13 +64,20 @@ const AddProduct = () => {
          //2: lấy đc data :{url:string, public_id:string}[]
          form.setFieldValue('images', body.data);
          const newFormData = form.getFieldsValue(true);
-         await handleAddProduct(newFormData);
+         await handleAddProduct(newFormData).unwrap().then(res=>{
+            res
+            navigate('/manage/products');
+         }).catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"|| err.data.error== "invalid token"){
+               onHandleLogout()
+            }
+         });
          if (error) {
             console.log(error);
             return;
          }
          setLoading(false);
-         navigate('/manage/products');
+   
       } catch (error) {
          setLoading(false);
          console.log(error);
