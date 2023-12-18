@@ -84,7 +84,7 @@ const OrdersAdmin = () => {
                            : []
                      }
                      pagination={{ pageSize: 10 }}
-                     scroll={{ y: 800, x: 800 }}
+                     scroll={{ y: 500, x: 800 }}
                      onRow={(record) => {
                         return {
                            onClick: () => {
