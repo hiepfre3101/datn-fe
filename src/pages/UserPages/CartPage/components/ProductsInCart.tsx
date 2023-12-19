@@ -62,8 +62,9 @@ const ProductsInCart = () => {
                message.success('Cập nhật sản phẩm thành công');
             })
             .catch((error) => {
-               setCartState(error?.data?.body?.data?.products);
+             
                if(error.data.message=="The remaining quantity is not enough!"){
+                  setCartState(error?.data?.body?.data?.products);
                   message.error('Số lượng vượt quá sản phẩm đang có trong kho');
                }
                else if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
@@ -103,7 +104,10 @@ const ProductsInCart = () => {
       if (auth.user._id) {
          let updatedCartState = [...cartState];
          let updatedItem = { ...updatedCartState[index] };
-         updatedItem.weight = e.target.value;
+         if(e.target.value!="."){
+            updatedItem.weight = e.target.value;
+         }
+
          if (e.target.value == '') {
             updatedCartState[index] = updatedItem;
             setCartState(updatedCartState);
@@ -239,7 +243,7 @@ const ProductsInCart = () => {
                                  {item.productId?.productName}
                               </Link>
                               <div className='origin flex'>
-                                 <span className='origin-title  font-bold'>Xuất sứ:</span>
+                                 <span className='origin-title  font-bold'>Xuất xứ:</span>
                                  <span className='origin-name ml-[5px]'>{item.productId.originId.name}</span>
                               </div>
                               <span className='price'>

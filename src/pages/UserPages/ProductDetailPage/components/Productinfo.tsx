@@ -25,6 +25,9 @@ const ProductInfo = ({ product_info }: IProductInfoProp) => {
    const navigate = useNavigate();
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
+         if(e.target.value=="."){
+            return
+         }
          const value = e.target.value;
          if (value.endsWith('.') && !/\.\d+$/.test(value)) {
             const count = value.split('.').length - 1;
