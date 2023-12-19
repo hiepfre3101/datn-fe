@@ -40,7 +40,7 @@ export default function SlideEvaluate() {
                         <span className='customer-img rounded-[50%]  sm:mr-[30px] flex justify-center items-center   relative pb-[20px] '>
                            <img
                               className='min-w-[155px] max-h-[155px] max-w-[155px] min-h-[155px] max-sm:w-[155px] max-sm:h-[155px] rounded-[50%]'
-                              src={item.userId?.avatar}
+                              src={item.userId?.avatar || 'https://res.cloudinary.com/dpwto5xyv/image/upload/v1702994824/fresh_mart/t%E1%BA%A3i_xu%E1%BB%91ng_svlurd.png'}
                               alt=''
                            />
                            <span className='evaluate-icon absolute w-[40px] h-[40px] flex items-center justify-center text-white rounded-[50%] bg-[#51A55C] bottom-0'>
