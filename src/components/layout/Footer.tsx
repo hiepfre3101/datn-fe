@@ -62,10 +62,6 @@ const Footer = () => {
       dispatch(setItem());
       clearToken();
       navigate('/');
-      clientSocket.off('purchaseNotification');
-      clientSocket.off('statusNotification');
-      clientSocket.off('updatemess');
-      clientSocket.disconnect();
    };
    useEffect(() => {
       clientSocket.open();
@@ -168,6 +164,10 @@ const Footer = () => {
       };
       if (auth.user._id && clientSocket) {
          clientSocket.on('updatemess', handleUpdateChat);
+      }
+      return () => {
+         clientSocket.off('updatemess', handleUpdateChat);
+         clientSocket.disconnect();
       }
    }, [auth]);
 
