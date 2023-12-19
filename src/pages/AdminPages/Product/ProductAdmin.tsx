@@ -199,6 +199,9 @@ const ProductAdmin = () => {
                      <Column title='Giá (VND)' dataIndex='price' key='price' width={20}
                       render={(price) => <span className='w-[3rem] h-[3rem]'>{price.toLocaleString("vi-VN")}₫</span>}
                      />
+                     <Column title='Khuyến mãi (%)' dataIndex='discount' key='discount' width={20}
+                      render={(discount) => <span className='w-[3rem] h-[3rem]'>{discount}%</span>}
+                     />
                      <Column
                         title='Số lượng kho hàng (kg)'
                         dataIndex='stock'

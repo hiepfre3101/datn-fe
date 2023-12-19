@@ -13,6 +13,7 @@ export type ProductDataType = DataType & {
    category: string;
    price: number;
    stock: number;
+   discount: number;
    totalWeight?: number;
    expDate: string;
    isSale: boolean;
@@ -63,6 +64,7 @@ export const productData = (data: IResponseHasPaginate<IProductExpanded>): Produ
       category: product.categoryId.cateName,
       image: product.images[0].url,
       price: product.price || 0,
+      discount: product.discount || 0,
       stock: product.shipments[0]?.weight,
       totalWeight: product.shipments.reduce((accumulator: any, product: any) => accumulator + product?.weight, 0),
       expDate: formatStringToDate(product.shipments[0]?.date),
