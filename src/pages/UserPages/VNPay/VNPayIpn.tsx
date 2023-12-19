@@ -60,7 +60,7 @@ function VNPayIpn() {
                         </div>
 
                         <div>
-                            <span className="font-semibold ">Message:</span> <span className="text-green-500">{responseVNPay.Message}</span>
+                            <span className="font-bold ">Message:</span> <span className="text-green-500">{responseVNPay.Message}</span>
                         </div>
 
                         <div>
@@ -100,12 +100,12 @@ function VNPayIpn() {
                         </div>
 
                         <div>
-                            <span className="font-semibold ">Message:</span> <span className="text-green-500">{responseVNPay.Message}</span>
+                            <span className="font-bold ">Message:</span> <span className="text-red-500">{responseVNPay.Message}</span>
                         </div>
                     </div>
 
-                    <Link to="/orderComplete" className='p-2'>
-                        <Button danger type="primary" className="bg-blue-500 my-2">Tiếp tục</Button>
+                    <Link to="/" className='p-2'>
+                        <Button danger type="primary" className="bg-blue-500 my-2">Trở về trang chủ</Button>
                     </Link>
                 </div>
             </div>
