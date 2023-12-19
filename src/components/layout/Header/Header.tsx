@@ -49,11 +49,6 @@ const Header = () => {
       dispatch(setItem());
       clearToken();
       navigate('/');
-      clientSocket.off('purchaseNotification');
-      clientSocket.off('statusNotification');
-      clientSocket.off('updatemess');
-      clientSocket.disconnect();
-
    };
    const { data: clientNotification, refetch } = useGetClientNotificationQuery(auth?.user?._id);
    const [updateNotification] = useUpdateNotificationMutation();
@@ -105,6 +100,12 @@ const Header = () => {
          clientSocket.emit('joinClientRoom', JSON.stringify(auth?.user?._id));
          clientSocket.on('purchaseNotification', handlePurchaseNotification);
          clientSocket.on('statusNotification', handlePurchaseNotification);
+      }
+
+      return () => {
+         clientSocket.off('purchaseNotification', handlePurchaseNotification);
+         clientSocket.off('statusNotification', handlePurchaseNotification);
+         clientSocket.disconnect();
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
