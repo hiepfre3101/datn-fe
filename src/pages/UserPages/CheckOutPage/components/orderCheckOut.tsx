@@ -68,7 +68,9 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
               )
             : cart?.totalPrice;
       setSubtotal(temp);
-   }, [cart]);
+      console.log(temp);
+      
+   }, [cartdb, CartLocal,cart]);
    useEffect(() => {
       if (voucher._id) {
          if (voucher.maxReduce) {
@@ -94,13 +96,15 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                : cart?.totalPrice;
          setTotal(temp);
       }
-   }, [cart, voucher, subtotal]);
+   }, [cart, voucher, subtotal,cartdb, CartLocal]);
    useEffect(()=>{
       if(haveIsSale){
          setPayValue('vnpay')
       }
      
    },[haveIsSale])
+   console.log(subtotal);
+   
    return (
       <>
          <div className='order-checkout'>
@@ -131,7 +135,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                                           {item.productId.isSale ? '(Sản phẩm thanh lý)' : ''}
                                        </Link>
                                        <span className='block font-bold mt-[2px]'>
-                                          Xuất sứ: <span className='font-[500]'>{item.productId?.originId?.name}</span>
+                                          Xuất xứ: <span className='font-[500]'>{item.productId?.originId?.name}</span>
                                        </span>
                                        <span className='mt-[5px] font-bold'>{item.weight} X </span>
                                        <span className='mt-[5px] font-bold'>
@@ -193,20 +197,20 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-[500]'>Tính tạm:</span>
                         <span className='text-[18px] font-[500]'>
-                           {subtotal?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           {subtotal?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })||0}
                         </span>
                      </div>
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-[500]'>Mã giảm giá: {voucher._id ? voucher.code : ''}</span>
 
                         <span className='temporary font-bold  text-[14px] '>
-                           {!voucher.maxReduce
+                           {!voucher.maxReduce && voucher.percent
                               ? '- ' +
                                 ((subtotal * voucher.percent) / 100).toLocaleString('vi-VN', {
                                    style: 'currency',
                                    currency: 'VND'
                                 })
-                              : ''}
+                              : '-0'}
                         </span>
                         {voucher.maxReduce && (
                            <span className='text-[18px] font-[500]'>
@@ -224,7 +228,7 @@ const OrderCheckOut = ({ onSubmit, methods, loadingState }: Iprops) => {
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>
                         <span className='text-[18px] font-extrabold'>Tổng:</span>
                         <span className='text-[18px] font-bold'>
-                           {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                           {total?.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })||0}
                         </span>
                      </div>
                      <div className='order-details pt-[13px] mt-[13px] flex items-center justify-between border-t border-[#e2e2e2]'>

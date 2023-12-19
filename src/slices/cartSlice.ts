@@ -179,6 +179,10 @@ const cartSlice = createSlice({
          });
          state.products = nextCartproducts;
          localStorage.setItem("cart", JSON.stringify(nextCartproducts));
+         state.totalPrice = nextCartproducts.reduce(
+            (accumulator, product) => accumulator + product.productId?.price * product.weight,
+            0
+         );
       },
       updateImgProductInCartLocal:(state,action)=>{
          const nextCartproducts = state.products.map((cartItem: any) => {
