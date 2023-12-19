@@ -10,7 +10,7 @@ import { useClearTokenMutation } from '../../services/auth.service';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 const { Header } = Layout;
 import { deleteTokenAndUser } from '../../slices/authSlice';
-import { adminSocket, clientSocket } from '../../config/socket';
+import { adminSocket } from '../../config/socket';
 import {
    useDeleteNotificationMutation,
    useGetAdminNotificationQuery,
