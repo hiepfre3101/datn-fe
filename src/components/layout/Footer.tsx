@@ -190,7 +190,12 @@ const Footer = () => {
             content: messages,
             sender: 'client'
          };
-         await sendMessage(data);
+         await sendMessage(data).unwrap().catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               setOpenChat(false);
+               onHandleLogout()
+            } 
+         });
          const jsonData = JSON.stringify(data);
          clientSocket.emit('ClientSendMessage', jsonData);
       }
