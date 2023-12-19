@@ -233,9 +233,9 @@ const ProductsInCart = () => {
                            <div className='item-img w-[100px]'>
                               <Link
                                  to={'/products/'+item.productId._id}
-                                 className=' border-[1px] border-[#e2e2e2] block overflow-hidden rounded-[5px]'
+                                 className=' border-[1px] border-[#e2e2e2] block overflow-hidden rounded-[5px] h-[98px] w-[98px]'
                               >
-                                 <img src={item.productId?.images[0]?.url} className='max-w-[100%]' alt='' />
+                                 <img src={item.productId?.images[0]?.url} className='h-[98px] w-[98px]' alt='' />
                               </Link>
                            </div>
                            <div className='item-title px-[15px]'>
@@ -345,6 +345,7 @@ const ProductsInCart = () => {
                      </div>
                   ))}
                </div>
+               
                <div className='cart-footer flex justify-between py-[13px] flex-wrap gap-[15px]'>
                   <Link
                      to='/collections'
