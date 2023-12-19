@@ -32,6 +32,9 @@ const QuickView = ({ product_info }: QuickViewProp) => {
    }, [product_info]);
    const handleinputWeight = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (/^[\d.]+$/.test(e.target.value)) {
+         if(e.target.value=="."){
+            return
+         }
          const value = e.target.value;
          if (value.endsWith('.') && !/\.\d+$/.test(value)) {
             const count = value.split('.').length - 1;
@@ -126,8 +129,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
       }
    };
    const closeModal = () => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
+
       const modal_product = document.querySelector('.modal-product');
       setTimeout(() => {
          const modal_product_content = document.querySelector('.modal-product-content');
@@ -169,7 +171,7 @@ const QuickView = ({ product_info }: QuickViewProp) => {
                                        : ''}
                                  </p>
                      <span className='product-origin text-[14px]'>
-                        Xuất sứ: <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
+                        Xuất xứ: <strong className='text-[#51A55C]'>{product_info[0]?.originId.name}</strong>
                      </span>
                      <br />
                      <span className='product-origin text-[14px]'>

@@ -31,8 +31,7 @@ const ShowProducts = ({ data }: IProps) => {
    const [clearToken] = useClearTokenMutation();
    const navigate = useNavigate();
    const openQuickViewModal = (data: IProduct) => {
-      const bodyElement = document.querySelector('body');
-      bodyElement?.classList.toggle('overflow-hidden');
+
       const modal_product = document.querySelector('.modal-product');
       setTimeout(() => {
          modal_product?.classList.toggle('hidden');
