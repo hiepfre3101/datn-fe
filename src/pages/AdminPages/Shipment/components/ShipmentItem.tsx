@@ -12,12 +12,12 @@ const ShipmentItem = ({ shipment }: Props) => {
       key: product?.idProduct?._id,
       label: (
          <p className='flex justify-start items-center gap-2 '>
-            {product?.productName}{' '}
+            {product?.productName}
             {product.weight === 0 && (
                <Tag color='red' className='w-[50%] text-center'>
                   Hết hàng
                </Tag>
-            )}{' '}
+            )}
          </p>
       ),
       children: (
@@ -27,7 +27,7 @@ const ShipmentItem = ({ shipment }: Props) => {
             </p>
             <p>
                <strong className='underline mr-3'>Giá nhập: </strong>
-               {product.originPrice}/kg
+               {product.originPrice.toLocaleString("vi-VN")}₫/kg
             </p>
             <p>
                <strong className='underline mr-3'>Số lượng còn lại: </strong>

@@ -62,8 +62,9 @@ const ProductsInCart = () => {
                message.success('Cập nhật sản phẩm thành công');
             })
             .catch((error) => {
-               setCartState(error?.data?.body?.data?.products);
+             
                if(error.data.message=="The remaining quantity is not enough!"){
+                  setCartState(error?.data?.body?.data?.products);
                   message.error('Số lượng vượt quá sản phẩm đang có trong kho');
                }
                else if(error.data.message=="Refresh Token is invalid" || error.data.message== "Refresh Token is expired ! Login again please !"){
@@ -103,7 +104,10 @@ const ProductsInCart = () => {
       if (auth.user._id) {
          let updatedCartState = [...cartState];
          let updatedItem = { ...updatedCartState[index] };
-         updatedItem.weight = e.target.value;
+         if(e.target.value!="."){
+            updatedItem.weight = e.target.value;
+         }
+
          if (e.target.value == '') {
             updatedCartState[index] = updatedItem;
             setCartState(updatedCartState);
@@ -229,9 +233,9 @@ const ProductsInCart = () => {
                            <div className='item-img w-[100px]'>
                               <Link
                                  to={'/products/'+item.productId._id}
-                                 className=' border-[1px] border-[#e2e2e2] block overflow-hidden rounded-[5px]'
+                                 className=' border-[1px] border-[#e2e2e2] block overflow-hidden rounded-[5px] h-[98px] w-[98px]'
                               >
-                                 <img src={item.productId?.images[0]?.url} className='max-w-[100%]' alt='' />
+                                 <img src={item.productId?.images[0]?.url} className='h-[98px] w-[98px]' alt='' />
                               </Link>
                            </div>
                            <div className='item-title px-[15px]'>
@@ -239,7 +243,7 @@ const ProductsInCart = () => {
                                  {item.productId?.productName}
                               </Link>
                               <div className='origin flex'>
-                                 <span className='origin-title  font-bold'>Xuất sứ:</span>
+                                 <span className='origin-title  font-bold'>Xuất xứ:</span>
                                  <span className='origin-name ml-[5px]'>{item.productId.originId.name}</span>
                               </div>
                               <span className='price'>
@@ -341,6 +345,7 @@ const ProductsInCart = () => {
                      </div>
                   ))}
                </div>
+               
                <div className='cart-footer flex justify-between py-[13px] flex-wrap gap-[15px]'>
                   <Link
                      to='/collections'

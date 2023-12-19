@@ -178,6 +178,7 @@ const CheckOut = () => {
                         ...prevError,
                         '- Sản phẩm ' + item.productName + ' đã hết hàng'
                      ]);
+                     refetch()
                   } else if (item.message == 'Product is no longer available!') {
                      setError((prevError: string[]) => [
                         ...prevError,
@@ -208,7 +209,11 @@ const CheckOut = () => {
             navigate("/checkout")
          }).catch((err: any) => {
                setIsModalOpen(true);
-               err.data.body?.error.map((item: any) => {
+
+              
+               
+                
+               err.data.body?.error.map((item: any) => {      
                   if (item.message == 'Product is not exsit!') {
                      dispatch(removeFromCart({ id: item.productId }));
                      setError((prevError: string[]) => [
@@ -219,7 +224,7 @@ const CheckOut = () => {
                      dispatch(updateOriginProductInCartLocal({ id: item.productId,origin_id: item.originId, name: item.originName }));
                      setError((prevError: string[]) => [
                         ...prevError,
-                        '- Xuất sứ của sản phẩm ' + item.productName + ' đã được cập nhật'
+                        '- Xuất xứ của sản phẩm ' + item.productName + ' đã được cập nhật'
                      ]);
                   } else if (item.message == 'Invalid product name!') {
                      dispatch(updateNameProductInCartLocal({ id: item.productId, name: item.productName }));
@@ -265,8 +270,23 @@ const CheckOut = () => {
                         '- Tổng tiền của bạn đang bị sai và đã được cập nhật lại'
                      ]);
                   }
+                  else if (item.message == 'Invalid product weight!') {
+                     setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Sản phẩm phải có số lượng trên 0'
+                     ]);
+                  }
                });
-           
+               if (err.data.message) {
+                  err.data.message.forEach((item: string) => {
+                    if (item.includes("must be a number")) {
+                      setError((prevError: string[]) => [
+                        ...prevError,
+                        '- Trong giỏ hàng của bạn có sản phẩm chưa đúng định dạng số lượng'
+                      ]);
+                    }
+                  });
+                }
          });
       }
    };

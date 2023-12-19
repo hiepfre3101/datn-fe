@@ -106,7 +106,7 @@ const Header = () => {
          clientSocket.off('purchaseNotification', handlePurchaseNotification);
          clientSocket.off('statusNotification', handlePurchaseNotification);
          clientSocket.disconnect();
-      };
+      }
       // eslint-disable-next-line react-hooks/exhaustive-deps
    }, [auth]);
    const showMiniCart = () => {
@@ -333,7 +333,7 @@ const Header = () => {
                                              <>
                                                 <div>
                                                    <Link
-                                                      to='/manage/dashboard'
+                                                      to='/manage'
                                                       className='flex items-center gap-[5px] py-[5px]'
                                                    >
                                                       <PiUserListBold></PiUserListBold> Quản lý cửa hàng
@@ -347,17 +347,17 @@ const Header = () => {
                                                       <LuUser2></LuUser2> Hồ sơ của bạn
                                                    </Link>
                                                 </div>
-                                               
+
                                              </>
                                           )}
-                                                         <div>
-                                                   <Link
-                                                      to='/changePassword'
-                                                      className='flex items-center gap-[5px] py-[5px]'
-                                                   >
-                                                        <MdOutlineLockReset></MdOutlineLockReset> Đổi mật khẩu
-                                                   </Link>
-                                                </div>
+                                          <div>
+                                             <Link
+                                                to='/changePassword'
+                                                className='flex items-center gap-[5px] py-[5px]'
+                                             >
+                                                <MdOutlineLockReset></MdOutlineLockReset> Đổi mật khẩu
+                                             </Link>
+                                          </div>
                                           <div>
                                              <Link to='/orders' className='flex items-center gap-[5px] py-[5px]'>
                                                 <RiBillLine></RiBillLine> Lịch sử mua hàng

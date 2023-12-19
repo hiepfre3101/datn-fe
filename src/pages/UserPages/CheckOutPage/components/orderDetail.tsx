@@ -128,7 +128,7 @@ const OrderDetail = () => {
                            {...register('shippingAddress', { required: 'Địa chỉ là trường bắt buộc' })}
                            type='text'
                            className='w-full mt-[10px] py-[10px] px-[15px] outline-none border border-[#e2e2e2] rounded-[5px]'
-                           placeholder='Địa chỉ'
+                           placeholder='Ví dụ: Số 20, Ngõ 86, Phố Kiều Mai'
                         />
                      </label>
                      {errors.shippingAddress && (

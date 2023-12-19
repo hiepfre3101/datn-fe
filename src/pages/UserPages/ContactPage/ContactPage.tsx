@@ -17,9 +17,9 @@ const ContactPage = () => {
             </section>
             <section className=' lg:py-[100px] md:py-[80px] max-md:py-[60px]'>
                <div className=' mx-auto px-[15px] 3xl:w-[1380px] 2xl:w-[1320px] xl:w-[1170px]   lg:w-[970px]  md:w-[750px] '>
-                  <div className=' xl:w-[90%] lg:w-[60%] md:w-[70%] max-md:w-[100%] m-auto'>
+                  <div className=''>
                      <div className='contact-main flex gap-7 flex-wrap  lg:flex-nowrap'>
-                        <div className='contact   bg-cover max-w-[50%] '>
+                        <div className='contact   bg-cover w-[50%] max-lg:w-full'>
                            <div
                               style={{ borderRadius: `5px`, padding: `15px` }}
                               className='infor-contact bg-lime-200 mb-5 '
@@ -109,7 +109,7 @@ const ContactPage = () => {
                               </Form>
                            </div>
                         </div>
-                        <div className='address-contact w-[60%] max-w-xl'>
+                        <div className='address-contact w-[60%]  max-lg:w-full'>
                            <iframe
                               src='https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.58759984635!2d105.73858977517705!3d21.049180980605303!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313454f6b55a43cd%3A0xdeb662d7e24fb561!2zS2h1IEPDtG5nIG5naGnhu4dwIFbhu6thICYgTmjhu48gVOG7qyBMacOqbQ!5e0!3m2!1svi!2s!4v1700899966652!5m2!1svi!2s'
                               width='100%'

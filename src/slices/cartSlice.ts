@@ -71,6 +71,7 @@ const cartSlice = createSlice({
          if (value.weight > value.totalWeight) {
             message.error('Số lượng đã quá số lượng hiện có');
             error = true;
+            return
          }
          const products = state.products.map((item: any) => {
             if (item?.productId._id === value.productId._id) {
@@ -78,7 +79,7 @@ const cartSlice = createSlice({
                if (item.weight + value.weight <= value.totalWeight) {
                   item.weight += value.weight;
                } else {
-                  message.error('Số lượng đã quá số lượng hiện có');
+                  message.error('Số lượng sản phẩm trong giỏ hàng của bạn vượt quá số lượng hiện có trong');
                   error = true;
                }
             }
@@ -179,6 +180,10 @@ const cartSlice = createSlice({
          });
          state.products = nextCartproducts;
          localStorage.setItem("cart", JSON.stringify(nextCartproducts));
+         state.totalPrice = nextCartproducts.reduce(
+            (accumulator, product) => accumulator + product.productId?.price * product.weight,
+            0
+         );
       },
       updateImgProductInCartLocal:(state,action)=>{
          const nextCartproducts = state.products.map((cartItem: any) => {
