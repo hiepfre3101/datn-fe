@@ -111,7 +111,7 @@ const VoucherAdmin = () => {
                            dataIndex='_id'
                            render={(_id) => (
                               <div>
-                                 <Tooltip title='Sửa sản phẩm' placement='bottom'>
+                                 <Tooltip title='Sửa mã giảm giá' placement='bottom'>
                                     <Link to={'/manage/update-voucher/' + _id}>
                                        <button className='p-2 rounded-full bg-white w-10 h-10 shadow-md hover:w-11 hover:h-11 duration-100 '>
                                           <PencilIcon className='text-greenPrimary w-4' />
@@ -119,7 +119,7 @@ const VoucherAdmin = () => {
                                     </Link>
                                  </Tooltip>{' '}
                                  {/* <button onClick={() => getConfirmResultToDelete(result,_id)}>Xóa</button> */}
-                                 <Tooltip title='Xóa sản phẩm' placement='bottom'>
+                                 <Tooltip title='Xóa mã giảm giá' placement='bottom'>
                                     <Popconfirm
                                        title='Bạn có chắc chắn xóa không ?'
                                        onConfirm={() => {

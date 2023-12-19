@@ -127,7 +127,7 @@ const Footer = () => {
    useEffect(() => {
       if (auth.user._id) {
          const temp = cartdb?.body.data.products?.reduce((cal: any, product: any) => {
-            return cal + product.weight * product.productId.price;
+            return cal + product.weight * (product.productId.price-(product.productId.price*product.productId.discount/100));
          }, 0);
 
          if (temp !== undefined) {
@@ -190,7 +190,12 @@ const Footer = () => {
             content: messages,
             sender: 'client'
          };
-         await sendMessage(data);
+         await sendMessage(data).unwrap().catch((err) => {
+            if(err.data.message=="Refresh Token is invalid" || err.data.message== "Refresh Token is expired ! Login again please !"){
+               setOpenChat(false);
+               onHandleLogout()
+            } 
+         });
          const jsonData = JSON.stringify(data);
          clientSocket.emit('ClientSendMessage', jsonData);
       }

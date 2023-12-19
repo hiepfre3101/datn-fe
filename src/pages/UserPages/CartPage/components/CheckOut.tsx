@@ -178,6 +178,7 @@ const CheckOut = () => {
                         ...prevError,
                         '- Sản phẩm ' + item.productName + ' đã hết hàng'
                      ]);
+                     refetch()
                   } else if (item.message == 'Product is no longer available!') {
                      setError((prevError: string[]) => [
                         ...prevError,

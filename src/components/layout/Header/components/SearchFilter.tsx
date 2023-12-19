@@ -75,7 +75,7 @@ const SearchFilter = ({ children }: any) => {
    return (
       <>
          <span onClick={showDrawer}>{children}</span>
-         <Drawer title='Search Products' placement='top' closable={true} onClose={onClose} visible={isDrawerOpen}>
+         <Drawer title='Tìm kiếm sản phẩm' placement='top' closable={true} onClose={onClose} visible={isDrawerOpen}>
             <div className='form-search relative'>
                <Input
                   onKeyDown={handleSearch}
@@ -87,7 +87,7 @@ const SearchFilter = ({ children }: any) => {
                <SearchOutlined className='border-none absolute right-10 translate-y-[50%] bottom-[50%] text-[20px] text-black'></SearchOutlined>
             </div>
             <div className='items-center flex flex-wrap my-5 gap-5'>
-               <h2 className='text-xl text-black font-bold '>Search History:</h2>
+               <h2 className='text-xl text-black font-bold '>Lịch sử tìm kiếm:</h2>
                <div className='flex flex-wrap gap-5'>
                   {searchHistory.map((keyword, index) => (
                      <div key={index} className='search-history flex justify-center items-center cursor-pointer'>
@@ -103,21 +103,25 @@ const SearchFilter = ({ children }: any) => {
                   ))}
                </div>
             </div>
-            <div className='flex flex-wrap  mx-auto items-center text-center'>
+            <div className='flex  flex-col '>
                {isLoading ? (
-                  <div className='flex justify-center w-full'>
+                  <div className='flex  w-full'>
                      <Spin />
                   </div>
                ) : (
                   items.map((item: IProduct, index: number) => (
-                     <div className=' items-center flex-wrap justify-center gap-2 mx-auto py-4' key={index}>
-                        <Image height={120} src={item.images[0].url} width={120} />
-                        <div className='flex-1 '>
-                           <Link to={`/products/${item._id}`}>
-                              <h2 className='text-base font-bold text-black'>{item.productName}</h2>
-                           </Link>
-                           <h1>{item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</h1>
-                        </div>
+                     <div
+                        className='py-4 flex items-center gap-3 cursor-pointer '
+                        key={index}
+                        onClick={() => setIsDrawerOpen(false)}
+                     >
+                        <Image height={120} src={item.images[0].url} width={120} className='rounded-lg' />
+                        <Link to={`/products/${item._id}`}>
+                           <h2 className='font-bold text-black text-2xl text-greenP800 '>{item.productName}</h2>
+                        </Link>
+                        <h1 className='text-lg font-semibold'>
+                           {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                        </h1>
                      </div>
                   ))
                )}
