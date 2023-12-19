@@ -75,7 +75,7 @@ const SearchFilter = ({ children }: any) => {
    return (
       <>
          <span onClick={showDrawer}>{children}</span>
-         <Drawer title='Search Products' placement='top' closable={true} onClose={onClose} visible={isDrawerOpen}>
+         <Drawer title='Tìm kiếm sản phẩm' placement='top' closable={true} onClose={onClose} visible={isDrawerOpen}>
             <div className='form-search relative'>
                <Input
                   onKeyDown={handleSearch}
