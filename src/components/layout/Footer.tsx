@@ -127,7 +127,7 @@ const Footer = () => {
    useEffect(() => {
       if (auth.user._id) {
          const temp = cartdb?.body.data.products?.reduce((cal: any, product: any) => {
-            return cal + product.weight * product.productId.price;
+            return cal + product.weight * (product.productId.price-(product.productId.price*product.productId.discount/100));
          }, 0);
 
          if (temp !== undefined) {
